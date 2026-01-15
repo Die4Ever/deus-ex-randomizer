@@ -7,3 +7,6 @@ class DXRandoGUITextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\MenuRandoOptionsFiveChoice_2.pcx"        NAME="MenuRandoOptionsFiveChoice_2"     GROUP="DXRandoGUI"
 
 #exec TEXTURE IMPORT FILE="Textures\VisionFilter.pcx"                        NAME="VisionFilter"                     GROUP="DXRandoGUI"
+
+#exec TEXTURE IMPORT FILE="Textures\ComputerKnownAccountsBackground.pcx"     NAME="ComputerKnownAccountsBackground"  GROUP="DXRandoGUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\ComputerKnownAccountsBorder.pcx"         NAME="ComputerKnownAccountsBorder"      GROUP="DXRandoGUI" MIPS=Off

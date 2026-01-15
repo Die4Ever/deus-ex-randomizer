@@ -73,17 +73,6 @@ event StyleChanged()
     CheckSettings();
 }
 
-function bool GetAutoCodes()
-{
-    return class'MenuChoice_PasswordAutofill'.static.GetSetting() == 2;
-
-}
-
-function bool GetKnownCodes()
-{
-    return class'MenuChoice_PasswordAutofill'.static.GetSetting() >= 1;
-}
-
 function bool GetShowKeys()
 {
     return class'MenuChoice_ShowKeys'.default.enabled;
@@ -496,7 +485,9 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 
     strInfo = device.itemName;
 
-    if(!GetAutoCodes() || k==None || (GetAutoCodes() && k!=None && !k.bCodeKnown)){
+    if(!class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() ||
+        k==None ||
+        (class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() && k!=None && !k.bCodeKnown)){
         numLines++;
         strInfo = strInfo $ CR() $ msgHackStr;
         if (device.bHackable)
@@ -514,18 +505,18 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 
     if( k!=None && (k.bCodeKnown) )
     {
-        if( GetAutoCodes() ) {
+        if( class'MenuChoice_PasswordAutofill'.static.ShowPasswords() ) {
             numLines++;
             strInfo = strInfo $ CR() $ "CODE KNOWN ("$k.validCode$")";
             k.bHackable = False;
             k.msgNotHacked = "It's secure, but you already know the code!";
         }
-        else if( GetKnownCodes() ) {
+        else if( class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() ) {
             numLines++;
             strInfo = strInfo $ CR() $ "CODE KNOWN";
         }
     }
-    else if( device.IsA('Keypad') && GetKnownCodes() )
+    else if( device.IsA('Keypad') && class'MenuChoice_PasswordAutofill'.static.ShowPasswords() )
     {
         numLines++;
         strInfo = strInfo $ CR() $ "Unknown Code";
@@ -553,7 +544,7 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
 
     c = #var(prefix)Computers(d);
     a = #var(injectsprefix)ATM(d);
-    if( GetKnownCodes() && c != None )
+    if( class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() && c != None )
     {
         if( #var(injectsprefix)ComputerPersonal(c) != None )
             code_known = #var(injectsprefix)ComputerPersonal(c).HasKnownAccounts();
@@ -565,7 +556,7 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
         else if(#var(injectsprefix)ComputerPublic(c) == None)
             strInfo = strInfo $ CR() $ "Unknown Password";
     }
-    else if( GetKnownCodes() && a != None )
+    else if( class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() && a != None )
     {
         if( a.HasKnownAccounts() )
             strInfo = strInfo $ CR() $ "PIN Known";
@@ -951,10 +942,12 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
 #endif
 
     // Alignment changes based on the number of lines?
-    if ((GetAutoCodes() || GetKnownCodes()) && k!=None){
+    if ((class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts()) && k!=None){
         infoY += 2;
     }
-    if(!GetAutoCodes() || k==None || (GetAutoCodes() && k!=None && !k.bCodeKnown)){
+    if(!class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() ||
+        k==None ||
+        (class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() && k!=None && !k.bCodeKnown)){
         // draw a colored bar
         if (device.hackStrength != 0.0)
         {
@@ -976,7 +969,9 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         }
     }
 
-    if (GetAutoCodes() && k!=None && k.hackStrength != 0.0){
+    if (class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() &&
+        k!=None &&
+        k.hackStrength != 0.0){
         gc.SetStyle(DSTY_Translucent);
         col.r = 0;
         col.g = 0;

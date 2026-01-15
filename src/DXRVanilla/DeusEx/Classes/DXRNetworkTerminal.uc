@@ -104,13 +104,15 @@ function CloseScreen(String action)
 
 function CreateKnownAccountsWindow()
 {
-    if( class'MenuChoice_PasswordAutofill'.static.GetSetting() < 1 ) return;
+    if( class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() == false ) return;
 
     winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
     winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
-    if( class'MenuChoice_PasswordAutofill'.static.GetSetting() == 2 )
-        winKnownAccounts.bShowPasswords = true;
+    winKnownAccounts.bShowPasswords = class'MenuChoice_PasswordAutofill'.static.ShowPasswords();
+    winKnownAccounts.ShowLoginButton(class'MenuChoice_PasswordAutofill'.static.CanAutofill());
+    winKnownAccounts.bOnlyShowKnownAccounts = !class'MenuChoice_PasswordAutofill'.static.CanAutofill();
+
     winKnownAccounts.SetNetworkTerminal(Self);
     winKnownAccounts.SetCompOwner(compOwner);
     winKnownAccounts.AskParentForReconfigure();

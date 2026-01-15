@@ -3,6 +3,10 @@
 - New password randomization styles!  By default, passwords will now be randomized by picking a few words from word lists instead of purely random letters and numbers.  In theory these passwords should be a bit easier to remember if not using autofill, as well as simply being more "fun".
   - If memes are disabled (such as when playing Serious Rando), password randomization will default to "Pronouncable" passwords instead.  These passwords alternate vowels and consonants (the same method used for random names) to form vaguely pronouncable passwords which should be easier to remember
   - If you want to switch password styles mid-game, do so just before leaving for a new mission (so there is no possibility of backtracking) for the least possibility of causing issues.
+- New "Password Assistance" setting, "Show Known Passwords".  This mode will show the usernames and passwords for accounts that you know on computers, and keypads will show the code (if known), but they need to be manually entered.
+- The "Account List" window for Password Assistance on Computers has been revamped to look a bit more nice!
+  - In "Mark Known Passwords" and "Show Known Passwords" modes, accounts won't be listed if the password is not known.
+  - In "Mark Known Passwords" and "Show Known Passwords" modes, the "Login" button will not be shown below the account list.
 - You actually start the game with all of your skill points again, instead of 80% of the amount you had left over after the new game skills screen.
 
 ## Minor Changes

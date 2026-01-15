@@ -1,8 +1,13 @@
 class ComputerScreenKnownAccounts extends #var(prefix)ComputerScreenHackAccounts;
 
 var bool bShowPasswords;
+var bool bOnlyShowKnownAccounts;
+var bool bAllowLogin;
 var localized string msgKnownPass;
 var localized string msgUnknownPass;
+
+var PersonaButtonBarWindow winActionButtons;
+var MenuUIHeaderWindow userHdr, passHdr;
 
 function CreateHeaders()
 {
@@ -10,11 +15,15 @@ function CreateHeaders()
 
     winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
     winHeader.SetPos(12, 12);
-    winHeader.SetText("Last Login");
+    winHeader.SetText("Account List");
 
-    winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-    winHeader.SetPos(12, 53);
-    winHeader.SetText("Accounts");
+    userHdr = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    userHdr.SetPos(16, 30);
+
+    passHdr = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    passHdr.SetPos(86, 30);
+
+    SetColumnHeaders("User","Password");
 }
 
 function CreateAccountsList()
@@ -22,8 +31,8 @@ function CreateAccountsList()
     local PersonaScrollAreaWindow winScroll;
 
     winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
-    winScroll.SetPos(14, 69);
-    winScroll.SetSize(170, 97);
+    winScroll.SetPos(14, 42);
+    winScroll.SetSize(170, 96); //Each selected row is 12 pixels tall, 8 accounts max
 
     lstAccounts = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
     lstAccounts.EnableMultiSelect(False);
@@ -37,35 +46,76 @@ function CreateAccountsList()
 function CreateControls()
 {
     CreateChangeAccountButton();
-    CreateCurrentUserWindow();
+    //CreateCurrentUserWindow();  //No longer needed
     CreateAccountsList();
     CreateHeaders();
 }
 
+function SetComputerHeaders()
+{
+    SetColumnHeaders("User","Password");
+}
+
+function SetATMHeaders()
+{
+    SetColumnHeaders("Account","PIN");
+}
+
+function SetColumnHeaders(string user, string pass)
+{
+    userHdr.SetText(user);
+    passHdr.SetText(pass);
+}
+
+function ShowLoginButton(bool state)
+{
+    bAllowLogin = state;
+
+    if (!state && btnChangeAccount!=None){
+        btnChangeAccount.Destroy();
+        winActionButtons.Destroy();
+    } else if (state && btnChangeAccount==None){
+        CreateChangeAccountButton();
+    }
+}
+
+function UpdateCurrentUser()
+{
+    //This space intentionally left blank
+}
+
 function CreateChangeAccountButton()
 {
-    local PersonaButtonBarWindow winActionButtons;
+    if (!bAllowLogin) return;
 
 #ifdef gmdxae
     winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindowMenu'));
 #else
 	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
 #endif
-    winActionButtons.SetPos(12, 169);
+    winActionButtons.SetPos(12, 142);
     winActionButtons.SetWidth(174);
     winActionButtons.FillAllSpace(False);
 
+    CreateLoginButton();
+}
+
+function CreateLoginButton()
+{
 #ifdef gmdxae
     btnChangeAccount = PersonaActionButtonWindowMenu(winActionButtons.NewChild(Class'PersonaActionButtonWindowMenu'));
 #else
     btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 #endif
     btnChangeAccount.SetButtonText("Logi|&n");
+    winActionButtons.SetWidth(btnChangeAccount.width);
 }
 
 function ChangeSelectedAccount()
 {
     local string user,pass;
+
+    if (!bAllowLogin) return;
 
     user = lstAccounts.GetField(lstAccounts.GetSelectedRow(),0);
     pass = lstAccounts.GetField(lstAccounts.GetSelectedRow(),1);
@@ -142,10 +192,13 @@ function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
     atm = #var(prefix)ATM(newCompOwner);
 
 #ifndef hx
-    if( compOwner != None )
+    if( compOwner != None ){
         numUsers = compOwner.NumUsers();
-    else if( atm != None )
+        SetComputerHeaders();
+    } else if( atm != None ) {
         numUsers = atm.NumUsers();
+        SetATMHeaders();
+    }
 #endif
 
     // Loop through the names and add them to our listbox
@@ -158,7 +211,9 @@ function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
         else if( !known )
             password = msgUnknownPass;
 
-        lstAccounts.AddRow(username$";"$password);
+        if (!bOnlyShowKnownAccounts || (bOnlyShowKnownAccounts && known)){
+            lstAccounts.AddRow(username$";"$password);
+        }
 
         if(known)
             userRowIndex = compIndex;
@@ -171,6 +226,10 @@ function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
 
 defaultproperties
 {
+    texBackground=Texture'ComputerKnownAccountsBackground'
+    texBorder=Texture'ComputerKnownAccountsBorder'
+    backgroundWidth=188
+    backgroundHeight=153
     msgKnownPass="Known"
-    msgUnknownPass="Unknown"
+    msgUnknownPass="-----"
 }

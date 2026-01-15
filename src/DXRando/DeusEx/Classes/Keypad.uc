@@ -33,7 +33,7 @@ simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
 function bool GetInstantSuccess(DeusExPlayer Hacker, bool bHacked)
 {
    if( bHacked ) return true;
-   if( class'MenuChoice_PasswordAutofill'.static.GetSetting() == 2 && bCodeKnown ) return true;
+   if( class'MenuChoice_PasswordAutofill'.static.InstantlyEnterCode() && bCodeKnown ) return true;
    return false;
 }
 
