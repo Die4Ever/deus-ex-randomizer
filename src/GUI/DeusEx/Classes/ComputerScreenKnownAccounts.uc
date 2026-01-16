@@ -3,8 +3,10 @@ class ComputerScreenKnownAccounts extends #var(prefix)ComputerScreenHackAccounts
 var bool bShowPasswords;
 var bool bOnlyShowKnownAccounts;
 var bool bAllowLogin;
+var bool bAnonymizeUnknownUsers;
 var localized string msgKnownPass;
 var localized string msgUnknownPass;
+var localized string msgAnonUsername;
 
 var PersonaButtonBarWindow winActionButtons;
 var MenuUIHeaderWindow userHdr, passHdr;
@@ -43,8 +45,17 @@ function CreateAccountsList()
     lstAccounts.SetColumnWidth(1, 102);
 }
 
+function InitAccountSettings()
+{
+    bShowPasswords = class'MenuChoice_PasswordAutofill'.static.ShowPasswords();
+    bAllowLogin = class'MenuChoice_PasswordAutofill'.static.CanAutofill();
+    bOnlyShowKnownAccounts = !class'MenuChoice_ExposeComputerUsers'.static.ShowUnknownAccounts();
+    bAnonymizeUnknownUsers = !class'MenuChoice_ExposeComputerUsers'.static.ShowFullAccountNames();
+}
+
 function CreateControls()
 {
+    InitAccountSettings();
     CreateChangeAccountButton();
     //CreateCurrentUserWindow();  //No longer needed
     CreateAccountsList();
@@ -102,13 +113,17 @@ function CreateChangeAccountButton()
 
 function CreateLoginButton()
 {
+    local float w, h;
+
 #ifdef gmdxae
     btnChangeAccount = PersonaActionButtonWindowMenu(winActionButtons.NewChild(Class'PersonaActionButtonWindowMenu'));
 #else
     btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 #endif
     btnChangeAccount.SetButtonText("Logi|&n");
-    winActionButtons.SetWidth(btnChangeAccount.width);
+
+    btnChangeAccount.QueryPreferredSize(w,h);
+    winActionButtons.SetWidth(w);
 }
 
 function ChangeSelectedAccount()
@@ -208,8 +223,12 @@ function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
 
         if( known && ! bShowPasswords )
             password = msgKnownPass;
-        else if( !known )
+        else if( !known ) {
             password = msgUnknownPass;
+            if (bAnonymizeUnknownUsers){
+                username=msgAnonUsername;
+            }
+        }
 
         if (!bOnlyShowKnownAccounts || (bOnlyShowKnownAccounts && known)){
             lstAccounts.AddRow(username$";"$password);
@@ -232,4 +251,5 @@ defaultproperties
     backgroundHeight=153
     msgKnownPass="Known"
     msgUnknownPass="-----"
+    msgAnonUsername="-----"
 }

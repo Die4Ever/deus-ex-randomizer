@@ -39,9 +39,6 @@ function CreateKnownAccountsWindow()
     winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
     winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
-    winKnownAccounts.bShowPasswords = class'MenuChoice_PasswordAutofill'.static.ShowPasswords();
-    winKnownAccounts.ShowLoginButton(class'MenuChoice_PasswordAutofill'.static.CanAutofill());
-    winKnownAccounts.bOnlyShowKnownAccounts = !class'MenuChoice_PasswordAutofill'.static.CanAutofill();
 
     winKnownAccounts.SetNetworkTerminal(Self);
     winKnownAccounts.SetCompOwner(compOwner);
