@@ -74,6 +74,8 @@ function CheckConfig()
     not_passwords[i++] = "little .22 pistol";
     not_passwords[i++] = "the MJ12-COL";
     not_passwords[i++] = "questions to MJ12 Simulations";
+    not_passwords[i++] = "human target-practis";
+    not_passwords[i++] = "research campus";
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {
