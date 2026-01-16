@@ -81,5 +81,6 @@
 - The Training Merchant (who shows up in Training) is no longer afraid of anything.
 - The door in the demolitions training hallway (In the training mission) can now be highlighted to see the damage threshold.
 - If LDDP is not installed, there will no longer be an empty datacube in the mirrored Mission 1 UNATCO HQ map.
+- Marked several more false positives for passwords in emails and datacubes.
 
 </details>

@@ -76,6 +76,24 @@ function CheckConfig()
     not_passwords[i++] = "questions to MJ12 Simulations";
     not_passwords[i++] = "human target-practis";
     not_passwords[i++] = "research campus";
+    not_passwords[i++] = "But tell Simons";
+    not_passwords[i++] = "hack the security keypad";
+    not_passwords[i++] = "get more security";
+    not_passwords[i++] = "re-evaluating our security";
+    not_passwords[i++] = "police and security cannot";
+    not_passwords[i++] = "Agents, operatives, security";
+    not_passwords[i++] = "Further security breaches";
+    not_passwords[i++] = "pervasive security presence";
+    not_passwords[i++] = "entity token \"MJ12\"";
+    not_passwords[i++] = "needs of most security";
+    not_passwords[i++] = "Captain Hernandez";
+    not_passwords[i++] = "information linking Simons";
+    not_passwords[i++] = "Which Simons has a";
+    not_passwords[i++] = "Brooklyn Bridge Station access is through";
+    not_passwords[i++] = "for a little added security";
+    not_passwords[i++] = "from the Illuminati to the";
+    not_passwords[i++] = "entity token \"Illuminati\"";
+    not_passwords[i++] = "connected to the Illuminati";
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {
