@@ -7,6 +7,7 @@
 - The "Account List" window for Password Assistance on Computers has been revamped to look a bit more nice!
   - In "Mark Known Passwords" and "Show Known Passwords" modes, accounts won't be listed if the password is not known.
   - In "Mark Known Passwords" and "Show Known Passwords" modes, the "Login" button will not be shown below the account list.
+  - Passwords that are learned while using a computer will be updated immediately and no longer requires you to close and reopen the computer.
 - New setting "Show Computer Accounts" lets you choose how computer accounts that you don't have the password for show in the account list.
   - "Hide Unknown" will only show accounts that you have the password for in the account list.
   - "Anonymous Accounts" will show that there *are* accounts (and how many), but won't show the name for ones that you don't have the password for.

@@ -10,10 +10,28 @@ function bool GetAccountKnown(int userIndex)
 	return False;
 }
 
+//Push known passwords into an active computer terminal if open
+function UpdateKnownAccountWindow()
+{
+    local DXRNetworkTerminalATM dxrterm;
+
+    #ifdef hx
+    dxrterm = DXRNetworkTerminalATM(termwindow);
+    #else
+    dxrterm = DXRNetworkTerminalATM(atmwindow);
+    #endif
+    if (dxrterm==None) return;
+    if (dxrterm.winKnownAccounts==None) return;
+
+    dxrterm.winKnownAccounts.PopulateAccountList();
+}
+
 function SetAccountKnown(int userIndex)
 {
 	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
         knownAccount[userIndex]=1;
+
+    UpdateKnownAccountWindow();
 }
 
 function SetAccountKnownByName(String username)

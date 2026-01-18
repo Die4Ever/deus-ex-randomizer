@@ -8,6 +8,8 @@ var localized string msgKnownPass;
 var localized string msgUnknownPass;
 var localized string msgAnonUsername;
 
+var #var(prefix)ATM atmOwner;
+
 var PersonaButtonBarWindow winActionButtons;
 var MenuUIHeaderWindow userHdr, passHdr;
 
@@ -195,31 +197,39 @@ function bool GetAccountKnown(#var(prefix)Computers comp, #var(prefix)ATM atm, i
 
 function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
 {
+    compOwner = #var(prefix)Computers(newCompOwner);
+    atmOwner = #var(prefix)ATM(newCompOwner);
+
+    PopulateAccountList();
+}
+
+
+function PopulateAccountList()
+{
     local int compIndex;
     local int rowId;
     local int userRowIndex;
-    local #var(prefix)ATM atm;
     local int numUsers;
     local string username, password;
     local bool known;
-
-    compOwner = #var(prefix)Computers(newCompOwner);
-    atm = #var(prefix)ATM(newCompOwner);
 
 #ifndef hx
     if( compOwner != None ){
         numUsers = compOwner.NumUsers();
         SetComputerHeaders();
-    } else if( atm != None ) {
-        numUsers = atm.NumUsers();
+    } else if( atmOwner != None ) {
+        numUsers = atmOwner.NumUsers();
         SetATMHeaders();
     }
 #endif
 
+    //Clear the list out first, just in case
+    lstAccounts.DeleteAllRows();
+
     // Loop through the names and add them to our listbox
     for (compIndex=0; compIndex<numUsers; compIndex++)
     {
-        known = GetAccountKnown(compOwner, atm, compIndex, username, password);
+        known = GetAccountKnown(compOwner, atmOwner, compIndex, username, password);
 
         if( known && ! bShowPasswords )
             password = msgKnownPass;
