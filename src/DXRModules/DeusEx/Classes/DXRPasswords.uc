@@ -81,7 +81,7 @@ function CheckConfig()
 
     //Fixups will cover these password replacements if balance changes are enabled
     //These ones are funny because we change the passwords to unique ones.
-    if( !class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
+    if( !(class'MenuChoice_BalanceMaps'.static.ModerateEnabled() || class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts()) ){
         //QUEENSTOWER security computer password is updated with balance changes
         yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
         yes_passwords[i].search_for = "PASSWORD SECURITY";

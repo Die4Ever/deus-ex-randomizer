@@ -1624,7 +1624,7 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
     local string notePassword,finalpassword;
     local int i;
 
-    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ) {
+    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() || class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() ) {
         foreach AllActors(class'#var(prefix)ComputerSecurity',comp){
             if (comp.UserList[0].Password==comp.Default.UserList[0].Password){
                 comp.UserList[0].Password = newpass;
