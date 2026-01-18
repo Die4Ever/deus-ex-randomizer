@@ -3910,7 +3910,7 @@ defaultproperties
     bingo_options(176)=(event="BiggestFan",desc="Destroy your biggest fan",max=1,missions=#bit(9))
     bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",desc_singular="Drink a can of soda",max=75)
     bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s ballistic armors",desc_singular="Use ballistic armor",max=3,missions=#bit(2,3,4,5,6,8,9,10,11,12,14,15))
-    bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",desc_singular="Light a flare",max=15)
+    bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",desc_singular="Light a flare",max=15,missions=#bit(1,2,3,4,5,6,8,10,11,12,14,15)) //Only a possiblity of a flare in M09
     bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=#bit(9,14))
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s hazmat suits",desc_singular="Use a hazmat suit",max=3,missions=#bit(1,4,6,9,10,12,14,15))

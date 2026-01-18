@@ -84,5 +84,6 @@
 - If LDDP is not installed, there will no longer be an empty datacube in the mirrored Mission 1 UNATCO HQ map.
 - Marked several more false positives for passwords in emails and datacubes.
 - Adjust passwords on several different computers through the game so that they no longer have overlapping "SECURITY" passwords, causing falsely learned passwords.
+- "Light a flare" bingo goal will no longer appear in Mission 9.  There is only a chance of finding a flare in a single crate, so it is not consistent.
 
 </details>
