@@ -1617,6 +1617,20 @@ function FixMechanicBarks()
     }
 }
 
+function UpdateDefaultSecurityComputerPassword(string newpass)
+{
+    local #var(prefix)ComputerSecurity comp;
+    local int i;
+
+    if( ! class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ) return;
+
+    foreach AllActors(class'#var(prefix)ComputerSecurity',comp){
+        if (comp.UserList[0].Password==comp.Default.UserList[0].Password){
+            comp.UserList[0].Password = newpass;
+        }
+    }
+}
+
 defaultproperties
 {
     // in order of proportion, then number of occurances.

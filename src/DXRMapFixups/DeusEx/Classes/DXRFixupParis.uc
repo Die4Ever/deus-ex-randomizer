@@ -50,6 +50,8 @@ function PreFirstEntryMapFixes()
         elevatortrig = Spawn(class'DXRMoverSequenceTrigger',, 'roof_elevator_call');
         elevatortrig.Event = 'roof_elevator';
 
+        UpdateDefaultSecurityComputerPassword("MetroSecurity");
+
         if(!VanillaMaps){
             //Revision, entrance to closed Metro station (split to a separate map)
             foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}

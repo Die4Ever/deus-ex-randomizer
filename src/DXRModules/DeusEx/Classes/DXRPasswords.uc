@@ -56,6 +56,7 @@ function CheckConfig()
     not_passwords[i++] = "from the Illuminati to the";
     not_passwords[i++] = "entity token \"Illuminati\"";
     not_passwords[i++] = "connected to the Illuminati";
+    not_passwords[i++] = "the \"Oceanguard\" login";
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {
@@ -78,14 +79,34 @@ function CheckConfig()
     yes_passwords[i].search_for = "PASSWORD: SIMONS";
     i++;
 
+    //QUEENSTOWER security computer password is updated with balance changes
     yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
-    yes_passwords[i].password = "SECURITY";
     yes_passwords[i].search_for = "PASSWORD SECURITY";
+    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
+        yes_passwords[i].password = "TOWERSECURITY";
+    } else {
+        yes_passwords[i].password = "SECURITY";
+    }
     i++;
 
+    //MJ12 security computer password is updated with balance changes
     yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
-    yes_passwords[i].password = "SECURITY";
     yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
+    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
+        yes_passwords[i].password = "LABSECURITY";
+    } else {
+        yes_passwords[i].password = "SECURITY";
+    }
+    i++;
+
+    //USFEMA security computer password is updated with balance changes
+    yes_passwords[i].map = "09_NYC_DOCKYARD";
+    yes_passwords[i].search_for =  "PASSWORD IS \"SECURITY\"";
+    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
+        yes_passwords[i].password = "DOCKSECURITY";
+    } else {
+        yes_passwords[i].password = "SECURITY";
+    }
     i++;
 
     for(i=i;i<ArrayCount(yes_passwords);i++) {
@@ -104,17 +125,6 @@ function CheckConfig()
         yes_passwords[i].map = Caps(yes_passwords[i].map);
     }
     Super.CheckConfig();
-
-    // can't put escaped quotes inside config, so we need to add it after saving the config
-    not_passwords[num_not_passwords++] = Caps("the \"Oceanguard\" login");
-
-    for(i=0; i<ArrayCount(yes_passwords); i++) {
-        if( yes_passwords[i].map != "" ) continue;
-        yes_passwords[i].map = "09_NYC_DOCKYARD";
-        yes_passwords[i].password = "SECURITY";
-        yes_passwords[i].search_for = "PASSWORD IS \"SECURITY\"";
-        break;
-    }
 }
 
 function FirstEntry()

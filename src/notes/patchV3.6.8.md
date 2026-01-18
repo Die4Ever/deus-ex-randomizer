@@ -83,5 +83,6 @@
 - The door in the demolitions training hallway (In the training mission) can now be highlighted to see the damage threshold.
 - If LDDP is not installed, there will no longer be an empty datacube in the mirrored Mission 1 UNATCO HQ map.
 - Marked several more false positives for passwords in emails and datacubes.
+- Adjust passwords on several different computers through the game so that they no longer have overlapping "SECURITY" passwords, causing falsely learned passwords.
 
 </details>

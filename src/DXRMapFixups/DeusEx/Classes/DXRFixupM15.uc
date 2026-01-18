@@ -11,23 +11,28 @@ function CheckConfig()
     //#region Add Datacubes
     switch(dxr.localURL) {
     case "15_AREA51_BUNKER":
-        add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
-        if (VanillaMaps){
-            add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
-        } else {
-            add_datacubes[i].Location = vect(1140,-1920,-460); //Boxes in Hangar
-        }
-        add_datacubes[i].plaintextTag = "A51VentComputerCode";
-        i++;
+        if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
+            //These datacubes go along with the balance changes
 
-        add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
-        if (VanillaMaps){
-            add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
-        } else {
-            add_datacubes[i].Location = vect(1600,-2875,-260); //Pipes next to Xander in Hangar
+            add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
+            if (VanillaMaps){
+                add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
+            } else {
+                add_datacubes[i].Location = vect(1140,-1920,-460); //Boxes in Hangar
+            }
+            add_datacubes[i].plaintextTag = "A51VentComputerCode";
+            i++;
+
+            add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
+            if (VanillaMaps){
+                add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
+            } else {
+                add_datacubes[i].Location = vect(1600,-2875,-260); //Pipes next to Xander in Hangar
+            }
+            add_datacubes[i].plaintextTag = "A51VentElevatorCode";
+            i++;
+
         }
-        add_datacubes[i].plaintextTag = "A51VentElevatorCode";
-        i++;
         break;
 
     case "15_AREA51_PAGE":
@@ -143,11 +148,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     FixJockExplosion();  //Only actually does anything with injections, but theoretically could work if we replaced the helicopter
 
     //Change vent entry security computer password so it isn't pre-known
-    foreach AllActors(class'ComputerSecurity',c){
-        if (c.UserList[0].UserName=="SECURITY" && c.UserList[0].Password=="SECURITY"){
-            c.UserList[0].Password="NarutoRun"; //They can't stop all of us
-        }
-    }
+    UpdateDefaultSecurityComputerPassword("NarutoRun"); //They can't stop all of us
 
     //Move the vent entrance elevator to the bottom to make it slightly less convenient
     foreach AllActors(class'SequenceTrigger',st){
@@ -483,6 +484,8 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
         AddActor(class'PoolTableResetButton',vect(2978,1932,45),rot(-1600,0,0));
     }
 
+    UpdateDefaultSecurityComputerPassword("Sector2Security");
+
     if (isVanilla) {
         Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
@@ -638,6 +641,8 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
         }
         SpawnDatacubePlaintext(cloneCubeLoc,rotm(0,0,0,0),cloneCubeText,"CloneCube" $ i);
     }
+
+    UpdateDefaultSecurityComputerPassword("BotSecurity");
 
     if (isVanilla) {
         // fix in-fighting
