@@ -79,35 +79,27 @@ function CheckConfig()
     yes_passwords[i].search_for = "PASSWORD: SIMONS";
     i++;
 
-    //QUEENSTOWER security computer password is updated with balance changes
-    yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
-    yes_passwords[i].search_for = "PASSWORD SECURITY";
-    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
-        yes_passwords[i].password = "TOWERSECURITY";
-    } else {
+    //Fixups will cover these password replacements if balance changes are enabled
+    //These ones are funny because we change the passwords to unique ones.
+    if( !class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
+        //QUEENSTOWER security computer password is updated with balance changes
+        yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
+        yes_passwords[i].search_for = "PASSWORD SECURITY";
         yes_passwords[i].password = "SECURITY";
-    }
-    i++;
+        i++;
 
-    //MJ12 security computer password is updated with balance changes
-    yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
-    yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
-    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
-        yes_passwords[i].password = "LABSECURITY";
-    } else {
+        //MJ12 security computer password is updated with balance changes
+        yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
+        yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
         yes_passwords[i].password = "SECURITY";
-    }
-    i++;
+        i++;
 
-    //USFEMA security computer password is updated with balance changes
-    yes_passwords[i].map = "09_NYC_DOCKYARD";
-    yes_passwords[i].search_for =  "PASSWORD IS \"SECURITY\"";
-    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ){
-        yes_passwords[i].password = "DOCKSECURITY";
-    } else {
+        //USFEMA security computer password is updated with balance changes
+        yes_passwords[i].map = "09_NYC_DOCKYARD";
+        yes_passwords[i].search_for =  "PASSWORD IS \"SECURITY\"";
         yes_passwords[i].password = "SECURITY";
+        i++;
     }
-    i++;
 
     for(i=i;i<ArrayCount(yes_passwords);i++) {
         yes_passwords[i].map = "";

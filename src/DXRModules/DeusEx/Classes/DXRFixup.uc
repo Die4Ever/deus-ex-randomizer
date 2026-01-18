@@ -1617,18 +1617,35 @@ function FixMechanicBarks()
     }
 }
 
-function UpdateDefaultSecurityComputerPassword(string newpass)
+function UpdateDefaultSecurityComputerPassword(string newpass, optional string noteReplacement)
 {
+    local DXRPasswords passwords;
     local #var(prefix)ComputerSecurity comp;
+    local string notePassword,finalpassword;
     local int i;
 
-    if( ! class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ) return;
+    if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ) {
+        foreach AllActors(class'#var(prefix)ComputerSecurity',comp){
+            if (comp.UserList[0].Password==comp.Default.UserList[0].Password){
+                comp.UserList[0].Password = newpass;
+            }
+        }
+        notePassword = newpass;
+    } else {
+        notePassword = class'#var(prefix)ComputerSecurity'.Default.UserList[0].Password;
+    }
 
-    foreach AllActors(class'#var(prefix)ComputerSecurity',comp){
-        if (comp.UserList[0].Password==comp.Default.UserList[0].Password){
-            comp.UserList[0].Password = newpass;
+    if (noteReplacement!=""){
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None) {
+            //GeneratePassword will return the original password if password rando is disabled
+            finalpassword = passwords.GeneratePassword(notePassword,dxr.flags.settings.passwordsrandomized);
+            passwords.ReplacePassword(noteReplacement, finalpassword);
         }
     }
+
+
+
 }
 
 defaultproperties

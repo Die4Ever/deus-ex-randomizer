@@ -386,7 +386,7 @@ function PreFirstEntryMapFixes()
             dts.bIsSecretGoal = true;// just in case you don't have DXRMissions enabled
         }
 
-        UpdateDefaultSecurityComputerPassword("TowerSecurity");
+        UpdateDefaultSecurityComputerPassword("TowerSecurity", "PASSWORD SECURITY");
 
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)Button1',button)
@@ -556,7 +556,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        UpdateDefaultSecurityComputerPassword("LabSecurity");
+        UpdateDefaultSecurityComputerPassword("LabSecurity", "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY");
 
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
