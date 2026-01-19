@@ -314,7 +314,7 @@ function Timer()
     CheckPoolBalls();
 
     for (i=0;i<ArrayCount(balls);i++) {
-        if (!IsBallSunk(balls[i].ball)){
+        if (balls[i].ball!=None && !IsBallSunk(balls[i].ball)){
             balls[i].ball.bJustHit = False;
         }
     }
@@ -380,6 +380,8 @@ function ResetEightBall()
 
 function bool IsBallSunk(#var(prefix)Poolball ball)
 {
+    if (ball==None) return true; //A missing ball will always be counted as sunk (but shouldn't call this function)
+
     return ball.Location.Z < (Location.Z - 1);
 }
 
@@ -439,6 +441,9 @@ function ReportBallSunk(int index)
     if (balls[index].sunk) return;
 
     balls[index].sunk=true;
+
+    if (balls[index].ball==None) return; //Don't mark a bingo for a ball that doesn't exist
+
     class'DXREvents'.static.MarkBingo("PoolTableBall"$index); //A specific ball sunk
 
     if (!IsCueIndex(index)){
