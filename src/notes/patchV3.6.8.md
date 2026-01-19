@@ -87,5 +87,6 @@
 - "Light a flare" bingo goal will no longer appear in Mission 9.  There is only a chance of finding a flare in a single crate, so it is not consistent.
 - Moved a crate that spawned near the bottom of the ladder into the sewers at the Warehouse (Mission 2)
 - Thermoptic Camo now actually looks like the actual item in the charge timer when used.
+- Charged items (like Ballistic Armor and Thermoptic Camo) are now properly centered in the icon bar on the right side of the screen.
 
 </details>

@@ -34,3 +34,8 @@ function AddIcon(Texture newIcon, Object saveObject)
 
     AskParentForReconfigure();
 }
+
+defaultproperties
+{
+    tilePosX=5 //Fix positioning of icon tiles in the active items border
+}
