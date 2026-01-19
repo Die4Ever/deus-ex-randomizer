@@ -270,7 +270,7 @@ function PreFirstEntryMapFixes()
             SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(-1890,1840,1775)); //Rooftop apartment hall
             SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(700,850,1175)); //Apartment top floor
             SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-1220,1770,15)); //Next to electrical box
-            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-2150,595,-240)); //Pipe next to sewer ladder
+            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-1770,375,-275)); //Corner of big sewer room (near Sewer Jock)
             SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-2190,2230,315)); //Fire Escape near ground entrance
             SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
         }
