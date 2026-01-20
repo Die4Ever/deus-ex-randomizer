@@ -1185,7 +1185,7 @@ function string GameModeHelpText(int gamemode)
         s = s$"|n";
         s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
         s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
-        s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
+        s = s$"  ~ One free space at the center of the board|n";
         s = s$"|n";
         s = s$"Can YOU outsmart the Mean Bingo Machine?";
         return s;
