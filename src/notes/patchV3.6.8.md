@@ -88,5 +88,6 @@
 - Moved a crate that spawned near the bottom of the ladder into the sewers at the Warehouse (Mission 2)
 - Thermoptic Camo now actually looks like the actual item in the charge timer when used.
 - Charged items (like Ballistic Armor and Thermoptic Camo) are now properly centered in the icon bar on the right side of the screen.
+- List of accounts when hacking a computer will always fully capitalize the currently logged in user name to match the account names in the list.
 
 </details>

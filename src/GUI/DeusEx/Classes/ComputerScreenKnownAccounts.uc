@@ -262,4 +262,6 @@ defaultproperties
     msgKnownPass="Known"
     msgUnknownPass="-----"
     msgAnonUsername="-----"
+    backgroundPosX=5
+    backgroundPosY=8
 }
