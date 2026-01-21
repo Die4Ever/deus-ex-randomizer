@@ -17,10 +17,10 @@ simulated static function int GetShortWordListLength(optional bool tests)
 
     if(version >= class'DXRVersion'.static.VersionToInt(9,9,9,9)){
         //This should always be the full list length
-        length = 1036;
+        length = 1037;
     } else {
         //The original length of the list
-        length = 1036;
+        length = 1037;
     }
 
     return length;
@@ -79,6 +79,7 @@ simulated static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Ass";
     if(r==i++) return "Asset";
     if(r==i++) return "Aston";
+    if(r==i++) return "Astro";
     if(r==i++) return "Atom";
     if(r==i++) return "Attic";
     if(r==i++) return "Audio";
