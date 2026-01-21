@@ -1100,9 +1100,9 @@ simulated static function int GetLongWordListLength(optional bool tests)
 
     if(version >= class'DXRVersion'.static.VersionToInt(9,9,9,9)){
         //This should always be the full list length
-        length = 1036;
+        length = 1037;
     } else {
-        length = 1036;
+        length = 1037;
     }
 
     return length;
@@ -1888,6 +1888,7 @@ simulated static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Romero";
     if(r==i++) return "Rooftop";
     if(r==i++) return "Roswell";
+    if(r==i++) return "Rotten";
     if(r==i++) return "Router";
     if(r==i++) return "Runner";
     if(r==i++) return "Russia";
