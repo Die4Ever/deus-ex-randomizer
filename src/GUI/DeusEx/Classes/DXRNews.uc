@@ -31,7 +31,7 @@ function CreateNews(Actor a, int newX, int newY, int ClientWidth, int ClientHeig
     for(i=0; i<ArrayCount(newsheaders); i++) {
         newsheaders[i] = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
         newsheaders[i].SetWidth(controlsParent.width);
-        newsheaders[i].SetFont(Font'FontMenuTitle');
+        newsheaders[i].SetFont(Font'DXRFontMenuTitle');
         newsheaders[i].SetTextMargins(4, 8);
         newsheaders[i].SetWordWrap(True);
         newsheaders[i].SetTextAlignments(HALIGN_Left, VALIGN_Top);
@@ -39,7 +39,7 @@ function CreateNews(Actor a, int newX, int newY, int ClientWidth, int ClientHeig
 
         newstexts[i] = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
         newstexts[i].SetWidth(controlsParent.width);
-        newstexts[i].SetFont(Font'FontMenuHeaders_DS');
+        newstexts[i].SetFont(Font'DXRFontMenuHeaders_DS');
         newstexts[i].SetTextMargins(12, 8);
         newstexts[i].SetWordWrap(True);
         newstexts[i].SetTextAlignments(HALIGN_Left, VALIGN_Top);

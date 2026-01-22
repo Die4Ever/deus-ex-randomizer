@@ -14,7 +14,7 @@ function CreateTextWindow()
     winScroll.SetSize(490,95);
 
     winText.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-    winText.SetFont(Font'FontMenuHeaders_DS');
+    winText.SetFont(Font'DXRFontMenuHeaders_DS');
     winText.SetWindowAlignments(HALIGN_Full, VALIGN_Full, textBorderX, textBorderY);
 }
 
