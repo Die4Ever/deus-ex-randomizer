@@ -99,7 +99,7 @@ event DrawWindow(GC gc)
     }
 
     gc.SetTextColor( RedColor );
-    gc.SetFont(Font'FontMenuExtraLarge');
+    gc.SetFont(Font'DXRFontMenuExtraLarge');
     gc.GetTextExtent( 0, w, h, message );
     cury = msgY * height;
     gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, message );
