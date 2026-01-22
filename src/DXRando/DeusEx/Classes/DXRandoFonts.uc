@@ -7,4 +7,4 @@ class DXRandoFonts extends Object abstract;
 #exec FONT IMPORT FILE="Fonts\DXRFontMenuHeaders_DS.pcx"     NAME="DXRFontMenuHeaders_DS"     GROUP="RandoFonts"
 #exec FONT IMPORT FILE="Fonts\DXRFontMenuTitle.pcx"          NAME="DXRFontMenuTitle"          GROUP="RandoFonts"
 #exec FONT IMPORT FILE="Fonts\DXRFontMenuExtraLarge.pcx"     NAME="DXRFontMenuExtraLarge"     GROUP="RandoFonts"
-//DXRFontLocation
+#exec FONT IMPORT FILE="Fonts\DXRFontLocation.pcx"           NAME="DXRFontLocation"           GROUP="RandoFonts"
