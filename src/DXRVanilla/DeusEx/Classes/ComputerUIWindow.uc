@@ -59,6 +59,21 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
     }
 }
 
+function ProcessEmail(DeusExTextParser parser)
+{
+    local int oldIdx;
+
+    oldIdx = emailIndex;
+    Super.ProcessEmail(parser);
+
+    if (oldIdx != emailIndex){
+        //Replace passwords in email subject lines (Alex's closet code...)
+        if(passwords != None) passwords.ProcessString(emailInfo[emailIndex].emailSubject, updated_passwords);
+    }
+
+
+}
+
 function TryAddingNote(string text)
 {
     local string mapname;
