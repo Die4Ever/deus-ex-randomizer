@@ -862,6 +862,16 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_passwordsrandomized':
+            if (val==0){
+                return "Unchanged";
+            } else if (val==100){
+                return "Randomized";
+            } else if (val==200){
+                return "Randomized (Pronouncable)";
+            } else if (val==300){
+                return "Randomized (Random Words)";
+            }
+            break;
         case 'Rando_startinglocations':
         case 'Rando_goals':
         case 'Rando_infodevices':

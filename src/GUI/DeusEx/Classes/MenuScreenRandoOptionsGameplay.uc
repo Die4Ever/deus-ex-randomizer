@@ -24,6 +24,7 @@ function CreateChoices()
 #endif
 
     CreateChoice(class'MenuChoice_PasswordAutofill');
+    CreateChoice(class'MenuChoice_ExposeComputerUsers');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
     CreateChoice(class'MenuChoice_NewGamePlus');

@@ -112,3 +112,11 @@ Begin:
 
     Goto('Idle');
 }
+
+defaultproperties
+{
+     ConversationSpeechFonts(0)=Font'DXRFontConversation'
+     ConversationSpeechFonts(1)=Font'DXRFontConversationLarge'
+     ConversationNameFonts(0)=Font'DeusExUI.FontConversationBold'  //TODO DXRFontConversationBold
+     ConversationNameFonts(1)=Font'DeusExUI.FontConversationLargeBold'  //TODO DXRFontConversationLargeBold
+}

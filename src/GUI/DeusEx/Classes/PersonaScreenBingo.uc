@@ -58,7 +58,7 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     t.SetText(final_text);
     t.SetWordWrap(true);
     t.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-    t.SetFont(Font'FontMenuSmall_DS');
+    t.SetFont(Font'DXRFontMenuSmall_DS');
     w = bingoWidth/5;
     h = bingoHeight/5;
     t.SetSize(w-1, h-1);

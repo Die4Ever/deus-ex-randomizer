@@ -174,7 +174,7 @@ function _InvokeNewGameScreen(float difficulty)
 #endif
         newGame.SetDxr(dxr);
 
-#ifdef gmdxae    
+#ifdef gmdxae
 		//Display the Playthrough Modifiers menu first.
 		newGame.InvokePlaythroughModifiersMenu(true);
 #endif
@@ -913,7 +913,7 @@ defaultproperties
     Title="DX Rando Options"
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
-    groupHeaderFont=Font'FontMenuExtraLarge'
+    groupHeaderFont=Font'DXRFontMenuExtraLarge'
     groupHeaderX=-10
     groupHeaderY=-3
     background=(R=0,G=0,B=0,A=255)

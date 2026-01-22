@@ -92,6 +92,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        UpdateDefaultSecurityComputerPassword("ShipSecurity");
+
         if (VanillaMaps){
             //Make sure the guard at the front door is actually friendly if you approach from
             //a different entrance.  The radius normally doesn't extend too far past the door.
@@ -270,6 +272,8 @@ function PreFirstEntryMapFixes()
         oot.Tag='BotDropOnce';
 
         AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
+
+        UpdateDefaultSecurityComputerPassword("DockSecurity", "PASSWORD IS \"SECURITY\"");
 
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)GasGrenade',gasgren) {

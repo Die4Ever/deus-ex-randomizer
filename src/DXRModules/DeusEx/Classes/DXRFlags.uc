@@ -134,7 +134,7 @@ function CheckConfig()
     difficulty_settings[i].keys_containers = 0;
     difficulty_settings[i].infodevices_containers = 0;
     difficulty_settings[i].deviceshackable = 100;
-    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].passwordsrandomized = 300;
     difficulty_settings[i].infodevices = 100;
     difficulty_settings[i].enemiesrandomized = 20;
     difficulty_settings[i].enemystats = 40;
@@ -211,7 +211,7 @@ function CheckConfig()
     difficulty_settings[i].keys_containers = 0;
     difficulty_settings[i].infodevices_containers = 0;
     difficulty_settings[i].deviceshackable = 100;
-    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].passwordsrandomized = 300;
     difficulty_settings[i].infodevices = 100;
     difficulty_settings[i].enemiesrandomized = 20;
     difficulty_settings[i].enemystats = 40;
@@ -287,7 +287,7 @@ function CheckConfig()
     difficulty_settings[i].keys_containers = 0;
     difficulty_settings[i].infodevices_containers = 0;
     difficulty_settings[i].deviceshackable = 75;
-    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].passwordsrandomized = 300;
     difficulty_settings[i].infodevices = 100;
     difficulty_settings[i].enemiesrandomized = 30;
     difficulty_settings[i].enemystats = 60;
@@ -363,7 +363,7 @@ function CheckConfig()
     difficulty_settings[i].keys_containers = 0;
     difficulty_settings[i].infodevices_containers = 0;
     difficulty_settings[i].deviceshackable = 50;
-    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].passwordsrandomized = 300;
     difficulty_settings[i].infodevices = 100;
     difficulty_settings[i].enemiesrandomized = 40;
     difficulty_settings[i].enemystats = 80;
@@ -439,7 +439,7 @@ function CheckConfig()
     difficulty_settings[i].keys_containers = 0;
     difficulty_settings[i].infodevices_containers = 0;
     difficulty_settings[i].deviceshackable = 50;
-    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].passwordsrandomized = 300;
     difficulty_settings[i].infodevices = 100;
     difficulty_settings[i].enemiesrandomized = 50;
     difficulty_settings[i].enemystats = 90;
@@ -530,12 +530,16 @@ function SetDifficulty(int new_difficulty)
     settings = difficulty_settings[difficulty];
     moresettings = more_difficulty_settings[difficulty];
 
-    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)) settings.dancingpercent = 0;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)){
+        settings.dancingpercent = 0;
+        settings.passwordsrandomized = 200; //"Pronouncable" passwords instead, since the "words" can be a bit goofy
+    }
 
-    if(gamemode == SeriousRando) { // same as Full Rando, but memes disabled by default, and only serious goal locations
+    if(gamemode == SeriousRando) { // same as Full Rando, but memes disabled by default, and only serious goal locations.
         settings.dancingpercent = 0;
         settings.merchants = 0;
         settings.goals = 200;
+        settings.passwordsrandomized = 200; //"Pronouncable" passwords instead, since the "words" can be a bit goofy
     }
     else if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;
@@ -1167,7 +1171,7 @@ function string GameModeHelpText(int gamemode)
         s =   "The FULL Randomizer experience, but with additional Halloween-themed features:|n";
         s = s$"|n";
         s = s$"  ~ Zombies will revive from corpses after about 20 seconds|n";
-        s = s$"  ~ Mr. H will stalk you around the world|n";
+        s = s$"  ~ Mr. H and other stalkers will stalk you around the world|n";
         s = s$"  ~ Loot new clothes from bodies to grow your selection of costumes|n";
         s = s$"  ~ Light augmentation is dim and costs energy (like in vanilla)|n";
         s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics|n";
@@ -1181,7 +1185,7 @@ function string GameModeHelpText(int gamemode)
         s = s$"|n";
         s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
         s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
-        s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
+        s = s$"  ~ One free space at the center of the board|n";
         s = s$"|n";
         s = s$"Can YOU outsmart the Mean Bingo Machine?";
         return s;
@@ -1384,7 +1388,7 @@ function int ClampFlagValue(int flagval, int min, int max)
 
 function int ScoreFlags()
 {
-    local int score, bingos;
+    local int score, bingos, passMode;
     local PlayerDataItem data;
 
     if(moresettings.entrance_rando > 0)
@@ -1392,6 +1396,12 @@ function int ScoreFlags()
 
     data = class'PlayerDataItem'.static.GiveItem(dxr.player);
     bingos = data.NumberOfBingos();
+
+    passMode = settings.passwordsrandomized;
+    //the different password styles don't really change anything, just treat them equivalently to 0-100
+    while(passMode>100){
+        passMode = passMode-100;
+    }
 
     // values for starting_map in DXRMenuSetupRando or DXRStartMap, basically mission number * 10, multiply more for score reduction
     if(settings.bingo_win > 0 && bingos >= settings.bingo_win) // if a bingo win, still reduce score because bingo goals are scaled down
@@ -1406,7 +1416,7 @@ function int ScoreFlags()
     //score += settings.keys_containers;
     //score += settings.infodevices_containers;
     score -= ClampFlagValue(settings.deviceshackable,0,100) * 2;
-    score += ClampFlagValue(settings.passwordsrandomized,0,100) * 2;
+    score += ClampFlagValue(passMode,0,100) * 2;
     score += ClampFlagValue(settings.infodevices,0,100) * 2;
     score += ClampFlagValue(settings.enemiesrandomized,0,1000);
     score += ClampFlagValue(settings.enemystats,0,100);

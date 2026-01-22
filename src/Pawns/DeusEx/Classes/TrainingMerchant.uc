@@ -40,12 +40,20 @@ defaultproperties
     MultiSkins(3)=Texture'DeusExCharacters.Skins.SkinTex1'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
-    MultiSkins(6)=Texture'DeusExCharacters.Skins.UNATCOTroopTex3'
+    MultiSkins(6)=Texture'UNATCOHelmetFixed' //Texture'DeusExCharacters.Skins.UNATCOTroopTex3'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
     CarcassType=Class'TrainingMerchantCarcass'
-    bHateCarcass=true
-    bHateDistress=true
-    bHateIndirectInjury=true
-    bHateInjury=true
-    bHateShot=true
+    bHateCarcass=false
+    bHateDistress=false
+    bHateIndirectInjury=false
+    bHateInjury=false
+    bHateShot=false
+    bFearIndirectInjury=false
+    bFearShot=false
+    bFearDistress=false
+    bFearAlarm=false
+    bReactAlarm=false
+    bReactCarcass=false
+    bReactDistress=false
+    bReactShot=false
 }

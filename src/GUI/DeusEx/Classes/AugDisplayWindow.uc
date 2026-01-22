@@ -528,7 +528,7 @@ function DrawTargetAugmentation(GC gc)
     local float ballX,ballY,endX,endY;
     local vector HitLocation,HitNormal,EndTrace;
 
-    gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
+    gc.SetFont(Font'DXRFontMenuSmall_DS'); //This font is so much better for everything
 
     SuperDrawTargetAugmentation(gc);
 

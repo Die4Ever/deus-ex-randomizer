@@ -34,13 +34,12 @@ function ConfigurationChanged()
 
 function CreateKnownAccountsWindow()
 {
-    if( class'MenuChoice_PasswordAutofill'.static.GetSetting() < 1 ) return;
+    if( class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() == false ) return;
 
     winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
     winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
-    if( class'MenuChoice_PasswordAutofill'.static.GetSetting() == 2 )
-        winKnownAccounts.bShowPasswords = true;
+
     winKnownAccounts.SetNetworkTerminal(Self);
     winKnownAccounts.SetCompOwner(compOwner);
     winKnownAccounts.AskParentForReconfigure();
@@ -99,7 +98,7 @@ function LogInAs(String user, String pass)
         login = #var(prefix)ComputerScreenLogin(winComputer);
         login.editUserName.SetText(user);
         login.editPassword.SetText(pass);
-		
+
 //SARGE: Fix a stupid crash! TODO: Fix this! WTF??!!!
         if(pass != "" && !#bool(gmdxae))
             login.ProcessLogin();

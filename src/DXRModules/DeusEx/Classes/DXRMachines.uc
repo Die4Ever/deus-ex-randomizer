@@ -42,6 +42,7 @@ function RandoTurrets(int percent_move, int percent_add)
     local #var(injectsprefix)ComputerSecurity c;
     local int i, hostile_turrets, t_max_turrets;
     local vector loc;
+    local rotator rot;
 
     SetSeed( "RandoTurrets move" );
 
@@ -81,8 +82,9 @@ function RandoTurrets(int percent_move, int percent_add)
         t = SpawnTurret(loc,rngb());
         c = SpawnSecurityComputer(loc, t, cam);
         if( c != None ) {
-            loc = GetRandomPosition(loc, min_datacube_distance, max_datacube_distance);
-            SpawnDatacubeForComputer(loc, c);
+            loc = GetRandomPositionFine(loc, min_datacube_distance, max_datacube_distance);
+            rot = GetRandomYaw();
+            SpawnDatacubeForComputer(loc, rot, c);
         }
     }
 }
@@ -396,7 +398,7 @@ function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, o
 
     pass = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
     if(pass != None) {
-        c.UserList[0].Password = pass.GeneratePassword(dxr.localURL @ String(c.Name) );
+        c.UserList[0].Password = pass.GeneratePassword(dxr.localURL @ String(c.Name), dxr.flags.settings.passwordsrandomized );
     } else {
         c.UserList[0].Password = "security";
     }
@@ -404,23 +406,22 @@ function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, o
     return c;
 }
 
-function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector loc, #var(injectsprefix)ComputerSecurity c)
+function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector loc, rotator rot, #var(injectsprefix)ComputerSecurity c)
 {
     local #var(injectsprefix)InformationDevices d;
     local LocationNormal locnorm;
     local FMinMax distrange;
     local string plaintextTag;
-    locnorm.loc = loc;
-    distrange.min = 0.1;
 
-    loc = JitterPosition(loc);
+    distrange.min = 0.1;
     distrange.max = 16*50;
+    locnorm.loc = loc;
     NearestFloor(locnorm, distrange);
 
     //Tag needs to be unique to get added to player notes
     plaintextTag = "DXRMachinesRandoTurret_" $ dxr.localURL $ "_" $ c.UserList[0].userName;
 
-    d = SpawnDatacubePlaintext(locnorm.loc, Rotator(locnorm.norm),
+    d = SpawnDatacubePlaintext(locnorm.loc, rot,
         c.UserList[0].userName $ " password is " $ c.UserList[0].Password, plaintextTag);
 
     d.SetCollision(true,false,false);
@@ -561,7 +562,7 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, i
     #var(prefix)Robot(a).SetBasedPawnSize(a.CollisionRadius * 0.8, a.CollisionHeight * 0.7);
 
     id = SpawnDatacubeTextTag(GetRandomPositionFine(a.Location,min_datacube_distance, max_datacube_distance),
-                              rotm(0,0,0,0),
+                              GetRandomYaw(),
                               datacubeTag,
                               True);
     if (id==None) return a;

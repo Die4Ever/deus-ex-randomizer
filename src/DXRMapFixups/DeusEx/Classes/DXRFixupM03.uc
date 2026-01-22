@@ -316,6 +316,8 @@ function PreFirstEntryMapFixes()
 
         ReduceHelicopterDelay('HelicopterPickUp');
 
+        UpdateDefaultSecurityComputerPassword("AirfieldSecurity"); //Computers in the towers
+
         if(VanillaMaps) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {

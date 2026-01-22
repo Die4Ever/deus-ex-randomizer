@@ -113,3 +113,8 @@ function AddLog(coerce String newLog, Color linecol)
         AskParentForReconfigure();
     }
 }
+
+defaultproperties
+{
+    fontLog=Font'DXRFontMenuSmall_DS'
+}

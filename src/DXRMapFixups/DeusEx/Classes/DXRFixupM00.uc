@@ -19,7 +19,8 @@ function CheckConfig()
         i++;
 
         add_datacubes[i].text = "Passwords are randomized! And in the real game, the locations of datacubes will also be randomized."
-                                $ "|n|nKeypad stats and the electronics skill strength are randomized too.";
+                                $ "|n|nKeypad stats and the electronics skill strength are randomized too."
+                                $ "|n|nYou can change the setting for autofill passwords in the Rando->Gameplay menu.";
         add_datacubes[i].location = vect(1492.952026, 824.573669, -146.630493);
         add_datacubes[i].plaintextTag = "TrainingHintPasswords";
         i++;
@@ -136,6 +137,7 @@ function PreFirstEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local Actor a;
+    local #var(DeusExPrefix)Mover dxm;
 
     if(dxr.flags.IsZeroRando()) return;
 
@@ -158,6 +160,19 @@ function PostFirstEntryMapFixes()
         a = Spawn(class'#var(prefix)AugmentationCannister',,, GetRandomPositionFine());
         class'DXRAugmentations'.static.RandomizeAugCannister(dxr, #var(prefix)AugmentationCannister(a));
         break;
+
+    case "00_TrainingCombat":
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+            //The door in the demolitions hallway - make sure you can see the damage threshold info
+            //Unfortunately, the tag is just DeusExMover, but it has a unique Event.
+            if (dxm.event!='OBDoorLink') continue;
+            dxm.bHighlight=true;
+            dxm.bLocked=true;
+            dxm.bPickable=false;
+            break;
+        }
+        break;
+
     }
 }
 //#endregion

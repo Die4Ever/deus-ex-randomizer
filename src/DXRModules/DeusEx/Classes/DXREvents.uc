@@ -3910,7 +3910,7 @@ defaultproperties
     bingo_options(176)=(event="BiggestFan",desc="Destroy your biggest fan",max=1,missions=#bit(9))
     bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",desc_singular="Drink a can of soda",max=75)
     bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s ballistic armors",desc_singular="Use ballistic armor",max=3,missions=#bit(2,3,4,5,6,8,9,10,11,12,14,15))
-    bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",desc_singular="Light a flare",max=15)
+    bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",desc_singular="Light a flare",max=15,missions=#bit(1,2,3,4,5,6,8,10,11,12,14,15)) //Only a possiblity of a flare in M09
     bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=#bit(9,14))
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s hazmat suits",desc_singular="Use a hazmat suit",max=3,missions=#bit(1,4,6,9,10,12,14,15))
@@ -4262,7 +4262,7 @@ defaultproperties
     mutually_exclusive(102)=(e1="MeetDowd_VariousPlayed",e2="GaveDowdAmbrosia")
     mutually_exclusive(103)=(e1="schematic_downloaded",e2="ImageOpened_ViewSchematics")
     mutually_exclusive(104)=(e1="schematic_downloaded",e2="PageTaunt_Played")
-    mutually_exclusive(105)=(e1="DXRNPCs1_Dead",e2="MerchantPurchaseBind_DXRNPCs1")
+    mutually_exclusive(105)=(e1="DXRNPCs1_PlayerTakedown",e2="MerchantPurchaseBind_DXRNPCs1")
     mutually_exclusive(106)=(e1="lemerchant_PlayerTakedown",e2="MerchantPurchaseBind_lemerchant")
     mutually_exclusive(107)=(e1="mirrordoor",e2="BrokenMirror")
     mutually_exclusive(108)=(e1="ReadText_ReadJCEmail",e2="BrowserHistoryCleared")
@@ -4275,5 +4275,8 @@ defaultproperties
     mutually_exclusive(114)=(e1="WaltonConvos_VariousPlayed",e2="WaltonSimons_Dead")
     mutually_exclusive(115)=(e1="PetDogs",e2="WatchDogs_peeptime")
     mutually_exclusive(116)=(e1="BirdWatching_peeptime",e2="PerformBurder_ClassDead")
+    mutually_exclusive(117)=(e1="HumanStompDeath",e2="AlliesKilled")
+    mutually_exclusive(118)=(e1="GibbedPawn",e2="AlliesKilled")
+    mutually_exclusive(119)=(e1="IgnitedPawn",e2="AlliesKilled")
 //#endregion
 }

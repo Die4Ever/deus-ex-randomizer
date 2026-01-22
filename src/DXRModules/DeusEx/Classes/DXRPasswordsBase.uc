@@ -112,7 +112,7 @@ simulated function bool UpdateString(out string str, string oldpassword, string 
     if( str == "") return false;
     if( PassInStr( str, oldpassword ) == -1 ) return false;
 
-    if(oldpassword == newpassword)
+    if(Caps(oldpassword) == Caps(newpassword)) //Compare them case insensitively
         return false;
 
     info("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
@@ -179,7 +179,7 @@ function RandoPasswords(int mode)
     {
         for (i=0; i<ArrayCount(c.userList); i++)
         {
-            ChangeComputerPassword(c, i, rando);
+            ChangeComputerPassword(c, i, rando, mode);
         }
     }
 
@@ -201,7 +201,7 @@ function RandoPasswords(int mode)
     }
 }
 
-function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando)
+function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando, int mode)
 {
     local string oldpassword;
     local string newpassword;
@@ -220,7 +220,7 @@ function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando)
 
     if( Len(oldpassword) < 2 ) return;
     if(rando)
-        newpassword = GeneratePassword(oldpassword);
+        newpassword = GeneratePassword(oldpassword, mode);
     else
         newpassword = oldpassword;
     c.userList[i].password = newpassword;
@@ -527,20 +527,120 @@ simulated function HXUpdateNote(Name textTag, string newText, string TextPackage
         note.text = newText;
 }
 
-
-simulated function string GeneratePassword(string oldpassword)
+//The original style passwords - a random mix of letters and numbers
+simulated function string GeneratePasswordRandomChars()
 {
-    local string out;
     local int i;
     local int c;
-    local int oldseed;
-    oldseed = SetGlobalSeed(Caps(oldpassword));
+    local string out;
+
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
         c = rng(36) + 48;
         if ( c > 57 ) c += 39;
         out = out $ Chr(c);
     }
+
+    return Caps(out);
+}
+
+//A newer style of password - Random letters, but using the name algorithm
+//to generate vaguely pronouncable (and memorable) passwords?
+simulated function string GeneratePasswordWordLike()
+{
+    local string out;
+
+    //Generate a password between 5 and 8 characters long.
+    //These can be a bit longer because just by being pronouncable (probably),
+    //they're a bit easier to remember.
+    out = class'DXRNames'.static.RandomNamePart(dxr,5,8);
+
+    return Caps(out);
+}
+
+//The newest style of password - Randomly selected real words
+//to generate collections of words, like XKCD 936
+simulated function string GeneratePasswordXKCDStyle()
+{
+    local string out;
+    local int style, numShortWords, numLongWords;
+
+    numShortWords = class'DXRRandomWordLists'.static.GetShortWordListLength();
+    numLongWords = class'DXRRandomWordLists'.static.GetLongWordListLength();
+    style = rng(12);
+
+    switch(style){
+        case 0: //Short, Short, Short
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 1: //Long, Short, Short
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 2: //Short, Long, Short
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 3: //Short, Short, Long
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            break;
+        case 4: //Long, Long
+        case 5:
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            break;
+        case 6: //Short, Short
+        case 7:
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 8: //Long, Short
+        case 9:
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 10: //Short, Long
+        case 11:
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            break;
+
+    }
+
+    //Don't capitalize these, The individual words should be camel-cased for easier reading
+    return out;
+}
+
+
+
+
+simulated function string GeneratePassword(string oldpassword, int mode)
+{
+    local string out;
+    local int oldseed;
+    oldseed = SetGlobalSeed(Caps(oldpassword));
+
+    switch(mode){
+        case 100:
+            out = GeneratePasswordRandomChars();
+            break;
+        case 200:
+            out = GeneratePasswordWordLike();
+            break;
+        case 300:
+            out = GeneratePasswordXKCDStyle();
+            break;
+        default:
+            out = oldpassword;
+            break;
+    }
+
     ReapplySeed(oldseed);
     return out;
 }
@@ -681,8 +781,70 @@ function RunTests()
     testint( PassInStr("password is captain.", "captain"), 12, "yes password period");
     testint( PassInStr("password is \"captain\"", "captain"), 13, "yes password quotes");
 
-    teststring( GeneratePassword("CAPTain"), GeneratePassword("captain"), "GeneratePassword is case insensitive");
+    teststring( GeneratePassword("CAPTain", 100), GeneratePassword("captain", 100), "GeneratePassword is case insensitive (mode 100)");
+    teststring( GeneratePassword("CAPTain", 200), GeneratePassword("captain", 200), "GeneratePassword is case insensitive (mode 200)");
+    teststring( GeneratePassword("CAPTain", 300), GeneratePassword("captain", 300), "GeneratePassword is case insensitive (mode 300)");
 
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;
+
+}
+
+function ExtendedTests()
+{
+    local string word;
+    local int i, num;
+    Super.ExtendedTests();
+
+    //Check word lists
+    num = class'DXRRandomWordLists'.static.GetShortWordListLength(true);
+    for(i=0;i<=num;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomShortWord(i,true);
+        if (i<num){
+            //In the expected range of the list
+            test(len(word)!=0,"short word "$ i $" is not blank");
+            test(len(word)<=5,word$" is 5 or less chars");
+        } else {
+            //Past the end of the list, should be blank
+            teststring(word,"","short word length is accurate");
+        }
+    }
+
+    //Count short word list length
+    for(i=0;i<99999;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomShortWord(i,true);
+
+        if (word==""){
+            //end of list, check against the supposed count
+            testint(i,num,"Short Word List length is correct");
+            break;
+        }
+    }
+
+
+
+    num = class'DXRRandomWordLists'.static.GetLongWordListLength(true);
+    for(i=0;i<=num;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomLongWord(i,true);
+        if (i<num){
+            test(len(word)!=0,"long word "$ i $" is not blank");
+            test(len(word)>=6,word$" is longer than 5 chars");
+            test(len(word)<=8,word$" is shorter than 8 chars");
+        } else {
+            //Past the end of the list, should be blank
+            teststring(word,"","long word length is accurate");
+        }
+    }
+
+    //Count long word list length
+    for(i=0;i<99999;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomLongWord(i,true);
+
+        if (word==""){
+            //end of list, check against the supposed count
+            testint(i,num,"Long Word List length is correct");
+            break;
+        }
+    }
+
 }

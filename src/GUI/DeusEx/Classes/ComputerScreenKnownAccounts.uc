@@ -1,8 +1,17 @@
 class ComputerScreenKnownAccounts extends #var(prefix)ComputerScreenHackAccounts;
 
 var bool bShowPasswords;
+var bool bOnlyShowKnownAccounts;
+var bool bAllowLogin;
+var bool bAnonymizeUnknownUsers;
 var localized string msgKnownPass;
 var localized string msgUnknownPass;
+var localized string msgAnonUsername;
+
+var #var(prefix)ATM atmOwner;
+
+var PersonaButtonBarWindow winActionButtons;
+var MenuUIHeaderWindow userHdr, passHdr;
 
 function CreateHeaders()
 {
@@ -10,50 +19,103 @@ function CreateHeaders()
 
     winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
     winHeader.SetPos(12, 12);
-    winHeader.SetText("Last Login");
+    winHeader.SetText("Account List");
 
-    winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-    winHeader.SetPos(12, 53);
-    winHeader.SetText("Accounts");
+    userHdr = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    userHdr.SetPos(16, 30);
+
+    passHdr = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    passHdr.SetPos(86, 30);
+
+    SetColumnHeaders("User","Password");
 }
 
 function CreateAccountsList()
 {
     local PersonaScrollAreaWindow winScroll;
 
-    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));;
-    winScroll.SetPos(14, 69);
-    winScroll.SetSize(170, 97);
+    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
+    winScroll.SetPos(14, 42);
+    winScroll.SetSize(170, 96); //Each selected row is 12 pixels tall, 8 accounts max
 
     lstAccounts = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
     lstAccounts.EnableMultiSelect(False);
     lstAccounts.EnableAutoExpandColumns(False);
     lstAccounts.EnableHotKeys(False);
     lstAccounts.SetNumColumns(2);
-    lstAccounts.SetColumnWidth(0, 80);
-    lstAccounts.SetColumnWidth(1, 80);
+    lstAccounts.SetColumnWidth(0, 68);
+    lstAccounts.SetColumnWidth(1, 102);
+}
+
+function InitAccountSettings()
+{
+    bShowPasswords = class'MenuChoice_PasswordAutofill'.static.ShowPasswords();
+    bAllowLogin = class'MenuChoice_PasswordAutofill'.static.CanAutofill();
+    bOnlyShowKnownAccounts = !class'MenuChoice_ExposeComputerUsers'.static.ShowUnknownAccounts();
+    bAnonymizeUnknownUsers = !class'MenuChoice_ExposeComputerUsers'.static.ShowFullAccountNames();
 }
 
 function CreateControls()
 {
+    InitAccountSettings();
     CreateChangeAccountButton();
-    CreateCurrentUserWindow();
+    //CreateCurrentUserWindow();  //No longer needed
     CreateAccountsList();
     CreateHeaders();
 }
 
+function SetComputerHeaders()
+{
+    SetColumnHeaders("User","Password");
+}
+
+function SetATMHeaders()
+{
+    SetColumnHeaders("Account","PIN");
+}
+
+function SetColumnHeaders(string user, string pass)
+{
+    userHdr.SetText(user);
+    passHdr.SetText(pass);
+}
+
+function ShowLoginButton(bool state)
+{
+    bAllowLogin = state;
+
+    if (!state && btnChangeAccount!=None){
+        btnChangeAccount.Destroy();
+        winActionButtons.Destroy();
+    } else if (state && btnChangeAccount==None){
+        CreateChangeAccountButton();
+    }
+}
+
+function UpdateCurrentUser()
+{
+    //This space intentionally left blank
+}
+
 function CreateChangeAccountButton()
 {
-    local PersonaButtonBarWindow winActionButtons;
+    if (!bAllowLogin) return;
 
 #ifdef gmdxae
     winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindowMenu'));
 #else
 	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
 #endif
-    winActionButtons.SetPos(12, 169);
+    winActionButtons.SetPos(12, 142);
     winActionButtons.SetWidth(174);
     winActionButtons.FillAllSpace(False);
+
+    CreateLoginButton();
+}
+
+function CreateLoginButton()
+{
+    local float w, h;
 
 #ifdef gmdxae
     btnChangeAccount = PersonaActionButtonWindowMenu(winActionButtons.NewChild(Class'PersonaActionButtonWindowMenu'));
@@ -61,11 +123,16 @@ function CreateChangeAccountButton()
     btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 #endif
     btnChangeAccount.SetButtonText("Logi|&n");
+
+    btnChangeAccount.QueryPreferredSize(w,h);
+    winActionButtons.SetWidth(w);
 }
 
 function ChangeSelectedAccount()
 {
     local string user,pass;
+
+    if (!bAllowLogin) return;
 
     user = lstAccounts.GetField(lstAccounts.GetSelectedRow(),0);
     pass = lstAccounts.GetField(lstAccounts.GetSelectedRow(),1);
@@ -99,7 +166,7 @@ function bool GetAccountKnown(#var(prefix)Computers comp, #var(prefix)ATM atm, i
 #endif
 #ifdef injections
     if( comp != None && comp.GetAccountKnown(i) ) {
-        password = Caps(comp.GetPassword(i));
+        password = comp.GetPassword(i);
         return true;
     }
     else if( atm != None && atm.GetAccountKnown(i) ) {
@@ -109,11 +176,11 @@ function bool GetAccountKnown(#var(prefix)Computers comp, #var(prefix)ATM atm, i
 #else
     if( comp != None ) {
         if ( DXRComputerPersonal(comp)!=None && DXRComputerPersonal(comp).GetAccountKnown(i) ){
-            password = Caps(DXRComputerPersonal(comp).GetPassword(i));
+            password = DXRComputerPersonal(comp).GetPassword(i);
             return true;
         }
         if ( DXRComputerSecurity(comp)!=None && DXRComputerSecurity(comp).GetAccountKnown(i) ){
-            password = Caps(DXRComputerSecurity(comp).GetPassword(i));
+            password = DXRComputerSecurity(comp).GetPassword(i);
             return true;
         }
     }
@@ -130,35 +197,52 @@ function bool GetAccountKnown(#var(prefix)Computers comp, #var(prefix)ATM atm, i
 
 function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
 {
+    compOwner = #var(prefix)Computers(newCompOwner);
+    atmOwner = #var(prefix)ATM(newCompOwner);
+
+    PopulateAccountList();
+}
+
+
+function PopulateAccountList()
+{
     local int compIndex;
     local int rowId;
     local int userRowIndex;
-    local #var(prefix)ATM atm;
     local int numUsers;
     local string username, password;
     local bool known;
 
-    compOwner = #var(prefix)Computers(newCompOwner);
-    atm = #var(prefix)ATM(newCompOwner);
-
 #ifndef hx
-    if( compOwner != None )
+    if( compOwner != None ){
         numUsers = compOwner.NumUsers();
-    else if( atm != None )
-        numUsers = atm.NumUsers();
+        SetComputerHeaders();
+    } else if( atmOwner != None ) {
+        numUsers = atmOwner.NumUsers();
+        SetATMHeaders();
+    }
 #endif
+
+    //Clear the list out first, just in case
+    lstAccounts.DeleteAllRows();
 
     // Loop through the names and add them to our listbox
     for (compIndex=0; compIndex<numUsers; compIndex++)
     {
-        known = GetAccountKnown(compOwner, atm, compIndex, username, password);
+        known = GetAccountKnown(compOwner, atmOwner, compIndex, username, password);
 
         if( known && ! bShowPasswords )
             password = msgKnownPass;
-        else if( !known )
+        else if( !known ) {
             password = msgUnknownPass;
+            if (bAnonymizeUnknownUsers){
+                username=msgAnonUsername;
+            }
+        }
 
-        lstAccounts.AddRow(username$";"$password);
+        if (!bOnlyShowKnownAccounts || (bOnlyShowKnownAccounts && known)){
+            lstAccounts.AddRow(username$";"$password);
+        }
 
         if(known)
             userRowIndex = compIndex;
@@ -171,6 +255,13 @@ function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
 
 defaultproperties
 {
+    texBackground=Texture'ComputerKnownAccountsBackground'
+    texBorder=Texture'ComputerKnownAccountsBorder'
+    backgroundWidth=188
+    backgroundHeight=153
     msgKnownPass="Known"
-    msgUnknownPass="Unknown"
+    msgUnknownPass="-----"
+    msgAnonUsername="-----"
+    backgroundPosX=5
+    backgroundPosY=8
 }

@@ -6,36 +6,7 @@ function CheckConfig()
 
     i=0;
     not_passwords[i++] = "dragon head";
-    not_passwords[i++] = "security restriction";
-    not_passwords[i++] = "security office";
-    not_passwords[i++] = "security system";
-    not_passwords[i++] = " of security";// TODO: reduce these, we can probably just blacklist the word security and then whitelist the actual passwords
-    not_passwords[i++] = "SECURITY PERSON";
-    not_passwords[i++] = "AUTHORIZED SECURITY";
-    not_passwords[i++] = "SECURITY SHOULD";
-    not_passwords[i++] = "SECURITY MEASURE";
-    not_passwords[i++] = "SECURITY OFFICE";
-    not_passwords[i++] = "SECURITY AGEN";
-    not_passwords[i++] = "SECURITY CODE";
-    not_passwords[i++] = "SECURITY PROTOCOL";
-    not_passwords[i++] = "SECURITY VULN";
-    not_passwords[i++] = "SECURITY GRID";
-    not_passwords[i++] = "SECURITY LIAB";
-    not_passwords[i++] = "SECURITY CONSOLE";
-    not_passwords[i++] = "SECURITY UPGRADE";
-    not_passwords[i++] = "network security";
-    not_passwords[i++] = "security computer";
-    not_passwords[i++] = "security keypad";
-    not_passwords[i++] = "the security";
-    not_passwords[i++] = "bypass security";
-    not_passwords[i++] = "catacombs security";
-    not_passwords[i++] = "security clearances";
-    not_passwords[i++] = "security authorization";
-    not_passwords[i++] = "security bulletin";
-    not_passwords[i++] = "called security";
-    not_passwords[i++] = "that security was";
-    not_passwords[i++] = "most security";
-    not_passwords[i++] = "automated security";
+    not_passwords[i++] = "security";// To reduce these, we can just blacklist the word security and then whitelist the actual passwords
     not_passwords[i++] = "attention nightshift";
     not_passwords[i++] = "research wing";
     not_passwords[i++] = "nanotech research";
@@ -74,6 +45,18 @@ function CheckConfig()
     not_passwords[i++] = "little .22 pistol";
     not_passwords[i++] = "the MJ12-COL";
     not_passwords[i++] = "questions to MJ12 Simulations";
+    not_passwords[i++] = "human target-practis";
+    not_passwords[i++] = "research campus";
+    not_passwords[i++] = "But tell Simons";
+    not_passwords[i++] = "entity token \"MJ12\"";
+    not_passwords[i++] = "Captain Hernandez";
+    not_passwords[i++] = "information linking Simons";
+    not_passwords[i++] = "Which Simons has a";
+    not_passwords[i++] = "Brooklyn Bridge Station access is through";
+    not_passwords[i++] = "from the Illuminati to the";
+    not_passwords[i++] = "entity token \"Illuminati\"";
+    not_passwords[i++] = "connected to the Illuminati";
+    not_passwords[i++] = "the \"Oceanguard\" login";
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {
@@ -96,15 +79,27 @@ function CheckConfig()
     yes_passwords[i].search_for = "PASSWORD: SIMONS";
     i++;
 
-    yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
-    yes_passwords[i].password = "SECURITY";
-    yes_passwords[i].search_for = "PASSWORD SECURITY";
-    i++;
+    //Fixups will cover these password replacements if balance changes are enabled
+    //These ones are funny because we change the passwords to unique ones.
+    if( !(class'MenuChoice_BalanceMaps'.static.ModerateEnabled() || class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts()) ){
+        //QUEENSTOWER security computer password is updated with balance changes
+        yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
+        yes_passwords[i].search_for = "PASSWORD SECURITY";
+        yes_passwords[i].password = "SECURITY";
+        i++;
 
-    yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
-    yes_passwords[i].password = "SECURITY";
-    yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
-    i++;
+        //MJ12 security computer password is updated with balance changes
+        yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
+        yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
+        yes_passwords[i].password = "SECURITY";
+        i++;
+
+        //USFEMA security computer password is updated with balance changes
+        yes_passwords[i].map = "09_NYC_DOCKYARD";
+        yes_passwords[i].search_for =  "PASSWORD IS \"SECURITY\"";
+        yes_passwords[i].password = "SECURITY";
+        i++;
+    }
 
     for(i=i;i<ArrayCount(yes_passwords);i++) {
         yes_passwords[i].map = "";
@@ -122,34 +117,23 @@ function CheckConfig()
         yes_passwords[i].map = Caps(yes_passwords[i].map);
     }
     Super.CheckConfig();
-
-    // can't put escaped quotes inside config, so we need to add it after saving the config
-    not_passwords[num_not_passwords++] = Caps("the \"Oceanguard\" login");
-
-    for(i=0; i<ArrayCount(yes_passwords); i++) {
-        if( yes_passwords[i].map != "" ) continue;
-        yes_passwords[i].map = "09_NYC_DOCKYARD";
-        yes_passwords[i].password = "SECURITY";
-        yes_passwords[i].search_for = "PASSWORD IS \"SECURITY\"";
-        break;
-    }
 }
 
 function FirstEntry()
 {
     if(dxr.flags.settings.passwordsrandomized != 0)
-        FixCodes();// run this first so our manual logic takes precedence
+        FixCodes(dxr.flags.settings.passwordsrandomized);// run this first so our manual logic takes precedence
     Super.FirstEntry();
 }
 
-function FixCodes()
+function FixCodes(int mode)
 {
     local string newpassword, replacement;
     local int i;
 
     for(i=0; i<ArrayCount(yes_passwords); i++) {
         if( yes_passwords[i].map != dxr.localURL ) continue;
-        newpassword = GeneratePassword(yes_passwords[i].password);
+        newpassword = GeneratePassword(yes_passwords[i].password,mode);
         //replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, false);
         ReplacePassword(yes_passwords[i].search_for, newpassword );
     }

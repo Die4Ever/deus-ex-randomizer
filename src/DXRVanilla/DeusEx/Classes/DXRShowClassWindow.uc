@@ -15,6 +15,7 @@ var ToolCheckboxWindow	chkCollision;
 var ToolCheckboxWindow	chkTextTags;
 var ToolCheckboxWindow	chkAlliances;
 var ToolCheckboxWindow	chkWeaponScore;
+var ToolCheckboxWindow	chkReactions;
 
 event InitWindow()
 {
@@ -119,6 +120,9 @@ function CreateDXRandoControls()
     chkWeaponScore  = CreateToolCheckbox(rightX, rightY,  "Show Weapon Scores", actorDisplay.AreWeaponScoresVisible());
     rightY += 25;
 
+    chkReactions  = CreateToolCheckbox(rightX, rightY,  "Show Reactions", actorDisplay.AreReactionsVisible());
+    rightY += 25;
+
 //////////////////////////////////////////////////
 }
 
@@ -140,6 +144,7 @@ function SaveSettings()
     actorDisplay.ShowCollision(chkCollision.GetToggle());
     actorDisplay.ShowTextTags(chkTextTags.GetToggle());
     actorDisplay.ShowWeaponScores(chkWeaponScore.GetToggle());
+    actorDisplay.ShowReactions(chkReactions.GetToggle());
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplay.SetActorRadius(radiusFilter.GetText());

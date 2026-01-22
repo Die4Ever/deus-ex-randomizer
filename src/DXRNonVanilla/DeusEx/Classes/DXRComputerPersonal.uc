@@ -24,6 +24,18 @@ function bool Facelift(bool bOn)
 }
 #endif
 
+//Push known passwords into an active computer terminal if open
+function UpdateKnownAccountWindow()
+{
+    local DXRNetworkTerminalPersonal dxrterm;
+
+    dxrterm = DXRNetworkTerminalPersonal(termwindow);
+    if (dxrterm==None) return;
+    if (dxrterm.winKnownAccounts==None) return;
+
+    dxrterm.winKnownAccounts.PopulateAccountList();
+}
+
 function bool GetAccountKnown(int userIndex)
 {
     if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
@@ -36,6 +48,8 @@ function SetAccountKnown(int userIndex)
 {
     if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
         knownAccount[userIndex]=1;
+
+    UpdateKnownAccountWindow();
 }
 
 function SetAccountKnownByName(String username)

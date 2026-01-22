@@ -90,17 +90,17 @@ function CreateTextHeaders()
     // Col 1
     x = x + SkillsColWidth;
     winLabel = CreateMenuLabel(x, y, HeaderSkillLevelLabel, winClient);
-    winLabel.SetFont(Font'FontMenuSmall');
+    winLabel.SetFont(Font'DXRFontMenuSmall');
 
     // Col 2-6
     x = x + SkillLevelColWidth;
     winLabel = CreateMenuLabel(x, y, "Skill Strength", winClient);
-    winLabel.SetFont(Font'FontMenuSmall');
+    winLabel.SetFont(Font'DXRFontMenuSmall');
 
     // Col 7
     x = x + SkillValueColWidth * 4 + SkillCostLeftPad;
     winLabel = CreateMenuLabel(x, y, "Cost", winClient);
-    winLabel.SetFont(Font'FontMenuSmall');
+    winLabel.SetFont(Font'DXRFontMenuSmall');
 }
 
 function CreateSkillsListWindow()

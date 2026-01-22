@@ -1,6 +1,18 @@
 ## Major Changes
 
-- TBD
+- New password randomization styles!  By default, passwords will now be randomized by picking a few words from word lists instead of purely random letters and numbers.  In theory these passwords should be a bit easier to remember if not using autofill, as well as simply being more "fun".
+  - If memes are disabled (such as when playing Serious Rando), password randomization will default to "Pronouncable" passwords instead.  These passwords alternate vowels and consonants (the same method used for random names) to form vaguely pronouncable passwords which should be easier to remember
+  - If you want to switch password styles mid-game, do so just before leaving for a new mission (so there is no possibility of backtracking) for the least possibility of causing issues.
+- New "Password Assistance" setting, "Show Known Passwords".  This mode will show the usernames and passwords for accounts that you know on computers, and keypads will show the code (if known), but they need to be manually entered.
+- The "Account List" window for Password Assistance on Computers has been revamped to look a bit more nice!
+  - In "Mark Known Passwords" and "Show Known Passwords" modes, accounts won't be listed if the password is not known.
+  - In "Mark Known Passwords" and "Show Known Passwords" modes, the "Login" button will not be shown below the account list.
+  - Passwords that are learned while using a computer will be updated immediately and no longer requires you to close and reopen the computer.
+- New setting "Show Computer Accounts" lets you choose how computer accounts that you don't have the password for show in the account list.
+  - "Hide Unknown" will only show accounts that you have the password for in the account list.
+  - "Anonymous Accounts" will show that there *are* accounts (and how many), but won't show the name for ones that you don't have the password for.
+  - "Show All Accounts" will show the full account name for all accounts on a computer, regardless of if you know the password or not.
+- You actually start the game with all of your skill points again, instead of 80% of the amount you had left over after the new game skills screen.
 
 ## Minor Changes
 
@@ -64,4 +76,20 @@
 - Split clothing randomization out of the "Memes" configuration option into a new "Fashion" option, under the "Visuals" settings menu.
 - Save points are indicated in their highlight info when playing with Fixed Saves.
 - Bodies that the player carries are now visible in third person and fixed camera perspectives.
+- Block certain out-of-bounds locations from being selected for random placement of things (like medbots/repairbots, merchants, turrets, datacubes, etc...):
+  - Beyond the teleporter at the end of Ocean Lab, leading into the UC map (Mission 14).
+- The goal to find the Ambrosia in Battery Park (Mission 2) is now properly added at the start of the the level again.
+- The Training Merchant (who shows up in Training) is no longer afraid of anything.
+- The door in the demolitions training hallway (In the training mission) can now be highlighted to see the damage threshold.
+- If LDDP is not installed, there will no longer be an empty datacube in the mirrored Mission 1 UNATCO HQ map.
+- Marked several more false positives for passwords in emails and datacubes.
+- Adjust passwords on several different computers through the game so that they no longer have overlapping "SECURITY" passwords, causing falsely learned passwords.
+- "Light a flare" bingo goal will no longer appear in Mission 9.  There is only a chance of finding a flare in a single crate, so it is not consistent.
+- Moved a crate that spawned near the bottom of the ladder into the sewers at the Warehouse (Mission 2)
+- Thermoptic Camo now actually looks like the actual item in the charge timer when used.
+- Charged items (like Ballistic Armor and Thermoptic Camo) are now properly centered in the icon bar on the right side of the screen.
+- List of accounts when hacking a computer will always fully capitalize the currently logged in user name to match the account names in the list.
+- New fonts to better distinguish between I, l, and 1 (Uppercase I, lowercase L, and the number one).
+- Codes or passwords in email subject lines will now be shown randomized and get learned.  This is primarily for Alex's closet code.
+
 </details>

@@ -55,8 +55,12 @@ event InitWindow()
         x_pos = 0;
         y_pos = 0;
     }
+    if(class'DXRVersion'.static.VersionOlderThan(version,3,6,8,5) && textFont == Font'DeusExUI.FontMenuHeaders_DS') {
+        //Clear the old default so it picks up the new one
+        textFont = None;
+    }
     if(textFont == None) {
-        textFont = Font'DeusExUI.FontMenuHeaders_DS';
+        textFont = Font'DXRFontMenuHeaders_DS';
     }
     if( version < class'DXRVersion'.static.VersionToInt(2, 7, 3, 1) ) {
         colorText=RGB(200,200,200);
@@ -770,7 +774,7 @@ defaultproperties
     showAverage=true
 
     backgroundDrawStyle=DSTY_Translucent
-    textfont=Font'DeusExUI.FontMenuHeaders_DS';
+    textfont=Font'DXRFontMenuHeaders_DS'
     colorBackground=(R=0,G=0,B=0,A=100)
     colorNotesBackground=(R=0,G=0,B=0,A=100)
     colorText=(R=200,G=200,B=200,A=255)

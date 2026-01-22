@@ -411,6 +411,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Past the teleporter into UC (Same location in vanilla and Revision)
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(380,4015,-4000), vectm(1053,3697,-4254), true);
+
         if (VanillaMaps){
             if(!#defined(vmd))// button to open the door heading towards the ladder in the water
                 AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');

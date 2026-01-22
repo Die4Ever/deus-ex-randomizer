@@ -10,10 +10,24 @@ function bool GetAccountKnown(int userIndex)
     return False;
 }
 
+//Push known passwords into an active computer terminal if open
+function UpdateKnownAccountWindow()
+{
+    if (termwindow==None) return;
+    if (termwindow.winKnownAccounts==None) return;
+
+    // Vanilla knows that the winKnownAccounts window exists in the base
+    // NetworkTerminal class, so no need to do any casting or anything.
+
+    termwindow.winKnownAccounts.PopulateAccountList();
+}
+
 function SetAccountKnown(int userIndex)
 {
     if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
         knownAccount[userIndex]=1;
+
+    UpdateKnownAccountWindow();
 }
 
 function SetAccountKnownByName(String username)

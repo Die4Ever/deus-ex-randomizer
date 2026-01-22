@@ -49,3 +49,8 @@ function PopulateLog()
 	lstLogs.Sort();
 }
 
+function CreateLogWindow()
+{
+    _CreateLogWindow();
+    lstLogs.SetFont(Font'DXRFontMenuSmall');
+}

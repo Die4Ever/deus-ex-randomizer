@@ -1709,10 +1709,12 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
 {
     local int startBonus;
     startBonus = GetStartMapSkillBonus(dxr.flags.GetStartingMap());
-    log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
-    p.SkillPointsAvail *= 0.8;
-    p.SkillPointsAvail += startBonus;
-    //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
-    //These starting points are free, so don't count them towards your score
-    //p.SkillPointsTotal += startBonus;
+    if ((startBonus > 0) || (dxr.flags.GetStartingMap() > 10) || (dxr.flags.newgameplus_loops > 0)){
+        log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
+        p.SkillPointsAvail *= 0.8; //This reduction should only happen on NG+ or late starts
+        p.SkillPointsAvail += startBonus;
+        //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
+        //These starting points are free, so don't count them towards your score
+        //p.SkillPointsTotal += startBonus;
+    }
 }

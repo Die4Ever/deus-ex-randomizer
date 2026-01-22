@@ -100,7 +100,7 @@ function DrawSkillsScreen(GC gc)
 #ifdef vanilla
         dxrs = DXRSkills(Human(Player).dxr.FindModule(class'DXRSkills'));
 #endif
-        gc.SetFont(Font'FontMenuSmall_DS');
+        gc.SetFont(Font'DXRFontMenuSmall_DS');
         gc.SetTextColor( colWhite );
         index = 1;
         askill = Player.SkillSystem.FirstSkill;
@@ -232,7 +232,7 @@ function DrawAugsScreen(GC gc)
 #endif
         numUpgrades = GetNumAugUpgrades(Player);
 
-        gc.SetFont(Font'FontMenuSmall_DS');
+        gc.SetFont(Font'DXRFontMenuSmall_DS');
         gc.SetTextColor( colWhite );
         index = 1;
         anaug = Player.AugmentationSystem.FirstAug;
