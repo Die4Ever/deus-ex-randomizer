@@ -70,8 +70,6 @@ function ProcessEmail(DeusExTextParser parser)
         //Replace passwords in email subject lines (Alex's closet code...)
         if(passwords != None) passwords.ProcessString(emailInfo[emailIndex].emailSubject, updated_passwords);
     }
-
-
 }
 
 function TryAddingNote(string text)

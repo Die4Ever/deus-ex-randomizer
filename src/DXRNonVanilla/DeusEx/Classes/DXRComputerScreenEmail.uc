@@ -2,11 +2,13 @@ class DXRComputerScreenEmail extends #var(prefix)ComputerScreenEmail;
 
 var DXRPasswords passwords;
 var bool addNote;
+var string updated_passwords[16];
 
 function ProcessDeusExText(Name textName, optional TextWindow winText)
 {
     local DXREvents e;
     local #var(prefix)PlayerPawn pp;
+    local int i;
 
 #ifdef hx
     pp = PlayerPawn;
@@ -15,6 +17,9 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
 #endif
 
     addNote = True;
+    for(i=0; i<ArrayCount(updated_passwords); i++) {
+        updated_passwords[i] = "";
+    }
 
     foreach pp.AllActors(class'DXREvents', e) {
         e.ReadText(textName);
@@ -32,7 +37,6 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
 {
     local String text;
     local byte tag;
-    local string updated_passwords[16];
     local int i;
 
     tag  = parser.GetTag();
@@ -60,6 +64,19 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
         default:
             Super.ProcessDeusExTextTag(parser, winText);
             break;
+    }
+}
+
+function ProcessEmail(DeusExTextParser parser)
+{
+    local int oldIdx;
+
+    oldIdx = emailIndex;
+    Super.ProcessEmail(parser);
+
+    if (oldIdx != emailIndex){
+        //Replace passwords in email subject lines (Alex's closet code...)
+        if(passwords != None) passwords.ProcessString(emailInfo[emailIndex].emailSubject, updated_passwords);
     }
 }
 
