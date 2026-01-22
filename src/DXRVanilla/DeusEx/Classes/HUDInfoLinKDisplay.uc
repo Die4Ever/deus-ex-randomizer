@@ -9,3 +9,9 @@ function CreateControls()
     // default is 0.03, must match DataLinkPlay perCharDelay
     winText.SetTextTiming(class'DataLinkPlay'.default.perCharDelay / class'DXRMemes'.static.GetVoicePitch(Human(player).dxr));
 }
+
+defaultproperties
+{
+     FontName=Font'DXRFontMenuHeaders_DS'
+     fontText=Font'DXRFontFixedWidthSmall_DS' //Swap out the garbage vanilla font with this better one
+}

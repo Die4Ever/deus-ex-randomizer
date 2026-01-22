@@ -252,7 +252,7 @@ function DrawWindowBase(GC gc, actor frobTarget)
     infoX = boxTLX + 10;
     infoY = boxTLY + 10;
 
-    gc.SetFont(Font'FontMenuSmall_DS');
+    gc.SetFont(Font'DXRFontMenuSmall_DS');
     gc.GetTextExtent(0, infoW, infoH, strInfo);
     infoW += 8;
 
