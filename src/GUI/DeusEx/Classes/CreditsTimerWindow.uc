@@ -38,13 +38,13 @@ event DrawWindow(GC gc)
     c.B = 255;
     gc.SetTextColor(c);
 
-    gc.SetFont(Font'DeusExUI.FontConversationLargeBold');
+    gc.SetFont(Font'DXRFontConversationLargeBold');
     yPos = 0;
     gc.DrawText(0,yPos,100,50,"Mission");
     gc.DrawText(235,yPos,150,50,"Retries Time");
     gc.DrawText(350,yPos,100,50,"Time");
 
-    gc.SetFont(Font'DeusExUI.FontConversationLarge');
+    gc.SetFont(Font'DXRFontConversationLarge');
     while(mission_times[i].MissionName!=""){
         yPos = (i+1) * 25;
         gc.DrawText(0,yPos,100,50,mission_times[i].MissionNum);

@@ -23,7 +23,7 @@ event DrawWindow(GC gc)
     c.B = 255;
     gc.SetTextColor(c);
 
-    gc.SetFont(Font'DeusExUI.FontConversationLargeBold');
+    gc.SetFont(Font'DXRFontConversationLargeBold');
     yPos = 0;
     gc.DrawText(0,yPos,100,50,"Name");
     gc.DrawText(250,yPos,150,50,"Score");

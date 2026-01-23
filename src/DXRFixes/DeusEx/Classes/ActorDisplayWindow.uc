@@ -1424,7 +1424,7 @@ function DrawCube(GC gc, vector c1, vector c2, int r, int g, int b)
 
 defaultproperties
 {
-    textfont=Font'DeusExUI.FontFixedWidthSmall';
+    textfont=Font'DXRFontFixedWidthSmall'
     bShowHidden=true
     bShowLineOfSight=false
     bShowPos=true
