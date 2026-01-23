@@ -61,7 +61,7 @@ function CreateHackMessageWindow()
 	winHackMessage.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 
 	energyMeter = TextWindow(NewChild(Class'TextWindow'));
-    energyMeter.SetFont(Font'DeusExUI.FontMenuHeaders');
+    energyMeter.SetFont(Font'DXRFontMenuHeaders');
     energyMeter.SetTextMargins(0, 0);
 	energyMeter.SetPos(22, 28);
 	energyMeter.SetSize(168, 47);
