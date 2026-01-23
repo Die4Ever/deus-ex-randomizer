@@ -25,3 +25,20 @@ class DXRandoFonts extends Object abstract;
 #exec FONT IMPORT FILE="Fonts\DXRFontComputer8x20_A.pcx"        NAME="DXRFontComputer8x20_A"       GROUP="RandoFonts"
 #exec FONT IMPORT FILE="Fonts\DXRFontComputer8x20_B.pcx"        NAME="DXRFontComputer8x20_B"       GROUP="RandoFonts"
 #exec FONT IMPORT FILE="Fonts\DXRFontComputer8x20_C.pcx"        NAME="DXRFontComputer8x20_C"       GROUP="RandoFonts"
+
+//"Tech" fonts from RootWindow (The one used for robot "Disabled" text in vanilla)
+// This font is generally pretty hard to read, so not recommended, but here are versions with distinct characters
+#exec FONT    IMPORT FILE=Fonts\DXRTechMedium.pcx          NAME=DXRTechMedium        GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechMedium_DS.pcx       NAME=DXRTechMedium_DS     GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechMedium_B.pcx        NAME=DXRTechMedium_B      GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechSmall.pcx           NAME=DXRTechSmall         GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechSmall_DS.pcx        NAME=DXRTechSmall_DS      GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechTiny.pcx            NAME=DXRTechTiny          GROUP="RandoFonts"
+
+//Versions of the "Tech" fonts that don't have missing pixels.  This makes them easier to read.
+#exec FONT    IMPORT FILE=Fonts\DXRTechMediumFix.pcx       NAME=DXRTechMediumFix     GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechMediumFix_DS.pcx    NAME=DXRTechMediumFix_DS  GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechMediumFix_B.pcx     NAME=DXRTechMediumFix_B   GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechSmallFix.pcx        NAME=DXRTechSmallFix      GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechSmallFix_DS.pcx     NAME=DXRTechSmallFix_DS   GROUP="RandoFonts"
+#exec FONT    IMPORT FILE=Fonts\DXRTechTinyFix.pcx         NAME=DXRTechTinyFix       GROUP="RandoFonts"
