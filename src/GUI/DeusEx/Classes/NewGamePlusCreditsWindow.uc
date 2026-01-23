@@ -250,4 +250,6 @@ defaultproperties
      speedAdjustment=15
      maxTileWidth=700
      maxTextWidth=700
+     fontHeader=Font'DXRFontConversationLargeBold'
+     fontText=Font'DXRFontConversationLarge'
 }
