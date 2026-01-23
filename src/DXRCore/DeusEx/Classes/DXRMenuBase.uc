@@ -610,7 +610,7 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
         btn.SetPos(coords.x, coords.y);
         btn.SetWidth(GetWidth(row, 1, 1));
     }
-    //btn.SetFont(Font'FontTiny');
+    //btn.SetFont(Font'DXRFontTiny');
 
     //wnds[numwnds] = btn;
     //helptexts[numwnds] = helptext;

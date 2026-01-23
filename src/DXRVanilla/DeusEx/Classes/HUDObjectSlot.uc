@@ -2,6 +2,11 @@ class DXRHUDObjectSlot injects HUDObjectSlot;
 
 var String ammoText;
 
+event InitWindow()
+{
+    Super.InitWindow();
+    SetFont(Font'DXRFontTiny'); //Replace the shitty font
+}
 event DrawWindow(GC gc)
 {
     Super.DrawWindow(gc);
@@ -13,12 +18,12 @@ event DrawWindow(GC gc)
         gc.SetAlignments(HALIGN_Center, VALIGN_Center);
         gc.EnableWordWrap(false);
         gc.SetTextColor(colObjectNum);
-         
+
         if (ammoText!="") {
             gc.SetAlignments(HALIGN_Left, VALIGN_Center);
             gc.DrawText(slotIconX+2, itemTextPosY-8, slotFillWidth, 8, ammoText);
             gc.SetAlignments(HALIGN_Center, VALIGN_Center);
-            
+
         }
     }
 }
@@ -28,19 +33,19 @@ function bool ShouldDisplayAmmo(DeusExWeapon weapon)
     if ( weapon.AmmoType == None || weapon.AmmoName == class'AmmoNone' ) {
         return False;
     }
-    
+
     if (weapon.bHandToHand == True) {
         return False;
     }
-    
-    if (weapon.IsA('WeaponNanoVirusGrenade') || 
-        weapon.IsA('WeaponGasGrenade') || 
+
+    if (weapon.IsA('WeaponNanoVirusGrenade') ||
+        weapon.IsA('WeaponGasGrenade') ||
         weapon.IsA('WeaponEMPGrenade') ||
         weapon.IsA('WeaponLAM'))
     {
         return False;
     }
-    
+
     return True;
 }
 
@@ -48,11 +53,11 @@ function bool ShouldDisplayAmmo(DeusExWeapon weapon)
 function UpdateItemText()
 {
     local DeusExWeapon weapon;
-    
+
     super.UpdateItemText();
-    
+
     ammoText = "";
-    // If this is a weapon, show the number of remaining rounds 
+    // If this is a weapon, show the number of remaining rounds
     weapon = DeusExWeapon(item);
     if (weapon != None)
     {

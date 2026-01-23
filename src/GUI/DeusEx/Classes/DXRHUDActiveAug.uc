@@ -11,7 +11,7 @@ function DrawHotKey(GC gc)
         gc.SetTextColor(colText);
         gc.DrawText(15, 0, 17, 11, hotKeyString);
     } else if (class'MenuChoice_AugHotkeys'.static.ShowSmall()){
-        gc.SetFont(Font'FontTiny');
+        gc.SetFont(Font'DXRFontTiny');
 
         // Draw Dropshadow
         gc.SetTextColor(colBlack);
