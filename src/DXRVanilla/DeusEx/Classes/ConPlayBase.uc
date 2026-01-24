@@ -125,6 +125,7 @@ log("  event.toActor    = " $ event.toActor );
 
 		// Pawn cannot have multiple weapons, but we do want to give the
 		// player any ammo from the weapon
+        // If the player *has* the weapon AND has full ammo for it, allow the transfer to pass
 		else if ((invItemTo.IsA('Weapon')) && (DeusExPlayer(event.ToActor) != None))
 		{
 			AmmoType = Ammo(DeusExPlayer(event.ToActor).FindInventoryType(Weapon(invItemTo).AmmoName));
@@ -148,11 +149,11 @@ log("  event.toActor    = " $ event.toActor );
 					if (!AmmoType.AddAmmo(Weapon(invItemTo).PickUpAmmoCount))
 					{
 						invItemFrom.Destroy();
-						return nextAction;
-					}
-
-					event.TransferCount = Weapon(invItemTo).PickUpAmmoCount;
-					itemsTransferred = event.TransferCount;
+						//return nextAction; //DXRANDO: Do not fail if there isn't room to get ammo for the weapon
+					} else {
+                        event.TransferCount = Weapon(invItemTo).PickUpAmmoCount;
+                        itemsTransferred = event.TransferCount;
+                    }
 				}
 
 				if (event.ToActor.IsA('DeusExPlayer'))
