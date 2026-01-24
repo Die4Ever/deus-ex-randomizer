@@ -48,3 +48,7 @@ class DXRandoFonts extends Object abstract;
 #exec FONT    IMPORT File=Fonts\DXRMedFont.pcx             NAME=DXRMedFont           GROUP="RandoFonts"
 #exec FONT    IMPORT File=Fonts\DXRBigFont.pcx             NAME=DXRBigFont           GROUP="RandoFonts"
 
+//New Scaled Fonts
+#exec FONT    IMPORT File=Fonts\DXRMedFont_x2.pcx          NAME=DXRMedFont_x2        GROUP="RandoFonts"
+#exec FONT    IMPORT File=Fonts\DXRMedFont_x3.pcx          NAME=DXRMedFont_x3        GROUP="RandoFonts"
+

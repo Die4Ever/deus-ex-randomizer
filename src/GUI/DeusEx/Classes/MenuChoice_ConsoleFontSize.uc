@@ -6,11 +6,9 @@ static function Font GetConsoleFont()
         case 0:
             return Font'DXRMedFont';
         case 1:
-            return Font'DXRFontMenuTitle';
+            return Font'DXRMedFont_x2';
         case 2:
-            return Font'DXRFontConversationLargeBold';
-        case 3:
-            return Font'DXRFontMenuExtraLarge';
+            return Font'DXRMedFont_x3';
     }
     return Font'DXRMedFont';
 }
@@ -41,12 +39,11 @@ function SaveSetting()
 
 defaultproperties
 {
-    value=3
-    defaultvalue=3
+    value=2
+    defaultvalue=2
     HelpText="How big should the console font be?"
     actionText="Console Font Size"
-    enumText(0)="Tiny"
-    enumText(1)="Small"
-    enumText(2)="Medium"
-    enumText(3)="Large"
+    enumText(0)="Small"
+    enumText(1)="Medium"
+    enumText(2)="Large"
 }
