@@ -327,6 +327,7 @@ function AnyEntry()
     SetSeed( "DXRFixup AllAnyEntry" );
     AllAnyEntry();
     FixFOV();
+    ChangeConsoleFont();
 
     foreach AllActors(class'#var(prefix)Button1', b) {
         if(b.CollisionRadius <3 && b.CollisionHeight <3)
@@ -703,6 +704,11 @@ function FixFOV()
     foreach AllActors(class'NanoKeyRing', nkr) {
         nkr.PlayerViewOffset = v;
     }
+}
+
+function ChangeConsoleFont()
+{
+    class'MenuChoice_ConsoleFontSize'.static.UpdateConsoleFont();
 }
 
 function ShowTeleporters()

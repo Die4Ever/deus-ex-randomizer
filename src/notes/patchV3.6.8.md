@@ -91,5 +91,6 @@
 - List of accounts when hacking a computer will always fully capitalize the currently logged in user name to match the account names in the list.
 - New fonts to better distinguish between I, l, and 1 (Uppercase I, lowercase L, and the number one).
 - Codes or passwords in email subject lines will now be shown randomized and get learned.  This is primarily for Alex's closet code.
+- The font used for the console (such as when entering cheats) is now larger by default, and can be changed with a new option "Console Font Size" in the Rando > Visuals menu.
 
 </details>

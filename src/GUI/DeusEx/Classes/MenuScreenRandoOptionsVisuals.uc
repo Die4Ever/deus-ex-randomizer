@@ -27,6 +27,7 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_AutoLamps');
     }
     CreateChoice(class'MenuChoice_ToggleFashion');
+    CreateChoice(class'MenuChoice_ConsoleFontSize');
 }
 
 defaultproperties
