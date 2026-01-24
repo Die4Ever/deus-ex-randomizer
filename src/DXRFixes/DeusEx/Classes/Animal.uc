@@ -61,6 +61,7 @@ function PetAnimal(#var(PlayerPawn) petter)
 
     if (petter==None) return;
     if (petter.InHand!=None) return; //Must have free hands to pet!
+    if (petter.CarriedDecoration!=None) return; //Seriously, free hands
     if (petter.Region.Zone.bWaterZone) return; //No underwater petting (but you can pet things that are IN the water)
     if (Fly(self)!=None) return; //No, you can't pet the flies
     if (bPetInProgress) return; //No pet interruptions

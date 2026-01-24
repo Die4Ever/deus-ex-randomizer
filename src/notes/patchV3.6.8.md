@@ -93,5 +93,6 @@
 - Codes or passwords in email subject lines will now be shown randomized and get learned.  This is primarily for Alex's closet code.
 - The font used for the console (such as when entering cheats) is now larger by default, and can be changed with a new option "Console Font Size" in the Rando > Visuals menu.
 - Ammo for thrown weapons (like grenades or throwing knives) is no longer looted if the weapon is marked as trash.
+- It is no longer possible to pet animals while carrying decorations.
 
 </details>
