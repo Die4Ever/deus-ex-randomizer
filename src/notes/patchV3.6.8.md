@@ -97,5 +97,6 @@
 - Item transfers in conversations no longer fail if you already have the weapon being given and have full ammo (For example, if you already have a stealth pistol and full ammo before speaking to Sam Carter in Mission 1).
 - Crowd Control effects that give all enemies a weapon will no longer succeed if the enemies already all have the weapon.
 - Crowd Control effects that give all enemies a weapon will no longer allow the player to loot those weapons off of the enemies when killed.
+- The "location" and "spoiler" buttons on the Goals screen can now also hide the markers again once activated.
 
 </details>
