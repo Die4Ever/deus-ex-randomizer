@@ -98,5 +98,6 @@
 - Crowd Control effects that give all enemies a weapon will no longer succeed if the enemies already all have the weapon.
 - Crowd Control effects that give all enemies a weapon will no longer allow the player to loot those weapons off of the enemies when killed.
 - The "location" and "spoiler" buttons on the Goals screen can now also hide the markers again once activated.
+- The conversation window will now expand to ensure all choices are visible on screen.  Before, certain aspect ratios and GUI scaling combinations did not allow a fifth conversation choice to fit on screen.
 
 </details>

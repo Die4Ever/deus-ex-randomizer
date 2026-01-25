@@ -90,3 +90,46 @@ function AddButton( ConChoiceWindow newButton )
 
     newButton.SetText("("$numChoices$") "$ Mid(newButton.GetText(),2)); // (#) Dialog option
 }
+
+// Have to work around the fact that Kenties Launcher includes
+// ConWindowActive2 which overrides CalculateWindowSizes()
+event ConfigurationChanged()
+{
+    local float oldLowerPercent;
+
+    oldLowerPercent = lowerFinalHeightPercent;
+    lowerFinalHeightPercent = CalcGoodLowerHeightPercent();
+
+    _ConfigurationChanged();
+
+    lowerFinalHeightPercent = oldLowerPercent;
+}
+
+function float CalcGoodLowerHeightPercent()
+{
+    local float outPercent;
+    local float normalHeight,altHeight;
+    local float prefWidth,prefHeight;
+    local int i;
+
+    outPercent = lowerFinalHeightPercent;
+
+    //See if we need to adjust the height percent for more choices on screen
+    normalHeight = int(height * lowerFinalHeightPercent);
+    for (i=0;i<numChoices;i++){
+        if (conChoices[i]==None) continue; //Shouldn't be None, but oh well
+        conChoices[i].QueryPreferredSize(prefWidth,prefHeight);
+        altHeight = altHeight + prefHeight + 2; //a bit of extra buffer
+    }
+
+    if (altHeight > normalHeight) {
+        outPercent = altHeight / height;
+    }
+
+    return outPercent;
+}
+
+defaultproperties
+{
+     lowerFinalHeightPercent=0.250000
+}
