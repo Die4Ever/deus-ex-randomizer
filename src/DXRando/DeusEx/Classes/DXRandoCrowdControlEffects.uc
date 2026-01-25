@@ -2111,7 +2111,7 @@ function bool ToggleFlashlight(string viewer)
 
 }
 
-function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewer)
+function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewer, optional bool AllowLooting)
 {
     local int numEnemies;
     local inventory inv;
@@ -2125,8 +2125,10 @@ function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewe
         if( #var(prefix)Animal(a)!=None ) continue;
         if( #var(prefix)Robot(a) != None ) continue;
         if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        if (a.FindInventoryType(w)!=None) continue;
         numEnemies++;
         inv = ccLink.ccModule.GiveItem(a,w,1);
+        #var(DeusExPrefix)Weapon(inv).bNativeAttack=!AllowLooting; //Mark the weapon as a native weapon so that it can't be looted
     }
 
     if (numEnemies==0){
