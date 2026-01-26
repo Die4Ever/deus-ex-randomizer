@@ -38,6 +38,7 @@ function CheckConfig()
     not_passwords[i++] = ".12";
     not_passwords[i++] = "REPORT 12-Y";
     not_passwords[i++] = "LAB 12";
+    not_passwords[i++] = "MChow//HKNET.974.12.8723";
     not_passwords[i++] = "the Illuminati";
     not_passwords[i++] = "raptor-chickens";
     not_passwords[i++] = "of Illuminati";

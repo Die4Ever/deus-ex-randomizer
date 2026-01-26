@@ -28,7 +28,7 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
         }
     }
     if (addNote){
-        TryAddingNote(winText.GetText());
+        TryAddingNote(winText.GetText(),textName);
     }
 }
 
@@ -72,10 +72,10 @@ function ProcessEmail(DeusExTextParser parser)
     }
 }
 
-function TryAddingNote(string text)
+function TryAddingNote(string text, optional name texttag)
 {
-    local string mapname;
-    local Name plaintextTag;
+    local string mapname, textPackage;
+    local Name finalTextTag;
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
     local int i;
@@ -83,15 +83,22 @@ function TryAddingNote(string text)
     if(Len(text)==0) return;
 
     rootWindow = DeusExRootWindow(player.rootWindow);
+    if (texttag==''){
+        mapname = GetMapNameStripped();
+        finalTextTag = rootWindow.StringToName(mapname$"-"$ DxrCrc(text));
+    } else {
+        textPackage = "DeusExText";
+        if (CompOwner!=None && CompOwner.IsA('#var(prefix)Computers')){
+            textPackage = #var(prefix)Computers(CompOwner).TextPackage;
+        }
+        finalTextTag = rootWindow.StringToName(textPackage$"-"$texttag);
+    }
 
-    mapname = GetMapNameStripped();
-    plaintextTag = rootWindow.StringToName(mapname$"-"$ DxrCrc(text));
-
-    note = player.GetNote(plaintextTag);
+    note = player.GetNote(finalTextTag);
     if (note == None)
     {
         note = player.AddNote(text,, True);
-        SetTextTag(note, plaintextTag);
+        SetTextTag(note, finalTextTag);
     }
 
     for(i=0; i<ArrayCount(updated_passwords); i++) {

@@ -18,11 +18,14 @@ function SetNewPassword(string password)
     }
 }
 
-function bool HasPassword(string password)
+function bool HasPassword(string password, optional bool caseInsensitive)
 {
     local int i;
     for(i=0; i < ArrayCount(new_passwords); i++) {
         if( password == new_passwords[i] ) return true;
+        if (caseInsensitive){
+            if( password ~= new_passwords[i] ) return true;
+        }
     }
     return false;
 }

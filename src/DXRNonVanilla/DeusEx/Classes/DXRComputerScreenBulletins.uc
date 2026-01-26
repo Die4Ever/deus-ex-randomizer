@@ -24,7 +24,7 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
     Super.ProcessDeusExText(textName, winText);
 
     if (addNote){
-        TryAddingNote(winText.GetText());
+        TryAddingNote(winText.GetText(),textName);
     }
 }
 
@@ -63,10 +63,10 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
     }
 }
 
-function TryAddingNote(string text)
+function TryAddingNote(string text, optional name texttag)
 {
-    local string mapname;
-    local Name plaintextTag;
+    local string mapname, textPackage;
+    local Name finalTextTag;
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
     local #var(PlayerPawn) pp;
@@ -78,19 +78,30 @@ function TryAddingNote(string text)
 #endif
 
     rootWindow = DeusExRootWindow(pp.rootWindow);
-
-    mapname = GetMapNameStripped();
-    plaintextTag = rootWindow.StringToName(mapname$"-"$ DxrCrc(text));
+    if (texttag==''){
+        mapname = GetMapNameStripped();
+        finalTextTag = rootWindow.StringToName(mapname$"-"$ DxrCrc(text));
+    } else {
+        textPackage = "DeusExText";
+        if (CompOwner!=None && CompOwner.IsA('#var(prefix)Computers')){
+        #ifndef hx
+            textPackage = #var(prefix)Computers(CompOwner).TextPackage;
+        #else
+            textPackage = CompOwner.TextPackage;
+        #endif
+        }
+        finalTextTag = rootWindow.StringToName(textPackage$"-"$texttag);
+    }
 
 #ifdef revision
-    note = pp.GetNote(plaintextTag, "");
+    note = pp.GetNote(finalTextTag, "");
 #else
-    note = pp.GetNote(plaintextTag);
+    note = pp.GetNote(finalTextTag);
 #endif
     if (note == None)
     {
         note = pp.AddNote(text,, True);
-        SetTextTag(note, plaintextTag);
+        SetTextTag(note, finalTextTag);
     }
 }
 
