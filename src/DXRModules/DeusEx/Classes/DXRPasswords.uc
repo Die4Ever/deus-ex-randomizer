@@ -12,6 +12,7 @@ function CheckConfig()
     not_passwords[i++] = "nanotech research";
     not_passwords[i++] = "research team";
     not_passwords[i++] = "weapons research";
+    not_passwords[i++] = "research goals";
     not_passwords[i++] = "captain james";
     not_passwords[i++] = "captain keene";
     not_passwords[i++] = "captain Kang";
@@ -23,6 +24,7 @@ function CheckConfig()
     not_passwords[i++] = "Walton Simons";
     not_passwords[i++] = "SIMONS WENT";
     not_passwords[i++] = "REPORT TO SIMONS";
+    not_passwords[i++] = "Simons has";
     not_passwords[i++] = "Bob Page";
     not_passwords[i++] = "MJ12 COMPROMISED INDIVIDUALS";
     not_passwords[i++] = "MJ12 tool";
@@ -54,10 +56,14 @@ function CheckConfig()
     not_passwords[i++] = "information linking Simons";
     not_passwords[i++] = "Which Simons has a";
     not_passwords[i++] = "Brooklyn Bridge Station access is through";
+    not_passwords[i++] = "Manhattan and Brooklyn";
+    not_passwords[i++] = "Brooklyn Naval Yards";
+    not_passwords[i++] = "Brooklyn Bridge Station";
     not_passwords[i++] = "from the Illuminati to the";
     not_passwords[i++] = "entity token \"Illuminati\"";
     not_passwords[i++] = "connected to the Illuminati";
     not_passwords[i++] = "the \"Oceanguard\" login";
+    not_passwords[i++] = "UNATCO.4352.768"; //768 is the Level 2 Labs door seal code
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {
