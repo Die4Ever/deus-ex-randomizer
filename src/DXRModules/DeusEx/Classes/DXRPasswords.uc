@@ -41,6 +41,20 @@ function CheckConfig()
     not_passwords[i++] = "REPORT 12-Y";
     not_passwords[i++] = "LAB 12";
     not_passwords[i++] = "MChow//HKNET.974.12.8723";
+    not_passwords[i++] = "login: MJ12";
+    not_passwords[i++] = "MJ12 Cyberinformation";
+    not_passwords[i++] = "MJ12 Chemical";
+    not_passwords[i++] = "entity token \"MJ12\"";
+    not_passwords[i++] = "MJ12 operations";
+    not_passwords[i++] = "MJ12 Nano-Augmentation";
+    not_passwords[i++] = "of MJ12";
+    not_passwords[i++] = "default MJ12";
+    not_passwords[i++] = "MJ12 PERSONNEL";
+    not_passwords[i++] = "MJ12 H.K. HELIBASE";
+    not_passwords[i++] = "MJ12 presence";
+    not_passwords[i++] = "MJ12 helibase";
+    not_passwords[i++] = "for \"MJ12\"";
+    not_passwords[i++] = "and MJ12";
     not_passwords[i++] = "the Illuminati";
     not_passwords[i++] = "raptor-chickens";
     not_passwords[i++] = "of Illuminati";
@@ -64,6 +78,9 @@ function CheckConfig()
     not_passwords[i++] = "connected to the Illuminati";
     not_passwords[i++] = "the \"Oceanguard\" login";
     not_passwords[i++] = "UNATCO.4352.768"; //768 is the Level 2 Labs door seal code
+    not_passwords[i++] = "USER NAME";
+    not_passwords[i++] = "user permissions";
+    not_passwords[i++] = "user access";
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {
