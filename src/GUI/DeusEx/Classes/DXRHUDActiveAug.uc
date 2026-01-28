@@ -29,12 +29,12 @@ function DrawHotKey(GC gc)
 
         case 2: // left
             gc.SetAlignments(HALIGN_Left, VALIGN_Top);
-            gc.DrawText(2, 24, 17, 11, aug.CurrentLevel);
+            gc.DrawText(2, 24, 17, 11, aug.CurrentLevel+1);
             break;
 
         case 3: // right
             gc.SetAlignments(HALIGN_Right, VALIGN_Top);
-            gc.DrawText(15, 25, 17, 11, aug.CurrentLevel);
+            gc.DrawText(15, 25, 17, 11, aug.CurrentLevel+1);
             break;
         }
     }
