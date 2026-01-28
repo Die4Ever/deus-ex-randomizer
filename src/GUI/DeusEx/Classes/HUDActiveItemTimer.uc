@@ -10,16 +10,16 @@ var Color colBlack;
 function DrawHotKey(GC gc)
 {
     local DXRandoCrowdControlTimer timer;
-    
+
     timer = DXRandoCrowdControlTimer(GetClientObject());
-    
+
     if (timer == None) {
         return;
     }
-    
+
     gc.SetAlignments(HALIGN_Left, VALIGN_Bottom);
-    gc.SetFont(Font'FontTiny');
-    
+    gc.SetFont(Font'DXRFontTiny');
+
     // Draw Dropshadow
     gc.SetTextColor(colBlack);
     gc.DrawText(0, 22, 50, 8, timer.GetTimerLabel());

@@ -9,15 +9,30 @@ var string EntSpoilerWindowHeader, EntSpoilerWindowText;
 var string GoalSpoilerWindowHeader, GoalSpoilerWindowText;
 var string KeySpoilerWindowHeader, KeySpoilerWindowText;
 var string DatacubeSpoilerWindowHeader, DatacubeSpoilerWindowText;
-var String DisplaySpoilers;
-var String GoalLocations;
+var String DisplaySpoilers, HideSpoilers;
+var String GoalLocations, HideGoalLocs;
+var String ShowCubes, HideCubes;
+var String ShowKeys, HideKeys;
 var bool bDisplaySpoilers;
+
+enum ESpoilersShowing
+{
+    SS_None,
+    SS_ShowKeys,
+    SS_ShowDatacubes,
+    SS_GoalLocations,
+    SS_GoalSpoilers
+};
+
+var ESpoilersShowing curSpoilers;
 
 function CreateControls()
 {
     local DXRando dxr;
 
     Super.CreateControls();
+
+    UpdateCurrentSpoilerSetting(); //Make sure our spoiler setting is correctly populated
 
     //Get rid of the "Confirm Note Deletion" checkbox
     //It's free real estate!
@@ -62,6 +77,8 @@ function CreateControls()
             }
         }
     }
+
+    UpdateSpoilerButtonLabels();
 }
 
 /*
@@ -153,6 +170,8 @@ function PopulateSpoilers()
         break;
     }
 
+    curSpoilers = SS_GoalSpoilers;
+    UpdateSpoilerButtonLabels();
     actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
     actorDisplay.SetViewClass(class'DXRGoalMarker');
     actorDisplay.ShowLOS(false);
@@ -208,6 +227,8 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     case KeySpoilerWindowText:
         if (buttonNumber==0) {
             class'DXRStats'.static.AddSpoilerOffense(player, 3);
+            curSpoilers = SS_ShowKeys;
+            UpdateSpoilerButtonLabels();
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
             actorDisplay.ShowLOS(false);
@@ -226,6 +247,8 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     case DatacubeSpoilerWindowText:
         if (buttonNumber==0) {
             class'DXRStats'.static.AddSpoilerOffense(player, 3);
+            curSpoilers = SS_ShowDatacubes;
+            UpdateSpoilerButtonLabels();
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
             actorDisplay.ShowLOS(false);
@@ -399,6 +422,8 @@ function generateGoalLocationNote()
 	newNoteWindow.Lower();
 	SetFocusWindow(newNoteWindow);
 
+    curSpoilers = SS_GoalLocations;
+    UpdateSpoilerButtonLabels();
     actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
     actorDisplay.SetViewClass(class'DXRLocationMarker');
     actorDisplay.ShowLOS(false);
@@ -429,24 +454,131 @@ function bool ButtonActivated( Window buttonPressed )
         return true;
 
     case btnGoalSpoilers:
-        root.MessageBox(GoalSpoilerWindowHeader,GoalSpoilerWindowText,0,False,Self);
+        if (curSpoilers==SS_GoalSpoilers){
+            DisableSpoilers();
+        } else {
+            root.MessageBox(GoalSpoilerWindowHeader,GoalSpoilerWindowText,0,False,Self);
+        }
         return true;
 
     case btnGoalLocs:
-        generateGoalLocationNote();
+        if (curSpoilers==SS_GoalLocations){
+            DisableSpoilers();
+        } else {
+            generateGoalLocationNote();
+        }
         return true;
 
     case btnKeys:
-        root.MessageBox(KeySpoilerWindowHeader,KeySpoilerWindowText,0,False,Self);
+        if (curSpoilers==SS_ShowKeys){
+            DisableSpoilers();
+        } else {
+            root.MessageBox(KeySpoilerWindowHeader,KeySpoilerWindowText,0,False,Self);
+        }
         return true;
 
     case btnDatacubes:
-        root.MessageBox(DatacubeSpoilerWindowHeader,DatacubeSpoilerWindowText,0,False,Self);
+        if (curSpoilers==SS_ShowDatacubes){
+            DisableSpoilers();
+        } else {
+            root.MessageBox(DatacubeSpoilerWindowHeader,DatacubeSpoilerWindowText,0,False,Self);
+        }
         return true;
     }
 
     return Super.ButtonActivated(buttonPressed);
 }
+
+function UpdateCurrentSpoilerSetting()
+{
+    local ActorDisplayWindow actorDisplay;
+
+    actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+
+    if (actorDisplay==None) {
+        curSpoilers = SS_None;
+        return;
+    }
+
+    switch(actorDisplay.GetViewClass())
+    {
+        case class'#var(prefix)Nanokey':
+            curSpoilers = SS_ShowKeys;
+            break;
+        case class'#var(prefix)InformationDevices':
+            curSpoilers = SS_ShowDatacubes;
+            break;
+        case class'DXRLocationMarker':
+            curSpoilers = SS_GoalLocations;
+            break;
+        case class'DXRGoalMarker':
+            curSpoilers = SS_GoalSpoilers;
+            break;
+    }
+}
+
+function DisableSpoilers()
+{
+    local ActorDisplayWindow actorDisplay;
+
+    actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+
+    if (actorDisplay!=None) {
+        actorDisplay.SetViewClass(None);
+    }
+
+    curSpoilers = SS_None;
+
+    UpdateSpoilerButtonLabels();
+}
+
+function UpdateSpoilerButtonLabels()
+{
+    //Show Keys
+    if (btnKeys!=None){
+        if (curSpoilers==SS_ShowKeys) {
+            //Hide
+            btnKeys.SetButtonText(HideKeys);
+        } else {
+            //Show
+            btnKeys.SetButtonText(ShowKeys);
+        }
+    }
+
+    //Show Datacubes
+    if (btnDatacubes!=None){
+        if (curSpoilers==SS_ShowDatacubes) {
+            //Hide
+            btnDatacubes.SetButtonText(HideCubes);
+        } else {
+            //Show
+            btnDatacubes.SetButtonText(ShowCubes);
+        }
+    }
+
+    //Goal Locations
+    if (btnGoalLocs!=None){
+        if (curSpoilers==SS_GoalLocations) {
+            //Hide
+            btnGoalLocs.SetButtonText(HideGoalLocs);
+        } else {
+            //Show
+            btnGoalLocs.SetButtonText(GoalLocations);
+        }
+    }
+
+    //Goal Spoilers
+    if (btnGoalSpoilers!=None){
+        if (curSpoilers==SS_GoalSpoilers) {
+            //Hide
+            btnGoalSpoilers.SetButtonText(HideSpoilers);
+        } else {
+            //Show
+            btnGoalSpoilers.SetButtonText(DisplaySpoilers);
+        }
+    }
+}
+
 
 defaultproperties
 {
@@ -458,7 +590,13 @@ defaultproperties
      GoalSpoilerWindowText="Do you want to see spoilers for the goal randomization?  This will impact your score!  Click Goal Locations instead if you don't want to hurt your score."
      goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/%s-Goals"
      DisplaySpoilers="Show Spoilers"
+     HideSpoilers="Hide Spoilers"
      GoalLocations="Goal Locations"
+     HideGoalLocs="Hide Goal Locations"
+     ShowCubes="Show Datacubes"
+     HideCubes="Hide Datacubes"
+     ShowKeys="Show Keys"
+     HideKeys="Hide Keys"
 
     KeySpoilerWindowHeader="Spoilers?"
     KeySpoilerWindowText="Do you want to see spoilers for where nanokeys are?  This will impact your score!"

@@ -80,8 +80,8 @@ function ResizeWindow()
 
 defaultproperties
 {
-     fontHeader=Font'DeusExUI.FontConversationLargeBold'
-     fontText=Font'DeusExUI.FontConversationLarge'
+     fontHeader=Font'DXRFontConversationLargeBold'
+     fontText=Font'DXRFontConversationLarge'
      colHeader=(R=255,G=255,B=255)
      colText=(R=200,G=200,B=200)
 }

@@ -1565,8 +1565,7 @@ function int GiveItem(string viewer, string type, optional int amount) {
 
     //If it is a Weapon (but not a thrown one, where the weapon pickup acts as extra ammo)
     if (ClassIsChildOf(itemclass, class'#var(DeusExPrefix)Weapon') &&
-        !class'DXRActorsBase'.static.IsGrenade(itemclass) &&
-        !ClassIsChildOf(itemclass, class'#var(prefix)WeaponShuriken')){
+        !class'DXRActorsBase'.static.WeaponIsAmmo(itemclass)){
 
         //Check to see if the player already has one
         if (player().FindInventoryType(itemclass)!=None){
@@ -2112,7 +2111,7 @@ function bool ToggleFlashlight(string viewer)
 
 }
 
-function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewer)
+function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewer, optional bool AllowLooting)
 {
     local int numEnemies;
     local inventory inv;
@@ -2126,8 +2125,10 @@ function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewe
         if( #var(prefix)Animal(a)!=None ) continue;
         if( #var(prefix)Robot(a) != None ) continue;
         if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        if (a.FindInventoryType(w)!=None) continue;
         numEnemies++;
         inv = ccLink.ccModule.GiveItem(a,w,1);
+        #var(DeusExPrefix)Weapon(inv).bNativeAttack=!AllowLooting; //Mark the weapon as a native weapon so that it can't be looted
     }
 
     if (numEnemies==0){

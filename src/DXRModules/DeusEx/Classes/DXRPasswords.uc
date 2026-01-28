@@ -12,6 +12,7 @@ function CheckConfig()
     not_passwords[i++] = "nanotech research";
     not_passwords[i++] = "research team";
     not_passwords[i++] = "weapons research";
+    not_passwords[i++] = "research goals";
     not_passwords[i++] = "captain james";
     not_passwords[i++] = "captain keene";
     not_passwords[i++] = "captain Kang";
@@ -23,6 +24,7 @@ function CheckConfig()
     not_passwords[i++] = "Walton Simons";
     not_passwords[i++] = "SIMONS WENT";
     not_passwords[i++] = "REPORT TO SIMONS";
+    not_passwords[i++] = "Simons has";
     not_passwords[i++] = "Bob Page";
     not_passwords[i++] = "MJ12 COMPROMISED INDIVIDUALS";
     not_passwords[i++] = "MJ12 tool";
@@ -38,6 +40,21 @@ function CheckConfig()
     not_passwords[i++] = ".12";
     not_passwords[i++] = "REPORT 12-Y";
     not_passwords[i++] = "LAB 12";
+    not_passwords[i++] = "MChow//HKNET.974.12.8723";
+    not_passwords[i++] = "login: MJ12";
+    not_passwords[i++] = "MJ12 Cyberinformation";
+    not_passwords[i++] = "MJ12 Chemical";
+    not_passwords[i++] = "entity token \"MJ12\"";
+    not_passwords[i++] = "MJ12 operations";
+    not_passwords[i++] = "MJ12 Nano-Augmentation";
+    not_passwords[i++] = "of MJ12";
+    not_passwords[i++] = "default MJ12";
+    not_passwords[i++] = "MJ12 PERSONNEL";
+    not_passwords[i++] = "MJ12 H.K. HELIBASE";
+    not_passwords[i++] = "MJ12 presence";
+    not_passwords[i++] = "MJ12 helibase";
+    not_passwords[i++] = "for \"MJ12\"";
+    not_passwords[i++] = "and MJ12";
     not_passwords[i++] = "the Illuminati";
     not_passwords[i++] = "raptor-chickens";
     not_passwords[i++] = "of Illuminati";
@@ -53,10 +70,17 @@ function CheckConfig()
     not_passwords[i++] = "information linking Simons";
     not_passwords[i++] = "Which Simons has a";
     not_passwords[i++] = "Brooklyn Bridge Station access is through";
+    not_passwords[i++] = "Manhattan and Brooklyn";
+    not_passwords[i++] = "Brooklyn Naval Yards";
+    not_passwords[i++] = "Brooklyn Bridge Station";
     not_passwords[i++] = "from the Illuminati to the";
     not_passwords[i++] = "entity token \"Illuminati\"";
     not_passwords[i++] = "connected to the Illuminati";
     not_passwords[i++] = "the \"Oceanguard\" login";
+    not_passwords[i++] = "UNATCO.4352.768"; //768 is the Level 2 Labs door seal code
+    not_passwords[i++] = "USER NAME";
+    not_passwords[i++] = "user permissions";
+    not_passwords[i++] = "user access";
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {

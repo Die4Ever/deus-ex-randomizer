@@ -234,6 +234,7 @@ function String BuildSkillString( Skill aSkill )
 function CreateSkillsListWindow()
 {
     Super.CreateSkillsListWindow();
+    lstSkills.SetColumnFont(0, Font'DXRFontMenuHeaders'); //Use the new better font
     lstSkills.SetColumnAlignment(2, HALIGN_Left);
 }
 

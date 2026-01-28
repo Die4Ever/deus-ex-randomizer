@@ -152,6 +152,21 @@ static function bool IsGrenade(class<Inventory> i) {
     return i == class'#var(prefix)WeaponLAM' || i == class'#var(prefix)WeaponGasGrenade' || i == class'#var(prefix)WeaponEMPGrenade' || i == class'#var(prefix)WeaponNanoVirusGrenade';
 }
 
+//Thrown weapons have "fake" ammo, that shouldn't be looted independently of the weapon itself
+static function bool WeaponIsAmmo(class<Inventory> i)
+{
+    switch(i){
+        case class'#var(prefix)WeaponLAM':
+        case class'#var(prefix)WeaponGasGrenade':
+        case class'#var(prefix)WeaponEMPGrenade':
+        case class'#var(prefix)WeaponNanoVirusGrenade':
+        case class'#var(prefix)WeaponShuriken':
+            return true;
+    }
+    return false;
+
+}
+
 static function bool RemoveItem(Pawn p, class c)
 {
     local ScriptedPawn sp;

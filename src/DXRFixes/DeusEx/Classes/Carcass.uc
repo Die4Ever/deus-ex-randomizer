@@ -265,6 +265,11 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     local int itemCount, newAmmoAmmout, ammoAddedAmount, action;
     local Weapon weap;
     local Ammo playerAmmo;
+    local bool fakeAmmo;
+
+    if (class'DXRActorsBase'.static.WeaponIsAmmo(item.class)){
+        fakeAmmo = true;
+    }
 
     action = class'DXRLoadouts'.static.GetLootAction(item.class);
 
@@ -277,7 +282,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     if (action > 0) { // drop is 1, also drop autoconsume items that wouldn't help
         weap = Weapon(item);
-        if (weap != None && weap.AmmoName != class'AmmoNone') {
+        if (weap != None && weap.AmmoName != class'AmmoNone' && !fakeAmmo) {
             playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
             if (playerAmmo == None) {
                 playerAmmo = player.Spawn(weap.AmmoName);

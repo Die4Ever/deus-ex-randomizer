@@ -622,7 +622,7 @@ function DrawLeaderboard(GC gc)
     local int yPos, i;
 
     playthrough_id = ToHex(dxr.flags.playthrough_id);
-    gc.SetFont(Font'DeusExUI.FontConversationLarge');
+    gc.SetFont(Font'DXRFontConversationLarge');
     for(i=0; i<ArrayCount(runs) && runs[i].name!=""; i++){
         yPos = (i+1) * 25;
         if(runs[i].playthrough_id ~= playthrough_id) {

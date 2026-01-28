@@ -63,7 +63,7 @@ event DrawWindow(GC gc)
     gc.DrawTexture(22, 20, 40, 35, 0, 0, item.icon);
 
     // Draw the ammo count
-    gc.SetFont(Font'FontTiny');
+    gc.SetFont(Font'DXRFontTiny');
     gc.SetAlignments(HALIGN_Center, VALIGN_Center);
     gc.EnableWordWrap(false);
 
@@ -144,7 +144,7 @@ function DrawBackground(GC gc)
     gc.DrawTexture(13, 13, 80, 54, 0, 0, texBackground);
 
     // Draw the Ammo and Clips text labels
-    gc.SetFont(Font'FontTiny');
+    gc.SetFont(Font'DXRFontTiny');
     gc.SetTextColor(colText);
     gc.SetAlignments(HALIGN_Center, VALIGN_Top);
 

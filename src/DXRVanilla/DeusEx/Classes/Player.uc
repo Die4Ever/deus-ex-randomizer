@@ -2610,6 +2610,21 @@ exec function MarkLoc(int x, int y, int z, optional string markName)
     actorDisplay.ShowPos(true);
 }
 
+//Note that this depends on injection logic in RandoNote
+exec function DebugPassword(optional string password)
+{
+    local DeusExNote note;
+
+    ClientMessage("Debugging Password Assistance for password '"$password$"'");
+
+    for(note=FirstNote;note!=None;note=note.next){
+        if (note.HasPassword(password,true)){
+            ClientMessage("Note: "$note.TextTag);
+            ClientMessage("Text: "$Left(note.Text,50));
+        }
+    }
+}
+
 state CheatFlying
 {
 ignores SeePlayer, HearNoise, Bump, TakeDamage;

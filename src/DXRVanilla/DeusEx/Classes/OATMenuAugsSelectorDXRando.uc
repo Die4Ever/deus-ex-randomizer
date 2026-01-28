@@ -1,5 +1,19 @@
 class OATMenuAugsSelectorDXRando extends OATMenuAugsSelector;
 
+function CreateControls()
+{
+    local int i;
+
+    Super.CreateControls();
+
+    for (i=0; i<ArrayCount(PageLabels); i++)
+    {
+        if (PageLabels[i]!=None){
+            PageLabels[i].SetFont(Font'DXRFontMenuHeaders_DS'); //Better font
+        }
+    }
+}
+
 function bool BuildAugList()
 {
 	local Augmentation TAug, AllAugs[32];

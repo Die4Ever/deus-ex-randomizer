@@ -492,7 +492,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
         return false;
 
     updated++;
-    info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+    info("found note (TextTag: "$note.textTag$") with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     note.text = ReplaceText( note.text, oldpassword, newpassword, true );
 #ifdef injections

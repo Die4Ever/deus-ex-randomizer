@@ -418,7 +418,7 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 
     info("RemoveRandomWeapon("$p$") Removing weapon "$selected$", numWeaps was "$numWeaps$" forceKeep was "$forceKeep);
 
-    if (class'DXRActorsBase'.static.IsGrenade(selected.Class) || #var(prefix)WeaponShuriken(selected)!=None){
+    if (class'DXRActorsBase'.static.WeaponIsAmmo(selected.Class)){
         //Grenades and throwing knives should *also* get rid of their ammo
         if (selected.AmmoType!=None){
             p.DeleteInventory(selected.AmmoType);

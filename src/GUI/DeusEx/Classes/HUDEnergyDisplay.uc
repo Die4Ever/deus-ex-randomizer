@@ -178,5 +178,5 @@ defaultproperties
 {
     texBackground=Texture'DeusExUI.UserInterface.HUDCompassBackground_1'
     texBorder=Texture'DeusExUI.UserInterface.HUDCompassBorder_1'
-    textfont=Font'FontTiny';
+    textfont=Font'DXRFontTiny';
 }

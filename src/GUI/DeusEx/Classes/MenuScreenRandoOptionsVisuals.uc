@@ -15,6 +15,8 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_Epilepsy');
         CreateChoice(class'MenuChoice_BarrelTextures');
         CreateChoice(class'MenuUIChoiceVisionTint');
+        CreateChoice(class'MenuChoice_AugHotkeys');
+        CreateChoice(class'MenuChoice_AugLevels');
     }
     if (#defined(vanilla||revision)){
         CreateChoice(class'MenuChoice_GoalTextures');
@@ -26,6 +28,7 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_AutoLamps');
     }
     CreateChoice(class'MenuChoice_ToggleFashion');
+    CreateChoice(class'MenuChoice_ConsoleFontSize');
 }
 
 defaultproperties

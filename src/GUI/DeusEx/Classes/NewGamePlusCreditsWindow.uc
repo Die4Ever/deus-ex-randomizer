@@ -4,6 +4,8 @@ class NewGamePlusCreditsWindow injects RevCreditsWindow;
 class NewGamePlusCreditsWindow injects CreditsWindow;
 #endif
 
+var float lastClickTime;
+
 event DestroyWindow()
 {
     DoNewGamePlus();
@@ -115,6 +117,7 @@ function AddDXRCreditsGeneral()
     PrintText("Hold the up arrow key to slow down or go backwards");
     PrintText("Hold the down arrow key to speed up");
     PrintText("Press Spacebar to pause/unpause");
+    PrintText("Press Escape or Double Click to exit");
     PrintLn();
 
     PrintHeader("Contributors");
@@ -197,6 +200,20 @@ function Tick(float deltaTime)
 	}
 }
 
+event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
+                               int numClicks)
+{
+    if(button != IK_LeftMouse) return True; // only left click can skip or count as double click
+
+    if(player == None || lastClickTime + 0.5 > player.Level.TimeSeconds) {
+        FinishedScrolling();
+    }
+	else {
+        lastClickTime = player.Level.TimeSeconds;
+    }
+	return True;
+}
+
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
 	if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) )
@@ -243,6 +260,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 
 defaultproperties
 {
+     lastClickTime=-10
      currentScrollSpeed=100.0000
      scrollSpeed=100.0000
      minScrollSpeed=-600
@@ -250,4 +268,6 @@ defaultproperties
      speedAdjustment=15
      maxTileWidth=700
      maxTextWidth=700
+     fontHeader=Font'DXRFontConversationLargeBold'
+     fontText=Font'DXRFontConversationLarge'
 }
