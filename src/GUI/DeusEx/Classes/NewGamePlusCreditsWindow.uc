@@ -203,6 +203,8 @@ function Tick(float deltaTime)
 event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
                                int numClicks)
 {
+    if(button != IK_LeftMouse) return True; // only left click can skip or count as double click
+
     if(player == None || lastClickTime + 0.5 > player.Level.TimeSeconds) {
         FinishedScrolling();
     }
