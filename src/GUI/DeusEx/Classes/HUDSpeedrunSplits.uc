@@ -730,6 +730,7 @@ function int BalancedSplit(int m)
 function int TotalTime()
 {
     local int i, total;
+    if(stats == None || stats.dxr == None || stats.dxr.flags == None) return 0;
     total = stats.dxr.flags.newgameplus_total_time;
     for(i=1; i<ArrayCount(stats.missions_times); i++) {
         total += stats.missions_times[i];

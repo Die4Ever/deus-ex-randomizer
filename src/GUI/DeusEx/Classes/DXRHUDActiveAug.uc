@@ -2,21 +2,31 @@ class DXRHUDActiveAug injects HUDActiveAug;
 
 var PersonaLevelIconWindow winLevels;
 
+event DestroyWindow()
+{
+    SetClientObject(None);
+    Super.DestroyWindow();
+}
+
 function DrawHotKey(GC gc)
 {
     local Augmentation aug;
     local int showLevels;
 
     aug = Augmentation(GetClientObject());
+    if(aug != None && aug.bDeleteMe) {
+        SetClientObject(None);
+        aug = None;
+    }
+    showLevels = class'MenuChoice_AugLevels'.default.value;
+    if(winLevels != None && (aug == None || showLevels != 1)) {
+        winLevels.Destroy();
+        winLevels = None;
+    }
     if(aug != None) {
         gc.SetFont(Font'DXRFontMenuSmall_DS');
         gc.SetTextColor(colText);
 
-        showLevels = class'MenuChoice_AugLevels'.default.value;
-        if(showLevels != 1 && winLevels != None) {
-            winLevels.Destroy();
-            winLevels = None;
-        }
         switch(showLevels) {
         case 1: // dots
             if(winLevels == None) {
