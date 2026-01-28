@@ -100,5 +100,6 @@
 - The "location" and "spoiler" buttons on the Goals screen can now also hide the markers again once activated.
 - The conversation window will now expand to ensure all choices are visible on screen.  Before, certain aspect ratios and GUI scaling combinations did not allow a fifth conversation choice to fit on screen.
 - Added an option to always show aug levels. (For the tournament!)
+- Clicking no longer ends the credits, you must double click or press escape.
 
 </details>
