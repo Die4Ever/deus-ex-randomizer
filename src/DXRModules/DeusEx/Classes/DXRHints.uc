@@ -159,6 +159,7 @@ simulated function InitHints()
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
     AddHint("Thermoptic Camo allows you to pass", "through lasers without being detected!");
     AddHint("Thermoptic Camo makes you invisible to people and bots", "but not to cameras or turrets!");
+    AddHint("Thermoptic Camo and Cloak do not work against cameras or turrets,", "but Radar Transparency does.");
     if(dxr.flags.settings.energy != 100) {
         AddHint("Your max energy is "$dxr.flags.settings.energy$" points.", "Your energy meter shows percent relative to this value.");
     }
