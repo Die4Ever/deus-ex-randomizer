@@ -5,6 +5,7 @@ class NewGamePlusCreditsWindow injects CreditsWindow;
 #endif
 
 var float lastClickTime;
+var TextWindow winControlText;
 
 event DestroyWindow()
 {
@@ -26,6 +27,36 @@ function DoNewGamePlus()
         bLoadIntro=false;
         break;
     }
+}
+
+function CreateControls()
+{
+    local float winHeight,prefHeight,prefWidth;
+    local string controlsText;
+
+    Super.CreateControls();
+
+    QueryPreferredSize(prefWidth,prefHeight);
+
+    winControlText = TextWindow(NewChild(class'TextWindow'));
+
+    winHeight = prefHeight / 4.0;
+    winControlText.SetPos(1,prefHeight - winHeight);
+    log("Credits Controls: Height: "$prefHeight$"   winHeight: "$winHeight);
+    winControlText.SetSize(175,winHeight);
+    winControlText.SetFont(Font'DXRFontConversation');
+    winControlText.SetTextColor(colWhite);
+    winControlText.SetWordWrap(False);
+    winControlText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+
+    controlsText =                "Exit: Escape or Double Click|n|n";
+    controlsText = controlsText $ "Pause:             Space Bar|n";
+    controlsText = controlsText $ "Accel. Up:         Up Arrow|n";
+    controlsText = controlsText $ "Accel. Down:      Down Arrow|n";
+    controlsText = controlsText $ "Show/Hide:         Tab|n";
+
+    winControlText.SetText(controlsText);
+
 }
 
 //Draw up to 3 columns across the screen
@@ -252,6 +283,13 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 				bTickEnabled = False;
 			else
 				bTickEnabled = True;
+			break;
+
+		case IK_Tab:
+			if (winControlText.IsVisible())
+				winControlText.Hide();
+			else
+				winControlText.Show();
 			break;
 	}
 
