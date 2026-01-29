@@ -1570,6 +1570,9 @@ function Actor ReplaceWithRandomClass(Actor old)
         }
         l(old$" replaced with "$newActorClass);
         a = ReplaceActor(old, newActorClass );
+        if (a!=None && a.LifeSpan > 0){
+            a.LifeSpan=MaxInt;  //Please don't leave the menu open for over 60 years
+        }
         if(#var(injectsprefix)MedicalBot(a) != None && chance_single(50)) {
             #var(injectsprefix)MedicalBot(a).MakeAugsOnly();
         }

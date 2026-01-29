@@ -102,5 +102,6 @@
 - Added an option to always show aug levels. (For the tournament!)
 - Clicking no longer ends the credits, you must double left-click or press escape.
 - Controls are now shown on the credits screen.
+- Randomized objects on the title screen will no longer fade away if they normally have a limited lifespan.
 
 </details>
