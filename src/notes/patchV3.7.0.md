@@ -103,5 +103,6 @@
 - Clicking no longer ends the credits, you must double left-click or press escape.
 - Controls are now shown on the credits screen.
 - Randomized objects on the title screen will no longer fade away if they normally have a limited lifespan.
+- The cover over the Tong ending button in Area 51 should now open properly when using Transcended maps (such as when playing VMD).
 
 </details>
