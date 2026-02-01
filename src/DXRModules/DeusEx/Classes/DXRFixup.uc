@@ -340,7 +340,6 @@ function AnyEntry()
             v.SetCollisionSize(360, v.CollisionHeight);
     }
 
-    AdjustTextureSmoothing();
     ShowTeleporters();
 
     if (dxr.flags.moresettings.empty_medbots > 0) { // this change isn't helpful until the next map reads from the defaults, but that's ok because we run this in the intro too
@@ -732,20 +731,24 @@ function AdjustTextureSmoothing()
     local Texture t;
     local bool noSmoothTextures,noSmoothActors;
 
+    if (!#defined(vanilla)) return;
+
     noSmoothTextures = class'MenuChoice_TextureSmoothing'.static.NoSmoothTextures();
     noSmoothActors = class'MenuChoice_TextureSmoothing'.static.NoSmoothActors();
 
+#ifdef vanilla
     foreach AllObjects(class'Texture',t){
         if (noSmoothTextures){
-            t.SetPropertyText("bNoSmooth",String(true));
-            //t.bNoSmooth = true;
+            t.bNoSmooth = true;
         } else {
-            t.SetPropertyText("bNoSmooth",String(t.Default.bNoSmooth));
-            //t.bNoSmooth = t.Default.bNoSmooth;
+            t.bNoSmooth = t.Default.bNoSmooth;
         }
     }
+#endif
 
     foreach AllActors(class'Actor',a){
+        if (#var(prefix)Teleporter(a)!=None) continue;
+
         if (noSmoothActors){
             a.bNoSmooth = true;
         } else {
@@ -815,6 +818,7 @@ function GarbageCollection(#var(PlayerPawn) p)
 function PostAnyEntry()
 {
     CleanupPlaceholders(true);
+    AdjustTextureSmoothing();
 }
 
 function CleanupPlaceholders(optional bool alert)
