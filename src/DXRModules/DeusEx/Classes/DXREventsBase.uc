@@ -491,6 +491,15 @@ function HandleBingoWinCountdown()
     //Only do the countdown while outside of menus
     if (!InGame() && (DXRBigMessage(DeusExRootWindow(player().rootWindow).GetTopWindow()) == None)) return;
 
+    if (#var(prefix)Binoculars(player().InHand)!=None){
+        if (player().InHand.GetStateName()=='Activated'){
+            player().InHand.Activate(); //Deactivate
+        }
+    } else if (#var(DeusExPrefix)Weapon(player().InHand)!=None){
+        //ScopeOff already checks to see if the weapon is scoped, so no need to do extra checks here
+        #var(DeusExPrefix)Weapon(player().InHand).ScopeOff();
+    }
+
     if (bingo_win_countdown > 0) {
         BingoWinScreen();
         bingo_win_countdown--;

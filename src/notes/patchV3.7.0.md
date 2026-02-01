@@ -107,5 +107,6 @@
 - The code for the Mole People phone booth is now based on a randomly selected short word instead of being purely random.
 - Teleporter icons now look more crispy.
 - New option under Rando > Visuals to choose whether world textures and object textures should be smoothed or not.
+- Binoculars or weapon scopes now unzoom when you reach a bingo win (such as in WaltonWare).
 
 </details>
