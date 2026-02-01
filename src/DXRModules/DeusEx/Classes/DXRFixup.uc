@@ -721,6 +721,7 @@ function ShowTeleporters()
     foreach AllActors(class'#var(prefix)Teleporter', t) {
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
+        t.bNoSmooth = True; //Make the texture less blurry around the edges
     }
 }
 
