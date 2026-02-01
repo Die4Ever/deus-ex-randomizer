@@ -16,11 +16,13 @@ simulated function InitHints()
     local DXRSkills skills;
     local DXRAugmentations augs;
     local int mission, num_stalkers;
+    local bool RevisionMaps;
     local string map;
 
     numHints = 0;
     mission = dxr.dxInfo.missionNumber;
     map = dxr.localURL;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     telem = DXRTelemetry(dxr.FindModule(class'DXRTelemetry'));
     if(telem == None || telem.enabled == false || mission < 1)
@@ -160,6 +162,7 @@ simulated function InitHints()
     AddHint("Thermoptic Camo allows you to pass", "through lasers without being detected!");
     AddHint("Thermoptic Camo makes you invisible to people and bots", "but not to cameras or turrets!");
     AddHint("Thermoptic Camo and Cloak do not work against cameras or turrets,", "but Radar Transparency does.");
+    AddHint("Look before you leap!", "Flaming barrels will set you on fire if you land on them!");
     if(dxr.flags.settings.energy != 100) {
         AddHint("Your max energy is "$dxr.flags.settings.energy$" points.", "Your energy meter shows percent relative to this value.");
     }
@@ -526,6 +529,7 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the signal jammer is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "09_nyc_shipbelow") {
+            AddHint("The bilge pump computer login details can", "be found on the upper decks of the ship!");
             if(dxr.flags.settings.goals > 0){
                 AddHint("The locations of the tri-hull weld points are randomized.", "Check the Goal Randomization page on our Wiki.");
                 AddHint("The location of the bilge pump computer is randomized.", "Check the Goal Randomization page on our Wiki.");
@@ -591,6 +595,9 @@ simulated function InitHints()
             AddHint("The comms building will open once the friendly bots are released", "if you aren't equipped to deal with the bots yourself.");
             if(dxr.flags.settings.goals > 0) {
                 AddHint("The locations of the power generator keypads and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
+                if (!RevisionMaps){
+                    AddHint("Have you tried jumping across the lamp posts from the command", "building roof to the roof of the comms building?");
+                }
             }
         } else if (map ~= "12_vandenberg_tunnels") {
             AddHint("Looking for the Control Room key?", "Have you checked the flooded reactor room?");
