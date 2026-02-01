@@ -266,7 +266,7 @@ function DrawWindow(GC gc)
     local float speed;
     local name stateName;
     local float temp;
-    local string str,str2;
+    local string str,str2,str3;
     local texture skins[9];
     local color mainColor;
     local byte zoneNum;
@@ -822,7 +822,13 @@ function DrawWindow(GC gc)
 
             //#region Show Custom Value
             if(bShowCustom && customAttrib != "") {
-                str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
+                str2 = customAttrib;
+                str3 = "";
+                while(str2!=""){
+                    str3 = class'DXRInfo'.static.UnpackString(str2);
+                    str = str $ str3 $ ": " $ trackActor.GetPropertyText(str3) $ CR();
+                }
+                //str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
             }
             //#endregion
 
