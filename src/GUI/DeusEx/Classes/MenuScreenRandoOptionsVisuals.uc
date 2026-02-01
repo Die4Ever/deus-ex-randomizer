@@ -24,6 +24,7 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_ScopeScaling');
     }
     CreateChoice(class'MenuChoice_ShowTeleporters');
+    CreateChoice(class'MenuChoice_TextureSmoothing');
     if (#defined(vanilla)) {
         CreateChoice(class'MenuChoice_AutoLamps');
     }
