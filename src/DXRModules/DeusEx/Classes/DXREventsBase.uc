@@ -222,6 +222,7 @@ function Ending_FirstEntry()
 
     if (ending!=0){
         //Notify of game completion with correct ending number
+        player().SetPhysics(PHYS_None);
         player().bCollideWorld = false;
         player().SetCollision(false,false,false);
         BeatGame(dxr,ending);

@@ -108,5 +108,6 @@
 - Teleporter icons now look more crispy.
 - New option under Rando > Visuals to choose whether world textures and object textures should be smoothed or not.
 - Binoculars or weapon scopes now unzoom when you reach a bingo win (such as in WaltonWare).
+- Maybe fixed random deaths in the ending cutscenes for some players.
 
 </details>
