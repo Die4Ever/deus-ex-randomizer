@@ -44,11 +44,12 @@ event DrawWindow(GC gc)
     gc.DrawText(235,yPos,150,50,"Retries Time");
     gc.DrawText(350,yPos,100,50,"Time");
 
-    gc.SetFont(Font'DXRFontConversationLarge');
     while(mission_times[i].MissionName!=""){
         yPos = (i+1) * 25;
+        gc.SetFont(Font'DXRFontConversationLarge');
         gc.DrawText(0,yPos,100,50,mission_times[i].MissionNum);
         gc.DrawText(25,yPos,200,50,mission_times[i].MissionName);
+        gc.SetFont(Font'DXRFontConversationLargeFixedWidthNumbers');
         gc.DrawText(250,yPos,100,50,mission_times[i].DyingTime);
         gc.DrawText(350,yPos,100,50,mission_times[i].CompleteTime);
         i++;
