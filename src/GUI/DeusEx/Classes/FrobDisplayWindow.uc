@@ -867,10 +867,10 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     if ((dxMover != None) && dxMover.bLocked && !(GetShowKeys() && keyAcq))
     {
         gc.SetStyle(DSTY_Translucent);
-        col = GetColorScaled(dxMover.lockStrength);
+        col = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(dxMover.lockStrength);
         gc.SetTileColor(col);
         gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+(infoH-8)/numLines, barLength*dxMover.lockStrength, ((infoH-8)/numLines)-2, 0, 0, Texture'ConWindowBackground');
-        col = GetColorScaled(dxMover.doorStrength);
+        col = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(dxMover.doorStrength);
         gc.SetTileColor(col);
         gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+2*(infoH-8)/numLines, barLength*dxMover.doorStrength, ((infoH-8)/numLines)-2, 0, 0, Texture'ConWindowBackground');
     }
@@ -912,10 +912,10 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
         col.g = 0;
         col.b = 0;
         if (keyAcq){
-            col.g = 255;
+            col = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(1.0); //Fully good
             lineNum=1;
         } else {
-            col.r = 255;
+            col = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(0.01); //Fully bad
             lineNum=4;
         }
         gc.SetTileColor(col);
@@ -952,7 +952,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         if (device.hackStrength != 0.0)
         {
             gc.SetStyle(DSTY_Translucent);
-            col = GetColorScaled(device.hackStrength);
+            col = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(device.hackStrength);
             gc.SetTileColor(col);
             gc.DrawPattern(infoX+(infoW-barLength-4), infoY+infoH/numLines, barLength*device.hackStrength, infoH/numLines-5, 0, 0, Texture'ConWindowBackground');
         }
@@ -977,10 +977,10 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         col.g = 0;
         col.b = 0;
         if (k.bCodeKnown){
-            col.g=255;
+            col = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(1.0); //Fully good
             lineNum=1;
         } else {
-            col.r=255;
+            col = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(0.01); //Fully bad
             lineNum=2;
         }
         gc.SetTileColor(col);

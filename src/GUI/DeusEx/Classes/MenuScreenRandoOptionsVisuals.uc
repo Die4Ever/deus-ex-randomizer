@@ -17,6 +17,7 @@ function CreateChoices()
         CreateChoice(class'MenuUIChoiceVisionTint');
         CreateChoice(class'MenuChoice_AugHotkeys');
         CreateChoice(class'MenuChoice_AugLevels');
+        CreateChoice(class'MenuChoice_ColorVision');
     }
     if (#defined(vanilla||revision)){
         CreateChoice(class'MenuChoice_GoalTextures');

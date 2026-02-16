@@ -812,7 +812,7 @@ function DrawWindow(GC gc)
                             gc.SetTileColorRGB(255, 255, 255);
                     }
                     else
-                        gc.SetTileColor(GetColorScaled(1-trackPawn.EnemyReadiness));
+                        gc.SetTileColor(class'MenuChoice_ColorVision'.static.GetVisionColorScaled(1-trackPawn.EnemyReadiness));
                     gc.DrawPattern((leftX+rightX-barWidth)/2, bottomY+5, barValue, barOffset,
                                    0, 0, Texture'Solid');
                     barOffset += 5;

@@ -63,18 +63,18 @@ function SetLaserColour()
     //player.ClientMessage("R"$retColour.R$" G"$retColour.G$" B"$retColour.B);
     if (HitActor!=None){
         if (retColour.R==0 && retColour.G==0 && retColour.B==0){
-            proxy.Skin = Texture'Extension.SolidYellow';
+            proxy.Skin = class'MenuChoice_ColorVision'.static.GetNeutralLaserColor();
         } else if (retColour.R==255 && retColour.G==0 && retColour.B==0){
-            proxy.Skin = Texture'Extension.SolidRed';
+            proxy.Skin = class'MenuChoice_ColorVision'.static.GetHostileLaserColor();
         } else if (retColour.R==0 && retColour.G==255 && retColour.B==0){
-            proxy.Skin = Texture'Extension.SolidGreen';
+            proxy.Skin = class'MenuChoice_ColorVision'.static.GetFriendlyLaserColor();
         }
     } else {
         if (player.InHand!=None && class'DXRActorsBase'.static.IsGrenade(player.InHand.class) && DeusExWeapon(player.InHand).NearWallCheck()){
             //Unique colour if you're holding a grenade and you're close enough to the wall to plant the grenade
-            proxy.Skin = Texture'Extension.VisionBlue';
+            proxy.Skin = class'MenuChoice_ColorVision'.static.GetGrenadePlantLaserColor();
         } else {
-            proxy.Skin = Texture'Extension.Solid'; //Solid White
+            proxy.Skin = class'MenuChoice_ColorVision'.static.GetNothingLaserColor();
         }
     }
 }

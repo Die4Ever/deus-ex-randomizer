@@ -220,10 +220,10 @@ function Tick(float delta)
     if (EMPHitPoints<=0 || class'DXRFlags'.default.bZeroRando){
         LightType=LT_None;
     } else if(CanCharge()){
-        LightHue=89;
+        LightHue=class'MenuChoice_ColorVision'.Static.GetReadyHue();
         LightType=LT_Steady;
     } else {
-        LightHue=255;
+        LightHue=class'MenuChoice_ColorVision'.Static.GetNotReadyHue();
         if (HasLimitedUses() && ChargesRemaining()){
             LightType=LT_Pulse;
         } else {

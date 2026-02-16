@@ -38,7 +38,7 @@ static function Color GetHealthColor(DeusExPlayer player)
     health = MAX(health, 0);
 
     if (health > 0 && player!=None && player.RootWindow!=None){
-        healthColour = player.rootWindow.GetColorScaled(health/100.0);
+        healthColour = class'MenuChoice_ColorVision'.static.GetVisionColorScaled(health/100.0);
     } else {
         healthColour.r=255;
         healthColour.g=0;

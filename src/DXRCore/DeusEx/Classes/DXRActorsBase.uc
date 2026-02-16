@@ -2096,7 +2096,7 @@ static function Actor GlowUp(Actor a, optional byte hue, optional byte saturatio
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
     a.LightBrightness=160;
-    if(hue == 0) hue = 155;
+    if(hue == 0) hue = class'MenuChoice_ColorVision'.static.GetDatacubeKeyHue();
     a.LightHue=hue;
     if(saturation !=0) a.LightSaturation=saturation;
     a.LightRadius=6;

@@ -13,6 +13,7 @@
   - "Anonymous Accounts" will show that there *are* accounts (and how many), but won't show the name for ones that you don't have the password for.
   - "Show All Accounts" will show the full account name for all accounts on a computer, regardless of if you know the password or not.
 - You actually start the game with all of your skill points again, instead of 80% of the amount you had left over after the new game skills screen.
+- Initial support for a red-green color blindness mode!  Currently this mode only changes the colors used on the health display in the corner of the screen, but the intent is to change any potentially confusing colors to more identifiable ones.  Please reach out if you have a form of color blindness and we can try to adjust colors to be more identifiable!
 
 ## Minor Changes
 
