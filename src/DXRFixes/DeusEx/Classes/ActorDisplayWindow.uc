@@ -294,6 +294,7 @@ function DrawWindow(GC gc)
     local int radius;
     local FakeMirrorInfo fmi;
     local class<Actor> classToShow;
+    local bool bPointIsClose;
 
     minpos = vect(999999, 999999, 999999);
     maxpos = vect(-999999, -999999, -999999);
@@ -338,14 +339,19 @@ function DrawWindow(GC gc)
         cVect.Y = trackActor.CollisionRadius;
         cVect.Z = trackActor.CollisionHeight;
         tVect = trackActor.Location;
+        bPointIsClose = FALSE;
         if (bShowEyes && (Pawn(trackActor) != None))
             tVect.Z += Pawn(trackActor).BaseEyeHeight;
         if (trackActor == player)
         {
             if (player.bBehindView)
                 bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
-            else
-                bPointValid = FALSE;
+            else {
+                //bPointValid = FALSE;
+                //RANDO: Still show the information if you're in first person (this was so stupid, why would they do this)
+                //       Just show the information in a static location on screen, closer to the left side of the screen
+                bPointIsClose = TRUE;
+            }
         }
         else if (dxMover != None)
         {
@@ -356,10 +362,25 @@ function DrawWindow(GC gc)
         }
         else
         {
-            if (!bShowLineOfSight || (player.AICanSee(trackActor, 1, false, true, bShowArea) > 0))
-                bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
-            else
-                bPointValid = FALSE;
+            if (!bShowLineOfSight || (player.AICanSee(trackActor, 1, false, true, bShowArea) > 0)) {
+                if (trackActor.Owner == player && VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else {
+                    bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
+                }
+            } else {
+                if (VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else {
+                    bPointValid = FALSE;
+                }
+            }
+        }
+
+        if (bPointIsClose){
+            bPointValid = TRUE;
+            centerX = Width/5;
+            centerY = Height/3;
         }
 
         if (bPointValid)
