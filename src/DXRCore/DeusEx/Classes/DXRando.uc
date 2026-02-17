@@ -166,6 +166,13 @@ simulated event PreTravel()
 
 simulated event Destroyed()
 {
+    if (flags!=None && flags.f!=None){
+        //Clear the reference to the FlagBase before we orphan this DXRFlags
+        //Leaving a reference to FlagBase when traveling causes a silent crash (see DXRFlagsBase _PreTravel for earlier reference to this)
+        //Normally this reference would be cleared via PreTravel (called via DXRPreTravel from DXRando), but obviously that no longer
+        //happens once the DXRando itself has been destroyed.
+        flags.f = None;
+    }
     if(default.dxr == self) {
         default.dxr = None;// clear the singleton reference
     }

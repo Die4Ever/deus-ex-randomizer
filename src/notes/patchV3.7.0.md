@@ -111,5 +111,6 @@
 - Binoculars or weapon scopes now unzoom when you reach a bingo win (such as in WaltonWare).
 - Maybe fixed random deaths in the ending cutscenes for some players.
 - Times shown for each mission in the credits now use fixed width numbers to make things line up better.
+- The game no longer crashes when starting a new game from the training mission.
 
 </details>
