@@ -16,7 +16,12 @@ struct loadouts
     var class<Augmentation> starting_augs[5];
     var class<Actor>        item_spawns[10];
     var int                 item_spawns_chances[10];// the % spawned in each map, max of 300%
+    var int                 lethality;
 };
+
+const PURE_LETHAL     =  1; //No weapons to do knockouts
+const PURE_NONLETHAL  = -1; //No weapons to do kills
+const VAGUE_LETHALITY =  0; //Neither purely lethal nor non-lethal
 
 var loadouts item_set;
 
@@ -99,6 +104,9 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     //ALWAYS allow AmmoNone, it gets looted from Melee weapons and stuff
     AddInvAllow(class'#var(prefix)AmmoNone');
 
+    //Loadouts start as neither purely lethal nor non-lethal
+    SetLoadoutDefaultLethal();
+
     switch(loadout) {
 /////////////////////////////////////////////////////////////////
     //#region All Items
@@ -140,6 +148,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
             AddAugAllow(class'AugJump');
         #endif
         AddAugBan(class'#var(prefix)AugSpeed');
+        SetLoadoutPureNonLethal();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -183,6 +192,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
             AddAugAllow(class'AugJump');
         #endif
         AddAugBan(class'#var(prefix)AugSpeed');
+        SetLoadoutPureNonLethal();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -253,6 +263,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddInvAllow(class'#var(prefix)WeaponCrowbar');
         AddStartInv(class'#var(prefix)WeaponCrowbar');
         AddStandardAugSet();
+        SetLoadoutPureLethal();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -289,6 +300,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',50);
         AddItemSpawn(class'#var(package).WeaponRubberBaton',10);
         AddStandardAugSet();
+        SetLoadoutPureLethal();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -388,6 +400,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)AmmoRocketWP',100);
         AddItemSpawn(class'#var(prefix)Ammo20mm',100);
         AddStandardAugSet();
+        SetLoadoutPureLethal();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -641,6 +654,31 @@ function AddRandomItem(string rtype, int chance)
 function AddLoadoutPlayerMsg(string msg)
 {
     item_set.player_message=msg;
+}
+
+function SetLoadoutPureLethal()
+{
+    item_set.lethality = PURE_LETHAL;
+}
+
+function SetLoadoutPureNonLethal()
+{
+    item_set.lethality = PURE_NONLETHAL;
+}
+
+function SetLoadoutDefaultLethal()
+{
+    item_set.lethality = VAGUE_LETHALITY;
+}
+
+function bool IsLoadoutPureLethal()
+{
+    return item_set.lethality==PURE_LETHAL;
+}
+
+function bool IsLoadoutPureNonLethal()
+{
+    return item_set.lethality==PURE_NONLETHAL;
 }
 
 function AddInvBan(class<Inventory> inv)

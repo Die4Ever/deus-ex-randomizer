@@ -64,6 +64,10 @@
 - Bingo goal adjustments:
   - "Ignore Paul in the 747 Hangar" now allows either a kill or knock out.
   - "I SPILL MY DRINK!" now allows either a kill or knock out.
+- Adjusted the availability of various bingo goals based on loadouts.
+  - Purely lethal loadouts (Such as Freeman Mode or Explosives Only) will no longer allow "knock out" goals to be placed on the bingo board
+  - Purely non-lethal loadouts (Such as Stick with the Prod) will no longer allow "kill" goals to be placed on the bingo board
+  - "By the Book" loadout will no longer allow "Hack x Computers" or "Hack x Alarm Sounder Panels" bingo goals to be placed on the board.
 - The time between conversations with Jock and the start of exit cutscenes has been consistently reduced to try to prevent the player from taking damage between the end of the conversation and the start of the cutscene (as often happened at the end of Mission 9 Graveyard).
 - The player can no longer put random ATM accounts into debt when hacking them (they can only be reduced to a balance of 0 credits).  Account balances are actually properly emptied and synced to other ATMs in the same map when an ATM is hacked.
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.

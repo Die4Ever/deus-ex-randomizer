@@ -2661,9 +2661,15 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
         case "MedicalBot_ClassDead":
         case "RepairBot_ClassDead":
-            return (medbots < 20 || repairbots < 20);
+            if (medbots < 20 || repairbots < 20) {
+                return true; //Let this fall through to later checks if  still feasible here
+            }
+            break;
         case "UtilityBot_ClassDead":
-            return !(medbots < 20 || repairbots < 20);
+            if (!(medbots < 20 || repairbots < 20)){
+                return true; //Let this fall through to later checks
+            }
+            break;
 
 ///////////////////////////////////////////////
 
@@ -2732,7 +2738,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                     return true;
                 }
             }
-            return false;
+            break; //Let this fall through to later checks
 
 //////////////////////////////////////////////////////
 
@@ -2790,6 +2796,63 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "DXREvents_LeftOnBoat":
             return (real_duration==1);
 
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require hacking (By the Book stuff)
+        case "ComputerHacked":    //Need to be able to hack to hack computers
+            if(loadout!=None) {
+                if(loadout.is_skill_banned(class'SkillComputer')) {
+                    return true;
+                }
+            }
+            break;
+
+        case "AlarmUnitHacked":    //Need to be able to use multitools to hack alarm panels
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)Multitool')) {
+                    return true;
+                }
+            }
+            break;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require lethality
+        case "GibbedPawn":
+        case "IgnitedPawn":
+        case "AlliesKilled":
+            if (loadout!=None){
+                if (loadout.IsLoadoutPureNonLethal()){
+                    return true;
+                }
+            }
+            break;
+    }
+
+    //More broad loadout checks
+    if (loadout!=None){
+        if (loadout.IsLoadoutPureLethal()){
+            //If pure lethal loadout (like Freeman Mode or Explosives Only), ban knockout goals
+            //Ones ending with _Unconscious or _PlayerUnconscious
+            if (Right(bingo_event, 12) == "_Unconscious" || Right(bingo_event, 18) == "_PlayerUnconscious") {
+                return true;
+            }
+
+            //This covers both generic ClassUnconscious, along with mission specific classunconsciouses (Eg. _ClassUnconsciousM6)
+            if (InStr(bingo_event,"_ClassUnconscious")!=-1){
+                return true;
+            }
+        } else if (loadout.IsLoadoutPureNonLethal()){
+            //If pure nonlethal loadout (like SWTP/SWTP+), ban kill goals
+            //Ones ending with _Dead, _PlayerDead, or _ClassDead(with option Mxx)
+
+            if (Right(bingo_event, 5) == "_Dead" || Right(bingo_event, 11) == "_PlayerDead") {
+                return true;
+            }
+
+            //This covers both generic ClassDead, along with mission specific classdeads (Eg. _ClassDeadM6)
+            if (InStr(bingo_event,"_ClassDead")!=-1){
+                return true;
+            }
+        }
     }
 
     return false;
