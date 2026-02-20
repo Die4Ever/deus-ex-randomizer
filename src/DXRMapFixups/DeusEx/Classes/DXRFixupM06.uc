@@ -244,6 +244,11 @@ function PreFirstEntryMapFixes()
         //Prevent guys from spawning in Tong's hallway
         MassSetSecretGoalBox(class'NavigationPoint', vectm(-295,360,190), vectm(1155,549,-238), true);
 
+        //Don't clone guys who are vaguely near the hall
+        foreach RadiusActors(class'#var(prefix)ScriptedPawn',p, 750, vectm(460,460,-30)){
+            p.bIsSecretGoal=true;
+        }
+
         break;
     //#endregion
 

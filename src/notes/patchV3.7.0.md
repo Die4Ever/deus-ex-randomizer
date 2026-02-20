@@ -120,5 +120,6 @@
 - Health is properly restored to up to 50% of maximum health in each body part when reaching Mission 5.
 - Hidden explosive crates attached to the Mission 9 Weld Points no longer sometimes get collision when being randomized (which caused them to be shootable).
 - Revision will no longer consider existing item locations as viable locations to spawn random bots or NPCs.
+- The triad helpers in Tong's base (Mission 6) will no longer spawn additional NPCs near them.  This should help keep his hallway clear and navigable.
 
 </details>
