@@ -1567,6 +1567,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         if (p.bIsSecretGoal) continue;
         if(Teleporter(p)!=None) continue;
         if(MapExit(p)!=None) continue;
+        if(InventorySpot(p)!=None) continue;
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;
