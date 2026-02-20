@@ -117,5 +117,6 @@
 - Times shown for each mission in the credits now use fixed width numbers to make things line up better.
 - The game no longer crashes when starting a new game from the training mission.
 - Health is properly restored to up to 50% of maximum health in each body part when reaching Mission 5.
+- Hidden explosive crates attached to the Mission 9 Weld Points no longer sometimes get collision when being randomized (which caused them to be shootable).
 
 </details>
