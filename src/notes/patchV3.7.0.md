@@ -83,6 +83,7 @@
 - Bodies that the player carries are now visible in third person and fixed camera perspectives.
 - Block certain out-of-bounds locations from being selected for random placement of things (like medbots/repairbots, merchants, turrets, datacubes, etc...):
   - Beyond the teleporter at the end of Ocean Lab, leading into the UC map (Mission 14).
+  - In the hallway of Tong's base (Mission 6).
 - The goal to find the Ambrosia in Battery Park (Mission 2) is now properly added at the start of the the level again.
 - The Training Merchant (who shows up in Training) is no longer afraid of anything.
 - The door in the demolitions training hallway (In the training mission) can now be highlighted to see the damage threshold.

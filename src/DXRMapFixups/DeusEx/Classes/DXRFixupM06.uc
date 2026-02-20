@@ -240,6 +240,10 @@ function PreFirstEntryMapFixes()
                     break;
             }
         }
+
+        //Prevent guys from spawning in Tong's hallway
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(-295,360,190), vectm(1155,549,-238), true);
+
         break;
     //#endregion
 
