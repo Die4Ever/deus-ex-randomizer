@@ -19,12 +19,12 @@ struct BingoOption {
     var int missions;// bit masks
     var bool do_not_scale;
 };
-var() BingoOption bingo_options[400]; //Update the comment at the bottom of the defaultproperties in DXREvents when this gets bigger
+var() BingoOption bingo_options[450]; //Update the comment at the bottom of the defaultproperties in DXREvents when this gets bigger
 
 struct MutualExclusion {
     var string e1, e2;
 };
-var() MutualExclusion mutually_exclusive[120];
+var() MutualExclusion mutually_exclusive[121];
 
 struct ActorWatchItem {
     var Actor a;

@@ -122,5 +122,9 @@
 - Revision will no longer consider existing item locations as viable locations to spawn random bots or NPCs.
 - The triad helpers in Tong's base (Mission 6) near the hallway will no longer spawn additional NPCs near them.  This should help keep the area clear and navigable.
 - Keys bound to opening specific menus should now always also close the menu again if it is already open.
+- New bingo goals:
+  - Make Soup: Put three bodies into Tong's hot tub
+  - My Buddy Vinny: Offer to help Vinny find out what's going on at the Advanced Submarine Base
+  - Yvan Eht Nioj: Look at a Navy recruitment poster through binoculars or a scope.
 
 </details>

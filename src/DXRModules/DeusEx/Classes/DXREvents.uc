@@ -1058,6 +1058,8 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-466.5,1826,40),40,100);
         class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-337.2,1826,40),40,100);
 
+        class'BingoTrigger'.static.ProxCreate(self,'MakeSoup',vectm(-1760,448,-180),100,80,class'#var(DeusExPrefix)Carcass',3);
+
         WatchFlag('PaulToTong');
 
         break;
@@ -1138,6 +1140,8 @@ function SetWatchFlags() {
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('StantonDowd_Played');
         MarkBingo("MaggieLived", true);
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -1154,6 +1158,8 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -1170,13 +1176,19 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(315,-2200,500),150,40); //Top of stairs
         }
         WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         break;
     case "08_NYC_UNDERGROUND":
         WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
         break;
     case "08_NYC_FREECLINIC":
         WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
             bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-825,-256),40,40);
@@ -2759,6 +2771,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "schematic_downloaded":
         case "HowardStrong_PlayerTakedown":
         case "missile_launched":
+        case "HelpSailor_ConvoFlag":
             return (real_duration!=1);
 
 /////////////////////////////////////////////////////////////////////
@@ -3213,6 +3226,8 @@ function string RemapBingoEvent(string eventname)
             //Maggie's Birthday - some tomfoolery in the ReadText logic gets us here
             //Easier to just fix here for this special case
             return "ReadText_06_Datacube05";
+        case "HelpSailor":
+            return "HelpSailor_ConvoFlag";
         default:
             return eventname;
     }
@@ -3391,6 +3406,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
             failed[num_failed++] = "M02QuestionedGreen";
+            return num_failed;
+        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+            failed[num_failed++] = "HelpSailor_ConvoFlag";
             return num_failed;
     }
 
@@ -4209,8 +4227,11 @@ defaultproperties
 #endif
     bingo_options(396)=(event="Disloyal_DestroyDeco",desc="Disloyal",max=4,missions=#bit(5),do_not_scale=true)
     bingo_options(397)=(event="TakeABreather",desc="A breath of fresh air",max=1,missions=#bit(2,8))
+    bingo_options(398)=(event="MakeSoup",desc="Make Soup",max=1,missions=#bit(6))
+    bingo_options(399)=(event="HelpSailor_ConvoFlag",desc="My Buddy Vinny",max=1,missions=#bit(8))
+    bingo_options(400)=(event="poster01_peepedtex",desc="Yvan Eht Nioj",max=1,missions=#bit(9))
 
-    //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
+    //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
 
@@ -4341,5 +4362,6 @@ defaultproperties
     mutually_exclusive(117)=(e1="HumanStompDeath",e2="AlliesKilled")
     mutually_exclusive(118)=(e1="GibbedPawn",e2="AlliesKilled")
     mutually_exclusive(119)=(e1="IgnitedPawn",e2="AlliesKilled")
+    mutually_exclusive(120)=(e1="TongsHotTub",e2="MakeSoup")
 //#endregion
 }
