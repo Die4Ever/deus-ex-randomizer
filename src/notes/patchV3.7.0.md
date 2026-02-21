@@ -126,5 +126,6 @@
   - Make Soup: Put three bodies into Tong's hot tub
   - My Buddy Vinny: Offer to help Vinny find out what's going on at the Advanced Submarine Base
   - Yvan Eht Nioj: Look at a Navy recruitment poster through binoculars or a scope.
+- Opening the New Game screen while in a game should no longer show bans based on the loadout used in the game currently being played.  Instead it will properly use the loadout selected on the New Game screen.
 
 </details>
