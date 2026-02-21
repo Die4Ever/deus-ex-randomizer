@@ -437,6 +437,7 @@ function bool ButtonActivated( Window buttonPressed )
     switch(buttonPressed) {
     case btnBingo:
         SaveSettings();
+        log("Top Window when opening bingo is " $ root.GetTopWindow());
         root.InvokeUIScreen(class'PersonaScreenBingo');
         return true;
 

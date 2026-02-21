@@ -121,5 +121,6 @@
 - Hidden explosive crates attached to the Mission 9 Weld Points no longer sometimes get collision when being randomized (which caused them to be shootable).
 - Revision will no longer consider existing item locations as viable locations to spawn random bots or NPCs.
 - The triad helpers in Tong's base (Mission 6) near the hallway will no longer spawn additional NPCs near them.  This should help keep the area clear and navigable.
+- Keys bound to opening specific menus should now always also close the menu again if it is already open.
 
 </details>

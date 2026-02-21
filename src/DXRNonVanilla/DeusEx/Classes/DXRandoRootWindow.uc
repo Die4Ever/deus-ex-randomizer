@@ -187,6 +187,8 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
         case class'PersonaScreenImages':
             newScreen = class'DXRPersonaScreenImages';
             break;
+        //IF ADDING MORE PERSONA SCREENS, ALSO UPDATE THE DataVaultFunctions BELOW IN DEFAULT PROPERTIES
+        //THIS ALLOWS HITTING THE BOUND KEY AGAIN TO CLOSE THE WINDOW.
         default:
             if(class<NetworkTerminal>(newScreen) != None) {
                 log("WARNING: InvokeUIScreen "$newScreen);
@@ -194,6 +196,63 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
             break;
     }
     return Super.InvokeUIScreen(newScreen, GetNoPause(bNoPause));
+}
+
+function bool CheckSingleDataVaultWindow(EInputKey key, string function, class<DeusExBaseWindow> winClass)
+{
+    local bool bKeyPressed;
+
+    bKeyPressed = False;
+
+    // Get the key(s) bound to this function
+    if (IsKeyAssigned(key, function))
+    {
+        // If the screen is already active, then cancel it.
+        // Otherwise invoke it.
+
+        if ((GetTopWindow() != None) && (GetTopWindow().Class == winClass))
+            PopWindow();
+        else
+            InvokeUIScreen(winClass);
+
+        return true;
+    }
+
+    return false;
+}
+
+function bool ProcessDataVaultSelection(EInputKey key)
+{
+    local bool rc;
+
+    rc = Super.ProcessDataVaultSelection(key);
+
+    //Add any additional persona windows to be handled here
+    if (!rc) rc = CheckSingleDataVaultWindow(key,"ShowBingoWindow",Class'PersonaScreenBingo');
+
+    return rc;
+}
+
+function bool IsKeyAssigned(EInputKey key, String function)
+{
+    local int pos;
+    local string InputKeyName;
+    local string AllAlias,Alias;
+    local DeusExPlayer player;
+
+    player       = DeusExPlayer(parentPawn);
+    InputKeyName = mid(string(GetEnum(enum'EInputKey',key)),3);
+
+    AllAlias = player.ConsoleCommand("KEYBINDING " $ InputKeyName);
+
+    //RANDO: Player might have the key bound to multiple functions - split those out and check them individually
+    while (AllAlias!=""){
+        Alias = class'DXRInfo'.static.UnpackStringChar(AllAlias,"|");
+        //player.ClientMessage("Key: "$InputKeyName$" Alias: "$Alias$"  Function: "$function);
+        if (Alias == function) return true;
+    }
+
+    return false;
 }
 
 #ifdef revision
@@ -252,3 +311,15 @@ event MutateNewChild(Window NewParent, out class<Window> DesignatedClass)
 
 }
 #endif
+
+defaultproperties
+{
+     //DataVaultFunctions(0)=(Function="ShowInventoryWindow",winClass=Class'DeusEx.PersonaScreenInventory')
+     //DataVaultFunctions(1)=(Function="ShowHealthWindow",winClass=Class'DeusEx.PersonaScreenHealth')
+     //DataVaultFunctions(2)=(Function="ShowAugmentationsWindow",winClass=Class'DeusEx.PersonaScreenAugmentations')
+     DataVaultFunctions(3)=(Function="ShowSkillsWindow",winClass=Class'DXRPersonaScreenSkills')
+     DataVaultFunctions(4)=(Function="ShowGoalsWindow",winClass=Class'DXRPersonaScreenGoals')
+     //DataVaultFunctions(5)=(Function="ShowConversationsWindow",winClass=Class'DeusEx.PersonaScreenConversations')
+     DataVaultFunctions(6)=(Function="ShowImagesWindow",winClass=Class'DXRPersonaScreenImages')
+     //DataVaultFunctions(7)=(Function="ShowLogsWindow",winClass=Class'DeusEx.PersonaScreenLogs')
+}
