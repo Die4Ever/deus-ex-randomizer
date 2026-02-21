@@ -2664,7 +2664,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 
     merchants = dxr.flags.settings.merchants * loge_duration;
 
-    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
 /////////////////////////////////////////////////////////////////////////////////
 

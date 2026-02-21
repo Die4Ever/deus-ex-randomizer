@@ -36,6 +36,28 @@ replication
         mult_items_per_level;
 }
 
+function ResetLoadouts()
+{
+    local int i;
+
+    item_set.name="";
+    item_set.player_message="";
+
+    for(i=0;i<ArrayCount(item_set.ban_types);i++)           item_set.ban_types[i]=None;
+    for(i=0;i<ArrayCount(item_set.ban_skills);i++)          item_set.ban_skills[i]=None;
+    for(i=0;i<ArrayCount(item_set.ban_augs);i++)            item_set.ban_augs[i]=None;
+    for(i=0;i<ArrayCount(item_set.allow_types);i++)         item_set.allow_types[i]=None;
+    for(i=0;i<ArrayCount(item_set.allow_skills);i++)        item_set.allow_skills[i]=None;
+    for(i=0;i<ArrayCount(item_set.allow_augs);i++)          item_set.allow_augs[i]=None;
+    for(i=0;i<ArrayCount(item_set.never_ban_skills);i++)    item_set.never_ban_skills[i]=None;
+    for(i=0;i<ArrayCount(item_set.starting_equipment);i++)  item_set.starting_equipment[i]=None;
+    for(i=0;i<ArrayCount(item_set.starting_augs);i++)       item_set.starting_augs[i]=None;
+    for(i=0;i<ArrayCount(item_set.item_spawns);i++)         item_set.item_spawns[i]=None;
+    for(i=0;i<ArrayCount(item_set.item_spawns_chances);i++) item_set.item_spawns_chances[i]=0;
+
+    item_set.lethality = VAGUE_LETHALITY;
+}
+
 //#region CheckConfig
 function CheckConfig()
 {
