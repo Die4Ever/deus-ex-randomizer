@@ -553,13 +553,15 @@ function DrawTargetAugmentation(GC gc)
 
         }
 
-        str = "To: "$formatMapName(teleDest);
+        str = formatMapName(teleDest);
         gc.SetTextColor(colWhite);
         gc.GetTextExtent(0, w, h, str);
         x = boxCX - w/2;
-        y=boxCY;
+        y = boxCY + h/2;
 
+        gc.SetHorizontalAlignment(HALIGN_Center);
         gc.DrawText(x, y, w, h, str);
+        gc.SetHorizontalAlignment(HALIGN_Left);
 	}
 
     //Look for any hover hints
@@ -573,7 +575,9 @@ function DrawTargetAugmentation(GC gc)
         x = boxCX - w/2;
         y=boxCY;
 
+        gc.SetHorizontalAlignment(HALIGN_Center);
         gc.DrawText(x, y, w, h, str);
+        gc.SetHorizontalAlignment(HALIGN_Left);
     }
 
     //Draw a poolball aiming line

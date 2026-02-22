@@ -377,6 +377,8 @@ function generateEntranceNote(bool bSpoil)
             }
 
             if(found){
+                source = class'DXRInfo'.static.ReplaceText(source,class'DXRInfo'.Static.CR()," ");
+                dest   = class'DXRInfo'.static.ReplaceText(dest,  class'DXRInfo'.Static.CR()," ");
                 entranceList=entranceList$"|n"$source$" -> ";
                 if (bSpoil){
                     entranceList=entranceList$dest;
