@@ -944,6 +944,9 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return RandoMedium;
 
     if(slot--==0) return SpeedrunMode;
+    if(!VersionIsStable()) {
+        if(slot--==0) return SpeedShuffle;
+    }
     if(slot--==0) return SpeedrunTraining;
     if(slot--==0) return SeriousSam;
     if(slot--==0) return HordeMode;
@@ -988,6 +991,8 @@ function string GameModeName(int gamemode)
         return "Serious Sam Mode";
     case SpeedrunMode:
         return "Speedrun Mode";
+    case SpeedShuffle:
+        return "Speedrun Shuffle";
     case SpeedrunTraining:
         return "Speedrun Training Mode";
     case WaltonWareHalloween:
@@ -1142,6 +1147,8 @@ function string GameModeHelpText(int gamemode)
         return "The Randomizer experience, except enemy quantities have been cranked up, damage multipliers are decreased, and maximum health has been increased.";
     case SpeedrunMode:
         return "Full Randomizer, but with optimizations to ensure a more consistent speedrunning experience!  This also enables the built-in speedrun timer.";
+    case SpeedShuffle:
+        return "Speedrun Mode, but also the mission order is shuffled!";
     case SpeedrunTraining:
         return "Same as speedrun mode, but enables the Goal Location Hints option, highlighting the possible goal locations.";
     case WaltonWareHalloween:
@@ -1231,7 +1238,7 @@ function bool IsSeriousRando()
 
 function bool IsSpeedrunMode()
 {
-    return gamemode == SpeedrunMode || gamemode == SpeedrunTraining;
+    return gamemode == SpeedrunMode || gamemode == SpeedrunTraining || gamemode == SpeedShuffle;
 }
 
 function bool IsWaltonWare()

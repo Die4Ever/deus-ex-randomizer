@@ -1,5 +1,6 @@
 ## Major Changes
 
+- New game mode: Speedrun Shuffle! This is the same as Speedrun Mode, but the order of the missions is shuffled.
 - New password randomization styles!  By default, passwords will now be randomized by picking a few words from word lists instead of purely random letters and numbers.  In theory these passwords should be a bit easier to remember if not using autofill, as well as simply being more "fun".
   - If memes are disabled (such as when playing Serious Rando), password randomization will default to "Pronouncable" passwords instead.  These passwords alternate vowels and consonants (the same method used for random names) to form vaguely pronouncable passwords which should be easier to remember
   - If you want to switch password styles mid-game, do so just before leaving for a new mission (so there is no possibility of backtracking) for the least possibility of causing issues.
