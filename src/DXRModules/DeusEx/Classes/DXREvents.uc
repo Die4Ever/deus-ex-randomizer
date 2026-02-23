@@ -1146,6 +1146,7 @@ function SetWatchFlags() {
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
         WatchFlag('M08SmugglerConvos_Played');
+        WatchFlag('M08SmugglerNotWarned');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -2202,6 +2203,18 @@ simulated function AnyEntry()
         ce = NewConEvent(conv, ce, class'ConEventTrigger');
         ce.eventType = ET_Trigger;
         ConEventTrigger(ce).triggerTag = 'SavedMiguel';
+        break;
+
+    case "08_NYC_SMUG":
+        //Add a flag for explicitly not warning smuggler (for bingo failure, maybe to toot for being a dick?)
+        conv = GetConversation('M08SmugglerConvos');
+        ce = conv.GetEventFromLabel("NoWarning");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='M08SmugglerNotWarned';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=9;
         break;
     }
 }
@@ -3409,6 +3422,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
             failed[num_failed++] = "HelpSailor_ConvoFlag";
+            return num_failed;
+        case "M08SmugglerNotWarned":
+            failed[num_failed++] = "M08WarnedSmuggler";
             return num_failed;
     }
 

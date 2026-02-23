@@ -65,6 +65,7 @@
 - Bingo goal adjustments:
   - "Ignore Paul in the 747 Hangar" now allows either a kill or knock out.
   - "I SPILL MY DRINK!" now allows either a kill or knock out.
+  - "Warn Smuggler" now fails immediately if you actively tell him there's nothing happening.
 - Adjusted the availability of various bingo goals based on loadouts.
   - Purely lethal loadouts (Such as Freeman Mode or Explosives Only) will no longer allow "knock out" goals to be placed on the bingo board
   - Purely non-lethal loadouts (Such as Stick with the Prod) will no longer allow "kill" goals to be placed on the bingo board
