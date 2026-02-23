@@ -166,6 +166,13 @@ simulated event PreTravel()
 
 simulated event Destroyed()
 {
+    if (flags!=None && flags.f!=None){
+        //Clear the reference to the FlagBase before we orphan this DXRFlags
+        //Leaving a reference to FlagBase when traveling causes a silent crash (see DXRFlagsBase _PreTravel for earlier reference to this)
+        //Normally this reference would be cleared via PreTravel (called via DXRPreTravel from DXRando), but obviously that no longer
+        //happens once the DXRando itself has been destroyed.
+        flags.f = None;
+    }
     if(default.dxr == self) {
         default.dxr = None;// clear the singleton reference
     }
@@ -384,6 +391,14 @@ function DXRFlags LoadFlagsModule()
     return flags;
 }
 
+//Loads a bare minimum number of modules for the new game menu
+function LoadNewGameMenuModules()
+{
+    LoadFlagsModule();  //Transient
+    LoadModule(class'DXRSkills', true); //Transient
+    LoadModule(class'DXRLoadouts', true); //Transient
+}
+
 function DXRBase LoadModule(class<DXRBase> moduleclass, optional bool forcenew)
 {
     local DXRBase m;
@@ -441,6 +456,9 @@ simulated final function DXRBase FindModule(class<DXRBase> moduleclass, optional
         if( modules[i] != None )
             if( ClassIsChildOf(modules[i].Class, moduleclass) )
                 return modules[i];
+
+    if(!bSilent)
+        l("FindModule("$moduleclass$") did not find module owned by "$self);
 
     foreach AllActors(class'DXRBase', m)
     {

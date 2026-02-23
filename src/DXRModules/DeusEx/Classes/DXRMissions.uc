@@ -912,7 +912,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 {
     local #var(prefix)ScriptedPawn sp;
     local Mover m;
-    local bool success, oldbCollideWorld;
+    local bool success, oldbCollideWorld, oldbCollideActors, oldbBlockActors, oldbBlockPlayers;
     local #var(prefix)Vehicles v;
     local int offset;
 
@@ -924,6 +924,10 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
+    oldbCollideActors = a.bCollideActors;
+    oldbBlockActors = a.bBlockActors;
+    oldbBlockPlayers = a.bBlockPlayers;
+
     if(p == PHYS_None || p == PHYS_MovingBrush) a.bCollideWorld = false;
     a.bMovable=True;
     success = a.SetLocation(loc);
@@ -970,6 +974,9 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     } else {
         a.bCollideWorld = true;
     }
+
+    //Physics changes can sometimes change collision as a side effect (If a base gets set as a result), reset collision to what it was before the move
+    a.SetCollision(oldbCollideActors, oldbBlockActors, oldbBlockPlayers);
 
     return true;
 }

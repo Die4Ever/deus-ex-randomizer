@@ -384,7 +384,7 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
     local int numWeaps, forceKeep, slot;
     local DXRLoadouts loadout;
 
-    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
     for( i = p.Inventory; i != None; i = next ) {
         next = i.Inventory;

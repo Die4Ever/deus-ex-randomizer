@@ -1058,6 +1058,8 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-466.5,1826,40),40,100);
         class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-337.2,1826,40),40,100);
 
+        class'BingoTrigger'.static.ProxCreate(self,'MakeSoup',vectm(-1760,448,-180),100,80,class'#var(DeusExPrefix)Carcass',3);
+
         WatchFlag('PaulToTong');
 
         break;
@@ -1138,10 +1140,13 @@ function SetWatchFlags() {
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('StantonDowd_Played');
         MarkBingo("MaggieLived", true);
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
         WatchFlag('M08SmugglerConvos_Played');
+        WatchFlag('M08SmugglerNotWarned');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -1154,6 +1159,8 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -1170,13 +1177,19 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(315,-2200,500),150,40); //Top of stairs
         }
         WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         break;
     case "08_NYC_UNDERGROUND":
         WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
         break;
     case "08_NYC_FREECLINIC":
         WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('HelpSailor');
+        WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
             bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-825,-256),40,40);
@@ -2191,6 +2204,18 @@ simulated function AnyEntry()
         ce.eventType = ET_Trigger;
         ConEventTrigger(ce).triggerTag = 'SavedMiguel';
         break;
+
+    case "08_NYC_SMUG":
+        //Add a flag for explicitly not warning smuggler (for bingo failure, maybe to toot for being a dick?)
+        conv = GetConversation('M08SmugglerConvos');
+        ce = conv.GetEventFromLabel("NoWarning");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='M08SmugglerNotWarned';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=9;
+        break;
     }
 }
 
@@ -2652,7 +2677,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 
     merchants = dxr.flags.settings.merchants * loge_duration;
 
-    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -2661,9 +2686,15 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
         case "MedicalBot_ClassDead":
         case "RepairBot_ClassDead":
-            return (medbots < 20 || repairbots < 20);
+            if (medbots < 20 || repairbots < 20) {
+                return true; //Let this fall through to later checks if  still feasible here
+            }
+            break;
         case "UtilityBot_ClassDead":
-            return !(medbots < 20 || repairbots < 20);
+            if (!(medbots < 20 || repairbots < 20)){
+                return true; //Let this fall through to later checks
+            }
+            break;
 
 ///////////////////////////////////////////////
 
@@ -2732,7 +2763,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                     return true;
                 }
             }
-            return false;
+            break; //Let this fall through to later checks
 
 //////////////////////////////////////////////////////
 
@@ -2753,6 +2784,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "schematic_downloaded":
         case "HowardStrong_PlayerTakedown":
         case "missile_launched":
+        case "HelpSailor_ConvoFlag":
             return (real_duration!=1);
 
 /////////////////////////////////////////////////////////////////////
@@ -2790,6 +2822,63 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "DXREvents_LeftOnBoat":
             return (real_duration==1);
 
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require hacking (By the Book stuff)
+        case "ComputerHacked":    //Need to be able to hack to hack computers
+            if(loadout!=None) {
+                if(loadout.is_skill_banned(class'SkillComputer')) {
+                    return true;
+                }
+            }
+            break;
+
+        case "AlarmUnitHacked":    //Need to be able to use multitools to hack alarm panels
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)Multitool')) {
+                    return true;
+                }
+            }
+            break;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require lethality
+        case "GibbedPawn":
+        case "IgnitedPawn":
+        case "AlliesKilled":
+            if (loadout!=None){
+                if (loadout.IsLoadoutPureNonLethal()){
+                    return true;
+                }
+            }
+            break;
+    }
+
+    //More broad loadout checks
+    if (loadout!=None){
+        if (loadout.IsLoadoutPureLethal()){
+            //If pure lethal loadout (like Freeman Mode or Explosives Only), ban knockout goals
+            //Ones ending with _Unconscious or _PlayerUnconscious
+            if (Right(bingo_event, 12) == "_Unconscious" || Right(bingo_event, 18) == "_PlayerUnconscious") {
+                return true;
+            }
+
+            //This covers both generic ClassUnconscious, along with mission specific classunconsciouses (Eg. _ClassUnconsciousM6)
+            if (InStr(bingo_event,"_ClassUnconscious")!=-1){
+                return true;
+            }
+        } else if (loadout.IsLoadoutPureNonLethal()){
+            //If pure nonlethal loadout (like SWTP/SWTP+), ban kill goals
+            //Ones ending with _Dead, _PlayerDead, or _ClassDead(with option Mxx)
+
+            if (Right(bingo_event, 5) == "_Dead" || Right(bingo_event, 11) == "_PlayerDead") {
+                return true;
+            }
+
+            //This covers both generic ClassDead, along with mission specific classdeads (Eg. _ClassDeadM6)
+            if (InStr(bingo_event,"_ClassDead")!=-1){
+                return true;
+            }
+        }
     }
 
     return false;
@@ -3150,6 +3239,8 @@ function string RemapBingoEvent(string eventname)
             //Maggie's Birthday - some tomfoolery in the ReadText logic gets us here
             //Easier to just fix here for this special case
             return "ReadText_06_Datacube05";
+        case "HelpSailor":
+            return "HelpSailor_ConvoFlag";
         default:
             return eventname;
     }
@@ -3328,6 +3419,12 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
             failed[num_failed++] = "M02QuestionedGreen";
+            return num_failed;
+        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+            failed[num_failed++] = "HelpSailor_ConvoFlag";
+            return num_failed;
+        case "M08SmugglerNotWarned":
+            failed[num_failed++] = "M08WarnedSmuggler";
             return num_failed;
     }
 
@@ -4146,8 +4243,11 @@ defaultproperties
 #endif
     bingo_options(396)=(event="Disloyal_DestroyDeco",desc="Disloyal",max=4,missions=#bit(5),do_not_scale=true)
     bingo_options(397)=(event="TakeABreather",desc="A breath of fresh air",max=1,missions=#bit(2,8))
+    bingo_options(398)=(event="MakeSoup",desc="Make Soup",max=1,missions=#bit(6))
+    bingo_options(399)=(event="HelpSailor_ConvoFlag",desc="My Buddy Vinny",max=1,missions=#bit(8))
+    bingo_options(400)=(event="poster01_peepedtex",desc="Yvan Eht Nioj",max=1,missions=#bit(9))
 
-    //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
+    //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
 
@@ -4278,5 +4378,6 @@ defaultproperties
     mutually_exclusive(117)=(e1="HumanStompDeath",e2="AlliesKilled")
     mutually_exclusive(118)=(e1="GibbedPawn",e2="AlliesKilled")
     mutually_exclusive(119)=(e1="IgnitedPawn",e2="AlliesKilled")
+    mutually_exclusive(120)=(e1="TongsHotTub",e2="MakeSoup")
 //#endregion
 }

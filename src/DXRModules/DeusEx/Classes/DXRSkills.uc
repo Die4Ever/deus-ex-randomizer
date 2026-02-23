@@ -104,7 +104,7 @@ simulated function RandoSkill(Skill aSkill)
     aSkill.UpdateBalance();
 #endif
 
-    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
     if( dxr.dxInfo != None && dxr.dxInfo.missionNumber > 0 ) {
         // TODO: new game screen should use the starting mission if it isn't 1, but it needs to work even when doing a new game while already in a game

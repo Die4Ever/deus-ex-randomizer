@@ -61,7 +61,7 @@ function String GetHintText()
 #endif
     }
 
-    text = "To: "$formatMapName(teleDest);
+    text = formatMapName(teleDest);
     if (addBingoText) {
         return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, text);
     } else {

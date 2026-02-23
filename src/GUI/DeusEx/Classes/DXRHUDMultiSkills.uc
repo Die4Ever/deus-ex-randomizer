@@ -150,21 +150,21 @@ function DrawSkillsScreen(GC gc)
 
             if ( askill.CurrentLevel == 3)
             {
-                gc.SetTileColor( colMax );
-                gc.SetTextColor( colMax );
+                gc.SetTileColor( class'MenuChoice_ColorVision'.Static.GetUpgradeMaxColor() );
+                gc.SetTextColor( class'MenuChoice_ColorVision'.Static.GetUpgradeMaxColor() );
                 costStr = NAString;
             }
             else if ( Player.SkillPointsAvail >= askill.GetCost() )
             {
-                gc.SetTextColor( colGreen );
-                gc.SetTileColor( colGreen );
+                gc.SetTextColor( class'MenuChoice_ColorVision'.Static.GetUpgradableColor() );
+                gc.SetTileColor( class'MenuChoice_ColorVision'.Static.GetUpgradableColor() );
 
                 costStr = "" $ askill.GetCost();
             }
             else
             {
-                gc.SetTileColor( colRed );
-                gc.SetTextColor( colRed );
+                gc.SetTileColor( class'MenuChoice_ColorVision'.Static.GetUnupgradableColor() );
+                gc.SetTextColor( class'MenuChoice_ColorVision'.Static.GetUnupgradableColor() );
 
                 if (askill.GetCost()>=99999){
                     costStr = "BANNED";
@@ -280,18 +280,18 @@ function DrawAugsScreen(GC gc)
 
                 if ( anAug.CurrentLevel == anAug.MaxLevel)
                 {
-                    gc.SetTileColor( colMax );
-                    gc.SetTextColor( colMax );
+                    gc.SetTileColor( class'MenuChoice_ColorVision'.Static.GetUpgradeMaxColor() );
+                    gc.SetTextColor( class'MenuChoice_ColorVision'.Static.GetUpgradeMaxColor() );
                 }
                 else if ( numUpgrades!=0 )
                 {
-                    gc.SetTextColor( colGreen );
-                    gc.SetTileColor( colGreen );
+                    gc.SetTextColor( class'MenuChoice_ColorVision'.Static.GetUpgradableColor() );
+                    gc.SetTileColor( class'MenuChoice_ColorVision'.Static.GetUpgradableColor() );
                 }
                 else
                 {
-                    gc.SetTileColor( colRed );
-                    gc.SetTextColor( colRed );
+                    gc.SetTileColor( class'MenuChoice_ColorVision'.Static.GetUnupgradableColor() );
+                    gc.SetTextColor( class'MenuChoice_ColorVision'.Static.GetUnupgradableColor() );
                 }
 
                 gc.GetTextExtent( 0, w, h, str );

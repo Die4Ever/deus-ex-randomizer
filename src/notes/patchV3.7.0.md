@@ -1,5 +1,6 @@
 ## Major Changes
 
+- New game mode: Speedrun Shuffle! This is the same as Speedrun Mode, but the order of the missions is shuffled.
 - New password randomization styles!  By default, passwords will now be randomized by picking a few words from word lists instead of purely random letters and numbers.  In theory these passwords should be a bit easier to remember if not using autofill, as well as simply being more "fun".
   - If memes are disabled (such as when playing Serious Rando), password randomization will default to "Pronouncable" passwords instead.  These passwords alternate vowels and consonants (the same method used for random names) to form vaguely pronouncable passwords which should be easier to remember
   - If you want to switch password styles mid-game, do so just before leaving for a new mission (so there is no possibility of backtracking) for the least possibility of causing issues.
@@ -13,6 +14,7 @@
   - "Anonymous Accounts" will show that there *are* accounts (and how many), but won't show the name for ones that you don't have the password for.
   - "Show All Accounts" will show the full account name for all accounts on a computer, regardless of if you know the password or not.
 - You actually start the game with all of your skill points again, instead of 80% of the amount you had left over after the new game skills screen.
+- Initial support for a red-green color blindness mode!  Currently this mode only changes the colors used on the health display in the corner of the screen, but the intent is to change any potentially confusing colors to more identifiable ones.  Please reach out if you have a form of color blindness and we can try to adjust colors to be more identifiable!
 
 ## Minor Changes
 
@@ -63,6 +65,11 @@
 - Bingo goal adjustments:
   - "Ignore Paul in the 747 Hangar" now allows either a kill or knock out.
   - "I SPILL MY DRINK!" now allows either a kill or knock out.
+  - "Warn Smuggler" now fails immediately if you actively tell him there's nothing happening.
+- Adjusted the availability of various bingo goals based on loadouts.
+  - Purely lethal loadouts (Such as Freeman Mode or Explosives Only) will no longer allow "knock out" goals to be placed on the bingo board
+  - Purely non-lethal loadouts (Such as Stick with the Prod) will no longer allow "kill" goals to be placed on the bingo board
+  - "By the Book" loadout will no longer allow "Hack x Computers" or "Hack x Alarm Sounder Panels" bingo goals to be placed on the board.
 - The time between conversations with Jock and the start of exit cutscenes has been consistently reduced to try to prevent the player from taking damage between the end of the conversation and the start of the cutscene (as often happened at the end of Mission 9 Graveyard).
 - The player can no longer put random ATM accounts into debt when hacking them (they can only be reduced to a balance of 0 credits).  Account balances are actually properly emptied and synced to other ATMs in the same map when an ATM is hacked.
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
@@ -78,6 +85,7 @@
 - Bodies that the player carries are now visible in third person and fixed camera perspectives.
 - Block certain out-of-bounds locations from being selected for random placement of things (like medbots/repairbots, merchants, turrets, datacubes, etc...):
   - Beyond the teleporter at the end of Ocean Lab, leading into the UC map (Mission 14).
+  - In the hallway of Tong's base (Mission 6).
 - The goal to find the Ambrosia in Battery Park (Mission 2) is now properly added at the start of the the level again.
 - The Training Merchant (who shows up in Training) is no longer afraid of anything.
 - The door in the demolitions training hallway (In the training mission) can now be highlighted to see the damage threshold.
@@ -101,5 +109,26 @@
 - The conversation window will now expand to ensure all choices are visible on screen.  Before, certain aspect ratios and GUI scaling combinations did not allow a fifth conversation choice to fit on screen.
 - Added an option to always show aug levels. (For the tournament!)
 - Clicking no longer ends the credits, you must double left-click or press escape.
+- Controls are now shown on the credits screen.
+- Randomized objects on the title screen will no longer fade away if they normally have a limited lifespan.
+- The cover over the Tong ending button in Area 51 should now open properly when using Transcended maps (such as when playing VMD).
+- The code for the Mole People phone booth is now based on a randomly selected short word instead of being purely random.
+- Teleporter icons now look more crispy.
+- New option under Rando > Visuals to choose whether world textures and object textures should be smoothed or not.
+- Binoculars or weapon scopes now unzoom when you reach a bingo win (such as in WaltonWare).
+- Maybe fixed random deaths in the ending cutscenes for some players.
+- Times shown for each mission in the credits now use fixed width numbers to make things line up better.
+- The game no longer crashes when starting a new game from the training mission.
+- Health is properly restored to up to 50% of maximum health in each body part when reaching Mission 5.
+- Hidden explosive crates attached to the Mission 9 Weld Points no longer sometimes get collision when being randomized (which caused them to be shootable).
+- Revision will no longer consider existing item locations as viable locations to spawn random bots or NPCs.
+- The triad helpers in Tong's base (Mission 6) near the hallway will no longer spawn additional NPCs near them.  This should help keep the area clear and navigable.
+- Keys bound to opening specific menus should now always also close the menu again if it is already open.
+- New bingo goals:
+  - Make Soup: Put three bodies into Tong's hot tub
+  - My Buddy Vinny: Offer to help Vinny find out what's going on at the Advanced Submarine Base
+  - Yvan Eht Nioj: Look at a Navy recruitment poster through binoculars or a scope.
+- Opening the New Game screen while in a game should no longer show bans based on the loadout used in the game currently being played.  Instead it will properly use the loadout selected on the New Game screen.
+- Updated names shown when hovering over teleporters between levels to be a bit more clear.
 
 </details>

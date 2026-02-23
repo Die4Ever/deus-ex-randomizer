@@ -1567,6 +1567,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         if (p.bIsSecretGoal) continue;
         if(Teleporter(p)!=None) continue;
         if(MapExit(p)!=None) continue;
+        if(InventorySpot(p)!=None) continue;
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;
@@ -2096,7 +2097,7 @@ static function Actor GlowUp(Actor a, optional byte hue, optional byte saturatio
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
     a.LightBrightness=160;
-    if(hue == 0) hue = 155;
+    if(hue == 0) hue = class'MenuChoice_ColorVision'.static.GetDatacubeKeyHue();
     a.LightHue=hue;
     if(saturation !=0) a.LightSaturation=saturation;
     a.LightRadius=6;

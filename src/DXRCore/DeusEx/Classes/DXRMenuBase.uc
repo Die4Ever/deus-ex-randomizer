@@ -145,7 +145,7 @@ function DXRando GetDxr()
 #endif
     if( dxr.flagbase == None ) log("ERROR: flagbase "$dxr.flagbase$" not found", name);
 
-    dxr.LoadFlagsModule();
+    dxr.LoadNewGameMenuModules();
     flags = dxr.flags;
     flags.InitDefaults();
     return dxr;
@@ -154,10 +154,20 @@ function DXRando GetDxr()
 function _InvokeNewGameScreen(float difficulty)
 {
     local DXRMenuScreenNewGame newGame;
+    local DXRLoadouts dxrl;
 #ifdef vmd
     log("ERROR: "$self$"._InvokeNewGameScreen in VMD");
     return;
 #endif
+
+    //Reset the loadouts module for the skills screen.
+    //It would have been initialized with whatever loadout was
+    //selected initially, but now will get set to what you selected
+    dxrl = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if (dxrl!=None && dxrl.dxr==dxr){ //Only reset if it's actually the Loadouts that belongs to this temporary DXR
+        dxrl.ResetLoadouts();
+        dxrl.CheckConfig();
+    }
 
     if ( flags.settings.skill_value_rando > 0) {
         newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGameExtended'));

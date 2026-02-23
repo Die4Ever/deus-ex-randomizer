@@ -492,6 +492,8 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             return "Escort Nicolette around the Chateau and let her tell you about it.  Potential points of interest include the study, the living room, the upper hallway, Beth's room, the basement, near the back door, and by the maze.";
         case "M04GreenAdvice_Played":
             return "Try to get help from Joe Greene after the raid.";
+        case "HelpSailor_ConvoFlag":
+            return "Offer to help Vinny find out what's going on at the Advanced Submarine Base.";
     }
 
     //Return nothing so the generic function can handle it
@@ -879,6 +881,8 @@ static simulated function string GetBingoHelpTextPeeping(string event,int missio
                 msg = msg $"|n|nThe French word for 'Exit' is 'Sortie'.";
             }
             return msg;
+        case "poster01_peepedtex":
+            return "Have a look at a Navy recruitment poster through a pair of binoculars or a scope.  It really makes you want to sign up!";
     }
 
     //Return nothing so the generic function can handle it
@@ -1457,6 +1461,8 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Claim the contents of enough ATM accounts as the proceeds of crime.  The accounts must be fully emptied.";
         case "TakeABreather":
             return "Step into the atrium of the Free Clinic in Hell's Kitchen and sit down on one of the benches.  Take a moment to breathe and clear your mind.";
+        case "MakeSoup":
+            return "Make a nice vat of soup by throwing three bodies into Tong's hot tub (The water tank in Tracer Tong's base).";
     }
 
     //Return nothing so the generic function can handle it

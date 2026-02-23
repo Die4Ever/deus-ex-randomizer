@@ -73,12 +73,12 @@ function PreFirstEntryMapFixes()
 
         if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
-            PartialHeal(p.HealthHead, p.default.HealthHead);
-            PartialHeal(p.HealthTorso, p.default.HealthTorso);
-            PartialHeal(p.HealthLegLeft, p.default.HealthLegLeft);
-            PartialHeal(p.HealthLegRight, p.default.HealthLegRight);
-            PartialHeal(p.HealthArmLeft, p.default.HealthArmLeft);
-            PartialHeal(p.HealthArmRight, p.default.HealthArmRight);
+            PartialHeal(p.HealthHead, dxr.flags.settings.health);
+            PartialHeal(p.HealthTorso, dxr.flags.settings.health);
+            PartialHeal(p.HealthLegLeft, dxr.flags.settings.health);
+            PartialHeal(p.HealthLegRight, dxr.flags.settings.health);
+            PartialHeal(p.HealthArmLeft, dxr.flags.settings.health);
+            PartialHeal(p.HealthArmRight, dxr.flags.settings.health);
             p.GenerateTotalHealth();
             if(dxr.flags.settings.prison_pocket > 0 || VanillaMaps)
                 dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);

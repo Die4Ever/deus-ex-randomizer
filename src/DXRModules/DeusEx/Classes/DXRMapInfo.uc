@@ -169,6 +169,10 @@ static function string PickRandomMap(DXRando dxr)
 
 static function string GetEntranceName(string mapname, string teleportername)
 {
+    local string s,cr;
+
+    cr = class'DXRInfo'.static.CR();
+
 switch(mapname)
     {
         case "00_TRAINING":
@@ -181,596 +185,654 @@ switch(mapname)
         case "03_NYC_UNATCOHQ":
         case "04_NYC_UNATCOHQ":
         case "05_NYC_UNATCOHQ":
+            s = "UNATCO HQ";
             switch(teleportername)
             {
                 case "Inside_UN_HQ":
                 case "unatcohq":
-                    return "UNATCO HQ Interior Front Door";
+                    return s$cr$"(Front Door)";
+                    break;
                 case "UN_med":
-                    return "UNATCO HQ Medical Door";
+                    return s$cr$"(Medical Door)";
+                    break;
             }
             break;
         case "01_NYC_UNATCOISLAND":
         case "03_NYC_UNATCOISLAND":
         case "04_NYC_UNATCOISLAND":
         case "05_NYC_UNATCOISLAND":
+            s = "Liberty Island";
             switch(teleportername)
             {
                 case "tunnel_drop_nyc":
                 case "unatcoisland":
-                    return "Liberty Island UNATCO Entrance";
+                    return s$cr$"(UNATCO Entrance)";
                 case "":
-                    return "UNATCO Helipad";
+                    return s$cr$"(UNATCO Helipad)";
             }
             break;
         case "02_NYC_BAR":
         case "04_NYC_BAR":
         case "08_NYC_BAR":
+            s = "Bar";
             switch(teleportername)
             {
                 case "ToBarBackEntrance":
-                    return "Bar Back Door Interior";
+                    return s$cr$"(Back Door)";
                 case "ToBarFrontEntrance":
-                    return "Bar Front Door Interior";
+                    return s$cr$"(Front Door)";
             }
             break;
         case "02_NYC_BATTERYPARK":
         case "03_NYC_BATTERYPARK":
         case "04_NYC_BATTERYPARK":
+            s = "Battery Park";
             switch(teleportername)
             {
                 case "ToBatteryPark":
-                    return "Battery Park Subway";
+                    return s$cr$"(Subway)";
                 case "BBSExit":
-                    return "Battery Park underneath Phone Booth";
+                    return s$cr$"(Below Phone Booth)";
                 case "":
-                    return "Battery Park";
+                    return s;
             }
             break;
         case "02_NYC_FREECLINIC":
         case "08_NYC_FREECLINIC":
+            s = "Free Clinic";
             switch(teleportername)
             {
                 case "FromStreet":
-                    return "Free Clinic Interior";
+                    return s$cr$"(Main Entrance)";
             }
             break;
         case "02_NYC_HOTEL":
         case "04_NYC_HOTEL":
         case "08_NYC_HOTEL":
+            s = "Hotel";
             switch(teleportername)
             {
                 case "ToHotelBedroom":
-                    return "Hotel Bedroom Interior";
+                    return s$cr$"(Bedroom Window)";
                 case "ToHotelFrontDoor":
-                    return "Hotel Front Door Interior";
+                    return s$cr$"(Front Door)";
             }
             break;
         case "02_NYC_SMUG":
         case "04_NYC_SMUG":
         case "08_NYC_SMUG":
+            s = "Smuggler";
             switch(teleportername)
             {
                 case "ToSmugFrontDoor":
                 case "PathNode83":
-                    return "Smuggler Front Door Interior";
+                    return s$cr$"(Front Door)";
                 case "ToSmugBackDoor":
-                    return "Smuggler Back Door Interior";
+                    return s$cr$"(Back Door)";
             }
             break;
         case "02_NYC_STREET":
         case "04_NYC_STREET":
         case "08_NYC_STREET":
+            s = "Hells Kitchen Streets";
             switch(teleportername)
             {
                 case "FromSmugBackDoor":
-                    return "Smuggler Back Door Exterior";
+                    return s$cr$"(Smuggler Back Door)";
                 case "FromSmugFrontDoor":
-                    return "Smuggler Front Door Exterior";
+                    return s$cr$"(Smuggler Front Door)";
                 case "FromBarBackEntrance":
-                    return "Bar Back Door Exterior";
+                    return s$cr$"(Bar Back Door)";
                 case "FromBarFrontEntrance":
-                    return "Bar Front Door Exterior";
+                    return s$cr$"(Bar Front Door)";
                 case "FromHotelFrontDoor":
-                    return "Hotel Front Door Exterior";
+                    return s$cr$"(Hotel Front Door)";
                 case "FromClinic":
-                    return "Free Clinic Exterior";
+                    return s$cr$"(Free Clinic Door)";
                 case "BedroomWindow":
-                    return "Hotel Bedroom Window Exterior";
+                    return s$cr$"(Hotel Window)";
                 case "FromWarehouseAlley":
-                    return "Osgoode & Sons Back Exit";
+                    return s$cr$"(Osgoode & Sons Back Exit)";
                 case "FromRoofTop":
-                    return "Underground Elevator";
+                    return s$cr$"(Underground Elevator)";
                 case "FromNYCUndergroundSewer2":
-                    return "Sewer Entrance near Subway";
+                    return s$cr$"(Sewer Entrance near Subway)";
                 case "FromNYCSump":
-                    return "Sewer Entrance near Hotel";
+                    return s$cr$"(Sewer Entrance near Hotel)";
                 case "FromNSFHQ":
-                    return "Road to NSF HQ";
+                    return s$cr$"(Road to NSF HQ)";
                 case "PathNode194":
                 case "ToStreet":
                 case "NYCSubway":  //Rev: Backtracking from M04 Battery Park back to Hell's Kitchen
-                    return "Hells Kitchen Subway";
+                    return s$cr$"(Subway)";
                 case "":
-                    return "Hells Kitchen Streets";
+                    return s;
             }
             break;
         case "02_NYC_UNDERGROUND":
         case "04_NYC_UNDERGROUND":
         case "08_NYC_UNDERGROUND":
+            s = "Sewers";
             switch(teleportername)
             {
                 case "ToNYCUndergroundSewer2":
-                    return "Sewer Interior outside Facility";
+                    return s$cr$"(Outside Facility)";
                 case "ToNYCSump":
-                    return "Sewer Interior inside Facility";
+                    return s$cr$"(Inside Facility)";
             }
             break;
         case "02_NYC_WAREHOUSE":
+            s = "Warehouse District";
             switch(teleportername)
             {
                 case "ToRoofTop":
-                    return "Warehouse Rooftops";
+                    return s$cr$"(Rooftop Elevator)";
                 case "ToWarehouseAlley":
-                    return "Warehouse Alleys";
+                    return s$cr$"(Alleys)";
             }
             break;
         case "03_NYC_747":
+            s = "747";
             switch(teleportername)
             {
                 case "747PassEnt":
-                    return "747 Interior";
+                    return s$cr$"(Front Door)";
             }
             break;
         case "03_NYC_AIRFIELD":
+            s = "Airfield";
             switch(teleportername)
             {
                 case "BHElevatorExit":
-                    return "Top of Elevator to Airfield";
+                    return s$cr$"(Elevator)";
                 case "ToOcean":
-                    return "Sewer Exit to Airfield";
+                    return s$cr$"(Sewer)";
                 case "HangarExit":
-                    return "Hangar Entrance Exterior";
+                    return s$cr$"(Hangar Entrance)";
                 case "HangarExit2":
-                    return "Hangar Back Entrance Exterior";
+                    return s$cr$"(Hangar Back Entrance)";
             }
             break;
         case "03_NYC_AIRFIELDHELIBASE":
+            s = "Helibase";
             switch(teleportername)
             {
                 case "BHElevatorEnt":
-                    return "Elevator in Helibase";
+                    return s$cr$"(Elevator)";
                 case "SewerEnt":
-                    return "Helibase Entrance from Mole People";
+                    return s$cr$"(Mole People Sewer)";
                 case "FromOcean":
-                    return "Sewer Entrance in Helibase";
+                    return s$cr$"(Sewers to Ocean)";
             }
             break;
         case "03_NYC_BROOKLYNBRIDGESTATION":
+            s = "Brooklyn Bridge Station";
             switch(teleportername)
             {
                 case "MoleExit":
-                    return "Brooklyn Bridge Station Bathroom Entrance";
+                    return s$cr$"(Bathroom)";
                 case "FromNYCStreets":
-                    return "Brooklyn Bridge Station Sewer Entrance";
+                    return s$cr$"(Sewer)";
             }
             break;
         case "03_NYC_HANGAR":
+            s = "Hangar";
             switch(teleportername)
             {
                 case "HangarEnt":
-                    return "Main Hangar Entrance Interior";
+                    return s$cr$"(Main Entrance)";
                 case "747PassExit":
-                    return "Hangar Door to 747";
+                    return s$cr$"(747)";
                 case "HangarEnt2":
-                    return "Back Hangar Entrance Interior";
+                    return s$cr$"(Back Hangar Entrance)";
             }
             break;
         case "03_NYC_MOLEPEOPLE":
+            s = "Mole People";
             switch(teleportername)
             {
                 case "MoleEnt":
-                    return "Mole People Entrance";
+                    return s$cr$"(Main Entrance)";
                 case "SewerExit":
-                    return "Mole People Bathroom";
+                    return s$cr$"(Bathroom)";
             }
             break;
         case "04_NYC_NSFHQ":
+            s = "NSF HQ";
             switch(teleportername)
             {
                 case "ToNSFHQ":
-                    return "NSF HQ";
+                    return s;
             }
             break;
         case "05_NYC_UNATCOMJ12LAB":
+            s = "UNATCO MJ12 Lab";
             switch(teleportername)
             {
                 case "mj12":
-                    return "UNATCO MJ12 Base Entrance";
+                    return s$cr$"(Base Entrance)";
                 case "":
-                    return "UNATCO MJ12 Jail Cell";
+                    return s$cr$"(Jail Cell)";
             }
             break;
         case "06_HONGKONG_ENTERINGSCENE": //Rev: Flows straight into Helibase anyway, just fall through
         case "06_HONGKONG_HELIBASE":
+            s = "MJ12 Helibase";
             switch(teleportername)
             {
                 case "Helibase":
-                    return "MJ12 Helibase Elevator";
+                    return s$cr$"(Elevator)";
                 case "":
-                    return "MJ12 Helibase";
+                    return s;
             }
             break;
         case "06_HONGKONG_MJ12LAB":
+            s = "Versalife Lab (Level 1)";
             switch(teleportername)
             {
                 case "cathedral":
-                    return "MJ12 Lab Main Elevator";
+                    return s$cr$"(Office Elevator)";
                 case "tubeend":
-                    return "MJ12 Lab Level 2 Elevator";
+                    return s$cr$"(Level 2 Elevator)";
             }
             break;
         case "06_HONGKONG_STORAGE":
+            s = "Versalife Lab (Level 2)";
             switch(teleportername)
             {
                 case "waterpipe":
-                    return "UC Canal Exit";
+                    return s$cr$"(Canal Pipe)";
                 case "basement":
-                    return "UC Elevator Entrance";
+                    return s$cr$"(Level 1 Elevator)";
                 case "BackDoor":
-                    return "UC Canal Road Entrance";
+                    return s$cr$"(Canal Road Entrance)";
             }
             break;
         case "06_HONGKONG_TONGBASE":
+            s = "Tong's Base";
             switch(teleportername)
             {
                 case "lab":
-                    return "Tong's Base Interior";
+                    return s;
             }
             break;
         case "06_HONGKONG_VERSALIFE":
+            s = "Versalife Offices";
             switch(teleportername)
             {
                 case "Secret":
-                    return "Versalife Upper Elevator";
+                    return s$cr$"(Upper Elevator)";
                 case "Lobby":
-                    return "Versalife Interior Main Entrance";
+                    return s$cr$"(Main Elevator)";
             }
             break;
         case "06_HONGKONG_WANCHAI_CANAL":
+            s = "Hong Kong Canals";
             switch(teleportername)
             {
                 case "canal":
-                    return "Canal Pipe Exit from UC";
+                    return s$cr$"(Level 2 Labs Pipe)";
                 case "Street":
-                    return "Canal Tunnel from Tonnochi Road";
+                    return s$cr$"(Tonnochi Road Tunnel)";
                 case "market01":
-                    return "Canal Entrance from Market";
+                    return s$cr$"(Main Entrance from Market)";
                 case "alleyin":
-                    return "Canal Side Alley";
+                    return s$cr$"(Tonnochi Road Side Alley)";
                 case "double":
-                    return "Canal Entrance Near Old China Hand";
+                    return s$cr$"(Entrance Near Old China Hand)";
             }
             break;
         case "06_HONGKONG_WANCHAI_GARAGE":
+            s = "Canal Road";
             switch(teleportername)
             {
                 case "market04":
-                    return "Canal Road Entrance from Market";
+                    return s$cr$"(Stairs)";
             }
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
+            s = "Wan Chai Market";
             switch(teleportername)
             {
                 case "market":
-                    return "Market Elevator from Versalife";
+                    return s$cr$"(Versalife Elevator)";
                 case "cargoup":
-                    return "Market Elevator from Helibase";
+                    return s$cr$"(Helibase Elevator)";
                 case "canal01":
-                    return "Market Entrance from Canal";
+                    return s$cr$"(Main Entrance from Canal)";
                 case "canal03":
-                    return "Market Entrance from Lucky Money";
+                    return s$cr$"(Lucky Money)";
                 case "garage01":
-                    return "Market Entrance from Canal Road";
+                    return s$cr$"(Canal Road Stairs)";
                 case "chinahand":
-                    return "Market Entrance from Old China Hand";
+                    return s$cr$"(Canal Entrance to Old China Hand)";
                 case "compound":
-                    return "Market Entrance from Tong's Lab";
+                    return s$cr$"(Tong's Lab)";
                 case "MarketFromCompound1": //Rev: Transitions between Market and Compound map
                 case "MarketFromCompound2":
-                    return "Market Entrance from Luminous Path Compound";
+                    return s$cr$"(Luminous Path Compound)";
             }
             break;
         case "06_HONGKONG_WANCHAI_COMPOUND": //Rev: Map where the Luminous Path Compound is
+            s = "Luminous Path Compound";
             switch(teleportername)
             {
                 case "CompoundFromMarket1":
                 case "CompoundFromMarket2":
-                    return "Luminous Path Compound Entrance from Market";
+                    return s$cr$"(Wan Chai Market)";
                 case "compound":
-                    return "Luminous Path Compound Entrance from Tong's Lab";
+                    return s$cr$"(Tong's Lab)";
             }
             break;
         case "06_HONGKONG_WANCHAI_STREET":
+            s = "Tonnochi Road";
             switch(teleportername)
             {
                 case "canal":
-                    return "Tonnochi Road Main Entrance";
+                    return s$cr$"(Main Entrance)";
                 case "alleyout":
-                    return "Tonnochi Road Side Alley";
+                    return s$cr$"(Side Alley)";
             }
             break;
         case "06_HONGKONG_WANCHAI_UNDERWORLD":
+            s = "Lucky Money";
             switch(teleportername)
             {
                 case "market03":
-                    return "Lucky Money Entrance";
+                    return s$cr$"(Entrance)";
             }
             break;
         case "09_NYC_DOCKYARD":
+            s = "Brooklyn Naval Shipyards";
             switch(teleportername)
             {
                 case "ToDockyardSewer":
-                    return "Dockyard Sewer Entrance";
+                    return s$cr$"(Sewer Entrance)";
                 case "FromAircondDuct":
-                    return "Dockyard Exterior Air Conditioning Entrance";
+                    return s$cr$"(Ventilation System)";
                 case "ExitShip":
-                    return "Dockyard Exterior Front Door";
+                    return s$cr$"(Front Door)";
                 case "":
-                    return "Brooklyn Naval Shipyards";
+                    return s;
             }
             break;
         case "09_NYC_GRAVEYARD":
+            s = "Graveyard";
             switch(teleportername)
             {
                 case "Entrance":
                 case "":
-                    return "Graveyard";
+                    return s;
             }
             break;
         case "09_NYC_SHIP":
+            s = "Superfreighter Docks";
             switch(teleportername)
             {
                 case "EnterShip":
-                    return "Superfreighter Exterior Front Door";
+                    return s$cr$"(Front Door)";
                 case "FromFanRoom":
-                    return "Superfreighter Exterior Fan Entrance";
+                    return s$cr$"(Fan Entrance)";
                 case "FromDuctRoom":
-                    return "Superfreighter Exterior Ducting Entrance";
+                    return s$cr$"(Ducting Entrance)";
                 case "FromDockyardSewer":
-                    return "Superfreighter Exterior Sewer Entrance";
+                    return s$cr$"(Sewer Entrance)";
                 case "FromBelow":
-                    return "Superfreighter Exterior Lower Deck Stairs";
+                    return s$cr$"(Lower Deck Stairs)";
             }
             break;
         case "09_NYC_SHIPBELOW":
+            s = "Superfreighter Lower Decks";
             switch(teleportername)
             {
                 case "FromAbove":
-                    return "Superfreighter Interior Lower Deck Stairs";
+                    return s$cr$"(Stairs)";
             }
             break;
         case "09_NYC_SHIPFAN":
+            s = "Dockyard Ventilation";
             switch(teleportername)
             {
                 case "ToFanRoom":
-                    return "Dockyard Ventilation Fan Hall Entrance";
+                    return s$cr$"(Fan Hall Entrance)";
                 case "ToDuctRoom":
-                    return "Dockyard Ventilation Ducting Entrance";
+                    return s$cr$"(Ducting Entrance)";
                 case "ToAircondDuct":
-                    return "Dockyard Ventilation Air Conditioner Entrance";
+                    return s$cr$"(Rooftop Entrance)";
             }
             break;
         case "10_PARIS_CATACOMBS":
+            s = "Paris Denfert-Rochereau";
             switch(teleportername)
             {
                 case "spiralstair":
-                    return "Paris Exterior Spiral Staircase";
+                    return s$cr$"(Spiral Staircase)";
                 case "FromEntrance": //Rev: connection from new ENTRANCE map to the "Catacombs" exterior area
-                    return "Paris Exterior from Entrance Building";
+                    return s$cr$"(Entrance Building)";
                 case "FromMetro"://Rev: connection to 10_PARIS_CATACOMBS_METRO
-                    return "Paris Exterior from Closed Metro Station";
+                    return s$cr$"(Closed Metro Station)";
                 case "":
-                    return "Paris Denfert-Rochereau";
+                    return s;
             }
             break;
         case "10_PARIS_ENTRANCE": //Rev: 10_PARIS_CATACOMBS is split up, this is the building you start on top of, to just past the greasels
+            s = "Paris Denfert-Rochereau Tower";
             switch(teleportername)
             {
                 case "ToEntrance":
-                    return "Paris Entrance Building from Exterior";
+                    return s$cr$"(Exterior)";
                 case "":
-                    return "Paris Denfert-Rochereau";
+                    return s;
             }
             break;
         case "10_PARIS_CATACOMBS_METRO": //Rev: 10_PARIS_CATACOMBS is split up, this is the the little mall area with some MJ12 and a guy selling rockets
+            s = "Paris Closed Metro Station";
             switch(teleportername)
             {
                 case "metro":
-                    return "Closed Metro Station from Paris Exterior";
+                    return s$cr$"(Main Entrance)";
             }
             break;
 
         case "10_PARIS_CATACOMBS_TUNNELS":
+            s = "Paris Catacombs";
             switch(teleportername)
             {
                 case "spiralstair":
-                    return "Catacombs Interior Spiral Staircase";
+                    return s$cr$"(Spiral Staircase)";
                 case "ambientsound10":
-                    return "Catacombs Interior Sewer Entrance";
+                    return s$cr$"(Sewer Entrance)";
             }
             break;
         case "10_PARIS_CHATEAU":
+            s = "DuClare Chateau";
             switch(teleportername)
             {
                 case "CHATEAU_START":
-                    return "DuClare Estate Front Doors";
+                    return s$cr$"(Front Doors)";
                 case "Light135":
-                    return "DuClare Estate Sewer Entrance";
+                    return s$cr$"(Sewer Entrance)";
                 case "":
-                    return "DuClare Estate";
+                    return s;
             }
             break;
         case "10_PARIS_CLUB":
+            s = "Porte De L'Enfer";
             switch(teleportername)
             {
                 case "Paris_Club1":
-                    return "Porte De L'Enfer Interior Front Entrance";
+                    return s$cr$"(Front Door)";
                 case "Paris_Club2":
-                    return "Porte De L'Enfer Interior Back Entrance";
+                    return s$cr$"(Back Door)";
             }
             break;
         case "10_PARIS_METRO":
+            s = "Paris Streets";
             switch(teleportername)
             {
                 case "sewer":
-                    return "Paris Streets Sewer Entrance";
+                    return s$cr$"(Sewer Entrance)";
                 case "paris_metro1":
-                    return "Paris Streets Club Front Entrance";
+                    return s$cr$"(Club Front Door)";
                 case "paris_metro2":
-                    return "Paris Streets Club Back Entrance";
+                    return s$cr$"(Club Back Door)";
                 case "PathNode447":
-                    return "Paris Streets Helicopter behind Club";
+                    return s$cr$"(Helicopter behind Club)";
             }
             break;
         case "11_PARIS_CATHEDRAL":
+            s = "Cathedral";
             switch(teleportername)
             {
                 case "cathedralstart":
-                    return "Cathedral Sewer Entrance";
+                    return s$cr$"(Sewer Entrance)";
                 case "Paris_Underground":
                 case "FromMetro": //Revision
-                    return "Cathedral Metro Entrance";
+                    return s$cr$"(Metro Station Entrance)";
             }
             break;
         case "11_PARIS_EVERETT":
+            s = "Everett";
             switch(teleportername)
             {
                 case "Entrance":
-                    return "Everett Main Entrance";
+                    return s$cr$"(Main Entrance)";
             }
             break;
         case "11_PARIS_UNDERGROUND":
+            s = "Paris Metro Station";
             switch(teleportername)
             {
                 case "Paris_Underground":
                 case "metro": //Revision
-                    return "Paris Metro Interior Entrance";
+                    return s$cr$"(Main Entrance)";
                 case "PathNode68":
-                    return "Paris Metro Train Tracks";
+                    return s$cr$"(Train Tracks)";
             }
             break;
         case "12_VANDENBERG_CMD":
+            s = "Vandenberg Command";
             switch(teleportername)
             {
                 case "commstat":
-                    return "Vandenberg Comms Building Tunnel Entrance";
+                    return s$cr$"(Comms Building Tunnel Entrance)";
                 case "storage":
-                    return "Vandenberg Main Building Tunnel Exit";
+                    return s$cr$"(Main Building Tunnel Entrance)";
                 case "hall":
-                    return "Vandenberg Control Center Exterior Entrance";
+                    return s$cr$"(Control Center Door)";
                 case "PathNode8":
-                    return "Vandenberg Helipad";
+                    return s$cr$"(Helipad)";
                 case "":
-                    return "Vandenberg";
+                    return s;
             }
             break;
         case "12_VANDENBERG_COMPUTER":
+            s = "Vandenberg Control Center";
             switch(teleportername)
             {
                 case "computer":
-                    return "Vandenberg Control Center Interior Entrance";
+                    return s;
             }
             break;
         case "12_VANDENBERG_GAS":
+            s = "Gas Station";
             switch(teleportername)
             {
                 case "gas_start":
                 case "":
-                    return "Gas Station Main Entrance";
+                    return s$cr$"(Main Entrance)";
                 case "PathNode98":
-                    return "Gas Station Junkyard Entrance";
+                    return s$cr$"(Junkyard)";
             }
             break;
         case "12_VANDENBERG_TUNNELS":
+            s = "Vandenberg Tunnel";
             switch(teleportername)
             {
                 case "Start":
-                    return "Vandenberg Tunnel Start";
+                    return s$cr$"(Start)";
                 case "End":
-                    return "Vandenberg Tunnel End";
+                    return s$cr$"(End)";
             }
             break;
         case "14_OCEANLAB_LAB":
+            s = "Ocean Lab";
             switch(teleportername)
             {
                 case "Sunkentunnel":
-                    return "Ocean Lab UC Exterior Entrance";
+                    return s$cr$"(UC Entrance)";
                 case "Sunkenlab":
-                    return "Ocean Lab Sub Bay";
+                    return s$cr$"(Sub Bay)";
             }
             break;
         case "14_OCEANLAB_SILO":
+            s = "Silo";
             switch(teleportername)
             {
                 case "frontgate":
                 case "":
-                    return "Silo Front Gates";
+                    return s$cr$"(Front Gates)";
             }
             break;
         case "14_OCEANLAB_UC":
+            s = "Ocean Lab UC";
             switch(teleportername)
             {
                 case "UC":
-                    return "Ocean Lab UC Interior Entrance";
+                    return s$cr$"(Main Entrance)";
             }
             break;
         case "14_VANDENBERG_SUB":
+            s = "Ocean Lab Shoreside";
             switch(teleportername)
             {
                 case "subbay":
-                    return "Ocean Lab Shoreside Sub Bay";
+                    return s$cr$"(Sub Bay)";
                 case "PlayerStart":
                 case "":
-                    return "Ocean Lab Shoreside Helicopter";
+                    return s$cr$"(Shore Helicopter)";
                 case "InterpolationPoint39":
-                    return "Ocean Lab Shoreside Rooftop Helicopter";
+                    return s$cr$"(Rooftop Helicopter)";
             }
             break;
         case "15_AREA51_BUNKER":
+            s = "Area 51 Bunker";
             switch(teleportername)
             {
                 case "commstat":
                 case "Light188":
-                    return "Area 51 Bunker Exterior Door";
+                    return s$cr$"(Sector 2 Door)";
                 case "":
                 case "bunker_start":
-                    return "Area 51 Bunker";
+                    return s;
             }
             break;
         case "15_AREA51_ENTRANCE":
+            s = "Area 51 Sector 2";
             switch(teleportername)
             {
                 case "Start":
-                    return "Area 51 Sector 2 Entrance";
+                    return s$cr$"(Main Entrance)";
                 case "Light73":
-                    return "Area 51 Sector 2 Door from Sector 3";
+                    return s$cr$"(Bottom of Elevator)";
             }
             break;
         case "15_AREA51_FINAL":
+            s = "Area 51 Sector 3";
             switch(teleportername)
             {
                 case "final_end":
-                    return "Area 51 Sector 3 Door from Sector 4";
+                    return s$cr$"(Sector 4 Door)";
                 case "Start":
-                    return "Area 51 Sector 3 Door from Sector 2";
+                    return s$cr$"(Sector 2 Elevator)";
             }
             break;
         case "15_AREA51_PAGE":
+            s = "Area 51 Sector 4";
             switch(teleportername)
             {
                 case "page_start":
-                    return "Area 51 Sector 4 Door from Sector 3";
+                    return s$cr$"(Sector 3 Door)";
             }
             break;
     }
@@ -800,7 +862,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
     finalName = GetEntranceName(mapname,teleportername);
 
     if (variantName!=""){
-        finalName = finalName @ "(" $ variantName $ ")";
+        finalName = finalName $ class'DXRInfo'.Static.CR() $ variantName;
     }
 
     return finalName;

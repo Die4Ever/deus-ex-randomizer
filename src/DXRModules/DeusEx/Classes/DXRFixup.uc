@@ -721,7 +721,41 @@ function ShowTeleporters()
     foreach AllActors(class'#var(prefix)Teleporter', t) {
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
+        t.bNoSmooth = True; //Make the texture less blurry around the edges
     }
+}
+
+function AdjustTextureSmoothing()
+{
+    local Actor a;
+    local Texture t;
+    local bool noSmoothTextures,noSmoothActors;
+
+    if (!#defined(vanilla)) return;
+
+    noSmoothTextures = class'MenuChoice_TextureSmoothing'.static.NoSmoothTextures();
+    noSmoothActors = class'MenuChoice_TextureSmoothing'.static.NoSmoothActors();
+
+#ifdef vanilla
+    foreach AllObjects(class'Texture',t){
+        if (noSmoothTextures){
+            t.bNoSmooth = true;
+        } else {
+            t.bNoSmooth = t.Default.bNoSmooth;
+        }
+    }
+#endif
+
+    foreach AllActors(class'Actor',a){
+        if (#var(prefix)Teleporter(a)!=None) continue;
+
+        if (noSmoothActors){
+            a.bNoSmooth = true;
+        } else {
+            a.bNoSmooth = a.Default.bNoSmooth;
+        }
+    }
+
 }
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -784,6 +818,7 @@ function GarbageCollection(#var(PlayerPawn) p)
 function PostAnyEntry()
 {
     CleanupPlaceholders(true);
+    AdjustTextureSmoothing();
 }
 
 function CleanupPlaceholders(optional bool alert)

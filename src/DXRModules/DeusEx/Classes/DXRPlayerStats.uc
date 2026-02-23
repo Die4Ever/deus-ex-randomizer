@@ -107,7 +107,7 @@ function SetHighDefaults(#var(PlayerPawn) p) // to avoid issues with loading sav
     p.default.Energy = i;
 }
 
-simulated event DXRPreTravel()
+simulated event _PreTravel()
 {
     SetHighDefaults(player());
 }

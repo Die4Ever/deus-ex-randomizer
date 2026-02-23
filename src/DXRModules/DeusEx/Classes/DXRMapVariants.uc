@@ -1,5 +1,8 @@
 class DXRMapVariants extends DXRBase transient;
 
+var int missions[13];
+var string starts[13];
+
 static function bool MirrorMapsAvailable()
 {
     local GameDirectory mapDir;
@@ -148,11 +151,47 @@ function int GetMirrorMapsSetting()
     return dxr.flags.mirroredmaps;
 }
 
+function CheckConfig()
+{
+    local int i, slot, tempi, startidx;
+    local string temp;
+
+    Super.CheckConfig();
+
+    SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
+    startidx = ArrayCount(starts)-2;// length - 2 because Area 51 is not shuffled
+    if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
+        starts[9] = starts[10];
+        starts[10] = starts[12];
+
+        missions[9] = missions[10];
+        missions[10] = missions[12];
+
+        startidx -= 2;
+    }
+    for(i=startidx; i>=0; i--) {
+        slot = rng(i+1);
+
+        temp = starts[i];
+        starts[i] = starts[slot];
+        starts[slot] = temp;
+
+        tempi = missions[i];
+        missions[i] = missions[slot];
+        missions[slot] = tempi;
+    }
+    for(i=0; i<startidx+2; i++) {
+        l("speedshuffle " $ i @ starts[i]);
+    }
+}
+
 simulated function FirstEntry()
 {
     local Teleporter t;
     local MapExit me;
     local string s;
+    local int i;
+    local bool isStartMap;
 
     s = CleanupMapName(dxr.dxInfo.mapName);
     dxr.dxInfo.mapName = GetDirtyMapName(s, coords_mult);
@@ -162,6 +201,29 @@ simulated function FirstEntry()
     }
     foreach AllActors(class'MapExit', me) {
         me.DestMap = VaryURL(me.DestMap);
+    }
+
+    if(dxr.flags.gamemode == dxr.flags.SpeedShuffle) {
+        for(i=0; i<ArrayCount(starts); i++) {
+            if(dxr.localURL ~= starts[i]) {
+                isStartMap = true; // only if we're in a starting map
+                break;
+            }
+        }
+    }
+    if(isStartMap) { // for speedrun shuffle mode, do these things when entering these missions
+        if(dxr.dxInfo.MissionNumber == 1 || dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
+            dxr.flagbase.DeleteFlag('JosephManderley_Dead', FLAG_Bool);
+            dxr.flagbase.DeleteFlag('JosephManderley_Unconscious', FLAG_Bool);
+        }
+        if(dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
+            dxr.flagbase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
+            dxr.flagbase.DeleteFlag('PaulDenton_Unconscious', FLAG_Bool);
+        }
+        if(dxr.dxInfo.MissionNumber == 4) {
+            dxr.flagbase.DeleteFlag('GuntherHermann_Dead', FLAG_Bool);
+            dxr.flagbase.DeleteFlag('GuntherHermann_Unconscious', FLAG_Bool);
+        }
     }
 }
 
@@ -206,9 +268,10 @@ function string VaryURL(string url)
 
 function string VaryMap(string map)
 {
-    local int chance;
+    local int chance, i;
+    local bool isStartMap;
+    local string nextMap;
     map = CleanupMapName(map);
-    SetGlobalSeed( "VaryURL " $ Caps(map) );
 
     switch (map){
         case "DX":
@@ -218,7 +281,19 @@ function string VaryMap(string map)
             return map;
     }
 
+    if(dxr.flags.gamemode == dxr.flags.SpeedShuffle) {
+        for(i=0; i<ArrayCount(starts); i++) {
+            if(missions[i] == dxr.dxInfo.MissionNumber) nextMap = starts[i+1];
+            if(map ~= starts[i]) isStartMap = true; // only if this teleporter is going to a starting map
+        }
+        if(isStartMap) {
+            if(dxr.dxInfo.MissionNumber == 98) nextMap = starts[0]; // coming from the intro
+            if(nextMap != "") map = nextMap;
+        }
+    }
+
     chance = GetMirrorMapsSetting();
+    SetGlobalSeed( "VaryURL " $ Caps(map) );
     if(chance_single(chance))
         return map $"_-1_1_1";
     return map;
@@ -266,4 +341,34 @@ function ExtendedTests()
     teststring(VaryURL("DXOnly"), "DXOnly", "VaryURL 9");
     dxr.flags.mirroredmaps = oldmirroredmaps;
     #endif
+}
+
+defaultproperties
+{
+    starts(0)="01_NYC_UNATCOIsland"
+    starts(1)="02_NYC_BatteryPark"
+    starts(2)="03_NYC_UNATCOIsland"
+    starts(3)="04_NYC_UNATCOIsland"
+    starts(4)="05_NYC_UNATCOMJ12lab"
+    starts(5)="06_HongKong_Helibase"
+    starts(6)="08_NYC_Street"
+    starts(7)="09_NYC_Dockyard"
+    starts(8)="10_Paris_Catacombs"
+    starts(9)="11_Paris_Cathedral"
+    starts(10)="12_Vandenberg_Cmd"
+    starts(11)="14_Vandenberg_Sub"
+    starts(12)="15_Area51_Bunker"
+    missions(0)=1
+    missions(1)=2
+    missions(2)=3
+    missions(3)=4
+    missions(4)=5
+    missions(5)=6
+    missions(6)=8
+    missions(7)=9
+    missions(8)=10
+    missions(9)=11
+    missions(10)=12
+    missions(11)=14
+    missions(12)=15
 }

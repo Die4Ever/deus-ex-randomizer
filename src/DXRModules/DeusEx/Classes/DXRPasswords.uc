@@ -150,6 +150,99 @@ function FirstEntry()
     Super.FirstEntry();
 }
 
+//Convert a word into the numbers you'd use on a phone to type that word out (a "Phoneword")
+function string CalcPhoneWordNumbers(string phoneWord)
+{
+    local string phoneNumber;
+    local int i;
+
+    phoneWord = Caps(phoneWord); //Just to be safe
+
+    for(i=0;i<Len(phoneWord);i++){
+        switch(Mid(phoneWord,i,1)){
+            case "A":
+            case "B":
+            case "C":
+                phoneNumber = phoneNumber $ "2";
+                break;
+            case "D":
+            case "E":
+            case "F":
+                phoneNumber = phoneNumber $ "3";
+                break;
+            case "G":
+            case "H":
+            case "I":
+                phoneNumber = phoneNumber $ "4";
+                break;
+            case "J":
+            case "K":
+            case "L":
+                phoneNumber = phoneNumber $ "5";
+                break;
+            case "M":
+            case "N":
+            case "O":
+                phoneNumber = phoneNumber $ "6";
+                break;
+            case "P":
+            case "Q":
+            case "R":
+            case "S":
+                phoneNumber = phoneNumber $ "7";
+                break;
+            case "T":
+            case "U":
+            case "V":
+                phoneNumber = phoneNumber $ "8";
+                break;
+            case "W":
+            case "X":
+            case "Y":
+            case "Z":
+                phoneNumber = phoneNumber $ "9";
+                break;
+        }
+    }
+
+    return phoneNumber;
+}
+
+//Add dashes between the letters of a word to make it look like it's being spelled out
+function string SpellOutWord(string word)
+{
+    local string spelledWord;
+    local int i;
+
+    word = Caps(word); //Just to be safe
+
+    for(i=0;i<Len(word);i++){
+        spelledWord = spelledWord $ Mid(word,i,1);
+        if ((i+1)<Len(word)){
+            spelledWord = spelledWord $ "-";
+        }
+    }
+
+    return spelledWord;
+}
+
+// Mole people phone booth Code: MOLE/6653
+function FixMolePeoplePhoneboothCode()
+{
+    local string newpassword, newWord;
+    local int numWords,oldseed;
+
+    oldseed = SetGlobalSeed("MolePeoplePhoneBooth");//manually set the seed to avoid using the level name in the seed
+    numWords = class'DXRRandomWordLists'.static.GetShortWordListLength();
+    newWord = Caps(class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numWords)));
+    ReapplySeed(oldseed);
+
+    newpassword = CalcPhoneWordNumbers(newWord);
+    ReplacePassword("MOLE/6653",newWord$"/"$newpassword); //Don't want to replace any *other* uses of the word "MOLE"
+    ReplacePassword("6653", newpassword);
+    ReplacePassword("M-O-L-E",SpellOutWord(newWord));
+}
+
 function FixCodes(int mode)
 {
     local string newpassword, replacement;
@@ -168,6 +261,11 @@ function FixCodes(int mode)
         case "08_NYC_HOTEL":
             newpassword = GeneratePasscode("4321");
             ReplacePassword("count back from 4", newpassword);
+            break;
+
+        case "03_NYC_BATTERYPARK":
+            // Mole people phone booth Code: MOLE/6653
+            FixMolePeoplePhoneboothCode();
             break;
 
         case "03_NYC_AIRFIELDHELIBASE":

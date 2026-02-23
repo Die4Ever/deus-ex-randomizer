@@ -21,6 +21,9 @@ var bool         bShowTextTags;
 var bool         bShowAlliances;
 var bool         bShowWeaponScore;
 var bool         bShowReactions;
+var bool         bShowPatrolPaths;
+
+var Color        patrolColours[10];
 
 function SetActorRadius(string newRadius)
 {
@@ -191,6 +194,16 @@ function ShowReactions(bool bShow)
     bShowReactions = bShow;
 }
 
+function bool ArePatrolPathsVisible()
+{
+    return bShowPatrolPaths;
+}
+
+function ShowPatrolPaths(bool bShow)
+{
+    bShowPatrolPaths = bShow;
+}
+
 
 function string GetActorName(Actor a)
 {
@@ -266,7 +279,7 @@ function DrawWindow(GC gc)
     local float speed;
     local name stateName;
     local float temp;
-    local string str,str2;
+    local string str,str2,str3;
     local texture skins[9];
     local color mainColor;
     local byte zoneNum;
@@ -281,6 +294,7 @@ function DrawWindow(GC gc)
     local int radius;
     local FakeMirrorInfo fmi;
     local class<Actor> classToShow;
+    local bool bPointIsClose;
 
     minpos = vect(999999, 999999, 999999);
     maxpos = vect(-999999, -999999, -999999);
@@ -325,14 +339,19 @@ function DrawWindow(GC gc)
         cVect.Y = trackActor.CollisionRadius;
         cVect.Z = trackActor.CollisionHeight;
         tVect = trackActor.Location;
+        bPointIsClose = FALSE;
         if (bShowEyes && (Pawn(trackActor) != None))
             tVect.Z += Pawn(trackActor).BaseEyeHeight;
         if (trackActor == player)
         {
             if (player.bBehindView)
                 bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
-            else
-                bPointValid = FALSE;
+            else {
+                //bPointValid = FALSE;
+                //RANDO: Still show the information if you're in first person (this was so stupid, why would they do this)
+                //       Just show the information in a static location on screen, closer to the left side of the screen
+                bPointIsClose = TRUE;
+            }
         }
         else if (dxMover != None)
         {
@@ -343,10 +362,25 @@ function DrawWindow(GC gc)
         }
         else
         {
-            if (!bShowLineOfSight || (player.AICanSee(trackActor, 1, false, true, bShowArea) > 0))
-                bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
-            else
-                bPointValid = FALSE;
+            if (!bShowLineOfSight || (player.AICanSee(trackActor, 1, false, true, bShowArea) > 0)) {
+                if (trackActor.Owner == player && VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else {
+                    bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
+                }
+            } else {
+                if (VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else {
+                    bPointValid = FALSE;
+                }
+            }
+        }
+
+        if (bPointIsClose){
+            bPointValid = TRUE;
+            centerX = Width/5;
+            centerY = Height/3;
         }
 
         if (bPointValid)
@@ -799,7 +833,7 @@ function DrawWindow(GC gc)
                             gc.SetTileColorRGB(255, 255, 255);
                     }
                     else
-                        gc.SetTileColor(GetColorScaled(1-trackPawn.EnemyReadiness));
+                        gc.SetTileColor(class'MenuChoice_ColorVision'.static.GetVisionColorScaled(1-trackPawn.EnemyReadiness));
                     gc.DrawPattern((leftX+rightX-barWidth)/2, bottomY+5, barValue, barOffset,
                                    0, 0, Texture'Solid');
                     barOffset += 5;
@@ -822,7 +856,13 @@ function DrawWindow(GC gc)
 
             //#region Show Custom Value
             if(bShowCustom && customAttrib != "") {
-                str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
+                str2 = customAttrib;
+                str3 = "";
+                while(str2!=""){
+                    str3 = class'DXRInfo'.static.UnpackString(str2);
+                    str = str $ str3 $ ": " $ trackActor.GetPropertyText(str3) $ CR();
+                }
+                //str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
             }
             //#endregion
 
@@ -993,6 +1033,15 @@ function DrawWindow(GC gc)
                             str = str $ CR();
                         }
                     }
+                }
+            }
+            //#endregion
+
+            //#region Show Patrols
+            if (bShowPatrolPaths){
+                trackPawn = ScriptedPawn(trackActor);
+                if (trackPawn != None){
+                    DrawSPPatrolPath(gc,trackPawn);
                 }
             }
             //#endregion
@@ -1422,10 +1471,52 @@ function DrawCube(GC gc, vector c1, vector c2, int r, int g, int b)
 }
 //#endregion
 
+//#region Draw Patrol Path
+function DrawSPPatrolPath(GC gc, ScriptedPawn sp)
+{
+    local PatrolPoint pp,startPP;
+    local int colourNum;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.Default.dxr;
+
+    if (sp.Orders!='Patrolling') return;
+
+    startPP = PatrolPoint(sp.FindTaggedActor(sp.OrderTag,,class'PatrolPoint'));
+    if (startPP==None) return;
+
+    if (sp.bInWorld && sp.destPoint!=None){
+        DrawColourLine(gc,sp.Location,sp.destPoint.Location,0,255,0);
+    }
+
+    pp = startPP;
+    colourNum = dxr.Crc(sp.OrderTag) % ArrayCount(patrolColours);
+    while (pp.NextPatrolPoint!=None){
+        DrawColourLine(gc,pp.Location,pp.NextPatrolPoint.Location,
+                       Default.patrolColours[colourNum].R,
+                       Default.patrolColours[colourNum].G,
+                       Default.patrolColours[colourNum].B);
+        pp = pp.NextPatrolPoint;
+        if (pp==startPP) break;
+    }
+
+}
+//#endregion
+
 defaultproperties
 {
     textfont=Font'DXRFontFixedWidthSmall'
     bShowHidden=true
     bShowLineOfSight=false
     bShowPos=true
+    patrolColours(0)=(R=255,G=0,B=0,A=0)     //Red
+    patrolColours(1)=(R=156,G=39,B=176,A=0)  //Purple
+    patrolColours(2)=(R=0,G=0,B=255,A=0)     //Blue
+    patrolColours(3)=(R=255,G=111,B=0,A=0)   //Orange
+    patrolColours(4)=(R=239,G=154,B=154,A=0) //Pink
+    patrolColours(5)=(R=121,G=85,B=72,A=0)   //Brown
+    patrolColours(6)=(R=179,G=229,B=252,A=0) //Sky Blue
+    patrolColours(7)=(R=255,G=255,B=0,A=0)   //Yellow
+    patrolColours(8)=(R=158,G=157,B=36,A=0)  //Olive Green
+    patrolColours(9)=(R=97,G=97,B=97,A=0)    //Gray
 }

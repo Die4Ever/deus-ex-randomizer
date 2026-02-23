@@ -285,10 +285,13 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     foreach AllActors(class'Dispatcher', disp) {
         switch(disp.Tag) {
         case 'button_3':
+        case 'RButton3':
             disp.OutEvents[6] = 'Check_Generator_overload';
             // fallthrough
         case 'button_1':
+        case 'RButton1':
         case 'button_2':
+        case 'RButton2':
             if(dxr.flags.moresettings.splits_overlay > 0) {// also make Tong ending a little faster
                 for(i=0; i<ArrayCount(disp.OutDelays); i++) {
                     disp.OutDelays[i] /= 3;

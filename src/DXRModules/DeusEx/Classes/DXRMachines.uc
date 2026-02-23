@@ -462,19 +462,19 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
 
 function SpawnMedbot()
 {
-    SpawnBot(class'#var(injectsprefix)MedicalBot', 'MedbotNearby', "Medical Bot Nearby", 89);
+    SpawnBot(class'#var(injectsprefix)MedicalBot', 'MedbotNearby', "Medical Bot Nearby", class'MenuChoice_ColorVision'.Static.GetReadyHue());
 }
 
 function SpawnAugbot()
 {
     local #var(injectsprefix)MedicalBot ab;
-    ab = #var(injectsprefix)MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', 'AugbotNearby', "Augmentation Bot Nearby", 255));
+    ab = #var(injectsprefix)MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', 'AugbotNearby', "Augmentation Bot Nearby", class'MenuChoice_ColorVision'.Static.GetNotReadyHue()));
     ab.MakeAugsOnly();
 }
 
 function SpawnRepairbot()
 {
-    SpawnBot(class'#var(injectsprefix)RepairBot', 'RepairbotNearby', "Repair Bot Nearby", 89);
+    SpawnBot(class'#var(injectsprefix)RepairBot', 'RepairbotNearby', "Repair Bot Nearby", class'MenuChoice_ColorVision'.Static.GetReadyHue());
 }
 
 function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcooldown, int rbcooldown)

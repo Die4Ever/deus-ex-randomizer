@@ -502,16 +502,5 @@ function HandleBingoWin(int numBingos, int oldBingos)
         return bingoText;
     }
 
-    bingoText = "(" $ bingoText $ ")";
-    spaces = (Len(bingoText) - Len(hintText)) >> 1;
-    while (spaces > 1) {
-        hintText = " " $ hintText;
-        spaces--;
-    }
-    while (spaces < 1) {
-        bingoText = " " $ bingoText;
-        spaces++;
-    }
-
-    return hintText $ class'DXRInfo'.static.CR() $ bingoText;
+    return hintText $ class'DXRInfo'.static.CR() $ "(" $ bingoText $ ")";
 }

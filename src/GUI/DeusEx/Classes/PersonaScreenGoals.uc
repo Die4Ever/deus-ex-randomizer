@@ -377,6 +377,8 @@ function generateEntranceNote(bool bSpoil)
             }
 
             if(found){
+                source = class'DXRInfo'.static.ReplaceText(source,class'DXRInfo'.Static.CR()," ");
+                dest   = class'DXRInfo'.static.ReplaceText(dest,  class'DXRInfo'.Static.CR()," ");
                 entranceList=entranceList$"|n"$source$" -> ";
                 if (bSpoil){
                     entranceList=entranceList$dest;
@@ -437,6 +439,7 @@ function bool ButtonActivated( Window buttonPressed )
     switch(buttonPressed) {
     case btnBingo:
         SaveSettings();
+        log("Top Window when opening bingo is " $ root.GetTopWindow());
         root.InvokeUIScreen(class'PersonaScreenBingo');
         return true;
 

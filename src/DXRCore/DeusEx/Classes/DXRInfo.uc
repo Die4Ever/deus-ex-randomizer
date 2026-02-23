@@ -306,11 +306,16 @@ simulated static final function string StripMapName(string s)
 
 simulated static function string UnpackString(out string s)
 {
+    return UnpackStringChar(s,",");
+}
+
+simulated static function string UnpackStringChar(out string s, string splitChar)
+{
     local int i, l;
     local string ret;
     l = Len(s);
     for(i=0; i<l; i++) {
-        if( Mid(s, i, 1) == "," ) {
+        if( Mid(s, i, 1) == splitChar ) {
             ret = Left(s, i);
             s = Mid(s, i+1);
             return ret;

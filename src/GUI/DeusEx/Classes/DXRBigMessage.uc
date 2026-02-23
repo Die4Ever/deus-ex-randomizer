@@ -98,7 +98,7 @@ event DrawWindow(GC gc)
         }
     }
 
-    gc.SetTextColor( RedColor );
+    gc.SetTextColor( class'MenuChoice_ColorVision'.static.GetHintTextColor() );
     gc.SetFont(Font'DXRFontMenuExtraLarge');
     gc.GetTextExtent( 0, w, h, message );
     cury = msgY * height;

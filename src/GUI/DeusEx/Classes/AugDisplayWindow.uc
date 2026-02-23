@@ -553,13 +553,15 @@ function DrawTargetAugmentation(GC gc)
 
         }
 
-        str = "To: "$formatMapName(teleDest);
+        str = formatMapName(teleDest);
         gc.SetTextColor(colWhite);
         gc.GetTextExtent(0, w, h, str);
         x = boxCX - w/2;
-        y=boxCY;
+        y = boxCY + h/2;
 
+        gc.SetHorizontalAlignment(HALIGN_Center);
         gc.DrawText(x, y, w, h, str);
+        gc.SetHorizontalAlignment(HALIGN_Left);
 	}
 
     //Look for any hover hints
@@ -573,7 +575,9 @@ function DrawTargetAugmentation(GC gc)
         x = boxCX - w/2;
         y=boxCY;
 
+        gc.SetHorizontalAlignment(HALIGN_Center);
         gc.DrawText(x, y, w, h, str);
+        gc.SetHorizontalAlignment(HALIGN_Left);
     }
 
     //Draw a poolball aiming line
@@ -911,7 +915,7 @@ function SuperDrawTargetAugmentation(GC gc)
                 gc.GetTextExtent(0, w, h, str);
                 x = boxTLX + margin;
                 y = boxTLY + margin;
-                gc.SetTextColor(GetColorScaled(mult));
+                gc.SetTextColor(class'MenuChoice_ColorVision'.static.GetVisionColorScaled(mult));
                 gc.DrawText(x, y, w, h, str);
                 gc.SetTextColor(colHeaderText);
 
@@ -1026,10 +1030,23 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
     local ThrownProjectile tp;
 
     if(target == None) {
-        xcolor = colWhite;
+        xcolor = class'MenuChoice_ColorVision'.static.GetNeutralColor();
         return;
     }
     Super.GetTargetReticleColor(target,xcolor);
+
+    //Convert to colour vision deficiency colours
+    switch(xcolor){
+        case colWhite:
+            xcolor = class'MenuChoice_ColorVision'.static.GetNeutralColor();
+            break;
+        case colRed:
+            xcolor = class'MenuChoice_ColorVision'.static.GetHostileColor();
+            break;
+        case colGreen:
+            xcolor = class'MenuChoice_ColorVision'.static.GetFriendlyColor();
+            break;
+    }
 
     if ( Player.Level.NetMode == NM_Standalone ) {
         if ( target.IsA('AutoTurret') || target.IsA('AutoTurretGun') ) {
@@ -1042,36 +1059,36 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
 
                 if (turret.bTrackPlayersOnly==True){
                     //Hostile
-                    xcolor = colRed;
+                    xcolor = class'MenuChoice_ColorVision'.static.GetHostileColor();
                 } else if (turret.bTrackPawnsOnly==True){
                     //bTrackPlayersOnly=False is implied because of first condition
                     //Allied
-                    xcolor = colGreen;
+                    xcolor = class'MenuChoice_ColorVision'.static.GetFriendlyColor();
                 } else {
                     //Neutral
-                    xcolor = colWhite;
+                    xcolor = class'MenuChoice_ColorVision'.static.GetNeutralColor();
                 }
 
         } else if (target.IsA('SecurityCamera')) {
             sc = SecurityCamera(target);
             if (!sc.bActive) {
                 //Disabled
-                xcolor = colWhite;
+                xcolor = class'MenuChoice_ColorVision'.static.GetNeutralColor();
             } else if (sc.bNoAlarm){
                 //Will not set off an alarm (friendly)
-                xcolor = colGreen;
+                xcolor = class'MenuChoice_ColorVision'.static.GetFriendlyColor();
             } else {
                 //Will trigger an alarm (hostile)
-                xcolor = colRed;
+                xcolor = class'MenuChoice_ColorVision'.static.GetHostileColor();
             }
         } else if (target.IsA('ThrownProjectile')) {
             tp = ThrownProjectile(target);
             if (tp.bDisabled){
-                xcolor = colWhite;
+                xcolor = class'MenuChoice_ColorVision'.static.GetNeutralColor();
             } else if (tp.Owner!=None) { //The game only considers unowned grenades to be hostile (in single player)
-                xcolor = colGreen;
+                xcolor = class'MenuChoice_ColorVision'.static.GetFriendlyColor();
             } else {
-                xcolor = colRed;
+                xcolor = class'MenuChoice_ColorVision'.static.GetHostileColor();
             }
         }
     }

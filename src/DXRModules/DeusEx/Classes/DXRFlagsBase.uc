@@ -839,10 +839,8 @@ simulated function string flagValToHumanVal(name flagname, int val){
             return class'MenuChoice_BalanceMaps'.default.enumText[val];
 
         case 'MenuChoice_PasswordAutofill':
-            switch(val) {
-            case 0: return "No Assistance";
-            case 1: return "Mark Known Passwords";
-            case 2: return "Autofill Passwords";
+            if (val >= 0 && val < ArrayCount(class'MenuChoice_PasswordAutofill'.default.enumText)){
+                return class'MenuChoice_PasswordAutofill'.default.enumText[val];
             }
             break;
 

@@ -514,8 +514,8 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         light.LightEffect=LE_None;
         light.LightBrightness=160;
         light.OtherBrightness=160;
-        light.LightHue=255;
-        light.OtherHue=80;
+        light.LightHue=class'MenuChoice_ColorVision'.Static.GetNotReadyHue();
+        light.OtherHue=class'MenuChoice_ColorVision'.Static.GetReadyHue();
         light.LightRadius=8;
     }
     else if (g.name=="Launch Command Computer" && Loc.name != "Launch Command") {

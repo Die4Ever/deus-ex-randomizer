@@ -225,6 +225,63 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
     return bKeyHandled;
 }
 
+function bool CheckSingleDataVaultWindow(EInputKey key, string function, class<DeusExBaseWindow> winClass)
+{
+    local bool bKeyPressed;
+
+    bKeyPressed = False;
+
+    // Get the key(s) bound to this function
+    if (IsKeyAssigned(key, function))
+    {
+        // If the screen is already active, then cancel it.
+        // Otherwise invoke it.
+
+        if ((GetTopWindow() != None) && (GetTopWindow().Class == winClass))
+            PopWindow();
+        else
+            InvokeUIScreen(winClass);
+
+        return true;
+    }
+
+    return false;
+}
+
+function bool ProcessDataVaultSelection(EInputKey key)
+{
+    local bool rc;
+
+    rc = _ProcessDataVaultSelection(key);
+
+    //Add any additional persona windows to be handled here
+    if (!rc) rc = CheckSingleDataVaultWindow(key,"ShowBingoWindow",Class'PersonaScreenBingo');
+
+    return rc;
+}
+
+function bool IsKeyAssigned(EInputKey key, String function)
+{
+    local int pos;
+    local string InputKeyName;
+    local string AllAlias,Alias;
+    local DeusExPlayer player;
+
+    player       = DeusExPlayer(parentPawn);
+    InputKeyName = mid(string(GetEnum(enum'EInputKey',key)),3);
+
+    AllAlias = player.ConsoleCommand("KEYBINDING " $ InputKeyName);
+
+    //RANDO: Player might have the key bound to multiple functions - split those out and check them individually
+    while (AllAlias!=""){
+        Alias = class'DXRInfo'.static.UnpackStringChar(AllAlias,"|");
+        //player.ClientMessage("Key: "$InputKeyName$" Alias: "$Alias$"  Function: "$function);
+        if (Alias == function) return true;
+    }
+
+    return false;
+}
+
 //Clear any Dead or Unconscious flags
 //A duplicate of ResetFlags, except only applying to _Dead and _Unconscious
 function UnkillCharacters()
