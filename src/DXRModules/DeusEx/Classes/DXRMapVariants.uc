@@ -190,6 +190,8 @@ simulated function FirstEntry()
     local Teleporter t;
     local MapExit me;
     local string s;
+    local int i;
+    local bool isStartMap;
 
     s = CleanupMapName(dxr.dxInfo.mapName);
     dxr.dxInfo.mapName = GetDirtyMapName(s, coords_mult);
@@ -199,6 +201,29 @@ simulated function FirstEntry()
     }
     foreach AllActors(class'MapExit', me) {
         me.DestMap = VaryURL(me.DestMap);
+    }
+
+    if(dxr.flags.gamemode == dxr.flags.SpeedShuffle) {
+        for(i=0; i<ArrayCount(starts); i++) {
+            if(dxr.localURL ~= starts[i]) {
+                isStartMap = true; // only if we're in a starting map
+                break;
+            }
+        }
+    }
+    if(isStartMap) { // for speedrun shuffle mode, do these things when entering these missions
+        if(dxr.dxInfo.MissionNumber == 1 || dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
+            dxr.flagbase.DeleteFlag('JosephManderley_Dead', FLAG_Bool);
+            dxr.flagbase.DeleteFlag('JosephManderley_Unconscious', FLAG_Bool);
+        }
+        if(dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
+            dxr.flagbase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
+            dxr.flagbase.DeleteFlag('PaulDenton_Unconscious', FLAG_Bool);
+        }
+        if(dxr.dxInfo.MissionNumber == 4) {
+            dxr.flagbase.DeleteFlag('GuntherHermann_Dead', FLAG_Bool);
+            dxr.flagbase.DeleteFlag('GuntherHermann_Unconscious', FLAG_Bool);
+        }
     }
 }
 
