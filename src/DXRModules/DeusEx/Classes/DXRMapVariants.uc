@@ -153,13 +153,23 @@ function int GetMirrorMapsSetting()
 
 function CheckConfig()
 {
-    local int i, slot, tempi;
+    local int i, slot, tempi, startidx;
     local string temp;
 
     Super.CheckConfig();
 
     SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
-    for(i=ArrayCount(starts)-2; i>=0; i--) { // length - 2 because Area 51 is not shuffled
+    startidx = ArrayCount(starts)-2;// length - 2 because Area 51 is not shuffled
+    if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
+        starts[9] = starts[10];
+        starts[10] = starts[12];
+
+        missions[9] = missions[10];
+        missions[10] = missions[12];
+
+        startidx -= 2;
+    }
+    for(i=startidx; i>=0; i--) {
         slot = rng(i+1);
 
         temp = starts[i];
@@ -169,6 +179,9 @@ function CheckConfig()
         tempi = missions[i];
         missions[i] = missions[slot];
         missions[slot] = tempi;
+    }
+    for(i=0; i<startidx+2; i++) {
+        l("speedshuffle " $ i @ starts[i]);
     }
 }
 
