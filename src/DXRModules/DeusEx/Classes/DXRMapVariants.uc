@@ -255,18 +255,20 @@ static function int SplitMapName(string url)
 function string VaryURL(string url)
 {
     local string map, after;
+    local int speedShuffled; // can't do out bool params
     local int i;
 
     i = SplitMapName(url);
     map = Left(url, i);
     after = Mid(url, i);
     l("VaryURL url=="$url$", map=="$map$", after=="$after);
-    map = VaryMap(map);
-    l("VaryURL newmap=="$map);
+    map = VaryMap(map, speedShuffled);
+    if(speedShuffled==1 && after!="") after = "#";
+    l("VaryURL newmap=="$map$", after=="$after$", speedShuffled == "$speedShuffled);
     return map $ after;
 }
 
-function string VaryMap(string map)
+function string VaryMap(string map, optional out int speedShuffled)
 {
     local int chance, i;
     local bool isStartMap;
@@ -288,7 +290,10 @@ function string VaryMap(string map)
         }
         if(isStartMap) {
             if(dxr.dxInfo.MissionNumber == 98) nextMap = starts[0]; // coming from the intro
-            if(nextMap != "") map = nextMap;
+            if(nextMap != "") {
+                map = nextMap;
+                speedShuffled = 1;
+            }
         }
     }
 
