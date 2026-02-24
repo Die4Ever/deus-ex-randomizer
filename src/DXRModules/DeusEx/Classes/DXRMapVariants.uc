@@ -284,7 +284,7 @@ function string VaryMap(string map)
     if(dxr.flags.gamemode == dxr.flags.SpeedShuffle) {
         for(i=0; i<ArrayCount(starts); i++) {
             if(missions[i] == dxr.dxInfo.MissionNumber) nextMap = starts[i+1];
-            if(map ~= starts[i]) isStartMap = true; // only if this teleporter is going to a starting map
+            if(map ~= starts[i] && dxr.dxInfo.MissionNumber != missions[i]) isStartMap = true; // only if this teleporter is going to a starting map
         }
         if(isStartMap) {
             if(dxr.dxInfo.MissionNumber == 98) nextMap = starts[0]; // coming from the intro
