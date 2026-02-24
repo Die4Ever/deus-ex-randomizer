@@ -1396,7 +1396,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Demonstrate your certification and operate a functional forklift.";
         case "DolphinJump": // keep height number in sync with DolphinJumpTrigger CreateDolphin
             msg = TrimTrailingZeros(FloatToString(GetRealDistance(160), 1)) @ GetDistanceUnitLong();
-            return "Jump " $ msg $ " out of the water.|n|nHow high in the sky can you fly?";
+            return "Jump " $ msg $ " out of the water.  Make sure to start with your head under the water.|n|nHow high in the sky can you fly?";
         case "M06HeliSafe":
             return "Open both safes in the Hong Kong Helibase.|n|nThere's one in each Flight Control Deck room.";
         case "JustAFleshWound":
