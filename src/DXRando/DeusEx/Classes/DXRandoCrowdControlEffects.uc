@@ -1321,6 +1321,32 @@ function bool InGame() {
     return True;
 }
 
+//Check the window stack, in case there's a window popped up in front of it (like Ask A Question)
+function bool InventoryScreenOpen()
+{
+    local DeusExRootWindow root;
+    local #var(prefix)PersonaScreenInventory winInv;
+    local int winCount,winNum;
+
+    root = DeusExRootWindow(player().rootWindow);
+    if (None == root) {
+        //Root window doesn't exist ¯\_(ツ)_/¯
+        return False;
+    }
+
+    winCount = root.WindowStackCount();
+    winNum = winCount-1;
+    while (winNum>=0){
+        winInv = #var(prefix)PersonaScreenInventory(root.winStack[winNum]);
+        if (winInv!=None){
+            return true;
+        }
+        winNum--;
+    }
+
+    return false;
+}
+
 function bool InConversation() {
     return player().conPlay!=None;
 }
@@ -1561,6 +1587,12 @@ function int GiveItem(string viewer, string type, optional int amount) {
 
     if (itemclass == None) {
         return NotAvail;
+    }
+
+    //Don't give items while the inventory screen is open (since that screen won't update to add the new item)
+    //This also opens up possibilities to cause inventory overlap (issue #1242), so easier to just not...
+    if (InventoryScreenOpen()){
+        return TempFail;
     }
 
     //If it is a Weapon (but not a thrown one, where the weapon pickup acts as extra ammo)
