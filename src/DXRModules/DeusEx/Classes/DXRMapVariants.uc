@@ -231,6 +231,9 @@ simulated function FirstEntry()
         if(dxr.dxInfo.MissionNumber == 9 || dxr.dxInfo.MissionNumber == 14) {
             dxr.flagbase.DeleteFlag('MS_UnhideHelicopter', FLAG_Bool);
         }
+        if(dxr.dxInfo.MissionNumber == 6 || dxr.dxInfo.MissionNumber ==  10 || dxr.dxInfo.MissionNumber == 15) {
+            dxr.flagbase.DeleteFlag('MS_CommandosUnhidden', FLAG_Bool);
+        }
     }
 }
 
