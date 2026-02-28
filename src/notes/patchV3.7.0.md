@@ -1,15 +1,14 @@
 ## Major Changes
 
-- New game mode: Speedrun Shuffle! This is the same as Speedrun Mode, but the order of the missions is shuffled.
+- New game mode: Speedrun Shuffle!  This is the same as Speedrun Mode, but the order of the missions is shuffled.
 - New password randomization styles!  By default, passwords will now be randomized by picking a few words from word lists instead of purely random letters and numbers.  In theory these passwords should be a bit easier to remember if not using autofill, as well as simply being more "fun".
   - If memes are disabled (such as when playing Serious Rando), password randomization will default to "Pronouncable" passwords instead.  These passwords alternate vowels and consonants (the same method used for random names) to form vaguely pronouncable passwords which should be easier to remember
   - If you want to switch password styles mid-game, do so just before leaving for a new mission (so there is no possibility of backtracking) for the least possibility of causing issues.
-- New "Password Assistance" setting, "Show Known Passwords".  This mode will show the usernames and passwords for accounts that you know on computers, and keypads will show the code (if known), but they need to be manually entered.
-- The "Account List" window for Password Assistance on Computers has been revamped to look a bit more nice!
-  - In "Mark Known Passwords" and "Show Known Passwords" modes, accounts won't be listed if the password is not known.
-  - In "Mark Known Passwords" and "Show Known Passwords" modes, the "Login" button will not be shown below the account list.
+- New "Password Assistance" setting, "Show Known Passwords".  Known usernames and passwords will be shown on computers, and a known PIN will be shown on keypads, but they need to be manually entered.
+- The "Account List" window for Password Assistance on computers has been revamped to look a bit more nice!
+  - In "Mark Known Passwords" and "Show Known Passwords" modes the "Login" button will not be shown below the account list.
   - Passwords that are learned while using a computer will be updated immediately and no longer requires you to close and reopen the computer.
-- New setting "Show Computer Accounts" lets you choose how computer accounts that you don't have the password for show in the account list.
+- New "Show Computer Accounts" setting. Lets you choose how computer accounts that you don't have the password for show in the account list.
   - "Hide Unknown" will only show accounts that you have the password for in the account list.
   - "Anonymous Accounts" will show that there *are* accounts (and how many), but won't show the name for ones that you don't have the password for.
   - "Show All Accounts" will show the full account name for all accounts on a computer, regardless of if you know the password or not.
@@ -35,20 +34,20 @@
 - Aim laser no longer shows up during conversations or cutscenes in Revision.
 - Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 - Fixed a bug where characters would patrol to a point and then start wandering, instead of standing still.  In particular, this fixes an issue if you aren't standing near the jail cell window in Mission 5 when Anna shows up (if she's still alive), as previously she would wander away.
-- Add a button to open the door to the UNATCO HQ front door desk from the inside in Mission 1.  All other versions of UNATCO HQ (Missions 3, 4, 5) already have a button to open the door from the inside.
+- Added a button to open the door to the UNATCO HQ front door desk from the inside in Mission 1.  All other versions of UNATCO HQ (Missions 3, 4, 5) already have a button to open the door from the inside.
 - Aug/Med/Repair Bots and Merchants will no longer spawn in certain dangerous locations:
-  - Near the arcing electricity in the Airfield (Mission 3)
-  - In the electrical room on the superfreighter (Mission 9)
+  - Near the arcing electricity at the LaGuardia airfield (Mission 3).
+  - In the electrical room on the superfreighter (Mission 9).
   - Near the broken electrical box in the Paris Catacombs (Mission 10).
   - In the electrified room in the Vandenberg Command Center (Mission 12).
   - Outside the door of Vandenberg Command Center in the inaccessible duplicate of the main hall (Mission 12).
 - The teleporter to leave the Vandenberg Command Center is now slightly larger to hopefully make it less possible to sneak past.
-- Jock now flies faster during the exit cutscenes from the graveyard in Mission 9 and from the gas station in Mission 12.
+- Jock now flies faster during the exit cutscenes from Dowd's cemetery in Mission 9 and from the gas station in Mission 12.
 - Bingo goal for learning Maggie's birthday is now properly marked when reading the relevant datacube.
-- Fixed an issue where going two layers deep into the menus (E.g. Settings > Controls) would set your default FOV to whatever the current FOV was at the time you entered the menu.  This caused issues if you went into the menus while drunk or using a scope.  This would sometimes cause your game to be slightly zoomed in, or your weapon to not appear until you switch to another one.
-- When New Game Plus removes a weapon, the chosen weapon is no longer dependent on the order in which you picked up the weapons.
+- Fixed an issue where going two layers deep into the menus (e.g. Settings > Controls) would set your default FOV to whatever the current FOV was at the time you entered the menu.  This caused issues if you went into the menus while drunk or using a scope.  This would sometimes cause your game to be slightly zoomed in, or your weapon to not appear until you switch to another one.
+- When New Game Plus removes a weapon, the chosen weapon is no longer dependent on the order in which you picked them up.
 - Robots will no longer drop any weapons regardless of whether they are "standard" or not.  Some robots, like the security bots in Dockyards (Mission 9), have non-standard robot weapons such as flamethrowers.  Previously, when those robots were destroyed, they would drop any of those non-standard weapons.
-- Spiderbots (Or robots who have been given spiderbot weapons) will now be able to use their zap attack against enemies who are not robots.  Previously spiderbots would have only used the zap against the player or robots (particularly noticeable if you scrambled a spiderbot, they would just stand and look at their enemy without attacking).
+- Spiderbots (or robots who have been given spiderbot weapons) will now be able to use their zap attack against enemies who are not robots.  Previously, spiderbots would only use their zap against the player or robots (particularly noticeable if you scrambled a spiderbot - they would just stand and look at their enemy without attacking).
 - Enemies will no longer clone off of disabled robots (Like the ones in the robotics bay in Mission 5, or the Level 2 MJ12 Lab in Mission 6)
 - Dragging a stack of items off of the inventory screen will now drop the whole stack, rather than just a single item from the stack.
 - Barrels that start the level already leaking will no longer lose 1 health every time the game or map is loaded.
@@ -60,16 +59,16 @@
 - NPCs who are standing or dancing will now always try to return to their original location after leaving it for whatever reason (e.g. if they chased the player).
 - Alex Jacobson will now actually appear in Tong's Lab (Mission 6) when using a Hong Kong starting map (e.g. when playing WaltonWare).
 - Aggressive Defense System will now stop tracking projectiles immediately once the player runs out of bioelectric energy.
-- Datacube with ALL_SHIFTS account information in Versalife offices (M06) can now be randomized anywhere in the office except for the security room.
-- Bingo goals that require you to kill or knockout a specific character yourself should now be marked as failed more reliably if killed or knocked out by someone other than the player.
+- The datacube with ALL_SHIFTS account information in Versalife offices (Mission 6) can now be randomized anywhere in the office except for the security room.
+- Bingo goals that require you to kill or knock out a specific character yourself should now be marked as failed more reliably if they're killed or knocked out by someone other than the player.
 - Bingo goal adjustments:
   - "Ignore Paul in the 747 Hangar" now allows either a kill or knock out.
   - "I SPILL MY DRINK!" now allows either a kill or knock out.
-  - "Warn Smuggler" now fails immediately if you actively tell him there's nothing happening.
+  - "Warn Smuggler" now fails immediately if you actively tell him not to be worried.
 - Adjusted the availability of various bingo goals based on loadouts.
   - Purely lethal loadouts (Such as Freeman Mode or Explosives Only) will no longer allow "knock out" goals to be placed on the bingo board
   - Purely non-lethal loadouts (Such as Stick with the Prod) will no longer allow "kill" goals to be placed on the bingo board
-  - "By the Book" loadout will no longer allow "Hack x Computers" or "Hack x Alarm Sounder Panels" bingo goals to be placed on the board.
+  - "By the Book" loadout will no longer allow "Hack x Computers" or "Hack x Alarm Sounder Panels" bingo goals to be placed on the bingo board.
 - The time between conversations with Jock and the start of exit cutscenes has been consistently reduced to try to prevent the player from taking damage between the end of the conversation and the start of the cutscene (as often happened at the end of Mission 9 Graveyard).
 - The player can no longer put random ATM accounts into debt when hacking them (they can only be reduced to a balance of 0 credits).  Account balances are actually properly emptied and synced to other ATMs in the same map when an ATM is hacked.
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
@@ -88,16 +87,16 @@
   - In the hallway of Tong's base (Mission 6).
 - The goal to find the Ambrosia in Battery Park (Mission 2) is now properly added at the start of the the level again.
 - The Training Merchant (who shows up in Training) is no longer afraid of anything.
-- The door in the demolitions training hallway (In the training mission) can now be highlighted to see the damage threshold.
+- The door in the demolitions training hallway (in the Training mission) can now be highlighted to see the damage threshold.
 - If LDDP is not installed, there will no longer be an empty datacube in the mirrored Mission 1 UNATCO HQ map.
-- Marked several more false positives for passwords in emails and datacubes.
+- Less likely to unexpectedly learn passwords from datacubes or emails that don't intentionally include the password
 - Adjust passwords on several different computers through the game so that they no longer have overlapping "SECURITY" passwords, causing falsely learned passwords.
 - "Light a flare" bingo goal will no longer appear in Mission 9.  There is only a chance of finding a flare in a single crate, so it is not consistent.
 - Moved a crate that spawned near the bottom of the ladder into the sewers at the Warehouse (Mission 2)
 - Thermoptic Camo now actually looks like the actual item in the charge timer when used.
 - Charged items (like Ballistic Armor and Thermoptic Camo) are now properly centered in the icon bar on the right side of the screen.
 - List of accounts when hacking a computer will always fully capitalize the currently logged in user name to match the account names in the list.
-- New fonts to better distinguish between I, l, and 1 (Uppercase I, lowercase L, and the number one).
+- New fonts to better distinguish between I, l, and 1 (uppercase I, lowercase L, and the number one).
 - Codes or passwords in email subject lines will now be shown randomized and get learned.  This is primarily for Alex's closet code.
 - The font used for the console (such as when entering cheats) is now larger by default, and can be changed with a new option "Console Font Size" in the Rando > Visuals menu.
 - Ammo for thrown weapons (like grenades or throwing knives) is no longer looted if the weapon is marked as trash.
@@ -122,7 +121,7 @@
 - Binoculars or weapon scopes now unzoom when you reach a bingo win (such as in WaltonWare).
 - Maybe fixed random deaths in the ending cutscenes for some players.
 - Times shown for each mission in the credits now use fixed width numbers to make things line up better.
-- The game no longer crashes when starting a new game from the training mission.
+- The game no longer crashes when starting a new game from the Training mission.
 - Health is properly restored to up to 50% of maximum health in each body part when reaching Mission 5.
 - Hidden explosive crates attached to the Mission 9 Weld Points no longer sometimes get collision when being randomized (which caused them to be shootable).
 - Revision will no longer consider existing item locations as viable locations to spawn random bots or NPCs.
