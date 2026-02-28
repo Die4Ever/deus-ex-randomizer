@@ -228,6 +228,12 @@ simulated function FirstEntry()
             dxr.flagbase.DeleteFlag('WaltonSimons_Dead', FLAG_Bool);
             dxr.flagbase.DeleteFlag('WaltonSimons_Unconscious', FLAG_Bool);
         }
+        if(dxr.dxInfo.MissionNumber == 9 || dxr.dxInfo.MissionNumber == 14) {
+            dxr.flagbase.DeleteFlag('MS_UnhideHelicopter', FLAG_Bool);
+        }
+        if(dxr.dxInfo.MissionNumber == 6 || dxr.dxInfo.MissionNumber ==  10 || dxr.dxInfo.MissionNumber == 15) {
+            dxr.flagbase.DeleteFlag('MS_CommandosUnhidden', FLAG_Bool);
+        }
     }
 }
 

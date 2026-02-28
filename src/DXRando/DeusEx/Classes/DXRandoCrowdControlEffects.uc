@@ -56,6 +56,7 @@ const WineBulletsTimeDefault = 60;
 const BloodTimeDefault = 60;
 
 const MAX_NASTY_RAT = 3;
+const MAX_PLAYER_CLONE = 3;
 const MAX_SPAM_CUBES = 50;
 const MAX_MARBLES = 100;
 const MAX_PIANOS = 50;
@@ -552,11 +553,12 @@ function ContinuousUpdates()
 {
     local int roll;
     local DataStorage datastorage;
-    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
     if (dxr.OnTitleScreen()){
         return;
     }
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
     //Lava floor logic
     if (isTimerActive('cc_floorLavaTimer') && InGame() && !InMenu()){
@@ -1246,7 +1248,8 @@ function SetFloatyPhysics(bool enabled) {
             apply = (A.GetStateName() != 'Patrolling' &&
                         ScriptedPawn(A).Orders != 'Sitting');
         } else if (A.isa('PlayerPawn')) {
-            apply = True;
+            //Don't apply if the player is interpolating (like in an endgame cutscene...)
+            apply = (!(A.IsInState('Paralyzed')) && !(A.IsInState('Interpolating')));
         } else if (A.isa('Decoration')) {
             apply = ((A.Base!=None &&
                         (A.Physics == PHYS_None || A.Physics == PHYS_Falling) &&
@@ -1319,6 +1322,37 @@ function bool InGame() {
     }
 
     return True;
+}
+
+//Check the window stack, in case there's a window popped up in front of it (like Ask A Question)
+function bool InventoryScreenOpen()
+{
+    local DeusExRootWindow root;
+    local #var(prefix)PersonaScreenInventory winInv;
+    local int winCount,winNum;
+
+    root = DeusExRootWindow(player().rootWindow);
+    if (None == root) {
+        //Root window doesn't exist ¯\_(ツ)_/¯
+        return False;
+    }
+
+    winCount = root.WindowStackCount();
+    winNum = winCount-1;
+    while (winNum>=0){
+        winInv = #var(prefix)PersonaScreenInventory(root.winStack[winNum]);
+        if (winInv!=None){
+            return true;
+        }
+        winNum--;
+    }
+
+    return false;
+}
+
+function bool PlayerInterpolating()
+{
+    return ((player().IsInState('Paralyzed')) || (player().IsInState('Interpolating')));
 }
 
 function bool InConversation() {
@@ -1561,6 +1595,12 @@ function int GiveItem(string viewer, string type, optional int amount) {
 
     if (itemclass == None) {
         return NotAvail;
+    }
+
+    //Don't give items while the inventory screen is open (since that screen won't update to add the new item)
+    //This also opens up possibilities to cause inventory overlap (issue #1242), so easier to just not...
+    if (InventoryScreenOpen()){
+        return TempFail;
     }
 
     //If it is a Weapon (but not a thrown one, where the weapon pickup acts as extra ammo)
@@ -1810,7 +1850,7 @@ function int SpawnNastyRat(string viewer)
         }
     }
 
-    spawnLoc = ccLink.ccModule.GetRandomPositionFine(,2000,10000);
+    spawnLoc = ccLink.ccModule.GetRandomPositionFine(player().Location,2000,10000);
 
     nr = Spawn(class'NastyRat',,,spawnLoc);
     if (nr==None){
@@ -1906,6 +1946,162 @@ function int DropPiano(string viewer)
     piano.FamiliarName = piano.ItemName;
     piano.UnfamiliarName = piano.FamiliarName;
     PlayerMessage(viewer$" dropped a piano on you from " $ int(class'DXRActorsBase'.static.GetRealDistance(height)) @ class'DXRActorsBase'.static.GetDistanceUnit() @ "with" @ int(leading*100 + 0.5)$"% leading!");
+    return Success;
+}
+
+//Make a clone of the player with the same weapons and ammo as you
+//TODO: For the future, this could be a custom JCDouble subclass that inherits some resistances from your augs
+function int ClonePlayer(string viewer, bool friendly)
+{
+    local #var(PlayerPawn) p;
+    local #var(prefix)JCDouble jcd;
+    local vector loc;
+    local rotator rot;
+    local int num;
+    local Inventory pInv,newInv;
+    local #var(DeusExPrefix)Ammo dxAmmo,newAmmo;
+    local #var(DeusExPrefix)Weapon dxWeap,newWeap;
+    local ScriptedPawn o;
+    local float minDist,maxDist;
+    local string msg;
+#ifndef vmd
+    local DXRFashionManager fashion;
+#endif
+
+
+    p = player();
+    if (p == None) {
+        return TempFail;
+    }
+
+    //Only allow a certain number of clones in each level
+    foreach AllActors(class'#var(prefix)JCDouble',jcd){
+        if (++num>=MAX_PLAYER_CLONE) {
+            return TempFail;
+        }
+    }
+
+    if (friendly){
+        minDist = 50.0;
+        maxDist = 1000.0;
+    } else {
+        minDist = 250.0;
+        maxDist = 1500.0;
+    }
+    loc = ccLink.ccModule.GetRandomPositionFine(p.Location,minDist,maxDist);
+
+    if (friendly) {
+        rot = Rotator(loc-p.Location); //Face friendlies away from the player
+    } else {
+        rot = Rotator(p.Location-loc); //Face enemies towards the player
+    }
+
+    jcd = Spawn(class'#var(prefix)JCDouble',,, loc,rot);
+
+    if( jcd == None ) {
+        info("failed to spawn clone into "$loc);
+        return TempFail;
+    }
+    info("spawning clone");
+
+#ifndef hx
+    jcd.SetSkin(p);
+#endif
+
+    //Make sure they use the same pain sounds (In case they're female)
+    jcd.HitSound1 = p.HitSound1;
+    jcd.HitSound2 = p.HitSound2;
+    jcd.Die = p.Die;
+
+#ifndef vmd
+    //Make them use the JCDentonMaleCarcass, since it will be adjusted for FemJC anyway
+    jcd.CarcassType = class'JCDentonMaleCarcass';
+#endif
+
+    //Make sure they aren't invincible
+    jcd.bInvincible = False;
+
+    //Make them stronger than base 100 health.
+    ccLink.ccModule.SetPawnHealth(jcd,300);
+
+    //Give the clone the players name
+    jcd.UnfamiliarName = p.TruePlayerName;
+    jcd.FamiliarName   = p.TruePlayerName;
+
+#ifndef vmd
+    //Make sure they're dressed like you
+    fashion = class'DXRFashionManager'.static.GiveItem(p);
+    fashion.GetDressed();
+#endif
+
+    //Clone the player weapons and ammo into the... Clone
+    //Might be nice to copy armour into the clone for VMD, where they'll actually use them (but need to make them not drop the armour as well)
+    for(pInv = p.Inventory;pInv!=None;pInv=pInv.Inventory){
+        newAmmo = None;
+        newWeap = None;
+
+        dxAmmo = #var(DeusExPrefix)Ammo(pInv);
+        dxWeap = #var(DeusExPrefix)Weapon(pInv);
+        if (dxAmmo!=None || dxWeap!=None){
+            newInv =  ccLink.ccModule.GiveItem(jcd,pInv.Class,1);
+            newAmmo = #var(DeusExPrefix)Ammo(newInv);
+            newWeap = #var(DeusExPrefix)Weapon(newInv);
+        }
+
+        if (dxAmmo!=None && newAmmo!=None){
+            //Give the clone just as much ammo as the player has
+            newAmmo.AmmoAmount = dxAmmo.AmmoAmount;
+        }
+
+        if (newWeap!=None){
+            newWeap.bNativeAttack=True; //Mark as Native so that the clone doesn't drop it
+        }
+    }
+
+    //Make sure they keep their weapon drawn
+    jcd.bKeepWeaponDrawn=true;
+    jcd.SetupWeapon(true);
+
+    //Make sure they can hear you
+    jcd.bReactAlarm=True;
+    jcd.bReactCarcass=True;
+    jcd.bReactDistress=True;
+    jcd.bReactFutz=True;
+    jcd.bReactLoudNoise=True;
+    jcd.bReactPresence=True;
+    jcd.bReactProjectiles=True;
+    jcd.bReactShot=True;
+    jcd.ResetReactions();
+
+    //Your clone actually leaves if it runs away due to low health
+    //(so one that is cowering doesn't block a new one from spawning)
+    jcd.bLeaveAfterFleeing=true;
+
+    if (friendly){
+        jcd.Alliance = 'FriendlyCCSpawn';
+        jcd.ChangeAlly('Player',1,True);
+        jcd.ChangeAlly('HostileCCSpawn',-1,True);
+        foreach AllActors(class'ScriptedPawn',o){
+            if (o.GetPawnAllianceType(p)==ALLIANCE_Hostile){
+                jcd.ChangeAlly(o.Alliance,-1,True);
+            }
+        }
+    } else {
+        jcd.Alliance = 'HostileCCSpawn';
+        jcd.ChangeAlly('Player',-1,True);
+        jcd.ChangeAlly('FriendlyCCSpawn',-1,True);
+    }
+
+    msg = viewer@"spawned your ";
+    if (friendly){
+        msg = msg $ "friendly ";
+    } else {
+        msg = msg $ "evil ";
+    }
+    msg = msg $ "clone somewhere nearby...";
+    PlayerMessage(msg);
+
+
     return Success;
 }
 
@@ -2874,6 +3070,11 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
         return TempFail;
     }
 
+    //Don't start effects while the player is interpolating (like during endgame cutscenes)
+    if (PlayerInterpolating()){
+        return TempFail;
+    }
+
     //Don't start effects if the player is already dead.  It's too late.
     if (player().Health <= 0) {
         return TempFail;
@@ -3635,6 +3836,12 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
         case "give_current_ammo":
             return GiveCurrentWeaponAmmo(viewer);
+            break;
+        case "clone_player_evil":
+            return ClonePlayer(viewer,false);
+            break;
+        case "clone_player_good":
+            return ClonePlayer(viewer,true);
             break;
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
