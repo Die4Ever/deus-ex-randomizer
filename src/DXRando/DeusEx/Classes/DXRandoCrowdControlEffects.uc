@@ -1996,7 +1996,10 @@ function int ClonePlayer(string viewer, bool friendly)
         return TempFail;
     }
     info("spawning clone");
+
+#ifndef hx
     jcd.SetSkin(p);
+#endif
 
     //Make sure they use the same pain sounds (In case they're female)
     jcd.HitSound1 = p.HitSound1;
