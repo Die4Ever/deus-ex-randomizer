@@ -983,7 +983,7 @@ simulated function int AddClothing(EGender gender, EClothesType type, Texture te
 
     //Check for a dupe
     for (i=0;i<numClothes;i++){
-        if (Clothing[i].Gender!=gender) continue;
+        if (Clothing[i].Gender!=G_Both && Clothing[i].Gender!=gender) continue; //Match a "female only" loot against one that already is looted and marked as "both"
         if (Clothing[i].Type!=type) continue;
         if (Clothing[i].tex1!=tex1s) continue;
         if (Clothing[i].tex2!=tex2s) continue;
