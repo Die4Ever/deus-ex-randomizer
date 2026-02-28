@@ -46,7 +46,7 @@
 - Jock now flies faster during the exit cutscenes from the graveyard in Mission 9 and from the gas station in Mission 12.
 - Bingo goal for learning Maggie's birthday is now properly marked when reading the relevant datacube.
 - Fixed an issue where going two layers deep into the menus (E.g. Settings > Controls) would set your default FOV to whatever the current FOV was at the time you entered the menu.  This caused issues if you went into the menus while drunk or using a scope.  This would sometimes cause your game to be slightly zoomed in, or your weapon to not appear until you switch to another one.
-- When New Game Plus removes a weapon, the chosen weapon is no longer dependent on the order in which you picked up the weapons.
+- The weapon removed by New Game Plus is now much less likely to change by dropping or picking up other weapons.
 - Robots will no longer drop any weapons regardless of whether they are "standard" or not.  Some robots, like the security bots in Dockyards (Mission 9), have non-standard robot weapons such as flamethrowers.  Previously, when those robots were destroyed, they would drop any of those non-standard weapons.
 - Spiderbots (Or robots who have been given spiderbot weapons) will now be able to use their zap attack against enemies who are not robots.  Previously spiderbots would have only used the zap against the player or robots (particularly noticeable if you scrambled a spiderbot, they would just stand and look at their enemy without attacking).
 - Enemies will no longer clone off of disabled robots (Like the ones in the robotics bay in Mission 5, or the Level 2 MJ12 Lab in Mission 6)
