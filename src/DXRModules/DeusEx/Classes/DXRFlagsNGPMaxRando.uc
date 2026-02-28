@@ -378,17 +378,15 @@ simulated function ClearInHand(#var(PlayerPawn) p)
 
 simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 {
-    local Inventory i, next;
+    local Inventory i;
     local Weapon selected;
-    local Actor weaps[64];
-    local int numWeaps, forceKeep, slot;
+    local int numWeaps, forceKeep, crc, selectedCrc;
     local DXRLoadouts loadout;
 
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
-    for( i = p.Inventory; i != None; i = next ) {
-        next = i.Inventory;
-        if( Weapon(i) == None ) continue;
+    for ( i = p.Inventory; i != None; i = i.Inventory ) {
+        if (Weapon(i) == None) continue;
 
         if (loadout!=None && loadout.is_starting_equipment(i)) {
             //Don't take away your loadout starting items (don't count rubber baton here)
@@ -399,7 +397,14 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         //Don't take away the rubber baton, that's just rude.  Also it's not really a weapon.
         if (i.Class==class'#var(package).WeaponRubberBaton') continue;
 
-        weaps[numWeaps++] = i;
+        //Use class name and seed hashes to pseudorandomly pick a weapon to remove
+        crc = dxr.Crc(i.class $ dxr.seed);
+        if (crc < selectedCrc || numWeaps == 0) {
+            selected = Weapon(i);
+            selectedCrc = crc;
+        }
+        
+        numWeaps++;
     }
 
     //Does the player have enough weapons to be able to remove any?
@@ -407,14 +412,6 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         ( forceKeep <= 0 && numWeaps <= 1 )) { //When the player has no starting weapons, don't take away their last weapon
         return;
     }
-
-    //Sort the Weapon list, so weapon order in the inventory chain doesn't matter
-    class'DXRActorsBase'.Static.SortActorListStatic(weaps);
-
-    SetSeed( "RemoveRandomWeapon " $ numWeaps );
-
-    slot = rng(numWeaps);
-    selected = Weapon(weaps[slot]);
 
     info("RemoveRandomWeapon("$p$") Removing weapon "$selected$", numWeaps was "$numWeaps$" forceKeep was "$forceKeep);
 
