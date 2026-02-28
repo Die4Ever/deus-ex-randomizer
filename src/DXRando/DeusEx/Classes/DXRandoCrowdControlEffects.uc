@@ -553,11 +553,12 @@ function ContinuousUpdates()
 {
     local int roll;
     local DataStorage datastorage;
-    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
     if (dxr.OnTitleScreen()){
         return;
     }
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
     //Lava floor logic
     if (isTimerActive('cc_floorLavaTimer') && InGame() && !InMenu()){
@@ -1247,7 +1248,8 @@ function SetFloatyPhysics(bool enabled) {
             apply = (A.GetStateName() != 'Patrolling' &&
                         ScriptedPawn(A).Orders != 'Sitting');
         } else if (A.isa('PlayerPawn')) {
-            apply = True;
+            //Don't apply if the player is interpolating (like in an endgame cutscene...)
+            apply = (!(A.IsInState('Paralyzed')) && !(A.IsInState('Interpolating')));
         } else if (A.isa('Decoration')) {
             apply = ((A.Base!=None &&
                         (A.Physics == PHYS_None || A.Physics == PHYS_Falling) &&
@@ -1346,6 +1348,11 @@ function bool InventoryScreenOpen()
     }
 
     return false;
+}
+
+function bool PlayerInterpolating()
+{
+    return ((player().IsInState('Paralyzed')) || (player().IsInState('Interpolating')));
 }
 
 function bool InConversation() {
@@ -3060,6 +3067,11 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
     //Effects can't start on the title screen
     if (dxr.OnTitleScreen()){
+        return TempFail;
+    }
+
+    //Don't start effects while the player is interpolating (like during endgame cutscenes)
+    if (PlayerInterpolating()){
         return TempFail;
     }
 

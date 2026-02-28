@@ -121,11 +121,11 @@ function Timer() {
 function DisableEffectsByMod()
 {
     sendEffectVisibility("lamthrower",#defined(vanilla));
-    sendEffectVisibility("dmg_double",#defined(vanilla));
-    sendEffectVisibility("dmg_half",#defined(vanilla));
-    sendEffectVisibility("flipped",#defined(vanilla));
-    sendEffectVisibility("limp_neck",#defined(vanilla));
-    sendEffectVisibility("barrel_roll",#defined(vanilla));
+    sendEffectVisibility("dmg_double",#defined(vanilla) || #defined(revision));
+    sendEffectVisibility("dmg_half",#defined(vanilla) || #defined(revision));
+    sendEffectVisibility("flipped",#defined(vanilla) || #defined(revision));
+    sendEffectVisibility("limp_neck",#defined(vanilla) || #defined(revision));
+    sendEffectVisibility("barrel_roll",#defined(vanilla) || #defined(revision));
 }
 
 
