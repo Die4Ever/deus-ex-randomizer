@@ -2851,6 +2851,23 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                 }
             }
             break;
+
+        case "BurnTrash":
+            //If the board only covers a single mission
+            if (real_duration==1 && loadout!=None) {
+                //No way to burn via weapons
+                if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower') //Obviously this can burn
+                   && loadout.is_banned(class'#var(prefix)WeaponPlasmaRifle') //Plasma can ignite
+                   && loadout.is_banned(class'#var(prefix)WeaponHideAGun') //Plasma can ignite
+                   && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare')) //Flare darts can set things on fire
+                ) {
+                    //No burning barrel in M09 to ignite the trash
+                    if (starting_mission==9){
+                        return true;
+                    }
+                }
+            }
+            return false;
     }
 
     //More broad loadout checks
