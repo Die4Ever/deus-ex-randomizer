@@ -101,8 +101,12 @@
 - Ammo for thrown weapons (like grenades or throwing knives) is no longer looted if the weapon is marked as trash.
 - It is no longer possible to pet animals while carrying decorations.
 - Item transfers in conversations no longer fail if you already have the weapon being given and have full ammo (For example, if you already have a stealth pistol and full ammo before speaking to Sam Carter in Mission 1).
-- Crowd Control effects that give all enemies a weapon will no longer succeed if the enemies already all have the weapon.
-- Crowd Control effects that give all enemies a weapon will no longer allow the player to loot those weapons off of the enemies when killed.
+- Crowd Control changes
+  - Crowd Control effects that give all enemies a weapon will no longer succeed if the enemies already all have the weapon.
+  - Crowd Control effects that give all enemies a weapon will no longer allow the player to loot those weapons off of the enemies when killed.
+  - Crowd Control effects that give the player an item will no longer trigger while the inventory screen is open.
+  - Crowd Control effects will no longer trigger while in a cutscene (Like flying away in a helicopter)
+  - The player should no longer die when entering an ending cutscene with Crowd Control enabled
 - The "location" and "spoiler" buttons on the Goals screen can now also hide the markers again once activated.
 - The conversation window will now expand to ensure all choices are visible on screen.  Before, certain aspect ratios and GUI scaling combinations did not allow a fifth conversation choice to fit on screen.
 - Added an option to always show aug levels. (For the tournament!)

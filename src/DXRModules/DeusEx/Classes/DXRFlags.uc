@@ -992,7 +992,7 @@ function string GameModeName(int gamemode)
     case SpeedrunMode:
         return "Speedrun Mode";
     case SpeedShuffle:
-        return "Speedrun Shuffle";
+        return "Speedrun Shuffle (Beta)";
     case SpeedrunTraining:
         return "Speedrun Training Mode";
     case WaltonWareHalloween:
@@ -1008,9 +1008,9 @@ function string GameModeName(int gamemode)
     case WaltonWareHardcore:
         return "WaltonWare Hardcore";
     case WaltonWarex3:
-        return "WaltonWare x3";
+        return "WaltonWare x3 (Beta)";
     case OneGoal:
-        return "One Goal";
+        return "One Goal (Beta)";
     case HalloweenMode:
         return "Halloween Mode";// maybe needs a better name
     case OneItemMode:

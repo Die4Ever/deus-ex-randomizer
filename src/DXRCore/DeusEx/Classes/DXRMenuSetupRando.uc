@@ -138,6 +138,7 @@ function BindControls(optional string action)
     EnumOption("3 Missions",  3, f.bingo_duration, GetBingoDurationHelpText(3));
     EnumOption("4 Missions",  4, f.bingo_duration, GetBingoDurationHelpText(4));
     EnumOption("5 Missions",  5, f.bingo_duration, GetBingoDurationHelpText(5));
+    EnumOption("10 Missions", 10, f.bingo_duration, GetBingoDurationHelpText(10));
 
     NewGroup("Medical Bots and Repair Bots");
 

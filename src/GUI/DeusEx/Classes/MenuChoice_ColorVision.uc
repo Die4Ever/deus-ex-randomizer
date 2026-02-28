@@ -16,11 +16,11 @@ static function Color GetHintTextColor()
 
     switch(Default.Value){
         case VIS_REDGREEN:
-            c = CreateColor(0,186,210);
+            c = CreateColor(0,186,210); //rgb(0, 186, 210)
             break;
         case VIS_NORMAL:
         default:
-            c = CreateColor(255,0,0);
+            c = CreateColor(255,0,0); //rgb(255, 0, 0)
             break;
     }
 
@@ -54,11 +54,11 @@ static function Color GetUpgradableColor()
 
     switch(Default.Value){
         case VIS_REDGREEN:
-            c = CreateColor(40,204,80,255);
+            c = CreateColor(40,204,80,255); //rgb(40, 204, 80)
             break;
         case VIS_NORMAL:
         default:
-            c = CreateColor(40,204,80,255);
+            c = CreateColor(40,204,80,255); //rgb(40, 204, 80)
             break;
     }
 
@@ -72,11 +72,11 @@ static function Color GetUnupgradableColor()
 
     switch(Default.Value){
         case VIS_REDGREEN:
-            c = CreateColor(220,90,80,255);
+            c = CreateColor(220,90,80,255); //rgb(220, 90, 80)
             break;
         case VIS_NORMAL:
         default:
-            c = CreateColor(220,90,80,255);
+            c = CreateColor(220,90,80,255); //rgb(220, 90, 80)
             break;
     }
 
@@ -90,11 +90,11 @@ static function Color GetUpgradeMaxColor()
 
     switch(Default.Value){
         case VIS_REDGREEN:
-            c = CreateColor(216,175,31,255);
+            c = CreateColor(216,175,31,255); //rgb(216, 175, 31)
             break;
         case VIS_NORMAL:
         default:
-            c = CreateColor(216,175,31,255);
+            c = CreateColor(216,175,31,255); //rgb(216, 175, 31)
             break;
     }
 
@@ -152,11 +152,11 @@ static function Color GetFriendlyColor()
 
     switch(Default.Value){
         case VIS_REDGREEN:
-            c = CreateColor(0,255,0);
+            c = CreateColor(0,255,0); //rgb(0, 255, 0)
             break;
         case VIS_NORMAL:
         default:
-            c = CreateColor(0,255,0);
+            c = CreateColor(0,255,0); //rgb(0, 255, 0)
             break;
     }
 
@@ -170,11 +170,11 @@ static function Color GetHostileColor()
 
     switch(Default.Value){
         case VIS_REDGREEN:
-            c = CreateColor(255,0,0);
+            c = CreateColor(255,0,0); //rgb(255, 0, 0)
             break;
         case VIS_NORMAL:
         default:
-            c = CreateColor(255,0,0);
+            c = CreateColor(255,0,0); //rgb(255, 0, 0)
             break;
     }
 
@@ -188,11 +188,11 @@ static function Color GetNeutralColor()
 
     switch(Default.Value){
         case VIS_REDGREEN:
-            c = CreateColor(255,255,255);
+            c = CreateColor(255,255,255); //rgb(255, 255, 255)
             break;
         case VIS_NORMAL:
         default:
-            c = CreateColor(255,255,255);
+            c = CreateColor(255,255,255); //rgb(255, 255, 255)
             break;
     }
 
@@ -295,10 +295,10 @@ static function Color GetColorScaledVanilla(float percent)
 {
     local Color colHigh,colMed,colLow;
 
-    colHigh = CreateColor(0,255,0);
-    //colHigh = CreateColor(0,160,0);
-    colMed  = CreateColor(255,255,0);
-    colLow  = CreateColor(255,0,0);
+    colHigh = CreateColor(0,255,0);   //rgb(0, 255, 0)
+    //colHigh = CreateColor(0,160,0);     //rgb(0, 160, 0)
+    colMed  = CreateColor(255,255,0); //rgb(255, 255, 0)
+    colLow  = CreateColor(255,0,0);   //rgb(255, 0, 0)
 
     return GetColorScaledBase(colHigh,colMed,colLow,percent);
 }
@@ -309,24 +309,24 @@ static function Color GetColorScaledRedGreen(float percent)
     local Color colHigh,colMed,colLow;
 
 //Light Blue -> Yellow -> Red
-    //colHigh = CreateColor(0,255,200);
-    //colMed  = CreateColor(255,255,0);
-    //colLow  = CreateColor(255,0,0);
+    //colHigh = CreateColor(0,255,200); //rgb(0, 255, 200)
+    //colMed  = CreateColor(255,255,0); //rgb(255, 255, 0)
+    //colLow  = CreateColor(255,0,0);   //rgb(255, 0, 0)
 
 //White -> Gray -> dark gray //Hard to distinguish low end
-    //colHigh = CreateColor(255,255,255);
-    //colMed  = CreateColor(112,112,112);
-    //colLow  = CreateColor(30,30,30);
+    //colHigh = CreateColor(255,255,255); //rgb(255, 255, 255)
+    //colMed  = CreateColor(112,112,112); //rgb(112, 112, 112)
+    //colLow  = CreateColor(30,30,30);    //rgb(30, 30, 30)
 
-//Yellow -> Rose -> Dark Blue (Viridis)
-    //colHigh = CreateColor(253,231,37);
-    //colMed  = CreateColor(33,145,140);
-    //colLow  = CreateColor(68,1,84);
+//Yellow -> Rose -> Dark Blue (Viridis) https://waldyrious.net/viridis-palette-generator/
+    //colHigh = CreateColor(253,231,37); //rgb(253, 231, 37)
+    //colMed  = CreateColor(33,145,140); //rgb(33,145,140)
+    //colLow  = CreateColor(68,1,84);    //rgb(68,1,84)
 
-//Yellow -> Rose -> Dark Blue (Plasma)
-    colHigh = CreateColor(240,249,33);
-    colMed  = CreateColor(204,71,120);
-    colLow  = CreateColor(13,8,135);
+//Yellow -> Rose -> Dark Blue (Plasma) https://waldyrious.net/viridis-palette-generator/
+    colHigh = CreateColor(240,249,33); //rgb(240,249,33)
+    colMed  = CreateColor(204,71,120); //rgb(204,71,120)
+    colLow  = CreateColor(13,8,135);   //rgb(13,8,135)
 
 
     return GetColorScaledBase(colHigh,colMed,colLow,percent);
