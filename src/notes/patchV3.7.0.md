@@ -6,7 +6,7 @@
   - If you want to switch password styles mid-game, do so just before leaving for a new mission (so there is no possibility of backtracking) for the least possibility of causing issues.
 - New "Password Assistance" setting, "Show Known Passwords".  Known usernames and passwords will be shown on computers, and a known PIN will be shown on keypads, but they need to be manually entered.
 - The "Account List" window for Password Assistance on computers has been revamped to look a bit more nice!
-  - In "Mark Known Passwords" and "Show Known Passwords" modes, accounts won't be listed if the password is not known, and the "Login" button will not be shown below the account list.
+  - In "Mark Known Passwords" and "Show Known Passwords" modes the "Login" button will not be shown below the account list.
   - Passwords that are learned while using a computer will be updated immediately and no longer requires you to close and reopen the computer.
 - New "Show Computer Accounts" setting. Lets you choose how computer accounts that you don't have the password for show in the account list.
   - "Hide Unknown" will only show accounts that you have the password for in the account list.
