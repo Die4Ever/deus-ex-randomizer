@@ -498,6 +498,10 @@ function InWaveTick()
                 isAlive=false;
             }
         }
+        if (p.GetStateName()=='Fleeing'){
+            //Fleeing enemies are considered dead (and will get killed)
+            isAlive=false;
+        }
 
         if (isAlive) numScriptedPawns++;
     }
@@ -639,15 +643,19 @@ function StartWave()
 
 function EndWave()
 {
+    local ScriptedPawn p;
     local #var(prefix)Robot robot;
 
     tracker.in_wave=false;
     tracker.time_to_next_wave = time_between_waves;
 
     //Blow up any disabled robots
-    foreach AllActors(class'#var(prefix)Robot', robot, 'hordeenemy') {
-        if (robot.EMPHitPoints <=0){
+    foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
+        robot = #var(prefix)Robot(p);
+        if (robot!=None && robot.EMPHitPoints <=0){
             robot.TakeDamage(10000, robot, robot.Location, vect(0,0,0), 'Exploded');
+        } else if (p.GetStateName()=='Fleeing') {
+            p.TakeDamage(10000, p, p.Location, vect(0,0,0), 'Shot');
         }
     }
 
