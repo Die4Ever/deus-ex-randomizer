@@ -1,18 +1,18 @@
 class DXRHordeMode extends DXRActorsBase transient;
 
-var int wave;
+var() int wave;
 var int time_to_next_wave;
-var int time_between_waves;
+var() int time_between_waves;
 var bool in_wave;
 var int time_in_wave;
 var int last_num_pawns_reported;
-var int time_before_damage;
+var() int time_before_damage;
 var int damage_timer;
 var int time_before_teleport_enemies;
 var float popin_dist;
-var int skill_points_award;
-var int early_end_wave_timer;
-var int early_end_wave_enemies;
+var() int skill_points_award;
+var() int early_end_wave_timer;
+var() int early_end_wave_enemies;
 var int items_per_wave;
 var float difficulty_per_wave;
 var float difficulty_first_wave;
@@ -452,6 +452,8 @@ function InWaveTick()
     local ScriptedPawn p;
     local int numScriptedPawns;
     local float dist, ratio;
+    local #var(prefix)Robot robot;
+    local bool isAlive;
 
     foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
         if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
@@ -464,7 +466,17 @@ function InWaveTick()
         } else {
             p.GroundSpeed = p.class.default.GroundSpeed;
         }
-        numScriptedPawns++;
+
+        isAlive = true;
+        robot = #var(prefix)Robot(p);
+        if (robot!=None){
+            if (robot.EMPHitPoints <=0){
+                //Disabled robots shouldn't be counted as alive
+                isAlive=false;
+            }
+        }
+
+        if (isAlive) numScriptedPawns++;
     }
 
     if( numScriptedPawns == 0 || ( time_in_wave > early_end_wave_timer && numScriptedPawns <= early_end_wave_enemies ) ) {
@@ -604,8 +616,18 @@ function StartWave()
 
 function EndWave()
 {
+    local #var(prefix)Robot robot;
+
     in_wave=false;
     time_to_next_wave = time_between_waves;
+
+    //Blow up any disabled robots
+    foreach AllActors(class'#var(prefix)Robot', robot, 'hordeenemy') {
+        if (robot.EMPHitPoints <=0){
+            robot.TakeDamage(10000, robot, robot.Location, vect(0,0,0), 'Exploded');
+        }
+    }
+
     player().SkillPointsAdd(skill_points_award);
     GenerateItems();
 
