@@ -574,15 +574,7 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
     local bool modded;
 
     //Is weapon modded?
-    modded=False;
-    if (w.bHasScope!=w.Default.bHasScope){modded=True;} //Scope
-    if (w.bHasLaser!=w.Default.bHasLaser){modded=True;} //Laser
-    if (w.bHasSilencer!=w.Default.bHasSilencer){modded=True;} //Silencer
-    if (w.ModBaseAccuracy!=w.Default.ModBaseAccuracy){modded=True;} //Accuracy
-    if (w.ModReloadCount!=w.Default.ModReloadCount){modded=True;} //Clip
-    if (w.ModAccurateRange!=w.Default.ModAccurateRange){modded=True;} //Range
-    if (w.ModRecoilStrength!=w.Default.ModRecoilStrength){modded=True;} //Recoil
-    if (w.ModReloadTime!=w.Default.ModReloadTime){modded=True;} //Reload
+    modded=class'DXRActorsBase'.static.WeaponIsModded(w);
 
     numLines=1;
     if (modded){

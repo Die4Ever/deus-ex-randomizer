@@ -423,6 +423,27 @@ static function ThrowItem(Inventory item, float VelocityMult)
     item.SetCollision(true, false, false); // prevent this from blocking NPCs
 }
 
+static function bool WeaponIsModded(Inventory i)
+{
+    local #var(DeusExPrefix)Weapon w;
+
+    w = #var(DeusExPrefix)Weapon(i);
+
+    if (w==None) return false;
+
+    //Is weapon modded?
+    if (w.bHasScope!=w.Default.bHasScope){return true;} //Scope
+    if (w.bHasLaser!=w.Default.bHasLaser){return true;} //Laser
+    if (w.bHasSilencer!=w.Default.bHasSilencer){return true;} //Silencer
+    if (w.ModBaseAccuracy!=w.Default.ModBaseAccuracy){return true;} //Accuracy
+    if (w.ModReloadCount!=w.Default.ModReloadCount){return true;} //Clip
+    if (w.ModAccurateRange!=w.Default.ModAccurateRange){return true;} //Range
+    if (w.ModRecoilStrength!=w.Default.ModRecoilStrength){return true;} //Recoil
+    if (w.ModReloadTime!=w.Default.ModReloadTime){return true;} //Reload
+
+    return false;
+}
+
 function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 {
     // code similar to Revision Mission05.uc

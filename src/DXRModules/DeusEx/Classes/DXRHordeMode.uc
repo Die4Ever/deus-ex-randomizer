@@ -540,7 +540,7 @@ function StartWave()
     local int num_carcasses;
     local int num_items;
     local Inventory item;
-    local Weapon w;
+    local Weapon w, ow;
 
     foreach AllActors(class'MedicalBot', mb) {
         mb.TakeDamage(10000, mb, mb.Location, vect(0,0,0), 'Exploded');
@@ -566,12 +566,33 @@ function StartWave()
             c.Destroy();
         }
     }
-    num_items=0;
     foreach AllActors(class'Weapon', w) {
         if( w.Owner != None ) continue;
-        if( ! IsMeleeWeapon(w) ) continue;
-        num_items++;
-        w.Destroy();
+        if (w.bDeleteMe) continue;
+
+        if( IsMeleeWeapon(w) ){
+            //Destroy loose melee weapons
+            w.Destroy();
+        } else {
+            //Merge ammo into nearby weapons and delete weapon
+            //But don't if the weapon doesn't normally have a pickup ammo count (like a LAW or PS20)
+            if (w.Default.PickupAmmoCount==0) continue;
+
+            if (class'DXRActorsBase'.static.WeaponIsModded(w)) continue; //Don't merge modded weapons into other ones (though it's fine to add ammo into it!)
+
+            foreach w.RadiusActors(class'Weapon',ow,1000){
+                if ( ow.class!=w.class ) continue; //Only merge weapons of the same class
+                if ( ow.Owner!=None ) continue; //Only merge weapons that are loose on the ground
+                if ( ow.bDeleteMe ) continue; //Don't merge into weapons that are being deleted
+                if ( ow == w ) continue; //Don't merge into yourself
+
+                //player().ClientMessage(w$" found nearby same weapon "$ow);
+
+                ow.PickupAmmoCount += w.PickupAmmoCount;
+                w.Destroy();
+                break;
+            }
+        }
 
     }
     in_wave = true;

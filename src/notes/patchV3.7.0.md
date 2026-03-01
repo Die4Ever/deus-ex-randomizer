@@ -137,5 +137,6 @@
 - On Windows computers with AMD GPUs, we now disable DXVK by default due to driver issues.  You can manually change this in the advanced section of our installer program.
 - Horde Mode improvements:
   - Items dropped from Horde Mode Crates are now scattered when the crate is destroyed to help make the contents easier to grab.
+  - At the start of a wave, weapons that are loose on the ground will try to combine with other weapons of the same type in an area to reduce clutter.
 
 </details>
