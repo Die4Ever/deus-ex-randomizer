@@ -1,10 +1,10 @@
 class DXRHordeMode extends DXRActorsBase transient;
 
-var() int wave;
-var int time_to_next_wave;
+//var() int wave;
+//var int time_to_next_wave;
 var() int time_between_waves;
-var bool in_wave;
-var int time_in_wave;
+//var bool in_wave;
+//var int time_in_wave;
 var int last_num_pawns_reported;
 var() int time_before_damage;
 var int damage_timer;
@@ -24,6 +24,8 @@ var name remove_objects[16];
 var name unlock_doors[8];
 var name lock_doors[16];
 var vector starting_location;
+
+var DXRHordeModeTracker tracker;
 
 var DXRMachines machines;
 
@@ -351,15 +353,13 @@ function AnyEntry()
     local Inventory item;
     local int i;
     local #var(prefix)SkillAwardTrigger sat;
+    local bool new_game;
 
     if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
     if( dxr.localURL != map_name ) {
         return;
     }
-
-    starting_location = vectm(starting_location.X, starting_location.Y, starting_location.Z);
-    player().SetLocation(starting_location);
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( dxre == None ) {
@@ -368,54 +368,75 @@ function AnyEntry()
 
     machines = DXRMachines(dxr.FindModule(class'DXRMachines'));
 
-    dxre.GiveRandomWeapon(player());
-    dxre.GiveRandomWeapon(player());
-    dxre.GiveRandomMeleeWeapon(player());
-    GiveItem(player(), class'Medkit');
-    GiveItem(player(), class'FireExtinguisher');
-    time_to_next_wave = time_between_waves;
-
-    foreach AllActors(class'Teleporter', t) {
-        t.bEnabled = false;// seems like teleporters are baked into the level's collision, so destroying them at runtime has no effect
+    if (tracker==None){
+        //Try to find a tracker, in case this is a loaded exit save
+        foreach AllActors(class'DXRHordeModeTracker',tracker){
+            l("Found Horde Mode Tracker: "$tracker);
+            break;
+        }
+        if (tracker==None){
+            tracker = Spawn(class'DXRHordeModeTracker');
+            if (tracker==None){
+                err("Failed to spawn a Horde Mode Tracker!");
+            } else {
+                l("Spawned new Horde Mode Tracker: "$tracker);
+            }
+            new_game=true;
+        }
     }
-    foreach AllActors(class'Actor', a) {
-        for(i=0; i < ArrayCount(remove_objects); i++) {
-            if( ! a.IsA(remove_objects[i])) continue;
-            if(#var(prefix)MapExit(a)!=None && DynamicMapExit(a)==None) {
-                a.Tag='';// disable don't destroy, destroying messes with the navigationpoints graph
-                a.SetCollision(false,false,false);
-            } else if(MrH(a)==None) {// don't delete Mr H...
-                a.Destroy();
+
+    if (new_game){
+        starting_location = vectm(starting_location.X, starting_location.Y, starting_location.Z);
+        player().SetLocation(starting_location);
+
+        dxre.GiveRandomWeapon(player());
+        dxre.GiveRandomWeapon(player());
+        dxre.GiveRandomMeleeWeapon(player());
+        GiveItem(player(), class'Medkit');
+        GiveItem(player(), class'FireExtinguisher');
+        tracker.time_to_next_wave = time_between_waves;
+
+        foreach AllActors(class'Teleporter', t) {
+            t.bEnabled = false;// seems like teleporters are baked into the level's collision, so destroying them at runtime has no effect
+        }
+        foreach AllActors(class'Actor', a) {
+            for(i=0; i < ArrayCount(remove_objects); i++) {
+                if( ! a.IsA(remove_objects[i])) continue;
+                if(#var(prefix)MapExit(a)!=None && DynamicMapExit(a)==None) {
+                    a.Tag='';// disable don't destroy, destroying messes with the navigationpoints graph
+                    a.SetCollision(false,false,false);
+                } else if(MrH(a)==None) {// don't delete Mr H...
+                    a.Destroy();
+                }
             }
         }
-    }
 
-    foreach AllActors(class'DeusExMover', d) {
-        for(i=0; i < ArrayCount(unlock_doors); i++) {
-            if( d.Name == unlock_doors[i] )
-                d.bLocked = false;
-        }
-        for(i=0; i < ArrayCount(lock_doors); i++) {
-            if( d.Name == lock_doors[i] ) {
-                d.bBreakable = false;
-                d.bPickable = false;
-                d.bLocked = true;
+        foreach AllActors(class'DeusExMover', d) {
+            for(i=0; i < ArrayCount(unlock_doors); i++) {
+                if( d.Name == unlock_doors[i] )
+                    d.bLocked = false;
+            }
+            for(i=0; i < ArrayCount(lock_doors); i++) {
+                if( d.Name == lock_doors[i] ) {
+                    d.bBreakable = false;
+                    d.bPickable = false;
+                    d.bLocked = true;
+                }
             }
         }
-    }
 
-    foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat)
-    {
-        if (sat.Tag!='templar_upload' && sat.skillPointsAdded==500){
-            //The vanilla "Critical Location Bonus" for finding the computer
-            sat.Destroy();
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat)
+        {
+            if (sat.Tag!='templar_upload' && sat.skillPointsAdded==500){
+                //The vanilla "Critical Location Bonus" for finding the computer
+                sat.Destroy();
+            }
         }
-    }
 
+        GenerateItems();
+    }
 
     SetTimer(1.0, true);
-
-    GenerateItems();
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -433,15 +454,17 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
 
 function Timer()
 {
+    if (tracker==None) return; //Bad timing, give it a moment
+
     if( player().Health <= 0 ) {
         player().ShowHud(true);
-        l("You died on wave "$wave);
-        player().ClientMessage("You died on wave "$wave,, true);
+        l("You died on wave "$tracker.wave);
+        player().ClientMessage("You died on wave "$tracker.wave,, true);
         //SetTimer(0, false);
         return;
     }
 
-    if( in_wave )
+    if( tracker.in_wave )
         InWaveTick();
     else
         OutOfWaveTick();
@@ -456,7 +479,7 @@ function InWaveTick()
     local bool isAlive;
 
     foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
-        if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
+        if( (tracker.time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
         p.LastRenderTime = Level.TimeSeconds;
         p.bStasis = false;
         dist = p.DistanceFromPlayer;
@@ -479,7 +502,7 @@ function InWaveTick()
         if (isAlive) numScriptedPawns++;
     }
 
-    if( numScriptedPawns == 0 || ( time_in_wave > early_end_wave_timer && numScriptedPawns <= early_end_wave_enemies ) ) {
+    if( numScriptedPawns == 0 || ( tracker.time_in_wave > early_end_wave_timer && numScriptedPawns <= early_end_wave_enemies ) ) {
         if( numScriptedPawns > 0 ) {
             player().ClientMessage("Moving on.  Warning: there are still "$numScriptedPawns$" enemies!",, true);
         }
@@ -487,27 +510,27 @@ function InWaveTick()
         return;
     }
 
-    time_in_wave++;
+    tracker.time_in_wave++;
     NotifyPlayerPawns(numScriptedPawns);
 
-    if( time_in_wave >= time_before_damage && time_in_wave%damage_timer == 0 ) {
+    if( tracker.time_in_wave >= time_before_damage && tracker.time_in_wave%damage_timer == 0 ) {
         player().TakeDamage(1, player(), player().Location, vect(0,0,0), 'Shocked');
         player().PlaySound(sound'ProdFire', SLOT_None,,, 256);
     }
     else {
-        NotifyPlayerTimer(time_before_damage-time_in_wave, (time_before_damage-time_in_wave) $ " seconds until shocking.");
+        NotifyPlayerTimer(time_before_damage-tracker.time_in_wave, (time_before_damage-tracker.time_in_wave) $ " seconds until shocking.");
     }
-    if( time_in_wave > time_before_teleport_enemies ) {
+    if( tracker.time_in_wave > time_before_teleport_enemies ) {
         GetOverHere();
     }
 }
 
 function OutOfWaveTick()
 {
-    time_to_next_wave--;
+    tracker.time_to_next_wave--;
     NotifyPlayerTime();
 
-    if( time_to_next_wave <= 0 ) {
+    if( tracker.time_to_next_wave <= 0 ) {
         StartWave();
     }
 }
@@ -518,7 +541,7 @@ function ShuffleGoalComputerLocation()
     local #var(prefix)SkillAwardTrigger sat;
     local #var(prefix)ComputerPersonal comp;
 
-    SetGlobalSeed( "Horde ShuffleComputer " $ wave);
+    SetGlobalSeed( "Horde ShuffleComputer " $ tracker.wave);
 
     foreach AllActors(class'DXRMissions',missions)
     {
@@ -607,9 +630,9 @@ function StartWave()
         }
 
     }
-    in_wave = true;
-    time_in_wave = 0;
-    wave++;
+    tracker.in_wave = true;
+    tracker.time_in_wave = 0;
+    tracker.wave++;
     GenerateEnemies();
     ShuffleGoalComputerLocation();
 }
@@ -618,8 +641,8 @@ function EndWave()
 {
     local #var(prefix)Robot robot;
 
-    in_wave=false;
-    time_to_next_wave = time_between_waves;
+    tracker.in_wave=false;
+    tracker.time_to_next_wave = time_between_waves;
 
     //Blow up any disabled robots
     foreach AllActors(class'#var(prefix)Robot', robot, 'hordeenemy') {
@@ -643,20 +666,20 @@ function GetOverHere()
     local vector loc;
     local float dist, maxdist;
 
-    time_overdue = time_in_wave-time_before_teleport_enemies;
+    time_overdue = tracker.time_in_wave-time_before_teleport_enemies;
     maxdist = popin_dist - float(time_overdue*5);
     plyr = player();
     foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
         p.LastRenderTime = Level.TimeSeconds;
         p.bStasis = false;
         dist = p.DistanceFromPlayer;
-        if( (time_in_wave+i) % 7 == 0 && p.CanSee(plyr) == false && dist > maxdist ) {
+        if( (tracker.time_in_wave+i) % 7 == 0 && p.CanSee(plyr) == false && dist > maxdist ) {
             loc = GetCloserPosition(plyr.Location, p.Location, maxdist*2);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
             p.SetLocation( loc );
         }
-        else if( (time_in_wave+i) % 13 == 0 && p.CanSee(plyr) == false && dist > maxdist*2 ) {
+        else if( (tracker.time_in_wave+i) % 13 == 0 && p.CanSee(plyr) == false && dist > maxdist*2 ) {
             loc = GetRandomPosition(plyr.Location, maxdist, dist);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
@@ -683,22 +706,22 @@ function NotifyPlayerTimer(int time, string text)
 function NotifyPlayerPawns(int numScriptedPawns)
 {
     //if( numScriptedPawns > 10 ) return;
-    if( time_in_wave % 5 != 0 && last_num_pawns_reported==numScriptedPawns) return;
+    if( tracker.time_in_wave % 5 != 0 && last_num_pawns_reported==numScriptedPawns) return;
 
     last_num_pawns_reported = numScriptedPawns;
 
     if( numScriptedPawns == 1 )
-        player().ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemy remaining.");
+        player().ClientMessage("Wave "$tracker.wave$": " $ numScriptedPawns $ " enemy remaining.");
     else
-        player().ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemies remaining.");
+        player().ClientMessage("Wave "$tracker.wave$": " $ numScriptedPawns $ " enemies remaining.");
 }
 
 function NotifyPlayerTime()
 {
-    if( time_to_next_wave == 1 )
-        NotifyPlayerTimer(time_to_next_wave, "Wave "$ (wave+1) $" in " $ time_to_next_wave $ " second.");
+    if( tracker.time_to_next_wave == 1 )
+        NotifyPlayerTimer(tracker.time_to_next_wave, "Wave "$ (tracker.wave+1) $" in " $ tracker.time_to_next_wave $ " second.");
     else
-        NotifyPlayerTimer(time_to_next_wave, "Wave "$ (wave+1) $" in " $ time_to_next_wave $ " seconds.");
+        NotifyPlayerTimer(tracker.time_to_next_wave, "Wave "$ (tracker.wave+1) $" in " $ tracker.time_to_next_wave $ " seconds.");
 }
 
 function GenerateEnemies()
@@ -707,13 +730,13 @@ function GenerateEnemies()
     local int i, numEnemies;
     local float difficulty, maxdifficulty;
 
-    SetGlobalSeed( "Horde GenerateEnemies " $ wave);
+    SetGlobalSeed( "Horde GenerateEnemies " $ tracker.wave);
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( dxre == None ) {
         return;
     }
 
-    maxdifficulty = float(wave-1)*difficulty_per_wave + difficulty_first_wave;
+    maxdifficulty = float(tracker.wave-1)*difficulty_per_wave + difficulty_first_wave;
     maxdifficulty *= float(dxr.flags.settings.enemiesrandomized) * 0.03;
     numEnemies = int(maxdifficulty*2);
     for(i=0; i<numEnemies || difficulty < 0.1 ; i++) {
@@ -732,8 +755,8 @@ function float GenerateEnemy(DXREnemies dxre)
 
     r = initchance();
     for(i=0; i < ArrayCount(enemies); i++ ) {
-        if( enemies[i].minWave > wave ) continue;
-        if( enemies[i].maxWave < wave ) continue;
+        if( enemies[i].minWave > tracker.wave ) continue;
+        if( enemies[i].maxWave < tracker.wave ) continue;
         if( chance( enemies[i].chance, r ) ) {
             c = enemies[i].type;
             difficulty = enemies[i].difficulty;
@@ -816,7 +839,7 @@ function GenerateItems()
     local HordeModeCrate hmc;
     local vector loc;
 
-    SetGlobalSeed("Horde GenerateItems" $ wave);
+    SetGlobalSeed("Horde GenerateItems" $ tracker.wave);
 
     // always make an augbot
     machines.SpawnAugbot();

@@ -139,5 +139,6 @@
   - Items dropped from Horde Mode Crates are now scattered when the crate is destroyed to help make the contents easier to grab.
   - At the start of a wave, weapons that are loose on the ground will try to combine with other weapons of the same type in an area to reduce clutter.
   - Disabling a robot with EMP will now count as having killed it for making progress in the round.  Disabled robots will explode at the end of the wave.
+  - Progress in horde mode will now persist if you exit the game and load the "Exit Save" again.
 
 </details>
