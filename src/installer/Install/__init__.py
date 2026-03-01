@@ -131,6 +131,24 @@ def CheckVulkan() -> bool:
             return False
         with open('vkinfo.txt') as vkinfo:
             out = vkinfo.read()
+        found_nvidia = False
+        found_amd = False
+        found_intel = False
+        try: # try to detect GPU brands
+            for m in re.finditer(r'deviceName\s*=\s*(.*)\n', out):
+                deviceName = m.group(1)
+                info(deviceName)
+                if 'NVIDIA' in deviceName:
+                    found_nvidia = True
+                elif 'Intel' in deviceName:
+                    found_intel = True
+                elif 'AMD' in deviceName:
+                    found_amd = True
+            if found_amd and not found_nvidia:
+                info("found AMD but not Nvidia, defaulting to no DXVK") # TODO: hopefully AMD/DXVK eventually fix this issue in the Windows driver
+                return False
+        except Exception as e:
+            info(e)
         v = re.search(r'Vulkan Instance Version: (\d+)\.(\d+)\.(\d*)', out)
         info('Vulkan Instance Version: ', v.groups() if v else None)
         if v:
