@@ -135,5 +135,7 @@
 - Opening the New Game screen while in a game should no longer show bans based on the loadout used in the game currently being played.  Instead it will properly use the loadout selected on the New Game screen.
 - Updated names shown when hovering over teleporters between levels to be a bit more clear.
 - On Windows computers with AMD GPUs, we now disable DXVK by default due to driver issues.  You can manually change this in the advanced section of our installer program.
+- Horde Mode improvements:
+  - Items dropped from Horde Mode Crates are now scattered when the crate is destroyed to help make the contents easier to grab.
 
 </details>
