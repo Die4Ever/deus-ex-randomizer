@@ -398,12 +398,12 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         if (i.Class==class'#var(package).WeaponRubberBaton') continue;
 
         //Use class name and seed hashes to pseudorandomly pick a weapon to remove
-        crc = dxr.Crc(i.class $ dxr.seed);
+        crc = dxr.Crc(dxr.seed $ dxr.seed $ i.class $ dxr.seed $ dxr.seed); //Include the seed a few times to improve distribution (See ExtendedTests)
         if (crc < selectedCrc || numWeaps == 0) {
             selected = Weapon(i);
             selectedCrc = crc;
         }
-        
+
         numWeaps++;
     }
 
@@ -479,9 +479,12 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 
 function ExtendedTests()
 {
-    local int val, i, oldSeed, prev;
+    local int val, i, j, oldSeed, prev;
     local float fval, old_scaling;
     local string s;
+    local class<Inventory> weaps[10];
+    local int weapSelectedCount[10];
+    local int thisCrc, selectedCrc, selectedWeap, curSeed, baseSeed, numWeaps;
 
     Super.ExtendedTests();
 
@@ -537,4 +540,36 @@ function ExtendedTests()
     moresettings.newgameplus_curve_scalar = old_scaling;
 
     dxr.SetSeed(oldSeed);
+
+    //Test the weapon selection logic distribution for RemoveRandomWeapon
+    //Keep in mind this logic is a duplicate, not actually using the exact same function
+    //This can also be used to test alterations for better distribution
+    weaps[0]=class'WeaponAssaultGun';
+    weaps[1]=class'WeaponAssaultShotgun';
+    weaps[2]=class'WeaponPistol';
+    weaps[3]=class'WeaponMiniCrossbow';
+    weaps[4]=class'WeaponPepperGun';
+    weaps[5]=class'WeaponRifle';
+    weaps[6]=class'WeaponPlasmaRifle';
+    weaps[7]=class'WeaponCombatKnife';
+    weaps[8]=class'WeaponCrowbar';
+    weaps[9]=class'WeaponGepGun';
+    for (i=0;i<50;i++){
+        numWeaps=0;
+        curSeed = dxr.seed+i;
+        for (j=0;j<ArrayCount(weaps);j++){
+            thisCrc = dxr.Crc( curSeed $ curSeed $ weaps[j] $ curSeed $ curSeed);
+            if (thisCrc < selectedCrc || numWeaps==0) {
+                selectedWeap = j;
+                selectedCrc = thisCrc;
+            }
+            numWeaps++;
+        }
+        weapSelectedCount[selectedWeap]++;
+    }
+
+    log("Weapon Removal Distribution - Base Seed:" $dxr.seed);
+    for(i=0;i<ArrayCount(weaps);i++){
+        log(weaps[i]$":  "$weapSelectedCount[i]);
+    }
 }
