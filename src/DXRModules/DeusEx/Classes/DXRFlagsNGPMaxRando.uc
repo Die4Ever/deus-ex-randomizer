@@ -378,30 +378,30 @@ simulated function ClearInHand(#var(PlayerPawn) p)
 
 simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 {
-    local Inventory i;
-    local Weapon selected;
-    local int numWeaps, forceKeep, crc, selectedCrc;
+    local Inventory inv;
+    local DeusExWeapon selected;
+    local int numWeaps, forceKeep, hash, selectedHash;
     local DXRLoadouts loadout;
 
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
-    for ( i = p.Inventory; i != None; i = i.Inventory ) {
-        if (Weapon(i) == None) continue;
+    for ( inv = p.Inventory; inv != None; inv = inv.Inventory ) {
+        if (DeusExWeapon(inv) == None) continue;
 
-        if (loadout!=None && loadout.is_starting_equipment(i)) {
+        if (loadout!=None && loadout.is_starting_equipment(inv)) {
             //Don't take away your loadout starting items (don't count rubber baton here)
             forceKeep++;
             continue;
         }
 
         //Don't take away the rubber baton, that's just rude.  Also it's not really a weapon.
-        if (i.Class==class'#var(package).WeaponRubberBaton') continue;
+        if (inv.Class==class'#var(package).WeaponRubberBaton') continue;
 
-        //Use class name and seed hashes to pseudorandomly pick a weapon to remove
-        crc = dxr.Crc(dxr.seed $ dxr.seed $ i.class $ dxr.seed $ dxr.seed); //Include the seed a few times to improve distribution (See ExtendedTests)
-        if (crc < selectedCrc || numWeaps == 0) {
-            selected = Weapon(i);
-            selectedCrc = crc;
+        //Select the weapon with the pseudorandomly lowest hash
+        hash = dxr.MurmurHash(DeusExWeapon(inv).class.name);
+        if (hash < selectedHash || numWeaps == 0) {
+            selected = DeusExWeapon(inv);
+            selectedHash = hash;
         }
 
         numWeaps++;
@@ -479,12 +479,12 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 
 function ExtendedTests()
 {
-    local int val, i, j, oldSeed, prev;
+    local int val, i, j, oldSeed, prev, iterations;
     local float fval, old_scaling;
     local string s;
-    local class<Inventory> weaps[10];
-    local int weapSelectedCount[10];
-    local int thisCrc, selectedCrc, selectedWeap, curSeed, baseSeed, numWeaps;
+    local class<DeusExWeapon> weaps[24];
+    local int weapSelectedCount[24];
+    local int selectedIdx, selectedHash, thisIdx, thisHash, baseSeed, numWeaps;
 
     Super.ExtendedTests();
 
@@ -546,30 +546,51 @@ function ExtendedTests()
     //This can also be used to test alterations for better distribution
     weaps[0]=class'WeaponAssaultGun';
     weaps[1]=class'WeaponAssaultShotgun';
-    weaps[2]=class'WeaponPistol';
-    weaps[3]=class'WeaponMiniCrossbow';
-    weaps[4]=class'WeaponPepperGun';
-    weaps[5]=class'WeaponRifle';
-    weaps[6]=class'WeaponPlasmaRifle';
-    weaps[7]=class'WeaponCombatKnife';
-    weaps[8]=class'WeaponCrowbar';
-    weaps[9]=class'WeaponGepGun';
-    for (i=0;i<50;i++){
-        numWeaps=0;
-        curSeed = dxr.seed+i;
-        for (j=0;j<ArrayCount(weaps);j++){
-            thisCrc = dxr.Crc( curSeed $ curSeed $ weaps[j] $ curSeed $ curSeed);
-            if (thisCrc < selectedCrc || numWeaps==0) {
-                selectedWeap = j;
-                selectedCrc = thisCrc;
+    weaps[2]=class'WeaponBaton';
+    weaps[3]=class'WeaponCombatKnife';
+    weaps[4]=class'WeaponCrowbar';
+    weaps[5]=class'WeaponEMPGrenade';
+    weaps[6]=class'WeaponFlamethrower';
+    weaps[7]=class'WeaponGasGrenade';
+    weaps[8]=class'WeaponGEPGun';
+    weaps[9]=class'WeaponHideAGun';
+    weaps[10]=class'WeaponLAM';
+    weaps[11]=class'WeaponLAW';
+    weaps[12]=class'WeaponMiniCrossbow';
+    weaps[13]=class'WeaponNanoSword';
+    weaps[14]=class'WeaponNanoVirusGrenade';
+    weaps[15]=class'WeaponPepperGun';
+    weaps[16]=class'WeaponPistol';
+    weaps[17]=class'WeaponPlasmaRifle';
+    weaps[18]=class'WeaponProd';
+    weaps[19]=class'WeaponRifle';
+    weaps[20]=class'WeaponSawedOffShotgun';
+    weaps[21]=class'WeaponShuriken';
+    weaps[22]=class'WeaponStealthPistol';
+    weaps[23]=class'WeaponSword';
+
+    baseSeed = dxr.seed;
+    iterations = 1000;
+
+    // With MurmurHash, this outer loop can run up to about 3,400 times without causing an error
+    // It can run up to about 32,000 times causing an error but producing valid results in UCC.log
+    // It breaks an order of magnitude sooner with the longer Crc() call
+    for (i=0;i<iterations;i++) {
+        for (thisIdx = 0; thisIdx < ArrayCount(weaps); thisIdx++) {
+            //thisHash = dxr.Crc(weaps[thisIdx].name $ baseSeed+i);
+            //thisHash = dxr.Crc(baseSeed+i $ baseSeed+i $ weaps[thisIdx].name $ baseSeed+i $ baseSeed+i);
+            thisHash = MurmurHash3_x86_32(weaps[thisIdx].name, baseSeed+i);
+            if (thisHash < selectedHash || thisIdx == 0) {
+                selectedIdx = thisIdx;
+                selectedHash = thisHash;
             }
-            numWeaps++;
         }
-        weapSelectedCount[selectedWeap]++;
+
+        weapSelectedCount[selectedIdx]++;
     }
 
-    log("Weapon Removal Distribution - Base Seed:" $dxr.seed);
-    for(i=0;i<ArrayCount(weaps);i++){
-        log(weaps[i]$":  "$weapSelectedCount[i]);
+    log("Weapon Removal Distribution  -   Base Seed: " $baseSeed$"   Iterations: "$iterations);
+    for (i=0;i<ArrayCount(weaps);i++) {
+        log(weaps[i].name$":  "$weapSelectedCount[i]$" ("$FloatToString(100.0 * weapSelectedCount[i] / iterations, 3)$"%)");
     }
 }

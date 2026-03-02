@@ -736,6 +736,11 @@ simulated final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
+simulated function int MurmurHash(coerce string str)
+{
+    return MurmurHash3_x86_32(str, seed); // note that the result depends on the current seed
+}
+
 simulated function DXRando GetDXR()
 {
     return Self;

@@ -559,6 +559,51 @@ simulated static function String CR()
     return Chr(13) $ Chr(10);
 }
 
+// https://github.com/aappleby/smhasher
+simulated static function int MurmurHash3_x86_32(coerce string str, int seed)
+{
+    local int strLen, h1, k1, i;
+
+    strLen = Len(str);
+    h1 = seed;
+    for (i = 0; i <= strLen - 4; i += 4)
+    {
+        k1 = Asc(Mid(str, i, 1)) | (Asc(Mid(str, i+1, 1)) << 8) | (Asc(Mid(str, i+2, 1)) << 16) | (Asc(Mid(str, i+3, 1)) << 24);
+
+        k1 = k1 * 0xcc9e2d51; // *= produces a different result
+        k1 = (k1 << 15) | (k1 >>> 17);
+        k1 = k1 * 0x1b873593;
+
+        h1 = h1 ^ k1;
+        h1 = (h1 << 13) | (h1 >>> 19);
+        h1 = (h1 * 5) + 0xe6546b64;
+    }
+
+    k1 = 0;
+    switch (strLen & 3)
+    {
+        case 3:
+            k1 = k1 ^ (Asc(Mid(str, i+2, 1)) << 16);
+        case 2: // fallthrough
+            k1 = k1 ^ (Asc(Mid(str, i+1, 1)) << 8);
+        case 1: // fallthrough
+            k1 = k1 ^ Asc(Mid(str, i, 1));
+            k1 = k1 * 0xcc9e2d51;
+            k1 = (k1 << 15) | (k1 >>> 17);
+            k1 = k1 * 0x1b873593;
+            h1 = h1 ^ k1;
+    }
+
+    h1 = h1 ^ strLen;
+    h1 = h1 ^ (h1 >>> 16);
+    h1 = h1 * 0x85ebca6b;
+    h1 = h1 ^ (h1 >>> 13);
+    h1 = h1 * 0xc2b2ae35;
+    h1 = h1 ^ (h1 >>> 16);
+
+    return h1;
+}
+
 /*
 ========= TEST FUNCTIONS
 */
