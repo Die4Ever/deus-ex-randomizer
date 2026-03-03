@@ -133,8 +133,14 @@
   - My Buddy Vinny: Offer to help Vinny find out what's going on at the Advanced Submarine Base
   - Yvan Eht Nioj: Look at a Navy recruitment poster through binoculars or a scope.
 - Opening the New Game screen while in a game should no longer show bans based on the loadout used in the game currently being played.  Instead it will properly use the loadout selected on the New Game screen.
-- Updated names shown when hovering over teleporters between levels to be a bit more clear.
-- On Windows computers with AMD GPUs, we now disable DXVK by default due to driver issues.  You can manually change this in the advanced section of our installer program.
+- Updated names are shown when hovering over teleporters between levels to be a bit more clear.
 - Teleporters to mirrored maps now have mirrored icons.
+- On Windows computers with AMD GPUs, we now disable DXVK by default due to driver issues.  You can manually change this in the advanced section of our installer program.
+- Horde Mode improvements:
+  - Items dropped from Horde Mode Crates are now scattered when the crate is destroyed to help make the contents easier to grab.
+  - At the start of a wave, weapons that are loose on the ground will try to combine with other weapons of the same type in an area to reduce clutter.
+  - Disabling a robot with EMP will now count as having killed it for making progress in the round.  Disabled robots will explode at the end of the wave.
+  - Enemies that are fleeing will now be considered dead for the purposes of wave completion.  Fleeing enemies will be killed when the wave ends.
+  - Progress in horde mode will now persist if you exit the game and load the "Exit Save" again.
 
 </details>

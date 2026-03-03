@@ -13,6 +13,8 @@ var() travel int MaxContentCount; //Total maximum number of items allowed in a c
 var() travel int ContentTypeLimit; //Maximum number for any one type of item
 var() travel bool DropStacks; //Should this drop stackable items as stacks?
 
+var() travel float ThrowMult; //How hard items should be thrown when crate is broken (0 means no throw)
+
 function bool AddExistingItem(Actor item)
 {
     local int copies;
@@ -164,6 +166,10 @@ function DropItem(Actor dropped)
     dropped.SetPhysics(PHYS_Falling);
     dropped.bCollideWorld = true;
     dropped.Velocity = VRand() * 50;
+    if (ThrowMult > 0){
+        dropped.Velocity = vector(rt) * 300 + vect(0,0,220) + dropped.Velocity;
+        dropped.Velocity *= ThrowMult;
+    }
     dropped.GotoState('Pickup', 'Dropped');
     log(self$" dropped "$dropped);
 }
@@ -210,4 +216,5 @@ defaultproperties
     MaxContentCount=9999
     ContentTypeLimit=9999
     DropStacks=true
+    ThrowMult=0.0
 }

@@ -16,4 +16,5 @@ defaultproperties
     MaxContentCount=10
     ContentTypeLimit=3
     DropStacks=false //Helps items get distributed better if left on the floor
+    ThrowMult=0.5 //Spread things out a bit more
 }
