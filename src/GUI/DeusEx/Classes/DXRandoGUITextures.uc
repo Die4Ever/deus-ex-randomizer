@@ -10,3 +10,5 @@ class DXRandoGUITextures extends Object abstract;
 
 #exec TEXTURE IMPORT FILE="Textures\ComputerKnownAccountsBackground.pcx"     NAME="ComputerKnownAccountsBackground"  GROUP="DXRandoGUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\ComputerKnownAccountsBorder.pcx"         NAME="ComputerKnownAccountsBorder"      GROUP="DXRandoGUI" MIPS=Off
+
+#exec TEXTURE IMPORT FILE="Textures\S_TeleportLeft.pcx"                      NAME="S_TeleportLeft"                   GROUP="DXRandoGUI" MIPS=Off FLAGS=2
