@@ -10,14 +10,16 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\RandomizerTextCredits1.pcx"			    NAME="RandomizerTextCredits1"			GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\RandomizerTextCredits2.pcx"			    NAME="RandomizerTextCredits2"			GROUP="DXRandoImages"
 
-#exec TEXTURE IMPORT FILE="Textures\RedExplosiveBarrel.pcx"                 NAME="RedExplosiveBarrel"               GROUP="DXRandoDeco"
-#exec TEXTURE IMPORT FILE="Textures\GreenPoisonBarrel.pcx"                  NAME="GreenPoisonBarrel"                GROUP="DXRandoDeco"
-#exec TEXTURE IMPORT FILE="Textures\YellowRadioactiveBarrel.pcx"            NAME="YellowRadioactiveBarrel"          GROUP="DXRandoDeco"
+#exec TEXTURE IMPORT FILE="Textures\S_TeleportLeft.pcx"                     NAME="S_TeleportLeft"                  GROUP="DXRandoImages" MIPS=Off FLAGS=2
 
 #exec TEXTURE IMPORT FILE="Textures\WinePuddle.pcx"	                        NAME="WinePuddle"                       GROUP="DXRandoImages"
 
 #exec TEXTURE IMPORT FILE="Textures\OpenDoorButtonLit.pcx"                  NAME="OpenDoorButtonLit"                GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\OpenDoorButtonUnlit.pcx"                NAME="OpenDoorButtonUnlit"              GROUP="DXRandoImages"
+
+#exec TEXTURE IMPORT FILE="Textures\RedExplosiveBarrel.pcx"                 NAME="RedExplosiveBarrel"               GROUP="DXRandoDeco"
+#exec TEXTURE IMPORT FILE="Textures\GreenPoisonBarrel.pcx"                  NAME="GreenPoisonBarrel"                GROUP="DXRandoDeco"
+#exec TEXTURE IMPORT FILE="Textures\YellowRadioactiveBarrel.pcx"            NAME="YellowRadioactiveBarrel"          GROUP="DXRandoDeco"
 
 #exec TEXTURE IMPORT FILE="Textures\GoalSecurityComputerRed.pcx"            NAME="GoalSecurityComputerRed"          GROUP="DXRandoDeco" FLAGS=2
 #exec TEXTURE IMPORT FILE="Textures\GoalSecurityComputerYellow.pcx"         NAME="GoalSecurityComputerYellow"       GROUP="DXRandoDeco" FLAGS=2
@@ -36,12 +38,6 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\PumpkinTex4.pcx"                        NAME="PumpkinTex4"                      GROUP="DXRandoDeco"
 #exec TEXTURE IMPORT FILE="Textures\PumpkinTex5.pcx"                        NAME="PumpkinTex5"                      GROUP="DXRandoDeco"
 
-#exec TEXTURE IMPORT FILE="Textures\MemConUnitTex1.pcx"                     NAME="MemConUnitTex1"                   GROUP="DXRandoItems"
-#exec TEXTURE IMPORT FILE="Textures\BeltIconMemConUnit.pcx"                 NAME="BeltIconMemConUnit"               GROUP="DXRandoItems" MIPS=Off
-#exec TEXTURE IMPORT FILE="Textures\LargeIconMemConUnit.pcx"                NAME="LargeIconMemConUnit"              GROUP="DXRandoItems" MIPS=Off
-
-#exec TEXTURE IMPORT FILE="Textures\BeltIconClothes.pcx"                    NAME="BeltIconClothes"                  GROUP="DXRandoItems" MIPS=Off
-
 #exec TEXTURE IMPORT FILE="Textures\BlankWoodenCrate.pcx"                   NAME="BlankWoodenCrate"                 GROUP="DXRandoDeco"
 #exec TEXTURE IMPORT FILE="Textures\WaltonWareCrate.pcx"                    NAME="WaltonWareCrate"                  GROUP="DXRandoDeco"
 #exec TEXTURE IMPORT FILE="Textures\DXLogoCrate.pcx"                        NAME="DXLogoCrate"                      GROUP="DXRandoDeco"
@@ -56,6 +52,13 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\BookOpenTex1Red.pcx"                    NAME="BookOpenTex1Red"                  GROUP="DXRandoDeco"
 
 #exec TEXTURE IMPORT FILE="Textures\EnergyVendingMachineTex1.pcx"           NAME="EnergyVendingMachineTex1"         GROUP="DXRandoDeco"
+
+#exec TEXTURE IMPORT FILE="Textures\MemConUnitTex1.pcx"                     NAME="MemConUnitTex1"                   GROUP="DXRandoItems"
+#exec TEXTURE IMPORT FILE="Textures\BeltIconMemConUnit.pcx"                 NAME="BeltIconMemConUnit"               GROUP="DXRandoItems" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\LargeIconMemConUnit.pcx"                NAME="LargeIconMemConUnit"              GROUP="DXRandoItems" MIPS=Off
+
+#exec TEXTURE IMPORT FILE="Textures\BeltIconClothes.pcx"                    NAME="BeltIconClothes"                  GROUP="DXRandoItems" MIPS=Off
+
 #exec TEXTURE IMPORT FILE="Textures\EnergyDrinkTex1.pcx"                    NAME="EnergyDrinkTex1"                  GROUP="DXRandoItems"
 #exec TEXTURE IMPORT FILE="Textures\BeltIconEnergyDrinkCan.pcx"             NAME="BeltIconEnergyDrinkCan"           GROUP="DXRandoItems" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\LargeIconEnergyDrinkCan.pcx"            NAME="LargeIconEnergyDrinkCan"          GROUP="DXRandoItems" MIPS=Off

@@ -719,6 +719,9 @@ function ShowTeleporters()
     hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
+        if (class'DXRMapVariants'.static.MapIsMirrored(t.URL)) {
+            t.Texture = Texture'S_TeleportLeft';
+        }
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
         t.bNoSmooth = True; //Make the texture less blurry around the edges
