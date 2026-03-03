@@ -624,24 +624,28 @@ simulated function string GeneratePassword(string oldpassword, int mode)
 {
     local string out;
     local int oldseed;
-    oldseed = SetGlobalSeed(Caps(oldpassword));
 
     switch(mode){
         case 100:
+            oldseed = SetGlobalSeed(Caps(oldpassword));
             out = GeneratePasswordRandomChars();
+            ReapplySeed(oldseed);
             break;
         case 200:
+            oldseed = SetGlobalSeedNew(Caps(oldpassword));
             out = GeneratePasswordWordLike();
+            ReapplySeed(oldseed);
             break;
         case 300:
+            oldseed = SetGlobalSeedNew(Caps(oldpassword));
             out = GeneratePasswordXKCDStyle();
+            ReapplySeed(oldseed);
             break;
         default:
             out = oldpassword;
             break;
     }
 
-    ReapplySeed(oldseed);
     return out;
 }
 

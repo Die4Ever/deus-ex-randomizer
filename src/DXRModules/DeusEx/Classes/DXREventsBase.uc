@@ -1036,7 +1036,7 @@ static function HordeModeData(DXRando dxr, bool includeInvAugs, out string j)
 
     js = class'Json';
 
-    js.static.Add(j,"HordeWaveNum",horde.wave);
+    js.static.Add(j,"HordeWaveNum",horde.tracker.wave);
     js.static.Add(j,"HordeHealth",dxr.player.Health);
     js.static.Add(j,"HordeEnergy",int(100.0 * (dxr.player.Energy/dxr.player.EnergyMax)));
 }

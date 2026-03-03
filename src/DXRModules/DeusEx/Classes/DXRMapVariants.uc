@@ -31,15 +31,35 @@ static function bool MirrorMapsAvailable()
     return ret;
 }
 
+static function bool _MapIsNormal(vector coordsMult)
+{
+    return coordsMult.X==1 && coordsMult.Y==1 && coordsMult.Z==1;
+}
+
+static function bool _MapIsMirrored(vector coordsMult)
+{
+    return coordsMult.X==-1 && coordsMult.Y==1 && coordsMult.Z==1;
+}
+
+static function bool MapIsNormal(string map)
+{
+    return _MapIsNormal(GetCoordsMult(map));
+}
+
+static function bool MapIsMirrored(string map)
+{
+    return _MapIsMirrored(GetCoordsMult(map));
+}
+
 static function string GetVariantName(string map)
 {
     local vector coordsMult;
 
     coordsMult = GetCoordsMult(map);
 
-    if (coordsMult.X==1 && coordsMult.Y==1 && coordsMult.Z==1){
+    if (_MapIsNormal(coordsMult)) {
         return ""; //Normal
-    } else if (coordsMult.X==-1 && coordsMult.Y==1 && coordsMult.Z==1){
+    } else if (_MapIsMirrored(coordsMult)) {
         return "Mirrored";
     }
 
@@ -215,8 +235,6 @@ simulated function FirstEntry()
         if(dxr.dxInfo.MissionNumber == 1 || dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
             dxr.flagbase.DeleteFlag('JosephManderley_Dead', FLAG_Bool);
             dxr.flagbase.DeleteFlag('JosephManderley_Unconscious', FLAG_Bool);
-        }
-        if(dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
             dxr.flagbase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
             dxr.flagbase.DeleteFlag('PaulDenton_Unconscious', FLAG_Bool);
         }

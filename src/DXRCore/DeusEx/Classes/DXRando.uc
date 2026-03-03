@@ -719,7 +719,7 @@ simulated final function CrcInit() {
 //
 // Calculates and returns a checksum of the given string. Call CrcInit before.
 // ============================================================================
-
+// TODO: next compatibility break, delete Crc in favor of MurmurHash3
 simulated final function int Crc(coerce string Text) {
 
     local int CrcValue;
