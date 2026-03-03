@@ -719,7 +719,7 @@ simulated final function CrcInit() {
 //
 // Calculates and returns a checksum of the given string. Call CrcInit before.
 // ============================================================================
-
+// TODO: next compatibility break, delete Crc in favor of MurmurHash3
 simulated final function int Crc(coerce string Text) {
 
     local int CrcValue;
@@ -734,11 +734,6 @@ simulated final function int Crc(coerce string Text) {
         CrcValue = (CrcValue >>> 8) ^ CrcTable[Asc(Mid(Text, IndexChar, 1)) ^ (CrcValue & 0xff)];
 
     return CrcValue;
-}
-
-simulated function int MurmurHash(coerce string str)
-{
-    return MurmurHash3_x86_32(str, seed); // note that the result depends on the current seed
 }
 
 simulated function DXRando GetDXR()

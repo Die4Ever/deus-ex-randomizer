@@ -398,7 +398,7 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         if (inv.Class==class'#var(package).WeaponRubberBaton') continue;
 
         //Select the weapon with the pseudorandomly lowest hash
-        hash = dxr.MurmurHash(inv.class.name);
+        hash = MurmurHash(inv.class.name);
         if (hash < selectedHash || numWeaps == 0) {
             selected = Weapon(inv);
             selectedHash = hash;
