@@ -379,14 +379,14 @@ simulated function ClearInHand(#var(PlayerPawn) p)
 simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 {
     local Inventory inv;
-    local DeusExWeapon selected;
+    local Weapon selected;
     local int numWeaps, forceKeep, hash, selectedHash;
     local DXRLoadouts loadout;
 
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
     for ( inv = p.Inventory; inv != None; inv = inv.Inventory ) {
-        if (DeusExWeapon(inv) == None) continue;
+        if (Weapon(inv) == None) continue;
 
         if (loadout!=None && loadout.is_starting_equipment(inv)) {
             //Don't take away your loadout starting items (don't count rubber baton here)
@@ -400,7 +400,7 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         //Select the weapon with the pseudorandomly lowest hash
         hash = dxr.MurmurHash(inv.class.name);
         if (hash < selectedHash || numWeaps == 0) {
-            selected = DeusExWeapon(inv);
+            selected = Weapon(inv);
             selectedHash = hash;
         }
 
@@ -482,7 +482,7 @@ function ExtendedTests()
     local int val, i, j, oldSeed, prev, iterations;
     local float fval, old_scaling;
     local string s;
-    local class<DeusExWeapon> weaps[24];
+    local class<Weapon> weaps[24];
     local int weapSelectedCount[24];
     local int selectedIdx, selectedHash, thisIdx, thisHash, baseSeed, numWeaps;
 
