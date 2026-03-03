@@ -215,8 +215,6 @@ simulated function FirstEntry()
         if(dxr.dxInfo.MissionNumber == 1 || dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
             dxr.flagbase.DeleteFlag('JosephManderley_Dead', FLAG_Bool);
             dxr.flagbase.DeleteFlag('JosephManderley_Unconscious', FLAG_Bool);
-        }
-        if(dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
             dxr.flagbase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
             dxr.flagbase.DeleteFlag('PaulDenton_Unconscious', FLAG_Bool);
         }
