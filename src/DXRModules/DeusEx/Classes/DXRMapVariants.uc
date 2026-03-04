@@ -66,6 +66,22 @@ static function string GetVariantName(string map)
     return coordsMult.X$","$coordsMult.Y$","$coordsMult.Z;
 }
 
+static function Texture GetTeleporterTexture(string map)
+{
+    local vector coordsMult;
+
+    coordsMult = GetCoordsMult(map);
+
+    if (_MapIsNormal(coordsMult)) {
+        return Texture'S_TeleportRight'; //This is basically just a touched up version of the vanilla texture
+    } else if (_MapIsMirrored(coordsMult)) {
+        return Texture'S_TeleportLeft';
+    }
+
+    //Default to "The right way"
+    return Texture'S_TeleportRight'; //This is basically just a touched up version of the vanilla texture
+}
+
 static function vector GetCoordsMult(string map)
 {// DXRBase calls this in Init
     local vector v;

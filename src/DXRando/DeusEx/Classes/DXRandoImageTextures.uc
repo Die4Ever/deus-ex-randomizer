@@ -10,7 +10,8 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\RandomizerTextCredits1.pcx"			    NAME="RandomizerTextCredits1"			GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\RandomizerTextCredits2.pcx"			    NAME="RandomizerTextCredits2"			GROUP="DXRandoImages"
 
-#exec TEXTURE IMPORT FILE="Textures\S_TeleportLeft.pcx"                     NAME="S_TeleportLeft"                  GROUP="DXRandoImages" MIPS=Off FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\S_TeleportLeft.pcx"                     NAME="S_TeleportLeft"                   GROUP="DXRandoImages" MIPS=Off FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\S_TeleportRight.pcx"                    NAME="S_TeleportRight"                  GROUP="DXRandoImages" MIPS=Off FLAGS=2
 
 #exec TEXTURE IMPORT FILE="Textures\WinePuddle.pcx"	                        NAME="WinePuddle"                       GROUP="DXRandoImages"
 
