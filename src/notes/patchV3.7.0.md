@@ -3,6 +3,7 @@
 - New password randomization styles!  By default, passwords will now be randomized by picking a few words from word lists instead of purely random letters and numbers.  In theory these passwords should be a bit easier to remember if not using autofill, as well as simply being more "fun".
   - If memes are disabled (such as when playing Serious Rando), password randomization will default to "Pronouncable" passwords instead.  These passwords alternate vowels and consonants (the same method used for random names) to form vaguely pronouncable passwords which should be easier to remember
   - If you want to switch password styles mid-game, do so just before leaving for a new mission (so there is no possibility of backtracking) for the least possibility of causing issues.
+  - <img width="866" height="91" alt="image" src="https://github.com/user-attachments/assets/03f5e70c-7441-481a-ab12-ea801eacad5d" />
   - <img width="1032" height="159" alt="image" src="https://github.com/user-attachments/assets/007a6879-0580-4ee9-b33b-1f914d4abdd4" />
   - <img width="481" height="155" alt="image" src="https://github.com/user-attachments/assets/e5e75df9-e666-45e1-a96b-76e200232d11" />
   - <img width="299" height="64" alt="image" src="https://github.com/user-attachments/assets/aed31816-6e1f-46bf-8c0c-289114a69dd4" />
