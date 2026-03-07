@@ -22,6 +22,7 @@ const SeriousRando = 18; // same as Full Rando, but memes disabled by default
 const GroundhogDay = 19;
 const OneGoal = 20;
 const SpeedShuffle = 21; // speedrun mode with shuffled missions
+const NiceBingoMachine = 22;
 
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
@@ -535,13 +536,7 @@ function SetDifficulty(int new_difficulty)
         settings.passwordsrandomized = 200; //"Pronouncable" passwords instead, since the "words" can be a bit goofy
     }
 
-    if(gamemode == SeriousRando) { // same as Full Rando, but memes disabled by default, and only serious goal locations.
-        settings.dancingpercent = 0;
-        settings.merchants = 0;
-        settings.goals = 200;
-        settings.passwordsrandomized = 200; //"Pronouncable" passwords instead, since the "words" can be a bit goofy
-    }
-    else if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
+    if(gamemode == RandoMedium || gamemode == NormalRandomizer || gamemode == NiceBingoMachine) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;
         settings.goals = 0;
         settings.enemiesrandomized *= 0.8;
@@ -558,6 +553,13 @@ function SetDifficulty(int new_difficulty)
         if(gamemode == RandoMedium) {
             settings.dancingpercent = 0;
         }
+    } // detected from else if blocks because NiceBingoMachine hits this and then the BingoCampaign() block too
+
+    if(gamemode == SeriousRando) { // same as Full Rando, but memes disabled by default, and only serious goal locations.
+        settings.dancingpercent = 0;
+        settings.merchants = 0;
+        settings.goals = 200;
+        settings.passwordsrandomized = 200; //"Pronouncable" passwords instead, since the "words" can be a bit goofy
     }
     else if(IsReducedRando()) {
         settings.doorsdestructible = 0;
@@ -681,6 +683,9 @@ function SetDifficulty(int new_difficulty)
         } else {
             // realtime menus, not for training mode
             settings.menus_pause = 0;
+        }
+        if(gamemode==SpeedShuffle) {
+            bingo_duration = 5;
         }
         // same doors rules as Normal difficulty
         settings.doorsdestructible = 100;
@@ -936,6 +941,7 @@ function int GameModeIdForSlot(int slot)
         if(slot--==0) return WaltonWarex3;
     }
     if(slot--==0) return BingoCampaign;
+    if(slot--==0) return NiceBingoMachine;
     if(slot--==0) return HalloweenMBM;
 
     if(slot--==0) return ZeroRando;
@@ -1018,6 +1024,11 @@ function string GameModeName(int gamemode)
     case BingoCampaign:
         if (#defined(vanilla)) {
             return "Mr. Page's Mean Bingo Machine";
+        }
+        return "";
+    case NiceBingoMachine:
+        if (#defined(vanilla)) {
+            return "Mr. Page's Nice Bingo Machine";
         }
         return "";
     case HalloweenMBM:
@@ -1188,13 +1199,22 @@ function string GameModeHelpText(int gamemode)
     case OneItemMode:
         return "The FULL Randomizer experience, except... For some reason, all items in each level are replaced by a single type of item?";
     case BingoCampaign:
-        s =   "Play through the entire randomized game, but you must complete a line of bingo in each mission before being able to progress.|n";
+        s =   "Play through the entire Full Randomizer game, but you must complete a line of bingo in each mission before being able to progress.|n";
         s = s$"|n";
         s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
         s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
         s = s$"  ~ One free space at the center of the board|n";
         s = s$"|n";
         s = s$"Can YOU outsmart the Mean Bingo Machine?";
+        return s;
+    case NiceBingoMachine:
+        s =   "Play through the entire randomized game, but you must complete a line of bingo in each mission before being able to progress.|n";
+        s = s$"|n";
+        s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
+        s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
+        s = s$"  ~ One free space at the center of the board|n";
+        s = s$"|n";
+        s = s$"A good starting point for new DXRando bingo players.";
         return s;
     case HalloweenMBM:
         return "Mr. Page's Mean Bingo Machine combined with Halloween Mode.  You are required to complete a bingo line to progress past each mission.  Look out for zombies, Mr. H, and the limited saves!";
@@ -1253,7 +1273,7 @@ function bool IsWaltonWareHardcore()
 
 function bool IsBingoCampaignMode()
 {
-    return gamemode == BingoCampaign || gamemode == HalloweenMBM;
+    return gamemode == BingoCampaign || gamemode == HalloweenMBM || gamemode == NiceBingoMachine;
 }
 
 function bool IsBingoMode()
@@ -1284,7 +1304,7 @@ function int GetStartingMap()
 
 simulated function AddDXRCredits(CreditsWindow cw)
 {
-    if(dxr.rando_beaten > 0 && OnEndgameMap()) {
+    if(dxr.rando_beaten >= 1 && OnEndgameMap()) {
         if(IsReducedRando()) {
             cw.PrintText("Now that you've beaten "$ GameModeName(gamemode) $",");
             cw.PrintText("maybe you're ready for the Normal Randomizer game mode,");

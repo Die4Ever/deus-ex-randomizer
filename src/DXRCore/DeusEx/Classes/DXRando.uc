@@ -18,7 +18,7 @@ var transient int num_modules;
 
 var config string modules_to_load[47];// 1 less than the modules array, because we always load the DXRFlags module
 var config int config_version;
-var config int rando_beaten;
+var config float rando_beaten;
 var config bool rando_exited; // for crash detection
 
 var transient bool runPostFirstEntry;

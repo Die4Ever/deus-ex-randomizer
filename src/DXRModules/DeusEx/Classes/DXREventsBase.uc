@@ -900,11 +900,17 @@ static function BeatGame(DXRando dxr, int ending)
     local DXRStats stats;
     local string j;
     local class<Json> js;
+    local float add_beaten;
     js = class'Json';
 
     // Mark the rando as having been beaten, affects dialogs on the new game menu.
-    dxr.rando_beaten = Max(1, dxr.rando_beaten + 1);
-    dxr.rando_beaten = Min(2000000000, dxr.rando_beaten);// Make sure you can beat the game over 2 billion times without overflow issues.
+    add_beaten = 1;
+    if(dxr.flags.IsWaltonWare()) { // regular WaltonWare gives 0.1, WWx3 gives 0.3
+        add_beaten = float(dxr.flags.settings.bingo_win + dxr.flags.bingo_duration) / 20;
+        add_beaten = FClamp(add_beaten, 0.1, 1);
+    }
+    dxr.rando_beaten = Max(add_beaten, dxr.rando_beaten + add_beaten);
+    dxr.rando_beaten = Min(10000000, dxr.rando_beaten);// Make sure you can beat the game over 2 billion times without overflow issues.
     dxr.SaveConfig();
 
     stats = DXRStats(dxr.FindModule(class'DXRStats'));
