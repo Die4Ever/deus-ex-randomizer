@@ -543,6 +543,41 @@ function CreateTrainingMrH()
     }
 }
 
+function MakeRegularCratesExplosive()
+{
+    local #var(prefix)CrateUnbreakableMed   med;
+    local #var(prefix)CrateUnbreakableLarge large;
+    local CrateExplosiveMed     medBoom;
+    local CrateExplosiveLarge   largeBoom;
+    local vector  loc;
+    local rotator rot;
+
+    if(!isAprilFools()) return; //Only on April Fools
+    if(dxr.flags.IsSpeedrunMode()) return; //This would really change the speedrun, lol
+
+    SetSeed("Memes ExplosiveCrates");
+
+    foreach AllActors(class'#var(prefix)CrateUnbreakableMed',med){
+        if( rng(100) < 25 ){ //1 in 4 medium crates get replaced by explosives
+            loc = med.Location;
+            rot = med.Rotation;
+            med.Destroy();
+
+            medBoom = Spawn(class'CrateExplosiveMed',,,loc,rot);
+        }
+    }
+
+    foreach AllActors(class'#var(prefix)CrateUnbreakableLarge',large){
+        if( rng(100) < 10 ){ //1 in 10 large crates get replaced by explosives
+            loc = large.Location;
+            rot = large.Rotation;
+            large.Destroy();
+
+            largeBoom = Spawn(class'CrateExplosiveLarge',,,loc,rot);
+        }
+    }
+}
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -584,6 +619,8 @@ function PreFirstEntry()
             RandomMJ12Globe();
             break;
     }
+
+    MakeRegularCratesExplosive();
 }
 
 function AnyEntry()

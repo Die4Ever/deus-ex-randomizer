@@ -7,5 +7,5 @@
 
 <details>
 <summary>Click to expand Minor Changes</summary>
-
+- Robots can now be randomly given a pistol weapon or a radioactive weapon.
 </details>

@@ -49,14 +49,15 @@ function CheckConfig()
     AddRandomMelee(class'#var(prefix)WeaponCrowbar', 17);
     AddRandomMelee(class'#var(prefix)WeaponSword', 6);
 
-    AddRandomBotWeapon(class'#var(prefix)WeaponRobotMachinegun', 60);
+    AddRandomBotWeapon(class'#var(prefix)WeaponRobotMachinegun', 49);
     AddRandomBotWeapon(class'#var(prefix)WeaponRobotRocket', 10);
     AddRandomBotWeapon(class'#var(prefix)WeaponMJ12Rocket', 10);
+    AddRandomBotWeapon(class'WeaponRobotPistol', 10);
     AddRandomBotWeapon(class'#var(prefix)WeaponSpiderBot', 5);
     AddRandomBotWeapon(class'#var(prefix)WeaponSpiderBot2', 5);
     AddRandomBotWeapon(class'#var(prefix)WeaponFlamethrower', 5);
     AddRandomBotWeapon(class'#var(prefix)WeaponPlasmaRifle', 5);
-    //AddRandomBotWeapon(class'#var(prefix)WeaponGraySpit', 5);  //Gray Spit doesn't seem to work immediately
+    AddRandomBotWeapon(class'WeaponRobotGray', 1);
 
     defaultOrders = 'DynamicPatrolling';
 
