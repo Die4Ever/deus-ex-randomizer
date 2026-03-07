@@ -216,7 +216,7 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    len = Clamp(dxr.flags.bingo_duration, 1, len);
+    if(dxr.flags.bingo_duration > 0) len = Clamp(dxr.flags.bingo_duration, 1, len);
     starts[len] = "99_ENDGAME4";
     missions[len] = 99;
     for(i=0; i<len; i++) {
