@@ -684,6 +684,9 @@ function SetDifficulty(int new_difficulty)
             // realtime menus, not for training mode
             settings.menus_pause = 0;
         }
+        if(gamemode==SpeedShuffle) {
+            bingo_duration = 5;
+        }
         // same doors rules as Normal difficulty
         settings.doorsdestructible = 100;
         settings.doorspickable = 100;

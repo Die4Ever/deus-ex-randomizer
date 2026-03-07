@@ -681,6 +681,8 @@ function AnyEntryMapFixes()
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
+    if(dxr.flagbase.GetBool('MeetLebedev_Played2')) dxr.flagbase.SetBool('MeetLebedev_Played', true,, 999); // fix for Speedrun Shuffle when Anna is already dead
+
     switch(dxr.localURL) {
     case "03_NYC_747":
         SetTimer(1, true);

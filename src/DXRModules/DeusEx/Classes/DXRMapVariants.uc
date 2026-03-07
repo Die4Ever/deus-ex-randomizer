@@ -189,13 +189,13 @@ function int GetMirrorMapsSetting()
 
 function CheckConfig()
 {
-    local int i, slot, tempi, startidx;
+    local int i, slot, tempi, len;
     local string temp;
 
     Super.CheckConfig();
 
     SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
-    startidx = ArrayCount(starts)-2;// length - 2 because Area 51 is not shuffled
+    len = ArrayCount(starts)-1;
     if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
         starts[9] = starts[10];
         starts[10] = starts[12];
@@ -203,9 +203,9 @@ function CheckConfig()
         missions[9] = missions[10];
         missions[10] = missions[12];
 
-        startidx -= 2;
+        len -= 2;
     }
-    for(i=startidx; i>=0; i--) {
+    for(i=len; i>=0; i--) {
         slot = rng(i+1);
 
         temp = starts[i];
@@ -216,7 +216,10 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    for(i=0; i<startidx+2; i++) {
+    len = Clamp(dxr.flags.bingo_duration, 1, len);
+    starts[len] = "99_ENDGAME4";
+    missions[len] = 99;
+    for(i=0; i<len; i++) {
         l("speedshuffle " $ i @ starts[i]);
     }
 }
@@ -333,12 +336,13 @@ function string VaryMap(string map, optional out int speedShuffled)
     if(dxr.flags.gamemode == dxr.flags.SpeedShuffle) {
         for(i=0; i<ArrayCount(starts); i++) {
             if(missions[i] == dxr.dxInfo.MissionNumber) nextMap = starts[i+1];
-            if(map ~= starts[i] && dxr.dxInfo.MissionNumber != missions[i]) isStartMap = true; // only if this teleporter is going to a starting map
+            if(map ~= default.starts[i] && dxr.dxInfo.MissionNumber != default.missions[i]) isStartMap = true; // only if this teleporter is going to a starting map
+            if(Left(map, 3) == "99_") isStartMap = true; // the start maps for mission 99...
         }
         if(isStartMap) {
             if(dxr.dxInfo.MissionNumber == 98) nextMap = starts[0]; // coming from the intro
             if(nextMap != "") {
-                map = nextMap;
+                if(Left(map, 3) != "99_" || Left(nextMap, 3) != "99_") map = nextMap; // don't change a 99_ map to 99_ENDGAME4
                 speedShuffled = 1;
             }
         }
