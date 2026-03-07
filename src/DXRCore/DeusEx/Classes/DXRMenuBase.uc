@@ -882,14 +882,18 @@ event StyleChanged()
 
 event FocusEnteredDescendant(Window enterWindow)
 {
-    local int i;
+    local int i, split;
+    local string s;
 
     if( enterWindow == None ) return;
 
     for(i=0;i<ArrayCount(wnds);i++) {
         if( wnds[i] == enterWindow ) {
             winHelp.Show();
-            winHelp.SetText(helptexts[i]);
+            s = helptexts[i];
+            split = InStr(helptexts[i], BR$BR);
+            if(split!=-1) s = Left(s, split); // don't show double line break on the small help text
+            winHelp.SetText(s);
             return;
         }
     }

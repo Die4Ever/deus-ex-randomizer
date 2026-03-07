@@ -43,7 +43,7 @@ function BindControls(optional string action)
         f.InitAdvancedDefaults();
     }
 
-    gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!");
+    gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!"$BR$BR$"For first time Randomizer players we recommend Randomizer Lite, Normal Randomizer, or Mr. Page's Nice Bingo Machine.");
     for(i=0; i<50; i++) {
         temp = f.GameModeIdForSlot(i);
         if(temp==999999) continue;
@@ -343,20 +343,20 @@ function HandleNewGameButton()
         s = Sprintf(SplitsBtnMessage, class'HUDSpeedrunSplits'.static.GetPB());
         class'BingoHintMsgBox'.static.Create(root, SplitsBtnTitle, s, 0, False, Self);
     }
-    else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Extreme") {
+    else if(dxr.rando_beaten < 1 && f.DifficultyName(f.difficulty) ~= "Extreme") {
         nextScreenNum=RMB_NewGame;
         class'BingoHintMsgBox'.static.Create(root, ExtremeBtnTitle,ExtremeBtnMessage,0,False,Self);
     }
-    else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Impossible") {
+    else if(dxr.rando_beaten < 1 && f.DifficultyName(f.difficulty) ~= "Impossible") {
         nextScreenNum=RMB_NewGame;
         class'BingoHintMsgBox'.static.Create(root, ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
     }
-    else if(dxr.rando_beaten == 0 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosaves Enabled") {
+    else if(dxr.rando_beaten < 1 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosaves Enabled") {
         nextScreenNum=RMB_NewGame;
         s = Sprintf(AutosaveBtnMessage, GetEnumValue(autosave_enum));
         class'BingoHintMsgBox'.static.Create(root, AutosaveBtnTitle, s, 0, False, self);
     }
-    else if(dxr.rando_beaten == 0 && f.GameModeName(f.gamemode) != "Normal Randomizer" && !f.IsReducedRando()) {
+    else if(dxr.rando_beaten < 1 && f.GameModeName(f.gamemode) != "Normal Randomizer" && f.GameModeName(f.gamemode) != "Mr. Page's Nice Bingo Machine" && !f.IsReducedRando()) {
         nextScreenNum=RMB_NewGame;
         s = Sprintf(GameModeBtnMessage, f.GameModeName(f.gamemode));
         class'BingoHintMsgBox'.static.Create(root, GameModeBtnTitle, s, 0, False, self);
@@ -399,7 +399,7 @@ function DoMaxRandoButtonConfirm()
 
 function HandleAdvancedButton()
 {
-    if (dxr.rando_beaten != 0){
+    if (dxr.rando_beaten >= 1){
         DoAdvancedButtonConfirm();
     } else {
         nextScreenNum=RMB_Advanced;
