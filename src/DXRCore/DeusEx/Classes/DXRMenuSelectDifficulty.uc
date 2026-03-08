@@ -23,12 +23,14 @@ var ERandoMessageBoxModes nextScreenNum;
 
 event InitWindow()
 {
+    local DXRFlags f;
     Super.InitWindow();
     GetDxr();
-    Init(GetDxr());
-    if(dxr.rando_beaten < 1) {
-        actionButtons[3].btn.Hide();
+    f = GetFlags();
+    if(f.gamemode == f.ZeroRando || f.gamemode == f.ZeroRandoPlus) {
+        preset_custom_choice = true; // HACK: people coming from the Zero Rando installer probably want to see the difficulty choices
     }
+    Init(GetDxr());
 }
 
 function BindControls(optional string action)
@@ -45,7 +47,7 @@ function BindControls(optional string action)
 
     if(BindPresets()) return;
 
-    NewGroup("Custom");
+    NewGroup("Customize");
 
     gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!"$BR$BR$"For first time Randomizer players we recommend Randomizer Lite, Normal Randomizer, or Mr. Page's Nice Bingo Machine.");
     for(i=0; i<50; i++) {
@@ -115,72 +117,108 @@ function bool BindPresets()
     local int i;
     f = GetFlags();
 
-    if(f.gamemode == f.ZeroRando || f.gamemode == f.ZeroRandoPlus) {
-        preset_custom_choice = true; // this user probably used the Zero Rando installer and should be able to choose difficulty?
-    }
-
     NewGroup("Presets");
     if(preset_custom_choice) {// if collapsed, group these into a single MenuItem
-        NewMenuItem("Presets", "Choose a preset to quickly get into the game!", true);
+        if(CollapsibleButtonOnClick(false, "Choose a preset to quickly get into the game!", "Presets are recommended and popular game modes and playstyles.")) {
+            preset_custom_choice = false;
+            ResetToDefaults();
+            return true;
+        }
+        return false;
     }
+
+    //CreateLabelRow("some description text?");
 
     if(PresetButton("Normal Randomizer", f.GameModeHelpText(f.NormalRandomizer))) {
         f.gamemode = f.NormalRandomizer;
         StartPreset();
+        return true;
     }
     if(dxr.rando_beaten >= 1 && PresetButton("Full Randomizer", f.GameModeHelpText(f.FullRando))) {
         f.gamemode = f.FullRando;
         StartPreset();
+        return true;
     }
     if(dxr.rando_beaten >= 1 && PresetButton("Serious Rando", f.GameModeHelpText(f.SeriousRando))) {
         f.gamemode = f.SeriousRando;
         StartPreset();
+        return true;
     }
     if(PresetButton("Randomizer Lite", f.GameModeHelpText(f.RandoLite))) {
         f.gamemode = f.RandoLite;
         StartPreset();
+        return true;
     }
     if(dxr.rando_beaten >= 1 && PresetButton("WaltonWare", f.GameModeHelpText(f.WaltonWare))) {
         f.gamemode = f.WaltonWare;
         StartPreset();
+        return true;
     }
-    if(PresetButton("Mr. Page's Nice Bingo Machine", f.GameModeHelpText(f.NiceBingoMachine))) {
+    if(dxr.rando_beaten <3 && PresetButton("Mr. Page's Nice Bingo Machine", f.GameModeHelpText(f.NiceBingoMachine))) {
         f.gamemode = f.NiceBingoMachine;
         f.SetDifficulty(1); // Normal not Hard
         StartPreset();
+        return true;
     }
+    if(dxr.rando_beaten >= 1 && PresetButton("Mr. Page's Mean Bingo Machine", f.GameModeHelpText(f.BingoCampaign))) {
+        f.gamemode = f.BingoCampaign;
+        StartPreset();
+        return true;
+    }
+
     if(PresetButton("Zero Rando", f.GameModeHelpText(f.ZeroRando))) {
         f.gamemode = f.ZeroRando;
         if(f.mirroredmaps != -1) f.mirroredmaps = 0;
         f.SetDifficulty(3);// Hard, not entirely sure what's best here
-        StartPreset();
+        //StartPreset();
+        preset_custom_choice = true;
+        ResetToDefaults();
+        return true;
     }
     if(PresetButton("Zero Rando Plus", f.GameModeHelpText(f.ZeroRandoPlus))) {
         f.gamemode = f.ZeroRandoPlus;
         if(f.mirroredmaps != -1) f.mirroredmaps = 0;
         f.SetDifficulty(3);// Hard
+        //StartPreset();
+        preset_custom_choice = true;
+        ResetToDefaults();
+        return true;
+    }
+
+    s = f.GameModeHelpText(f.HalloweenMode);
+    if(dxr.rando_beaten >= 3 && PresetButton("Full Halloween Mode", s)) {
+        f.gamemode = f.HalloweenMode;
+        f.autosave = 7; // fixed limited saves
         StartPreset();
+        return true;
     }
-    if(dxr.IsOctober()) {
-        s = f.GameModeHelpText(f.HalloweenMode);
-        if(dxr.rando_beaten >= 3 && PresetButton("Full Halloween Mode", s)) {
-            f.gamemode = f.HalloweenMode;
-            f.autosave = 7; // fixed limited saves
-            StartPreset();
-        }
-        i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves
-        if(i>0) s = Left(s, i);
-        if(dxr.rando_beaten >= 1 && PresetButton("Halloween Lite Mode", s)) {
-            f.gamemode = f.HalloweenMode;
-            StartPreset();
-        }
+    i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves
+    if(i>0) s = Left(s, i);
+    if((dxr.rando_beaten >= 1 || dxr.IsOctober()) && PresetButton("Halloween Lite Mode", s)) {
+        f.gamemode = f.HalloweenMode;
+        StartPreset();
+        return true;
     }
+    if(dxr.rando_beaten >= 3 && dxr.IsOctober() && PresetButton("WaltonWare Halloween", f.GameModeHelpText(f.WaltonWareHalloween))) {
+        f.gamemode = f.WaltonWareHalloween;
+        //f.autosave = 7; // TODO: maybe fixed unlimited saves? or limited saves anywhere?
+        StartPreset();
+        return true;
+    }
+
     if(dxr.rando_beaten >= 3 && PresetButton("Stick With the Prod Plus", "The full Randomizer experience, but only non-lethal weapons are allowed. The baton is also banned and replaced with a rubber baton.")) {
         f.gamemode = f.FullRando;
         f.loadout = 2;
         StartPreset();
+        return true;
     }
-    if(PresetButton("Custom", "")) {
+    if(dxr.rando_beaten >= 2 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
+        f.gamemode = f.SpeedrunMode;
+        f.loadout = 2; // speed enhancement
+        StartPreset();
+        return true;
+    }
+    if(PresetButton("Customize Your Deus Ex Experience", "There are many options available for customization, but some of them can be spicy!")) {
         preset_custom_choice = true;
         ResetToDefaults();
         return true; // return true because we're done, the reset will handle the other buttons
@@ -197,7 +235,7 @@ function bool PresetButton(string label, optional string helpText)
     local string sseed, name, help;
     local bool mirrored_maps_files_found;
 
-    ret = CollapsibleButtonOnClick(preset_custom_choice, label, helpText);
+    ret = CollapsibleButtonOnClick(false, label, helpText);
     if(ret) {
         preset_custom_choice = false;
         f = GetFlags();
@@ -218,9 +256,37 @@ function bool PresetButton(string label, optional string helpText)
 function StartPreset()
 {
     local DXRFlags f;
+    SaveConfig();
     f = GetFlags();
     f.SetDifficulty(f.difficulty); // just to make sure gamemode and loadout flags get set
     DoNewGameScreen();
+}
+
+function ResetToDefaults()
+{
+    local S_ActionButtonDefault blank;
+    local int i;
+
+    winButtonBar.DestroyAllChildren();
+    winButtonBar.buttonCount = 0;
+
+    if(preset_custom_choice) {
+        for(i=0; i<arrayCount(actionButtons); i++) {
+            actionButtons[i] = default.actionButtons[i];
+            winButtonBar.actionButtons[i].btn = None;
+        }
+        if(dxr.rando_beaten < 1) {
+            actionButtons[3] = blank; // Max Rando button
+        }
+    } else {
+        for(i=1; i<arrayCount(actionButtons); i++) {
+            actionButtons[i] = blank;
+            winButtonBar.actionButtons[i].btn = None;
+        }
+    }
+    CreateActionButtons();
+
+    Super.ResetToDefaults();
 }
 
 static function int CreateLoadoutEnum(DXRMenuBase slf, DXRFlags f)

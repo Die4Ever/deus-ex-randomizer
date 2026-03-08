@@ -813,7 +813,6 @@ defaultproperties
     padding_width=20
     padding_height=10
     Title="DX Rando Options"
-    bUsesHelpWindow=False
     bEscapeSavesSettings=False
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
