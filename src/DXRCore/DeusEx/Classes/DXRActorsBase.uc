@@ -842,7 +842,7 @@ function SwapProperty(Actor a, Actor b, string propname) {
     b.SetPropertyText(propname, t);
 }
 
-//Sort a list of actors
+/* //Sort a list of actors
 //If sorting values aren't provided, this will sort by class name CRC by default
 //Assume the list has been packed and doesn't have empty slots
 static function SortActorList(out ActorSort as[64])
@@ -857,7 +857,7 @@ static function SortActorList(out ActorSort as[64])
     for (slot=0; slot < ArrayCount(as); slot++) {
         if (as[slot].a!=None) {
             if (as[slot].sortVal==0){
-                as[slot].sortVal = dxrand.Crc(as[slot].a.class);
+                as[slot].sortVal = dxrand.HashCompat( dxrand.Crc(as[slot].a.class), MurmurHash3(as[slot].a.class) );
             }
             numActors++;
         }
@@ -901,7 +901,7 @@ static function SortActorListStatic(out Actor a[64], optional int sortVals[64])
     for (i=0;i<ArrayCount(a);i++){
         a[i] = as[i].a;
     }
-}
+} */
 
 function ResetOrders(ScriptedPawn p) {
     p.OrderActor = None;

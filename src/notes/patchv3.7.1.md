@@ -8,4 +8,5 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 - Robots can now be randomly given a pistol weapon or a radioactive weapon.
+- Switched from CRC to Murmurhash3_x83_32 hashing algorithm.
 </details>

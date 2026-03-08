@@ -100,7 +100,10 @@ function TryAddingNote(string text, optional name texttag)
     rootWindow = DeusExRootWindow(pp.rootWindow);
     if (texttag==''){
         mapname = GetMapNameStripped();
-        finalTextTag = rootWindow.StringToName(mapname$"-"$ DxrCrc(text));
+        finalTextTag = rootWindow.StringToName(
+            mapname$"-"
+            $ class'DXRando'.default.dxr.HashCompat(class'DXRando'.default.dxr.Crc(text), MurmurHash3(text))
+        );
     } else {
         textPackage = "DeusExText";
         if (CompOwner!=None && CompOwner.IsA('#var(prefix)Computers')){
@@ -156,15 +159,4 @@ function string GetMapNameStripped()
         mapname = Left(mapname, i) $ "-" $ Mid(mapname, i+1);
     }
     return mapname;
-}
-
-function int DxrCrc(string plaintext)
-{
-    local DXRando dxr;
-
-    dxr = class'DXRando'.default.dxr;
-    if (dxr!=None) {
-        return dxr.Crc(plaintext);
-    }
-    return 0;
 }

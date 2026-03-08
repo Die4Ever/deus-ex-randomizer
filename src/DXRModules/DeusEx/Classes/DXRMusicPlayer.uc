@@ -200,11 +200,11 @@ function GetLevelSong(bool setseed)
     local DXRMusic music;
 
     if(setseed) {
-        SetGlobalSeedNew(string(Level.Song.Name));// matching songs will stay matching
+        SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
         if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" )
-            SetGlobalSeedNew("NYCStreets2_Music");
+            SetGlobalSeed("NYCStreets2_Music");
     } else {
-        SetGlobalSeedNew(FRand());
+        SetGlobalSeed(FRand());
     }
 
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
@@ -257,10 +257,10 @@ function GetLevelOggSong(bool setseed, DXOggMusicManager mm)
         if (i!=-1){
             SongString = Mid(SongString,i);
         }
-        SetGlobalSeedNew(SongString);// matching songs will stay matching
+        SetGlobalSeed(SongString);// matching songs will stay matching
     } else {
         SongString="Random";
-        SetGlobalSeedNew(FRand());
+        SetGlobalSeed(FRand());
     }
 
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
