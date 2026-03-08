@@ -11,4 +11,5 @@
 - Robots can now be randomly given a pistol weapon or a radioactive weapon.
 - Updated speedrun splits notes defaults.
 - In vanilla, bingo goals for destroying robots can now also be completed by disabling the robots as well.
+- Area 51 sniper in tower is activated immediately if you start in the tower instead of starting to move after 9 seconds.
 </details>
