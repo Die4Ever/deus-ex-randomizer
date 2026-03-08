@@ -249,6 +249,9 @@ simulated function FirstEntry()
                 break;
             }
         }
+        if(dxr.dxInfo.MissionNumber != 4 && dxr.flagbase.GetInt('Rando_lastmission')==4) {
+            class'DXRPlayerStats'.static.PartialHeal(player(), dxr.flags.settings.health);
+        }
     }
     if(isStartMap) { // for speedrun shuffle mode, do these things when entering these missions
         dxr.flagbase.DeleteFlag('MS_DL_Played', FLAG_Bool); //commonly used flag

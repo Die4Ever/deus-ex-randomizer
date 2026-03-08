@@ -157,6 +157,7 @@ simulated event PreTravel()
         modules[i] = None;
     }
     num_modules = 0;
+    flagbase.SetInt('Rando_lastmission', dxInfo.MissionNumber,, 999);
     default.dxr = None;// clear the singleton reference
     flagbase = None;
     Disable('Tick');

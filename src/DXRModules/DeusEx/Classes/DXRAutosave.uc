@@ -49,7 +49,7 @@ function PreFirstEntry()
         if(dxr.flags.autosave > 0 && dxr.flags.autosave < Ironman) {
             NeedSave();
         }
-        else if((IsFixedSaves() || IsLimitedSaves()) && dxr.flagbase.GetInt('Rando_lastmission')==0)
+        else if((IsFixedSaves() || IsLimitedSaves()) && dxr.flagbase.GetInt('Rando_lastmission')==98)
         {
             // save at the start
             NeedSave();
@@ -366,8 +366,7 @@ function doAutosave()
     local string saveName;
     local DataLinkPlay interruptedDL;
     local #var(PlayerPawn) p;
-    local int saveSlot;
-    local int lastMission;
+    local int saveSlot, lastMission;
     local bool isDifferentMission;
 
     save_timer = save_delay;
@@ -418,8 +417,8 @@ function doAutosave()
     saveSlot = -6;
     saveName = "DXR " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " AUTOSAVE";
     lastMission = dxr.flagbase.GetInt('Rando_lastmission');
-
     isDifferentMission = dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
+
     if(save_exit) {
         saveName = "EXIT " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " EXIT AUTOSAVE";
         saveSlot = 0;
@@ -431,7 +430,6 @@ function doAutosave()
     else if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
         saveSlot = 0;
     }
-    dxr.flagbase.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
     info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
     bNeedSave = false;
