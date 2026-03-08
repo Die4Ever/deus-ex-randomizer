@@ -10,4 +10,5 @@
 <summary>Click to expand Minor Changes</summary>
 - Robots can now be randomly given a pistol weapon or a radioactive weapon.
 - Updated speedrun splits notes defaults.
+- In vanilla, bingo goals for destroying robots can now also be completed by disabling the robots as well.
 </details>

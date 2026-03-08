@@ -1748,6 +1748,16 @@ function PlayTurning()
     else
         Super.PlayTurning();
 }
+function PlayPickupAnim(Vector locPickup)
+{
+    if(bBlockAnimations){return;}
+
+    if (Location.Z - locPickup.Z < 16)
+        PlayAnim('PushButton',,0.1);
+    else
+        PlayAnim('Pickup',,0.1);
+}
+
 function Bool HasTwoHandedWeapon()
 {
     return Super.HasTwoHandedWeapon();
