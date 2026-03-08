@@ -8,7 +8,7 @@ var string GameModeBtnTitle, GameModeBtnMessage;
 var string AutosaveBtnTitle, AutosaveBtnMessage;
 var string SplitsBtnTitle, SplitsBtnMessage;
 
-var config bool shownMaxRandoWarning;
+var config bool preset_custom_choice;
 
 var int gamemode_enum, loadout_enum, autosave_enum, difficulty_enum, mirroredmaps_wnd;
 
@@ -42,6 +42,10 @@ function BindControls(optional string action)
     if(writing) {
         f.InitAdvancedDefaults();
     }
+
+    if(BindPresets()) return;
+
+    NewGroup("Custom");
 
     gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!"$BR$BR$"For first time Randomizer players we recommend Randomizer Lite, Normal Randomizer, or Mr. Page's Nice Bingo Machine.");
     for(i=0; i<50; i++) {
@@ -102,6 +106,121 @@ function BindControls(optional string action)
             HandleNewGameButton();
         }
     }
+}
+
+function bool BindPresets()
+{
+    local DXRFlags f;
+    local string s;
+    local int i;
+    f = GetFlags();
+
+    if(f.gamemode == f.ZeroRando || f.gamemode == f.ZeroRandoPlus) {
+        preset_custom_choice = true; // this user probably used the Zero Rando installer and should be able to choose difficulty?
+    }
+
+    NewGroup("Presets");
+    if(preset_custom_choice) {// if collapsed, group these into a single MenuItem
+        NewMenuItem("Presets", "Choose a preset to quickly get into the game!", true);
+    }
+
+    if(PresetButton("Normal Randomizer", f.GameModeHelpText(f.NormalRandomizer))) {
+        f.gamemode = f.NormalRandomizer;
+        StartPreset();
+    }
+    if(dxr.rando_beaten >= 1 && PresetButton("Full Randomizer", f.GameModeHelpText(f.FullRando))) {
+        f.gamemode = f.FullRando;
+        StartPreset();
+    }
+    if(dxr.rando_beaten >= 1 && PresetButton("Serious Rando", f.GameModeHelpText(f.SeriousRando))) {
+        f.gamemode = f.SeriousRando;
+        StartPreset();
+    }
+    if(PresetButton("Randomizer Lite", f.GameModeHelpText(f.RandoLite))) {
+        f.gamemode = f.RandoLite;
+        StartPreset();
+    }
+    if(dxr.rando_beaten >= 1 && PresetButton("WaltonWare", f.GameModeHelpText(f.WaltonWare))) {
+        f.gamemode = f.WaltonWare;
+        StartPreset();
+    }
+    if(PresetButton("Mr. Page's Nice Bingo Machine", f.GameModeHelpText(f.NiceBingoMachine))) {
+        f.gamemode = f.NiceBingoMachine;
+        f.SetDifficulty(1); // Normal not Hard
+        StartPreset();
+    }
+    if(PresetButton("Zero Rando", f.GameModeHelpText(f.ZeroRando))) {
+        f.gamemode = f.ZeroRando;
+        if(f.mirroredmaps != -1) f.mirroredmaps = 0;
+        f.SetDifficulty(3);// Hard, not entirely sure what's best here
+        StartPreset();
+    }
+    if(PresetButton("Zero Rando Plus", f.GameModeHelpText(f.ZeroRandoPlus))) {
+        f.gamemode = f.ZeroRandoPlus;
+        if(f.mirroredmaps != -1) f.mirroredmaps = 0;
+        f.SetDifficulty(3);// Hard
+        StartPreset();
+    }
+    if(dxr.IsOctober()) {
+        s = f.GameModeHelpText(f.HalloweenMode);
+        if(dxr.rando_beaten >= 3 && PresetButton("Full Halloween Mode", s)) {
+            f.gamemode = f.HalloweenMode;
+            f.autosave = 7; // fixed limited saves
+            StartPreset();
+        }
+        i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves
+        if(i>0) s = Left(s, i);
+        if(dxr.rando_beaten >= 1 && PresetButton("Halloween Lite Mode", s)) {
+            f.gamemode = f.HalloweenMode;
+            StartPreset();
+        }
+    }
+    if(dxr.rando_beaten >= 3 && PresetButton("Stick With the Prod Plus", "The full Randomizer experience, but only non-lethal weapons are allowed. The baton is also banned and replaced with a rubber baton.")) {
+        f.gamemode = f.FullRando;
+        f.loadout = 2;
+        StartPreset();
+    }
+    if(PresetButton("Custom", "")) {
+        preset_custom_choice = true;
+        ResetToDefaults();
+        return true; // return true because we're done, the reset will handle the other buttons
+    }
+
+    return !preset_custom_choice; // if not custom, do an early return, but if we are on custom then we need to draw the other buttons
+}
+
+function bool PresetButton(string label, optional string helpText)
+{
+    local bool ret;
+    local int i;
+    local DXRFlags f;
+    local string sseed, name, help;
+    local bool mirrored_maps_files_found;
+
+    ret = CollapsibleButtonOnClick(preset_custom_choice, label, helpText);
+    if(ret) {
+        preset_custom_choice = false;
+        f = GetFlags();
+        f.RollSeed();
+        f.crowdcontrol = 0; // set some defaults for the preset
+        f.loadout = 0; // All Items Allowed
+        f.autosave = 2; // Autosave Every Entry
+        #ifdef injections
+            mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
+        #endif
+        if(mirrored_maps_files_found) f.mirroredmaps = 50;
+        else f.mirroredmaps = -1;
+        f.SetDifficulty(2); // rando's Hard, vanilla's Medium
+    }
+    return ret;
+}
+
+function StartPreset()
+{
+    local DXRFlags f;
+    f = GetFlags();
+    f.SetDifficulty(f.difficulty); // just to make sure gamemode and loadout flags get set
+    DoNewGameScreen();
 }
 
 static function int CreateLoadoutEnum(DXRMenuBase slf, DXRFlags f)
@@ -381,12 +500,8 @@ function DoNewGameScreen()
 
 function HandleMaxRandoButton()
 {
-    if (shownMaxRandoWarning){
-        DoMaxRandoButtonConfirm();
-    } else {
-        nextScreenNum=RMB_MaxRando;
-        class'BingoHintMsgBox'.static.Create(root, MaxRandoBtnTitle,MaxRandoBtnMessage,0,False,Self);
-    }
+    nextScreenNum=RMB_MaxRando;
+    class'BingoHintMsgBox'.static.Create(root, MaxRandoBtnTitle,MaxRandoBtnMessage,0,False,Self);
 }
 
 function DoMaxRandoButtonConfirm()
@@ -455,6 +570,8 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 
 event DestroyWindow()
 {
+    Super.DestroyWindow();
+    SaveConfig();
     if(#defined(vmd175)) {
         Player.ConsoleCommand("Open DXOnly");
     }

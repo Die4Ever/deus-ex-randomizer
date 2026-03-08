@@ -104,6 +104,9 @@ function bool ButtonActivated( Window buttonPressed )
 {
     local MenuUIActionButtonWindow button;
     local DXRMenuUIHelpButtonWindow helpButton;
+    local DXRMenuBase tparent;
+    local string s;
+    local int e;
 
     button = MenuUIActionButtonWindow(buttonPressed);
     helpButton = DXRMenuUIHelpButtonWindow(buttonPressed);
@@ -116,8 +119,11 @@ function bool ButtonActivated( Window buttonPressed )
         return true;
     } else {
         //SetTitle(button.buttonText);
-        parent.SetEnumValue(iEnum, button.buttonText);
+        tparent = parent;
+        s = button.buttonText;
+        e = iEnum;
         root.PopWindow();
+        if(s != "|&Cancel") tparent.SetEnumValue(e, s);
         return true;
     }
 }

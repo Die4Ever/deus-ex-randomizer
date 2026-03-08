@@ -9,6 +9,7 @@ var MenuUIInfoButtonWindow winNameBorder;
 struct EnumBtn {
     var MenuUIActionButtonWindow btn;
     var DXRMenuUIHelpButtonWindow helpBtn;
+    var bool isBoundEvent;
 
 #ifdef allstarts
     var string values[80];
@@ -29,6 +30,7 @@ var bool bHelpAlwaysOn;
 
 var int id;
 var bool writing;
+var string currentAction;
 
 var Window wnds[150];
 var String labels[150];
@@ -91,24 +93,6 @@ event Init(DXRando d)
     controlsParent.SetSize(coords.X, coords.Y);
 
     ResetToDefaults();
-    _BindControls(false);
-
-    // Need to do this because of the edit control used for
-    // saving games.
-    SetMouseFocusMode(MFOCUS_Click);
-    for(i=0; i<ArrayCount(wnds); i++) {
-        if( wnds[i] != None ) {
-            SetFocusWindow(wnds[i]);
-            break;
-        }
-    }
-    winScroll.vScale.SetTickPosition(0);
-
-    Show();
-
-    StyleChanged();
-
-    AddTimer(0.001, false, 0, 'FixScroll');
 }
 
 function FixScroll(int timerID, int invocations, int clientData)
@@ -230,7 +214,16 @@ function NewGroup(string text)
     coords = GetCoords(id, 0);
     winLabel = CreateMenuLabel(coords.x + groupHeaderX, coords.y + groupHeaderY, text, controlsParent);
     winLabel.SetFont(groupHeaderFont);
+    wnds[id] = winLabel;
     BreakLine();
+}
+
+function bool CollapsibleButtonOnClick(bool collapsed, string label, optional string helpText)
+{
+    if(!collapsed) NewMenuItem(label, helpText, true);
+    enums[id].isBoundEvent = true;
+    EnumOption(label, 0,, helpText);
+    return label == currentAction;
 }
 
 function bool EnumOption(string label, int value, optional out int output, optional string helpText)
@@ -376,12 +369,48 @@ static function int UnpackInt(out string s)
 
 function ProcessAction(String actionKey)
 {
+    currentAction = actionKey;
     _BindControls(true, actionKey);
+    currentAction = "";
 }
 
 function ResetToDefaults()
 {
-    //delete all controls and run BindControls(false) again?
+    local int i;
+    local EnumBtn tenum;
+
+    for(i=0; i<ArrayCount(enums); i++) {
+        //if(enums[i].btn != None) enums[i].btn.Destroy(); // these guys are already in wnds
+        if(enums[i].helpBtn != None) enums[i].helpBtn.Destroy();
+        enums[i] = tenum;
+    }
+    for(i=0; i<ArrayCount(wnds); i++) {
+        if(wnds[i] != None) wnds[i].Destroy();
+        wnds[i] = None;
+        labels[i] = "";
+        hide_labels[i] = 0;
+        helptexts[i] = "";
+    }
+
+    currentAction = "";
+    _BindControls(false); // writing=false
+
+    // Need to do this because of the edit control used for
+    // saving games.
+    SetMouseFocusMode(MFOCUS_Click);
+    for(i=0; i<ArrayCount(wnds); i++) {
+        if( wnds[i] != None ) {
+            SetFocusWindow(wnds[i]);
+            break;
+        }
+    }
+    winScroll.vScale.SetTickPosition(0);
+
+    Show();
+
+    StyleChanged();
+
+    AddTimer(0.001, false, 0, 'FixScroll');
 }
 
 function _BindControls(bool newwriting, optional string action)
@@ -801,6 +830,10 @@ function ClickEnum(int iEnum, bool rightClick)
     if(hide_labels[iEnum]==0) s = labels[iEnum];
     SetHelpButtonEnum(e.btn, e.helpBtn, s, e.values[e.value], e.helpTexts[e.value]);
     enums[iEnum] = e;
+
+    if(e.isBoundEvent) {
+        ProcessAction(e.values[e.value]);
+    }
 }
 
 function OpenEnumList(int iEnum)
@@ -851,9 +884,12 @@ function string SetEnumValue(int e, string text)
             s="";
             if(hide_labels[e]==0) s = labels[e];
             SetHelpButtonEnum(enums[e].btn, enums[e].helpBtn, s, text, enums[e].helpTexts[i]);
+            break;
         }
     }
-    return enums[e].values[old];
+    s = enums[e].values[old];
+    if(enums[e].isBoundEvent) ProcessAction(text);
+    return s;
 }
 
 event StyleChanged()
@@ -891,8 +927,14 @@ event FocusEnteredDescendant(Window enterWindow)
         if( wnds[i] == enterWindow ) {
             winHelp.Show();
             s = helptexts[i];
-            split = InStr(helptexts[i], BR$BR);
+            split = InStr(s, BR$BR);
+            if(split==-1) split = InStr(s, "|n|n");
             if(split!=-1) s = Left(s, split); // don't show double line break on the small help text
+            if(Len(s)>115) {
+                split = InStr(s, BR);
+                if(split==-1) split = InStr(s, "|n");
+                if(split!=-1) s = Left(s, split);
+            }
             winHelp.SetText(s);
             return;
         }
