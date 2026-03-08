@@ -686,6 +686,7 @@ function SetDifficulty(int new_difficulty)
         }
         if(gamemode==SpeedShuffle) {
             bingo_duration = 5;
+            settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would get rerolls all over the place back and forth
         }
         // same doors rules as Normal difficulty
         settings.doorsdestructible = 100;
