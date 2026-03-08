@@ -1296,6 +1296,11 @@ function bool IsStrongAugsMode()
 {
     return gamemode == StrongAugsMode;
 }
+
+function bool IsSpeedShuffleMode()
+{
+    return gamemode == SpeedShuffle;
+}
 //#endregion
 
 function int GetStartingMap()
