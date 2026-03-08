@@ -98,7 +98,25 @@ function PetAnimal(#var(PlayerPawn) petter)
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-    if (#var(PlayerPawn)(Frobber)!=None){
-        PetAnimal(#var(PlayerPawn)(Frobber));
+    local #var(PlayerPawn) p;
+    local bool canPet;
+
+    Super.Frob(Frobber,frobWith);
+
+    p = #var(PlayerPawn)(Frobber);
+
+    if (p!=None){
+        canPet = true;
+
+        //Animals probably don't have conversations, but check anyway
+        //(basically, make sure the Super.Frob above didn't put us in a conversation)
+        if (p.conPlay!=None && p.conPlay.con!=None && p.conPlay.con.bFirstPerson==False){
+            //Don't allow petting during third person conversations (aka real conversations)
+            canPet = false;
+        }
+    }
+
+    if (canPet){
+        PetAnimal(p);
     }
 }
