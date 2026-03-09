@@ -2620,7 +2620,7 @@ function bool SpamDatacubes(String viewer)
     num = 0;
     for (i=0;i<5;i++){
         cubeText = RandomSpamDatacubeText(viewer);
-        plaintextTag = "CrowdControlSpamCubes_" $ dxr.localURL $ "_" $ dxr.HashCompat( dxr.Crc(cubeText), dxr.MurmurHash3(cubeText) );
+        plaintextTag = "CrowdControlSpamCubes_" $ dxr.localURL $ "_" $ dxr.HashCompat(cubeText);
         dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),cubeText,plaintextTag);
         if (dc!=None){
             dc.Tag='CrowdControlSpamDatacube';

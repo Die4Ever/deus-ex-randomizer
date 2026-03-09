@@ -400,10 +400,7 @@ static function string GetTextTag(#var(prefix)InformationDevices id)
                 TextTag=injectID.plaintextTag;
             } else {
                 mapname = injectID.GetMapNameStripped();
-                TextTag = mapname$"_"$ class'DXRando'.default.dxr.HashCompat(
-                    class'DXRando'.default.dxr.Crc(injectID.plaintext),
-                    class'DXRInfo'.static.MurmurHash3(injectID.plaintext)
-                );
+                TextTag = mapname$"_"$ class'DXRando'.default.dxr.HashCompat(injectID.plaintext);
             }
         }
     }

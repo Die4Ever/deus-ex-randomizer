@@ -144,7 +144,7 @@ function Timer()
             }
         }
 
-        slot = Abs(dxr.HashCompat( dxr.Crc(String(n)), MurmurHash3(String(n)) )) % ArrayCount(names);
+        slot = Abs(dxr.HashCompat(n)) % ArrayCount(names);
         if( names[slot] == '' || names[slot] == n ) {
             names[slot] = n;
             counts[slot]++;

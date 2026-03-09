@@ -512,7 +512,7 @@ function DXRTick(float deltaTime)
     }
     else if(runPostFirstEntry)
     {
-        SetSeed( HashCompat(Crc(seed $ localURL $ " PostFirstEntry"), MurmurHash3(localURL $ " PostFirstEntry", seed)) );
+        SetSeed(HashCompat( seed $ localURL $ " PostFirstEntry",, localURL $ "PostFirstEntry", seed ));
         for(i=0; i<num_modules; i++) {
             modules[i].PostFirstEntry();
         }
@@ -523,7 +523,7 @@ function DXRTick(float deltaTime)
     {
         RunTests();
 
-        SetSeed(HashCompat( Crc(seed $ localURL $ " PostAnyEntry"), MurmurHash3(localURL $ " PostAnyEntry", seed) ));
+        SetSeed(HashCompat( seed $ localURL $ " PostAnyEntry",, localURL $ " PostAnyEntry", seed ));
         for(i=0; i<num_modules; i++) {
             modules[i].PostAnyEntry();
         }
@@ -561,7 +561,7 @@ function RandoEnter()
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ map @ GetURLMap());
 
-    SetSeed(HashCompat( Crc(seed $ localURL @ firstTime), MurmurHash3(localURL $ firstTime, seed) ));
+    SetSeed(HashCompat( seed $ localURL @ firstTime,, localURL $ firstTime, seed ));
     if ( firstTime == true )
     {
         //if( !IsTravel ) warning(localURL$": loaded save but FirstEntry? firstTime: "$firstTime$", IsTravel: "$IsTravel);
@@ -586,12 +586,12 @@ function RandoEnter()
         }
     }
 
-    SetSeed(HashCompat( Crc(seed $ localURL $ " AnyEntry"), MurmurHash3(localURL $ " AnyEntry", seed) ));
+    SetSeed(HashCompat( seed $ localURL $ " AnyEntry",, localURL $ "AnyEntry", seed ));
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
 
-    SetSeed(HashCompat( Crc(seed $ localURL $ " PlayerLogin"), MurmurHash3(localURL $ " PlayerLogin", seed) ));
+    SetSeed(HashCompat( seed $ localURL $ " PlayerLogin",, localURL $ " PlayerLogin", seed ));
     foreach AllActors(class'#var(PlayerPawn)', pawn) {
         PlayerLogin(pawn);
     }
@@ -736,12 +736,23 @@ simulated final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
-simulated function int HashCompat(int crcVal, int murmurVal)
+simulated function int HashCompat(
+    coerce string crcStr,
+    optional int crcAdd,
+    optional coerce string murmurStr,
+    optional int murmurSeed
+)
 {
-    if (flags.loop_initial_version >= VersionToInt(3,7,1,3)) { // using DXRMapInfo, VersionToInt() is called here 44,000 times
-        return murmurVal;
+    if (flags.loop_initial_version >= 3070104) {
+        if (murmurStr == "") {
+            murmurStr = crcStr;
+        }
+        if (murmurSeed == 0) {
+            murmurSeed = crcAdd;
+        }
+        return MurmurHash3(murmurStr, murmurSeed);
     }
-    return crcVal;
+    return Crc(crcStr + crcAdd);
 }
 
 function RunTests()

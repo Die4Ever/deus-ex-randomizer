@@ -85,10 +85,7 @@ function TryAddingNote(string text, optional name texttag)
     rootWindow = DeusExRootWindow(player.rootWindow);
     if (texttag==''){
         mapname = GetMapNameStripped();
-        finalTextTag = rootWindow.StringToName(mapname$"-"$ class'DXRando'.default.dxr.HashCompat(
-            class'DXRando'.default.dxr.Crc(text),
-            class'DXRando'.default.dxr.MurmurHash3(text)
-        ));
+        finalTextTag = rootWindow.StringToName(mapname$"-"$ class'DXRando'.default.dxr.HashCompat(text));
     } else {
         textPackage = "DeusExText";
         if (CompOwner!=None && CompOwner.IsA('#var(prefix)Computers')){
