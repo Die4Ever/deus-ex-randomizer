@@ -843,6 +843,8 @@ switch(mapname)
 static function string GetTeleporterName(string mapname, string teleportername)
 {
     local string finalName, variantName;
+    local int destMissionNum;
+    local DXRando dxr;
 
     if (InStr(teleportername,"?TONAME=")!=-1){
         teleportername = Right(teleportername,Len(teleporterName)-8);
@@ -863,6 +865,15 @@ static function string GetTeleporterName(string mapname, string teleportername)
 
     if (variantName!=""){
         finalName = finalName $ class'DXRInfo'.Static.CR() $ variantName;
+    }
+
+    //Add Mission number at the start
+    destMissionNum = class'DXRMapVariants'.static.MissionNumFromMapName(mapname);
+    if (destMissionNum!=99 && destMissionNum>0){
+        dxr = class'DXRando'.default.dxr;
+        if (dxr!=None && dxr.flags!=None && dxr.flags.IsSpeedShuffleMode() && dxr.dxInfo!=None && dxr.dxInfo.MissionNumber!=destMissionNum){
+            finalName = "Mission "$ destMissionNum $ class'DXRInfo'.Static.CR() $ finalName;
+        }
     }
 
     return finalName;

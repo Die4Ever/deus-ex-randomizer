@@ -2175,6 +2175,10 @@ static function bool IsNonlethal(coerce string damageType)
 static function bool CanKnockUnconscious(ScriptedPawn sp, coerce string damageType)
 {
     if (#defined(injections)) {
+        if (#var(prefix)Robot(sp)!=None){
+            //EMP "Knocks Out" robots
+            return damageType=="EMP";
+        }
         return sp.mass > 5.0 && IsNonlethal(damageType) && (Animal(sp) != None || IsHuman(sp.class));
     } else {
         return IsNonlethal(damageType) && IsHuman(sp.class);

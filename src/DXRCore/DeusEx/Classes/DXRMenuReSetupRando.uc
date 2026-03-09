@@ -32,18 +32,11 @@ function CancelScreen()
 function BindControls(optional string action)
 {
     local DXRFlags f;
-    local DXRLoadouts loadout;
-    local DXRTelemetry t;
-    local DXRCrowdControl cc;
-    local int temp, i;
-    local string ts,tht;
-#ifdef injections
-    local bool mirrored_maps_files_found;
-#endif
 
     if(action=="BACK") return;
 
     f = GetFlags();
+    CreateLabelRow("You may need to save/load or reach a new map for changes to take effect."$BR$"Be careful when changing these settings in the middle of a mission.");
     NewGroup("Basic");
 
     class'DXRMenuSelectDifficulty'.static.CreateLoadoutEnum(self, f);

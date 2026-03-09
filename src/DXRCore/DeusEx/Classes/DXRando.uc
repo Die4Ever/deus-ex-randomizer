@@ -738,7 +738,7 @@ simulated final function int Crc(coerce string Text) {
 
 simulated function int HashCompat(int crcVal, int murmurVal)
 {
-    if (flags.loop_initial_version >= VersionToInt(3,7,1,2)) { // using DXRMapInfo, VersionToInt() is called here 44,000 times
+    if (flags.loop_initial_version >= VersionToInt(3,7,1,3)) { // using DXRMapInfo, VersionToInt() is called here 44,000 times
         return murmurVal;
     }
     return crcVal;

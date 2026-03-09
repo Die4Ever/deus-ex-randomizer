@@ -84,13 +84,10 @@ event Init(DXRando d)
     winScroll = CreateScrollAreaWindow(winClient);
     winScroll.vScale.SetThumbStep(20);
     winScroll.SetPos(0, 0);
-    winScroll.SetSize(ClientWidth, ClientHeight + _GetY(0) - _GetY(1) );
     //winScroll.AutoHideScrollbars(false);
     winScroll.EnableScrolling(false,true);
     controlsParent = winScroll.clipWindow;
     controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
-    coords = _GetCoords(num_rows-1, num_cols);// num_rows-1 cause no help text inside the scroll area
-    controlsParent.SetSize(coords.X, coords.Y);
 
     ResetToDefaults();
 }
@@ -219,7 +216,7 @@ function NewGroup(string text)
 }
 
 function bool CollapsibleButtonOnClick(bool collapsed, string label, optional string helpText)
-{
+{// the collapsed mode is unused, might be buggy
     if(!collapsed) NewMenuItem(label, helpText, true);
     enums[id].isBoundEvent = true;
     EnumOption(label, 0,, helpText);
@@ -378,14 +375,23 @@ function ResetToDefaults()
 {
     local int i;
     local EnumBtn tenum;
+    local vector coords;
+
+    if(winHelp==None) {
+        winScroll.SetSize(ClientWidth, ClientHeight);
+        coords = _GetCoords(num_rows, num_cols);
+    } else {
+        winScroll.SetSize(ClientWidth, ClientHeight + _GetY(0) - _GetY(1));
+        coords = _GetCoords(num_rows-1, num_cols);// num_rows-1 cause no help text inside the scroll area, the default scroll area should start at the same size as the parent area
+    }
+    controlsParent.SetSize(coords.X, coords.Y);
+
+    controlsParent.DestroyAllChildren();
 
     for(i=0; i<ArrayCount(enums); i++) {
-        //if(enums[i].btn != None) enums[i].btn.Destroy(); // these guys are already in wnds
-        if(enums[i].helpBtn != None) enums[i].helpBtn.Destroy();
         enums[i] = tenum;
     }
     for(i=0; i<ArrayCount(wnds); i++) {
-        if(wnds[i] != None) wnds[i].Destroy();
         wnds[i] = None;
         labels[i] = "";
         hide_labels[i] = 0;
@@ -431,7 +437,7 @@ function InitHelp()
     local MenuUILabelWindow winLabel;
     local vector coords;
 
-    bHelpAlwaysOn = True;
+    if(!bUsesHelpWindow) return;
     coords = _GetCoords(num_rows-1, 0);
     coords.y = ClientHeight + _GetY(0) - _GetY(1);
     winHelp = CreateMenuLabel(0 /*coords.x - padding_width*/, coords.y/*+4*/, "", winClient);
@@ -656,6 +662,11 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
     //numwnds++;
 
     return btn;
+}
+
+function CreateLabelRow(string label)
+{
+    CreateLabel(++id, label);
 }
 
 function SetHelpButtonEnum(MenuUIActionButtonWindow btn, DXRMenuUIHelpButtonWindow helpBtn, string label, string title, string text)
@@ -921,7 +932,7 @@ event FocusEnteredDescendant(Window enterWindow)
     local int i, split;
     local string s;
 
-    if( enterWindow == None ) return;
+    if( enterWindow == None || winHelp == None ) return;
 
     for(i=0;i<ArrayCount(wnds);i++) {
         if( wnds[i] == enterWindow ) {
@@ -967,7 +978,7 @@ defaultproperties
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
-    bUsesHelpWindow=False
+    bUsesHelpWindow=True
     bEscapeSavesSettings=False
     groupHeaderFont=Font'DXRFontMenuExtraLarge'
     groupHeaderX=-10
@@ -978,4 +989,5 @@ defaultproperties
     help_background=(R=10,G=10,B=10,A=255)
     help_background_style=DSTY_Modulated
     help_background_texture=Texture'MaskTexture'
+    bHelpAlwaysOn=True
 }

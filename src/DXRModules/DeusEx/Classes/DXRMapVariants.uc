@@ -242,7 +242,7 @@ simulated function FirstEntry()
         me.DestMap = VaryURL(me.DestMap);
     }
 
-    if(dxr.flags.gamemode == dxr.flags.SpeedShuffle) {
+    if(dxr.flags.IsSpeedShuffleMode()) {
         for(i=0; i<ArrayCount(starts); i++) {
             if(dxr.localURL ~= starts[i]) {
                 isStartMap = true; // only if we're in a starting map
@@ -336,7 +336,7 @@ function string VaryMap(string map, optional out int speedShuffled)
             return map;
     }
 
-    if(dxr.flags.gamemode == dxr.flags.SpeedShuffle) {
+    if(dxr.flags.IsSpeedShuffleMode()) {
         for(i=0; i<ArrayCount(starts); i++) {
             if(missions[i] == dxr.dxInfo.MissionNumber) nextMap = starts[i+1];
             if(map ~= default.starts[i] && dxr.dxInfo.MissionNumber != default.missions[i]) isStartMap = true; // only if this teleporter is going to a starting map
@@ -356,6 +356,18 @@ function string VaryMap(string map, optional out int speedShuffled)
     if(chance_single(chance))
         return map $"_-1_1_1";
     return map;
+}
+
+static function int MissionNumFromMapName(string mapname)
+{
+    local string num,underscore;
+
+    num = Left(mapname,2);
+    underscore = Mid(mapname,2,1);
+
+    if (underscore!="_") return -1;
+
+    return int(num);
 }
 
 function TestCoords(string mapName, string map, float x, float y, float z)
@@ -400,6 +412,16 @@ function ExtendedTests()
     teststring(VaryURL("DXOnly"), "DXOnly", "VaryURL 9");
     dxr.flags.mirroredmaps = oldmirroredmaps;
     #endif
+
+    testint(MissionNumFromMapName("99_Test"),99,"mission number test 99_Test");
+    testint(MissionNumFromMapName("99Test"),-1,"mission number test 99Test");
+    testint(MissionNumFromMapName("DX.dx"),-1,"mission number test DX.dx");
+    testint(MissionNumFromMapName("02_NYC_BatteryPark"),2,"mission number test 02_NYC_BatteryPark");
+    testint(MissionNumFromMapName("10_Paris_Chateau_-1_1_1"),10,"mission number test 10_Paris_Chateau_-1_1_1");
+    testint(MissionNumFromMapName("14_OceanLab_UC"),14,"mission number test 14_OceanLab_UC");
+    testint(MissionNumFromMapName("99_Endgame4"),99,"mission number test 99_Endgame4");
+    testint(MissionNumFromMapName("DXOnly"),-1,"mission number test DXOnly");
+    testint(MissionNumFromMapName("DXMP_Area51Bunker"),-1,"mission number test DXMP_Area51Bunker");
 }
 
 defaultproperties

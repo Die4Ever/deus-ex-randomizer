@@ -1216,12 +1216,17 @@ function LogConnections(optional bool bInfo)
 
 function RunTests()
 {
+    local string expected;
     Super.RunTests();
 
     test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
     TestAllMissions(dxr.seed);
 
-    teststring( class'DXRMapInfo'.static.GetTeleporterName("01_NYC_UNATCOHQ", "ToOcean"), "01_NYC_UNATCOHQ (ToOcean) - Report me!", "GetTeleporterName" );
+    expected = "01_NYC_UNATCOHQ (ToOcean) - Report me!";
+    if (dxr.flags.IsSpeedShuffleMode() && dxr.dxInfo.MissionNumber!=1){
+        expected = "Mission 1" $ class'DXRInfo'.Static.CR() $ expected;
+    }
+    teststring( class'DXRMapInfo'.static.GetTeleporterName("01_NYC_UNATCOHQ", "ToOcean"), expected, "GetTeleporterName" );
 }
 
 function ExtendedTests()

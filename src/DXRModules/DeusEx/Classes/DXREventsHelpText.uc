@@ -250,14 +250,38 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
             return "Kill enough MJ12 Commandos.  You must kill them yourself.";
         case "Karkian_ClassDead":
             return "Kill enough karkians.  You must kill them yourself.";
-        case "MilitaryBot_ClassDead":
+        case "MilitaryBot_ClassDead": //old goal
             return "Destroy enough military bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "SecurityBot2_ClassDead":
+        case "MilitaryBot_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough military bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough military bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            }
+        case "SecurityBot2_ClassDead": //old goal
             return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "SecurityBotSmall_ClassDead":
+        case "SecurityBot2_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough of the two legged walking security bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            }
+        case "SecurityBotSmall_ClassDead": //old goal
             return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "SpiderBot_ClassDead":
+        case "SecurityBotSmall_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough of the smaller, treaded security bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            }
+        case "SpiderBot_ClassDead": //old goal
             return "Destroy enough spider bots.  You must destroy them yourself and disabling them with EMP does not count.";
+        case "SpiderBot_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough spider bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough spider bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            }
         case "HumanStompDeath":
             return "Jump on enough humans heads until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
         case "Rat_ClassDead":
@@ -286,14 +310,38 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
             return "Kill May Sung, Maggie Chow's maid.  You must kill her yourself.";
         case "MaySung_PlayerTakedown":
             return "Take down May Sung, Maggie Chow's maid.  You must kill or knock her out yourself.";
-        case "CleanerBot_ClassDead":
+        case "CleanerBot_ClassDead": //old goal
             return "Destroy enough cleaner bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "MedicalBot_ClassDead":
+        case "CleanerBot_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough cleaner bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough cleaner bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            }
+        case "MedicalBot_ClassDead": //old goal
             return "Destroy enough medical bots or aug bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "RepairBot_ClassDead":
+        case "MedicalBot_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough medical bots or aug bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough medical bots or aug bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            }
+        case "RepairBot_ClassDead": //old goal
             return "Destroy enough repair bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "UtilityBot_ClassDead":
+        case "RepairBot_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough repair bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough repair bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            }
+        case "UtilityBot_ClassDead": //old goal
             return "Destroy enough utility bots (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
+        case "UtilityBot_ClassTakedown":
+            if(#defined(injections)){
+                return "Take down enough utility bots (medical bots, aug bots, or repair bots).  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+            } else {
+                return "Destroy enough utility bots (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
+            }
         case "DrugDealer_Dead":
         case "DrugDealer_PlayerDead":
             return "Kill Rock, the drug dealer who lives in Brooklyn Bridge Station.  You must kill him yourself.";

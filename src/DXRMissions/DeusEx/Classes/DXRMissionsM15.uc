@@ -397,6 +397,19 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 }
 
+function AfterMovePlayerToStartLocation(GoalLocation Loc)
+{
+    local #var(prefix)OrdersTrigger ot;
+
+    if (Loc.name=="Tower") {
+        //If you start in the tower, start the sniper patrol immediately,
+        //since you can reach him before the dispatcher gets him.
+        foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'tower') {
+            ot.Trigger(self, None);
+        }
+    }
+}
+
 function AfterShuffleGoals(int goalsToLocations[32])
 {
     local int g;

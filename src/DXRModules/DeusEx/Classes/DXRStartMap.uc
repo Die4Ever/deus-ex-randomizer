@@ -24,7 +24,7 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
     if(dxr.flags.IsHordeMode()) return;// let horde mode handle it, partly because we don't want to give skillpoints and augs
     p.strStartMap = GetStartMap(self, dxr.flags.GetStartingMap()); // this also calls DXRMapVariants.VaryURL()
 #ifdef vmd
-    if(dxr.flags.settings.starting_map != 0)
+    if(p.strStartMap != "01_NYC_UNATCOIsland") // only if we're overwriting the starting map, since VMD can play non-vanilla sets of maps
         p.CampaignNewGameMap = p.strStartMap;
 #endif
 }
