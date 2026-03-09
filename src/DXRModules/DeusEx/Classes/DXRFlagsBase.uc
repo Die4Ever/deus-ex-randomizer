@@ -278,8 +278,18 @@ simulated function LoadFlags()
     flags_loaded = true;
     stored_version = f.GetInt('Rando_version');
 
-    if( stored_version == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
-        err(dxr.localURL$" failed to load flags! using default randomizer settings");
+    if (stored_version==0){
+        switch(dxr.localURL){
+            case "DX":
+            case "DXONLY":
+            case "00_TRAINING":
+            case "00_VMDTRAINING":
+                //Suppress the warning message
+                break;
+            default:
+                err(dxr.localURL$" failed to load flags! using default randomizer settings");
+                break;
+        }
     }
 
     BindFlags(Reading);
