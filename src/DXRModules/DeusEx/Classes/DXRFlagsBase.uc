@@ -300,6 +300,7 @@ simulated function LoadFlags()
     case "00_Training":
     case "00_TrainingCombat":
     case "00_TrainingFinal":
+    case "00_VMDTraining":
         SetDifficulty(1);
         TutorialDisableRandomization(dxr.localURL ~= "00_TrainingFinal");
         SaveFlags();
