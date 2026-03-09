@@ -543,6 +543,41 @@ function CreateTrainingMrH()
     }
 }
 
+function MakeRegularCratesExplosive()
+{
+    local #var(prefix)CrateUnbreakableMed   med;
+    local #var(prefix)CrateUnbreakableLarge large;
+    local CrateExplosiveMed     medBoom;
+    local CrateExplosiveLarge   largeBoom;
+    local vector  loc;
+    local rotator rot;
+
+    if(!isAprilFools()) return; //Only on April Fools
+    if(dxr.flags.IsSpeedrunMode()) return; //This would really change the speedrun, lol
+
+    SetSeed("Memes ExplosiveCrates");
+
+    foreach AllActors(class'#var(prefix)CrateUnbreakableMed',med){
+        if( rng(100) < 25 ){ //1 in 4 medium crates get replaced by explosives
+            loc = med.Location;
+            rot = med.Rotation;
+            med.Destroy();
+
+            medBoom = Spawn(class'CrateExplosiveMed',,,loc,rot);
+        }
+    }
+
+    foreach AllActors(class'#var(prefix)CrateUnbreakableLarge',large){
+        if( rng(100) < 10 ){ //1 in 10 large crates get replaced by explosives
+            loc = large.Location;
+            rot = large.Rotation;
+            large.Destroy();
+
+            largeBoom = Spawn(class'CrateExplosiveLarge',,,loc,rot);
+        }
+    }
+}
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -584,6 +619,8 @@ function PreFirstEntry()
             RandomMJ12Globe();
             break;
     }
+
+    MakeRegularCratesExplosive();
 }
 
 function AnyEntry()
@@ -602,6 +639,9 @@ function AnyEntry()
 
     switch(dxr.localURL)
     {
+        case "14_OCEANLAB_SILO":
+            if(IsAprilFools()) ShuffleSiloButtons();
+            break;
         case "DXONLY":
         case "DX":
             l("Memeing up "$ dxr.localURL);
@@ -686,6 +726,22 @@ function AnyEntry()
             RandomizeCutscene();
             FixEndgameEndCamera();
             break;
+    }
+}
+
+function ShuffleSiloButtons()
+{
+    local Button1 buttons[6], b;
+    local int i, slot;
+
+    foreach AllActors(class'Button1', b, 'Button1') {
+        if(b.moverTag=='silo_elevator') buttons[i++] = b;
+    }
+
+    SetSeed("ShuffleSiloButtons" $ FRand()); // actually rando every entry
+    for(i=ArrayCount(buttons)-1; i>=0; i--) { // Fisher-Yates shuffle
+        slot = rng(i+1);
+        if(slot != i) Swap(buttons[i], buttons[slot]);
     }
 }
 

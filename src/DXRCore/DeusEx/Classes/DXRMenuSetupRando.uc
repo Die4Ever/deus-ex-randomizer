@@ -138,6 +138,7 @@ function BindControls(optional string action)
     EnumOption("3 Missions",  3, f.bingo_duration, GetBingoDurationHelpText(3));
     EnumOption("4 Missions",  4, f.bingo_duration, GetBingoDurationHelpText(4));
     EnumOption("5 Missions",  5, f.bingo_duration, GetBingoDurationHelpText(5));
+    EnumOption("7 Missions",  7, f.bingo_duration, GetBingoDurationHelpText(7));
     EnumOption("10 Missions", 10, f.bingo_duration, GetBingoDurationHelpText(10));
 
     NewGroup("Medical Bots and Repair Bots");
@@ -293,7 +294,8 @@ function BindControls(optional string action)
     EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions, GetSkillRerollHelpText(3));
     EnumOption("Reroll Skill Costs Every 4 Missions", 4, f.settings.skills_reroll_missions, GetSkillRerollHelpText(4));
     EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions, GetSkillRerollHelpText(5));
-    if(f.settings.skills_reroll_missions > 5) {
+    EnumOption("Reroll Skill Costs Every 8 Missions", 8, f.settings.skills_reroll_missions, GetSkillRerollHelpText(8));
+    if(f.settings.skills_reroll_missions > 5 && f.settings.skills_reroll_missions != 8) {
         EnumOption("Reroll Skill Costs Every " $ f.settings.skills_reroll_missions $ " Missions",
             f.settings.skills_reroll_missions, f.settings.skills_reroll_missions
         );
@@ -306,10 +308,10 @@ function BindControls(optional string action)
     BreakLine();
 
     NewMenuItem("Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.");
-    Slider(f.settings.minskill, 50, 1000);
+    Slider(f.settings.minskill, 1, 1000);
 
     NewMenuItem("Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.");
-    Slider(f.settings.maxskill, 50, 1000);
+    Slider(f.settings.maxskill, 1, 1000);
 
     NewMenuItem("Banned Skills %", "Chance of a skill having a cost of 99,999 points.");
     Slider(f.settings.banned_skills, 0, 100, GetBannedSkillsHelpText());
@@ -344,7 +346,7 @@ function BindControls(optional string action)
     Slider(f.settings.swapitems, 0, 100);
 
     NewMenuItem("Swap Containers %", "The chance for container positions to be swapped.");
-    Slider(f.settings.swapcontainers, 0, 100,GetSwapContainersHelpText());
+    Slider(f.settings.swapcontainers, 0, 100, GetSwapContainersHelpText());
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
     Slider(f.settings.grenadeswap, 0, 100);
@@ -358,7 +360,7 @@ function BindControls(optional string action)
 
     BreakLine();
     NewMenuItem("Min Weapon Shot Time %", "The minimum shot time / firing speed for weapons.");
-    Slider(f.settings.min_weapon_shottime, 0, 500,GetShotTimeHelpText(false));
+    Slider(f.settings.min_weapon_shottime, 0, 500, GetShotTimeHelpText(false));
 
     NewMenuItem("Max Weapon Shot Time %", "The maximum shot time / firing speed for weapons.");
     Slider(f.settings.max_weapon_shottime, 0, 500, GetShotTimeHelpText(true));
@@ -518,6 +520,10 @@ function string GetSkillRerollHelpText(int reroll)
                    " ~ MJ12 Jail|n" $
                    " ~ Paris|n" $
                    " ~ Area 51";
+        case 8:
+            return "Skill costs are rerolled every 8 missions.|n" $
+                   "|n" $
+                   "Check at: Return to NYC";
     }
     return "";
 }
@@ -812,7 +818,6 @@ defaultproperties
     padding_width=20
     padding_height=10
     Title="DX Rando Options"
-    bUsesHelpWindow=False
     bEscapeSavesSettings=False
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")

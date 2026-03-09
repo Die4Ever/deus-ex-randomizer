@@ -24,15 +24,9 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function PartialHeal(out int health, int d)
-{
-    health = Clamp(health, d/2, d);
-}
-
 //#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
-    local #var(PlayerPawn) p;
     local #var(prefix)PaulDenton paul;
     local #var(prefix)PaulDentonCarcass paulcarc;
     local ComputerPersonal c;
@@ -72,14 +66,7 @@ function PreFirstEntryMapFixes()
         FixMechanicBarks();
 
         if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
-            p = player();
-            PartialHeal(p.HealthHead, dxr.flags.settings.health);
-            PartialHeal(p.HealthTorso, dxr.flags.settings.health);
-            PartialHeal(p.HealthLegLeft, dxr.flags.settings.health);
-            PartialHeal(p.HealthLegRight, dxr.flags.settings.health);
-            PartialHeal(p.HealthArmLeft, dxr.flags.settings.health);
-            PartialHeal(p.HealthArmRight, dxr.flags.settings.health);
-            p.GenerateTotalHealth();
+            class'DXRPlayerStats'.static.PartialHeal(player(), dxr.flags.settings.health);
             if(dxr.flags.settings.prison_pocket > 0 || VanillaMaps)
                 dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
             // we have to move the items in PostFirstEntry, otherwise they get swapped around with other things

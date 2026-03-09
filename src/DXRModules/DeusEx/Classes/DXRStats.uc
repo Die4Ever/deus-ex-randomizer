@@ -434,6 +434,11 @@ static function AddKnockOut(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_knockouts');
 }
 
+static function AddRobotDisable(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_robotdisable');
+}
+
 static function AddKillByOther(DeusExPlayer p)
 {
     IncStatFlag(p,'DXRStats_kills_by_other');
@@ -442,6 +447,11 @@ static function AddKillByOther(DeusExPlayer p)
 static function AddKnockOutByOther(DeusExPlayer p)
 {
     IncStatFlag(p,'DXRStats_knockouts_by_other');
+}
+
+static function AddRobotDisableByOther(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_robotdisable_by_other');
 }
 
 static function AddCheatOffense(DeusExPlayer p, optional int add)
@@ -651,7 +661,7 @@ static function CheckLeaderboard(DXRando dxr, Json j)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther,mapcoverage,nummaps;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,disables,killsByOther,kosByOther,disablesByOther,mapcoverage,nummaps;
     local int headLost,torsoLost,leftLegLost,rightLegLost,leftArmLost,rightArmLost;
     local float mappercent;
     local CreditsLeaderboardWindow leaderboard;
@@ -676,8 +686,10 @@ function AddDXRCredits(CreditsWindow cw)
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
     kills = dxr.flagbase.GetInt('DXRStats_kills');
     kos = dxr.flagbase.GetInt('DXRStats_knockouts');
+    disables = dxr.flagbase.GetInt('DXRStats_robotdisable');
     killsByOther = dxr.flagbase.GetInt('DXRStats_kills_by_other');
     kosByOther = dxr.flagbase.GetInt('DXRStats_knockouts_by_other');
+    disablesByOther = dxr.flagbase.GetInt('DXRStats_robotdisable_by_other');
     mapcoverage = dxr.flagbase.GetInt('DXRStats_mapcoverage');
     deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
     saves = player().saveCount;
@@ -714,9 +726,13 @@ function AddDXRCredits(CreditsWindow cw)
 
     cw.PrintText("NPCs Killed by JC: "$kills);
     cw.PrintText("NPCs Knocked Out by JC: "$kos);
+#ifdef injections
+    cw.PrintText("Robots Disabled by JC: "$disables);
+#endif
     cw.PrintText("Total NPC Deaths: "$(kills + killsByOther));
     cw.PrintText("Total NPCs Knocked Out: "$(kos + kosByOther));
 #ifdef injections
+    cw.PrintText("Total Robots Disabled: "$(disables +disablesByOther));
     cw.PrintText("Total NPCs Burned to Death: "$burnkills);
     cw.PrintText("Total NPCs Gibbed: "$gibbedkills);
 #endif

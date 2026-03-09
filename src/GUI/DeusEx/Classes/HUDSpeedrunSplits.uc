@@ -46,6 +46,7 @@ var config int last_flagshash;
 
 event InitWindow()
 {
+    local int i;
     Super.InitWindow();
 
     player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
@@ -62,16 +63,16 @@ event InitWindow()
     if(textFont == None) {
         textFont = Font'DXRFontMenuHeaders_DS';
     }
-    if( version < class'DXRVersion'.static.VersionToInt(2, 7, 3, 1) ) {
+    if(version < class'DXRVersion'.static.VersionToInt(2, 7, 3, 1)) {
         colorText=RGB(200,200,200);
         colorBehind=RGB(220,90,80);
         colorBehindLosingTime=RGB(255,60,40);
         colorBehindGainingTime=RGB(250,140,131);
     }
-    if( class'DXRVersion'.static.VersionOlderThan(version, 3,5,0,1)) {
-        splitNotes[1]="The starting location, Leo, and the boat|ncannot be close to each other.|nEdit these notes in DXRSplits.ini";
-        splitNotes[6]="The DTS and Gordon won't be on the same map.|nIf one is in market, the other is in Tonnochi.|nEdit these notes in DXRSplits.ini";
-        splitNotes[14]="The computer, Howard, and escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini";
+    if(class'DXRVersion'.static.VersionOlderThan(version, 3,7,1,2)) {
+        for(i=0; i<ArrayCount(splitNotes); i++) {
+            splitNotes[i] = default.splitNotes[i];
+        }
     }
     if( version < class'DXRVersion'.static.VersionNumber() ) {
         version = class'DXRVersion'.static.VersionNumber();
@@ -811,5 +812,16 @@ defaultproperties
     split_names(15)="Area 51"
 
     splitNotes(1)="The starting location, Leo, and the boat|ncannot be close to each other.|nEdit these notes in DXRSplits.ini"
-    splitNotes(14)="The computer, Howard, and escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini"
+    splitNotes(2)="Aug upgrade can in Streets"
+    splitNotes(3)="Aug upgrade can in Helibase"
+    splitNotes(4)="Aug upgrade can in Hotel"
+    splitNotes(5)="Aug upgrade can in UNATCO HQ"
+    splitNotes(6)="The DTS and Gordon won't be on the same map.|nIf one is in market, the other is in Tonnochi.|n|nAug upgrade can in Level 2 Labs,|nand one from Jaime"
+    splitNotes(8)="Aug upgrade can from Ford Schick"
+    splitNotes(9)="Aug upgrade can in Ship Upper Decks and Graveyard|n|nBilge Pump Computer login on Upper Decks"
+    splitNotes(10)="Aug upgrade can in Chateau"
+    splitNotes(11)="Aug upgrade can in Everett"
+    splitNotes(12)="Aug upgrade can in Cmd"
+    splitNotes(14)="Aug upgrade can on MIB body in UC,|nand one from Gary|n|nThe computer, Howard, and escape Jock won't be close to each other."
+    splitNotes(15)="Aug upgrade cans in Bunker, Entrance, Final, and scientist body in Page"
 }

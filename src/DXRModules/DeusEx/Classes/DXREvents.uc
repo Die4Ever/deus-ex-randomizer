@@ -2686,11 +2686,14 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
         case "MedicalBot_ClassDead":
         case "RepairBot_ClassDead":
+        case "MedicalBot_ClassTakedown":
+        case "RepairBot_ClassTakedown":
             if (medbots < 20 || repairbots < 20) {
                 return true; //Let this fall through to later checks if  still feasible here
             }
             break;
         case "UtilityBot_ClassDead":
+        case "UtilityBot_ClassTakedown":
             if (!(medbots < 20 || repairbots < 20)){
                 return true; //Let this fall through to later checks
             }
@@ -2923,8 +2926,14 @@ function string RemapBingoEvent(string eventname)
         case "SecurityBot4_ClassDead":
         case "DXRSecurityBot4_ClassDead":
             return "SecurityBotSmall_ClassDead";
+        case "SecurityBot3_ClassTakedown":
+        case "SecurityBot4_ClassTakedown":
+        case "DXRSecurityBot4_ClassTakedown":
+            return "SecurityBotSmall_ClassTakedown";
         case "SpiderBot2_ClassDead":
             return "SpiderBot_ClassDead";
+        case "SpiderBot2_ClassTakedown":
+            return "SpiderBot_ClassTakedown";
         case "LDDPRussPaid":
         case "ClubMercedesConvo1_Done":
             return "ClubEntryPaid_Convo";
@@ -2996,10 +3005,18 @@ function string RemapBingoEvent(string eventname)
         case "MedicalBot_ClassDead":
             _MarkBingo("UtilityBot_ClassDead"); //Split into another event, but still return this one as-is
             return "MedicalBot_ClassDead";
+        case "DXRMedicalBot_ClassTakedown":
+        case "MedicalBot_ClassTakedown":
+            _MarkBingo("UtilityBot_ClassTakedown"); //Split into another event, but still return this one as-is
+            return "MedicalBot_ClassTakedown";
         case "DXRRepairBot_ClassDead":
         case "RepairBot_ClassDead":
             _MarkBingo("UtilityBot_ClassDead"); //Split into another event, but still return this one as-is
             return "RepairBot_ClassDead";
+        case "DXRRepairBot_ClassTakedown":
+        case "RepairBot_ClassTakedown":
+            _MarkBingo("UtilityBot_ClassTakedown"); //Split into another event, but still return this one as-is
+            return "RepairBot_ClassTakedown";
         case "FrenchGray_ClassDead":
         case "GrayBaby_ClassDead":
             return "Gray_ClassDead";
@@ -3495,6 +3512,10 @@ static function Upgrade(#var(PlayerPawn) player, int old_version)
         HandleUpgradePre_3_6_8_2(player,data,events);
     }
 
+    if (old_version < class'DXRVersion'.static.VersionToInt(3,7,1,2)) {
+        HandleUpgradePre_3_7_1_2(player,data,events);
+    }
+
     //Add any new upgrades to the end of the pile, each with an individual if, so that it runs
     //through all the required upgrades in order
 
@@ -3794,6 +3815,46 @@ static function HandleUpgradePre_3_6_8_2(#var(PlayerPawn) player, PlayerDataItem
     }
 }
 
+static function HandleUpgradePre_3_7_1_2(#var(PlayerPawn) player, PlayerDataItem data, DXREvents events)
+{
+    local int x, y, progress, max, missions,append_max;
+    local string event, new_event, desc, new_desc;
+
+    //Update goals on the bingo board
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max, missions, append_max);
+            switch(event) {
+            case "MilitaryBot_ClassDead":
+            case "SecurityBot2_ClassDead":
+            case "SecurityBotSmall_ClassDead":
+            case "SpiderBot_ClassDead":
+            case "CleanerBot_ClassDead":
+            case "MedicalBot_ClassDead":
+            case "RepairBot_ClassDead":
+            case "UtilityBot_ClassDead":
+                new_event = ReplaceText(event,"_ClassDead","_ClassTakedown");
+                break;
+            default:
+                new_event = "";
+                break;
+            }
+
+            if (new_event!=""){
+                new_desc = events.FindOrigBingoDescription(new_event,max); //Get the default description for the new event
+
+                if (new_desc==""){
+                    //Something went wrong, and this event couldn't be found!  Don't update!
+                    player.ClientMessage("Couldn't find new event "$new_event$" in bingo option list!  Report to devs!");
+                } else {
+                    UpdateBingoSquare(player, data, events, x, y, new_event, desc, new_desc, progress, max, missions,bool(append_max));
+                }
+            }
+
+        }
+    }
+}
+
 
 
 //#endregion
@@ -3917,12 +3978,12 @@ defaultproperties
     bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",desc_singular="Kill an MJ12 Trooper",max=25,missions=#bit(2,5,6,8,9,10,11,12,14,15))
     bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",desc_singular="Kill an MJ12 Commando",max=10,missions=#bit(6,10,11,12,14,15))
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",desc_singular="Kill a Karkian",max=5,missions=#bit(5,6,14,15))
-    bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy %s Military Bots",desc_singular="Destroy a Military Bot",max=5,missions=#bit(4,5,6,9,10,11,12,14))
+    bingo_options(83)=(event="MilitaryBot_ClassTakedown",desc="Take down %s Military Bots",desc_singular="Take down a Military Bot",max=5,missions=#bit(4,5,6,9,10,11,12,14))
     bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1,missions=#bit(12))
     bingo_options(85)=(event="BoatEngineRoom",desc="Check the power levels on the canal boat",max=1,missions=#bit(6))
-    bingo_options(86)=(event="SecurityBot2_ClassDead",desc="Destroy %s Walking Security Bots",desc_singular="Destroy a Walking Security Bot",max=5,missions=#bit(1,4,5,6,8,9,10,11,12,14,15))
-    bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy %s commercial grade Security Bots",desc_singular="Destroy a commercial grade Security Bot",max=10,missions=#bit(1,2,3,4,8,11,15))
-    bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy %s Spider Bots",desc_singular="Destroy a Spider Bot",max=15,missions=#bit(6,9,12,14,15))
+    bingo_options(86)=(event="SecurityBot2_ClassTakedown",desc="Take down %s Walking Security Bots",desc_singular="Take down a Walking Security Bot",max=5,missions=#bit(1,4,5,6,8,9,10,11,12,14,15))
+    bingo_options(87)=(event="SecurityBotSmall_ClassTakedown",desc="Take down %s commercial grade Security Bots",desc_singular="Take down a commercial grade Security Bot",max=10,missions=#bit(1,2,3,4,8,11,15))
+    bingo_options(88)=(event="SpiderBot_ClassTakedown",desc="Take down %s Spider Bots",desc_singular="Take down a Spider Bot",max=15,missions=#bit(6,9,12,14,15))
     bingo_options(89)=(event="HumanStompDeath",desc="Stomp %s humans to death",desc_singular="Stomp a human to death",max=3)
     bingo_options(90)=(event="Rat_ClassDead",desc="Kill %s rats",desc_singular="Kill a rat",max=30,missions=#bit(1,2,3,4,5,6,8,9,10,11,14,15))
     bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out %s UNATCO Troopers",desc_singular="Knock out a UNATCO Trooper",max=15,missions=#bit(1,2,3,4,5,8))
@@ -3968,9 +4029,9 @@ defaultproperties
     bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill an innocent",max=15)
     bingo_options(126)=(event="MaySung_PlayerTakedown",desc="Take down Maggie Chow's maid",max=1,missions=#bit(6))
     bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=#bit(4))
-    bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy %s Cleaner Bots",desc_singular="Destroy a Cleaner Bot",max=5,missions=#bit(1,2,3,4,8))
-    bingo_options(129)=(event="MedicalBot_ClassDead",desc="Destroy %s Medical Bots",desc_singular="Destroy a Medical Bot",max=3)
-    bingo_options(130)=(event="RepairBot_ClassDead",desc="Destroy %s Repair Bots",desc_singular="Destroy a Repair Bot",max=3)
+    bingo_options(128)=(event="CleanerBot_ClassTakedown",desc="Take down %s Cleaner Bots",desc_singular="Take down a Cleaner Bot",max=5,missions=#bit(1,2,3,4,8))
+    bingo_options(129)=(event="MedicalBot_ClassTakedown",desc="Take down %s Medical Bots",desc_singular="Take down a Medical Bot",max=3)
+    bingo_options(130)=(event="RepairBot_ClassTakedown",desc="Take down %s Repair Bots",desc_singular="Take down a Repair Bot",max=3)
     bingo_options(131)=(event="DrugDealer_PlayerDead",desc="Just another parasite",max=1,missions=#bit(3))
     bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=#bit(2,4,8))
 #ifdef injections
@@ -4214,7 +4275,7 @@ defaultproperties
 #ifdef injections || revision
     bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=#bit(1,2,3,6,9,10,11,12,14,15))
 #endif
-    bingo_options(358)=(event="UtilityBot_ClassDead",desc="Destroy %s Utility Bots",desc_singular="Destroy a Utility Bot",max=3)
+    bingo_options(358)=(event="UtilityBot_ClassTakedown",desc="Take down %s Utility Bots",desc_singular="Take down a Utility Bot",max=3)
     bingo_options(359)=(event="M06HeliSafe",desc="HeliSafe",max=2,missions=#bit(6),do_not_scale=true)
 #ifdef injections || revision
     bingo_options(360)=(event="JustAFleshWound",desc="Just a flesh wound",max=1)

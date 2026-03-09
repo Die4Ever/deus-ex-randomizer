@@ -622,7 +622,7 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
 {
     local string j;
     local class<Json> js;
-    local bool unconcious;
+    local bool unconcious, isRobot;
     js = class'Json';
 
     j = js.static.Start(type);
@@ -630,8 +630,10 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     js.static.Add(j, "victimBindName", victim.BindName);
     js.static.Add(j, "victimRandomizedName", GetRandomizedName(victim));
     if(#var(prefix)ScriptedPawn(victim) != None) {
+        isRobot = #var(prefix)Robot(victim)!=None;
         unconcious = #var(prefix)ScriptedPawn(victim).bStunned;
         js.static.Add(j, "victimUnconcious", unconcious);
+        js.static.Add(j, "victimRobot", isRobot);
     }
 
     if(Killer != None) {
@@ -741,14 +743,25 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 {
     local string classname;
     local #var(PlayerPawn) p;
-    local bool dead;
+    local bool dead, isRobot;
     local int i;
 
     p = player();
     dead = !CanKnockUnconscious(victim, damageType);
+    isRobot = #var(prefix)Robot(victim)!=None;
+
+    if (isRobot && dead && #defined(injections)){
+        //Injections supports tracking disabled robots as "unconscious",
+        //but that means Takedown can be marked twice (for the initial
+        //disable, and then if you blow it up afterwards).  Don't count
+        //"kills" on robots that are already disabled.
+        if (#var(prefix)Robot(victim).EMPHitPoints<=0){
+            return;
+        }
+    }
 
     //"Dead" = Killed lethally
-    //"Unconscious" = Knocked out, like with baton, prod, or tranq darts
+    //"Unconscious" = Knocked out, like with baton, prod, or tranq darts (Or robots that have been disabled, with injections support)
     //"Takedown" = Either killed or knocked out
 
     //These are always marked when the pawn dies, regardles of killer
@@ -778,7 +791,11 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             //_MarkBingo(victim.alliance$"_AllianceUnconsciousM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.bindName$"_PlayerUnconscious"); //Only when the player knocks the person out
             _MarkBingo(victim.bindName$"_PlayerUnconsciousM" $ dxr.dxInfo.missionNumber); //Only when the player knocks the person out
-            class'DXRStats'.static.AddKnockOut(p);
+            if (!isRobot){
+                class'DXRStats'.static.AddKnockOut(p);
+            } else {
+                class'DXRStats'.static.AddRobotDisable(p);
+            }
         } else {
             _MarkBingo(classname$"_ClassDead");
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
@@ -813,7 +830,11 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     } else {
         _MarkBingo(victim.BindName$"_TakedownByOther"); //This is primarily for bingo goal failure purposes
         if (!dead) {
-            class'DXRStats'.static.AddKnockOutByOther(p);
+            if (!isRobot){
+                class'DXRStats'.static.AddKnockOutByOther(p);
+            } else {
+                class'DXRStats'.static.AddRobotDisableByOther(p);
+            }
         } else {
             class'DXRStats'.static.AddKillByOther(p);
         }

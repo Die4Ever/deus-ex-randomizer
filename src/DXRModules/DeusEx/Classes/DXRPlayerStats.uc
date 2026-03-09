@@ -119,7 +119,23 @@ function CapHealth(out int health, int d)
 
 simulated function FirstEntry()
 {
-    if((class'DXRStartMap'.static._IsStartMap(dxr) && dxr.flags.autosave != 5) || dxr.dxInfo.missionNumber == 0) {
+    if((dxr.dxInfo.missionNumber == 98 && dxr.flags.autosave != 5) || dxr.dxInfo.missionNumber == 0) { // restore health in intro unless hardcore, or if training
         player().RestoreAllHealth();
     }
+}
+
+static function PartialHeal(#var(PlayerPawn) p, int maxhealth)
+{
+    _PartialHeal(p.HealthHead, maxhealth);
+    _PartialHeal(p.HealthTorso, maxhealth);
+    _PartialHeal(p.HealthLegLeft, maxhealth);
+    _PartialHeal(p.HealthLegRight, maxhealth);
+    _PartialHeal(p.HealthArmLeft, maxhealth);
+    _PartialHeal(p.HealthArmRight, maxhealth);
+    p.GenerateTotalHealth();
+}
+
+static function _PartialHeal(out int health, int d)
+{
+    health = Clamp(health, d/2, d);
 }
