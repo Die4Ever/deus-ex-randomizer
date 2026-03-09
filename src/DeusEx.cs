@@ -89,7 +89,7 @@ public class DeusEx : SimpleTCPPack<SimpleTCPServerConnector>
         new("Spawn a nasty rat", "nasty_rat") { Category = "Spawn Enemies/Allies",Price = 15,Description = "Spawn a huge rat that throws LAMs" }, //New for fifth Crowd Control batch
         new("Raise the Dead", "raise_dead") { Category = "Spawn Enemies/Allies",Price = 10,Description = "Raise up to 5 nearby enemies from the dead.  They're out for blood now!" }, //New for fifth Crowd Control batch
         new("Create an evil Clone", "clone_player_evil") { Category = "Spawn Enemies/Allies",Price = 30,Description = "Spawn an evil clone of the player with all of their own equipment!" }, //New for eighth Crowd Control batch
-        new("Create a friendly Clone", "clone_player_friendly") { Category = "Spawn Enemies/Allies",Price = 20,Description = "Spawn a friendly clone of the player with all of their own equipment!" }, //New for eighth Crowd Control batch
+        new("Create a friendly Clone", "clone_player_good") { Category = "Spawn Enemies/Allies",Price = 20,Description = "Spawn a friendly clone of the player with all of their own equipment!" }, //New for eighth Crowd Control batch
 
         //Items
         //new("Give Items","giveitems",ItemKind.Folder), //New folder for third batch
