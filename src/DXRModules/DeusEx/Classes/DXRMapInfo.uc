@@ -685,6 +685,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "cathedralstart":
+                case "":
                     return s$cr$"(Sewer Entrance)";
                 case "Paris_Underground":
                 case "FromMetro": //Revision
@@ -835,6 +836,8 @@ switch(mapname)
                     return s$cr$"(Sector 3 Door)";
             }
             break;
+        case "99_ENDGAME4":
+            return "Dance Party";
     }
 
     return mapname$" ("$teleportername$") - Report me!";
