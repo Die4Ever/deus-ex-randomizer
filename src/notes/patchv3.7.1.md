@@ -12,4 +12,5 @@
 - Updated speedrun splits notes defaults.
 - In vanilla, bingo goals for destroying robots can now also be completed by disabling the robots as well.
 - Area 51 sniper in tower is activated immediately if you start in the tower instead of starting to move after 9 seconds.
+- Rando Lite no longer has added merchants.
 </details>
