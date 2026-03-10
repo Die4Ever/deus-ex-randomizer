@@ -752,7 +752,7 @@ simulated function int HashCompat(
         }
         return MurmurHash3(murmurStr, murmurSeed);
     }
-    return Crc(crcStr + crcAdd);
+    return Crc(crcStr) + crcAdd;
 }
 
 function RunTests()
