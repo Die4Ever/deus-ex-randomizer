@@ -37,12 +37,13 @@ function BindControls(optional string action)
 {
     local float difficulty;
     local DXRFlags f;
-    local string sseed, name, help;
+    local string name, help;
     local int temp, i;
 
     f = GetFlags();
     if(writing) {
         f.InitAdvancedDefaults();
+        f.RollSeed();
     }
 
     if(BindPresets()) return;
@@ -84,16 +85,6 @@ function BindControls(optional string action)
     CreateCrowdControlEnum(self, f);
     CreateOnlineFeaturesEnum(self, f);
     mirroredmaps_wnd = CreateMirroredMapsSlider(self, f);
-
-    NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
-    sseed = EditBox("", "1234567890", GetSeedHelpText());
-    if( sseed != "" ) {
-        f.seed = int(sseed);
-        dxr.seed = f.seed;
-        f.bSetSeed = 1;
-    } else {
-        f.RollSeed();
-    }
 
     if(writing) {
         // need to call flags.SetDifficulty to apply the game mode's and difficulty's settings, after setting the seed and before going to the next screen
@@ -169,7 +160,7 @@ function bool BindPresets()
     if(PresetButton("Zero Rando", f.GameModeHelpText(f.ZeroRando))) {
         f.gamemode = f.ZeroRando;
         if(f.mirroredmaps != -1) f.mirroredmaps = 0;
-        f.SetDifficulty(3);// Hard, not entirely sure what's best here
+        f.SetDifficulty(3);// Hard, not entirely sure what's best here, kick them to the full screen so they can choose difficulty
         //StartPreset();
         preset_custom_choice = true;
         ResetToDefaults();
@@ -178,7 +169,7 @@ function bool BindPresets()
     if(PresetButton("Zero Rando Plus", f.GameModeHelpText(f.ZeroRandoPlus))) {
         f.gamemode = f.ZeroRandoPlus;
         if(f.mirroredmaps != -1) f.mirroredmaps = 0;
-        f.SetDifficulty(3);// Hard
+        f.SetDifficulty(3);// Hard, kick them to the full screen so they can choose difficulty
         //StartPreset();
         preset_custom_choice = true;
         ResetToDefaults();
@@ -186,7 +177,7 @@ function bool BindPresets()
     }
 
     s = f.GameModeHelpText(f.HalloweenMode);
-    if(dxr.rando_beaten >= 3 && PresetButton("Full Halloween Mode", s)) {
+    if(dxr.rando_beaten >= 5 && PresetButton("Full Halloween Mode", s)) {
         f.gamemode = f.HalloweenMode;
         f.autosave = 7; // fixed limited saves
         StartPreset();
@@ -194,14 +185,14 @@ function bool BindPresets()
     }
     i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves
     if(i>0) s = Left(s, i);
-    if((dxr.rando_beaten >= 1 || dxr.IsOctober()) && PresetButton("Halloween Lite Mode", s)) {
+    if((dxr.rando_beaten >= 1 || dxr.Level.Month == 10) && PresetButton("Halloween Lite Mode", s)) {
         f.gamemode = f.HalloweenMode;
         StartPreset();
         return true;
     }
-    if(dxr.rando_beaten >= 3 && dxr.IsOctober() && PresetButton("WaltonWare Halloween", f.GameModeHelpText(f.WaltonWareHalloween))) {
+    if(dxr.rando_beaten >= 3 && dxr.Level.Month == 10 && PresetButton("WaltonWare Halloween", f.GameModeHelpText(f.WaltonWareHalloween))) {
         f.gamemode = f.WaltonWareHalloween;
-        //f.autosave = 7; // TODO: maybe fixed unlimited saves? or limited saves anywhere?
+        f.autosave = 8; //UnlimitedFixedSaves
         StartPreset();
         return true;
     }
@@ -212,7 +203,13 @@ function bool BindPresets()
         StartPreset();
         return true;
     }
-    if(dxr.rando_beaten >= 2 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
+    if(dxr.rando_beaten >= 1 && dxr.rando_beaten < 5 && PresetButton("Speedrun Training Mode", f.GameModeHelpText(f.SpeedrunMode))) {
+        f.gamemode = f.SpeedrunTraining;
+        f.loadout = 2; // speed enhancement
+        StartPreset();
+        return true;
+    }
+    if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
         f.gamemode = f.SpeedrunMode;
         f.loadout = 2; // speed enhancement
         StartPreset();
@@ -667,17 +664,6 @@ function NewGameSetup(float difficulty)
     }
 }
 
-static function string GetSeedHelpText()
-{
-    local string msg;
-
-    msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
-    msg = msg $ "|n";
-    msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
-
-    return msg;
-}
-
 static function string GetOnlineFeaturesHelpText(int mode)
 {
     local string msg;
@@ -749,7 +735,7 @@ defaultproperties
     Title="DX Rando Options"
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
-    num_rows=9
+    num_rows=11
     num_cols=2
     col_width_odd=140
     col_width_even=260

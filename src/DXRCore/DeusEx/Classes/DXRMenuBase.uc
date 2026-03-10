@@ -203,7 +203,7 @@ function NewGroup(string text)
     local vector coords;
 
     width = num_cols / 2;
-    if(id != -1)
+    if(id != -1) // extra row of padding on top when this isn't the first item in the menu
         id += width;
     BreakLine();
     id++;
