@@ -716,6 +716,52 @@ function DeusExNote AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, n
     return None;
 }
 
+#ifdef transcended
+function DeusExNote AddNoteFromText(#var(PlayerPawn) player, bool bEmptyNotes, name textName, optional string textpackage, optional bool bRemoveBlankLines, optional bool bUserNote, optional bool bShowInLog, optional string strSource)
+#else
+function DeusExNote AddNoteFromText(#var(PlayerPawn) player, bool bEmptyNotes, name textName, optional string textpackage, optional bool bRemoveBlankLines, optional bool bUserNote, optional bool bShowInLog)
+#endif
+{
+	local DeusExTextParser parser;
+    local string note, text;
+    local DeusExNote dxNote;
+
+    if (bEmptyNotes == false) {
+        return None;
+    }
+    parser = new(None) Class'DeusExTextParser';
+    if (parser == None) return None;
+
+    parser.OpenText(textName, textpackage);
+    while(parser.ProcessText()) {
+        text = parser.GetText();
+        if (bRemoveBlankLines && text == "  ") {
+            parser.ProcessText();
+            continue;
+        }
+
+        if (text == "") {
+            note = note $ "|n";
+        } else {
+            note = note $ text;
+        }
+    }
+    CriticalDelete(parser);
+
+    while (Left(note, 2) == "|n") {
+        note = Right(note, Len(Note) - 2);
+    }
+
+    #ifdef transcended
+    dxNote = player.AddNote(note, bUserNote, bShowInLog, strSource);
+    #else
+    dxNote = player.AddNote(note, bUserNote, bShowInLog);
+    #endif
+    dxNote.textTag = textName;
+
+    return dxNote;
+}
+
 //#region PreFirstEntryStartMapFixes
 function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
@@ -793,6 +839,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
             MarkConvPlayed("DL_LebedevKill", bFemale);
+            AddNoteFromText(player, bEmptyNotes, '03_Datacube10',, true);
         case 36: // fallthrough
             GiveKey(player, 'Sewerdoor', "Sewer Door");
         case 35: // fallthrough
@@ -1099,7 +1146,6 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 37:
             GiveGoalFromCon(player, 'AssassinateLebedev', 'DL_LebedevKill');
             break;
-
         case 45:
             GiveGoalFromCon(player, 'InvestigateNSF', 'PaulInjured');
             break;
