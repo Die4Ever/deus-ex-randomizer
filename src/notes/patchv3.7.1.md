@@ -14,4 +14,5 @@
 - Area 51 sniper in tower is activated immediately if you start in the tower instead of starting to move after 9 seconds.
 - Rando Lite no longer has added merchants.
 - "Songs Played" count on piano highlight info no longer shows if Memes are disabled, since this also disables the additional songs to be played.
+- LAM Trooper in the demolitions training area gives you LAMs immediately instead of only after he finishes his voice line.  This means you can no longer miss getting LAMs from him by walking away too quickly.
 </details>
