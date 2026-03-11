@@ -31,7 +31,6 @@ var AddDatacube add_datacubes[32];
 struct FragmentGuess {
     var Sound sound;
     var class<Fragment> fragmentClass;
-    var bool bChangeWoodOnly; // some sounds belong to objects that correctly break into different types of non-wood fragments
 };
 var FragmentGuess fragmentGuesses[29];
 
@@ -209,6 +208,10 @@ static function class<Fragment> GuessFragmentClass(#var(DeusExPrefix)Mover mov)
     local FragmentGuess guess;
     local int i;
 
+    if (BreakableGlass(mov) != None || BreakableWall(mov) != None) {
+        return mov.FragmentClass;
+    }
+
     for (i = 0; i < ArrayCount(default.fragmentGuesses); i++) {
         guess = default.fragmentGuesses[i];
         if (
@@ -219,10 +222,8 @@ static function class<Fragment> GuessFragmentClass(#var(DeusExPrefix)Mover mov)
             || mov.ClosedSound == guess.sound
             || mov.MoveAmbientSound == guess.sound
         ) {
-            if (mov.FragmentClass == class'WoodFragment' || !guess.bChangeWoodOnly) {
-                fragmentClass = guess.fragmentClass;
-                break;
-            }
+            fragmentClass = guess.fragmentClass;
+            break;
         }
     }
 
@@ -1698,12 +1699,8 @@ defaultproperties
     // in order of proportion, then number of occurances.
     // in no cases here would vanilla unbreakable DeusExMovers have their FragmentClass changed to anything but 'MetalFragment' from something else
 
-    fragmentGuesses(0)=(sound=sound'Pneumatic1Open',fragmentClass=class'MetalFragment',bChangeWoodOnly=true)
-    fragmentGuesses(1)=(sound=sound'Pneumatic1Close',fragmentClass=class'MetalFragment',bChangeWoodOnly=true)
-    fragmentGuesses(2)=(sound=sound'Pneumatic2Open',fragmentClass=class'MetalFragment',bChangeWoodOnly=true)
-    fragmentGuesses(3)=(sound=sound'Pneumatic2Close',fragmentClass=class'MetalFragment',bChangeWoodOnly=true)
-    fragmentGuesses(4)=(sound=sound'Pneumatic3Open',fragmentClass=class'MetalFragment',bChangeWoodOnly=true)
-    fragmentGuesses(5)=(sound=sound'Pneumatic4Close',fragmentClass=class'MetalFragment',bChangeWoodOnly=true)
+    fragmentGuesses(0)=(sound=sound'Pneumatic1Open',fragmentClass=class'MetalFragment')
+    fragmentGuesses(1)=(sound=sound'Pneumatic1Close',fragmentClass=class'MetalFragment')
     // fragmentGuesses()=(sound=sound'GlassBreakLarge',fragmentClass=class'GlassFragment') // 100.00% (241 / 241)
     // fragmentGuesses()=(sound=sound'WoodDoor2Close',fragmentClass=class'WoodFragment')   // 100.00%   (67 / 67)
     fragmentGuesses(6)=(sound=sound'SmallExplosion2',fragmentClass=class'MetalFragment')   // 100.00%   (66 / 66)
