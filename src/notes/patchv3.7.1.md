@@ -15,4 +15,5 @@
 - Rando Lite no longer has added merchants.
 - "Songs Played" count on piano highlight info no longer shows if Memes are disabled, since this also disables the additional songs to be played.
 - LAM Trooper in the demolitions training area gives you LAMs immediately instead of only after he finishes his voice line.  This means you can no longer miss getting LAMs from him by walking away too quickly.
+- Fixed the size of some objects that replace the Earth being grasped by the hand statue.
 </details>
