@@ -291,8 +291,7 @@ function PreFirstEntryMapFixes()
             }
             if (door.Tag=='Elevator1'){
                 door.MoverEncroachType=ME_CrushWhenEncroach;
-            }
-            if(door.Tag=='sub_doors'){
+            } else if (door.Tag=='sub_doors'){
                 door.bLocked = true;
                 door.bHighlight = true;
                 door.bFrobbable = true;
