@@ -368,7 +368,6 @@ function ProcessAction(String actionKey)
 {
     currentAction = actionKey;
     _BindControls(true, actionKey);
-    currentAction = "";
 }
 
 function ResetToDefaults()
