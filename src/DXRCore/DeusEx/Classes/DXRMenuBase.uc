@@ -601,7 +601,7 @@ function MenuUIEditWindow CreateSlider(int row, string label, string helptext, o
     if(InStr(helptexts[row], BR)==-1)
         helptexts[row] = helptexts[row] $ BR $ min $ " to " $ max;
     else
-        helptexts[row] = helptexts[row] $ ", " $ min $ " to " $ max;
+        helptexts[row] = helptexts[row] $ "  " $ min $ " to " $ max;
     return CreateEdit(row, label, helptext, "-1234567890", string(deflt), helpBtnText);
     /*local MenuUISliderButtonWindow slider;
     local vector coords;
@@ -940,7 +940,7 @@ event FocusEnteredDescendant(Window enterWindow)
             split = InStr(s, BR$BR);
             if(split==-1) split = InStr(s, "|n|n");
             if(split!=-1) s = Left(s, split); // don't show double line break on the small help text
-            if(Len(s)>115) {
+            if(Len(s) > ClientWidth*8) {
                 split = InStr(s, BR);
                 if(split==-1) split = InStr(s, "|n");
                 if(split!=-1) s = Left(s, split);
