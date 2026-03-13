@@ -16,4 +16,5 @@
 - "Songs Played" count on piano highlight info no longer shows if Memes are disabled, since this also disables the additional songs to be played.
 - Fixed the size of some objects that replace the Earth being grasped by the hand statue.
 - Conversations that play while in first person will now try to trigger other events that happen after a voice line gets interrupted.  This fixes/improves some cases where you get items, notes, or flags get set after the voice line plays (for example, the trooper that gives you LAMs in the training mission, or Nicolette giving a password note when in the study of Chateau DuClare).
+- The 350 skill points for redirecting the missile in Silo (Mission 14) can no longer be acquired by walking in the right spot in the command center.  The skill points will now be properly given only when actually redirecting the missile from the launch computer.
 </details>
