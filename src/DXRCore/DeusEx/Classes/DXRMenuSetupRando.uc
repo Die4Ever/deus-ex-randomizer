@@ -82,7 +82,7 @@ function BindControls(optional string action)
     BreakLine();
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
-    Slider(f.settings.merchants, 0, 100,GetMerchantHelpText());
+    Slider(f.settings.merchants, 0, 100,GetGenericHelpText("merchant"));
 #endif
 
     NewMenuItem("Dancing %", "How many characters should be dancing.");
@@ -123,7 +123,7 @@ function BindControls(optional string action)
     Slider(f.settings.bingo_win, 0, 12);
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
-    Slider(f.bingo_scale, 0, 100, GetBingoScaleHelpText());
+    Slider(f.bingo_scale, 0, 100, GetGenericHelpText("bingoscale"));
 
     NewMenuItem("Bingo Freespaces", "Should the center be a Free Space, or even more Free Spaces?");
     EnumOption("0 Free Spaces", 0, f.settings.bingo_freespaces);
@@ -146,13 +146,13 @@ function BindControls(optional string action)
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.medbots, -1, 100,GetMedBotHelpText());
+    Slider(f.settings.medbots, -1, 100,GetGenericHelpText("medbots"));
 
     NewMenuItem("Augbots", "Percentage chance for a zero-heals medbot to spawn in a map if a regular one doesn't.");
-    Slider(f.moresettings.empty_medbots, 0, 100, GetAugbotsHelpText());
+    Slider(f.moresettings.empty_medbots, 0, 100, GetGenericHelpText("augbots"));
 
     NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.repairbots, -1, 100,GetRepairBotHelpText());
+    Slider(f.settings.repairbots, -1, 100,GetGenericHelpText("repairbots"));
 
     if(!#defined(vmd)) {
         NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal.");
@@ -242,7 +242,7 @@ function BindControls(optional string action)
     Slider(f.settings.enemiesshuffled, 0, 100);
 
     NewMenuItem("Enemy Weapons Variety %", "Should enemies be using weapons that normally exist in the map?");
-    Slider(f.moresettings.enemies_weapons, 0, 100, GetEnemyWeaponsVarietyHelpText());
+    Slider(f.moresettings.enemies_weapons, 0, 100, GetGenericHelpText("enemyweaponsvariety"));
 
     NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
     Slider(f.settings.bot_weapons, 0, 100);
@@ -257,7 +257,7 @@ function BindControls(optional string action)
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
-    Slider(f.settings.turrets_add, 0, 10000, GetAddTurretsHelpText());
+    Slider(f.settings.turrets_add, 0, 10000, GetGenericHelpText("addturrets"));
 
     NewMenuItem("Paris Chill %", "Chance to remove all MJ12 from the Champs-Elysees.");
     Slider(f.remove_paris_mj12, 0, 100);
@@ -316,10 +316,10 @@ function BindControls(optional string action)
     Slider(f.settings.maxskill, 1, 1000);
 
     NewMenuItem("Banned Skills %", "Chance of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skills, 0, 100, GetBannedSkillsHelpText());
+    Slider(f.settings.banned_skills, 0, 100, GetGenericHelpText("bannedskills"));
 
     NewMenuItem("Banned Skill Levels %", "Chance of a certain level of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skill_levels, 0, 100, GetBannedSkillLevelsHelpText());
+    Slider(f.settings.banned_skill_levels, 0, 100, GetGenericHelpText("bannedskilllevels"));
 
     NewMenuItem("Skill Strength Rando %", "How much to randomize the strength of skills.");
     Slider(f.settings.skill_value_rando, 0, 100);// this is actually a wet/dry scale, so the range should be 0 to 100%
@@ -348,7 +348,7 @@ function BindControls(optional string action)
     Slider(f.settings.swapitems, 0, 100);
 
     NewMenuItem("Swap Containers %", "The chance for container positions to be swapped.");
-    Slider(f.settings.swapcontainers, 0, 100, GetSwapContainersHelpText());
+    Slider(f.settings.swapcontainers, 0, 100, GetGenericHelpText("swapcontainers"));
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
     Slider(f.settings.grenadeswap, 0, 100);
@@ -378,13 +378,13 @@ function BindControls(optional string action)
     Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
-    Slider(f.settings.augcans, 0, 100, GetAugCansRandoHelpText());
+    Slider(f.settings.augcans, 0, 100, GetGenericHelpText("augcanrando"));
 
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
     NewMenuItem("Aug Slot Rando %", "The chance for each aug to randomize the body part it can be installed into");
-    Slider(f.moresettings.aug_loc_rando, 0, 100, GetAugSlotRandoHelpText());
+    Slider(f.moresettings.aug_loc_rando, 0, 100, GetGenericHelpText("augslotrando"));
 
     NewGroup("New Game+");
 
@@ -409,7 +409,7 @@ function CreateSeedInput(DXRFlags f)
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
     if(class == class'DXRMenuReSetupRando') sseed = string(f.seed);
-    sseed = EditBox(sseed, "1234567890", GetSeedHelpText());
+    sseed = EditBox(sseed, "1234567890", GetGenericHelpText("seed"));
     if( sseed != "" ) {
         f.seed = int(sseed);
         dxr.seed = f.seed;
@@ -495,13 +495,83 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 }
 
 //#region Help Text Fns
-static function string GetSeedHelpText()
+
+//A simple spot to add basic help text that doesn't change based on settings
+function String GetGenericHelpText(string opt)
 {
     local string msg;
 
-    msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
-    msg = msg $ "|n";
-    msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+    switch(opt){
+    case "seed":
+        msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
+        msg = msg $ "|n";
+        msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+        break;
+    case "augcanrando":
+        msg =       "The chance for each augmentation canister to have its contents randomized.  At 100%, all aug cans will have random contents.  Likewise, 0% will leave all aug cans with their original contents.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When randomized, the contents of the can will be selected from the augs available based on your selected game mode and loadout.";
+        break;
+    case "augslotrando":
+        msg =       "The chance for each augmentation to get a randomized aug location, allowing them to be installed in a different body part than normal.  "$"At 100%, all augs will be assigned random body parts.  Likewise, at 0%, all augs will be able to be installed in their original location.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Using values between 0% and 100% may result in some body parts being overloaded or other ones lacking in choices,"$" since augs are unlikely to randomize into the slots that were newly freed by other randomized augs.";
+        break;
+    case "merchant":
+        msg =       "The chance for The Merchant to appear in each map.  At 100%, The Merchant will appear in every map.  At 0%, The Merchant will not appear at all.  "$"If you kill or knock out The Merchant, he will not appear again.|n";
+        msg = msg $ "|n";
+        msg = msg $ "The Merchant will have various useful items available for sale, which will be different every map.  "$"When using loadouts, The Merchant will not sell any banned items and may have additional items available (based on the loadout).";
+        break;
+    case "bingoscale":
+        msg =       "Bingo Scale adjusts the number of times a bingo task needs to be done before completing the square.|n";
+        msg = msg $ "|n";
+        msg = msg $ "For example, a goal to 'Drink 100 Cans of Soda' at 50% Bingo Scale would become 'Drink 50 Cans of Soda'.  Goal amounts will not drop below 1.";
+        break;
+    case "augbots":
+        msg =       "The chance of an augbot being spawned in each map.  Augbots will only be spawned if a medical bot was NOT spawned in the map (based on the 'Medbots %' setting).|n";
+        msg = msg $ "|n";
+        msg = msg $ "A hint datacube will be spawned near the Augbot saying that it has been delivered nearby, which can help you find it.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
+        break;
+    case "repairbots":
+        msg =       "The chance of a Repair Bot being spawned in each map.|n";
+        msg = msg $ "|n";
+        msg = msg $ "A hint datacube will be spawned near the Repair Bot saying that it has been delivered nearby, which can help you find it.|n";
+        break;
+    case "medbots":
+        msg =       "The chance of a Medical Bot being spawned in each map.|n";
+        msg = msg $ "|n";
+        msg = msg $ "A hint datacube will be spawned near the Medical Bot saying that it has been delivered nearby, which can help you find it.|n";
+        break;
+    case "enemyweaponsvariety":
+        msg =       "How varied do you want the weapons to be in each map, relative to the original game?  At 0%, enemies will only be given weapons present in the original level.  ";
+        msg = msg $ "At 100%, enemies will be given weapons based on the weapon weighting decided by the randomizer.  Values in between will blend the two pools of weapon choices together.";
+        break;
+    case "swapcontainers":
+        msg =       "The chance of each container to be shuffled in the map.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Containers include obvious things like wooden crates, but also include things like metal crates, barrels, wicker baskets, trash cans, and trash bags.";
+        break;
+    case "bannedskills":
+        msg =       "The chance of each skill to be entirely banned.  Bans will get rerolled along with skill costs.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When banned, you will not be allowed to upgrade the skill at all.";
+        break;
+    case "bannedskilllevels":
+        msg =       "The chance for any skill level for each skill to be banned.  Bans will get rerolled along with skill costs.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When a skill level is banned, you will not be allowed to upgrade the skill beyond that banned level.  The upgrade from Untrained to Trained will never be banned by this setting.";
+        break;
+    case "addturrets":
+        msg =       "The chances to add extra turrets, cameras, and security computers.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Every additional 100% gives another chance to spawn a turret/camera/computer combo (meaning more added turrets).";
+        break;
+    default:
+        log("GetGenericHelpText: No help text available for "$opt);
+        break;
+    }
 
     return msg;
 }
@@ -642,50 +712,6 @@ function string GetCameraModeHelpText(int mode)
 
 }
 
-function string GetAugCansRandoHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for each augmentation canister to have its contents randomized.  At 100%, all aug cans will have random contents.  Likewise, 0% will leave all aug cans with their original contents.|n";
-    msg = msg $ "|n";
-    msg = msg $ "When randomized, the contents of the can will be selected from the augs available based on your selected game mode and loadout.";
-
-    return msg;
-}
-
-function string GetAugSlotRandoHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for each augmentation to get a randomized aug location, allowing them to be installed in a different body part than normal.  "$"At 100%, all augs will be assigned random body parts.  Likewise, at 0%, all augs will be able to be installed in their original location.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Using values between 0% and 100% may result in some body parts being overloaded or other ones lacking in choices,"$" since augs are unlikely to randomize into the slots that were newly freed by other randomized augs.";
-
-    return msg;
-}
-
-function string GetMerchantHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for The Merchant to appear in each map.  At 100%, The Merchant will appear in every map.  At 0%, The Merchant will not appear at all.  "$"If you kill or knock out The Merchant, he will not appear again.|n";
-    msg = msg $ "|n";
-    msg = msg $ "The Merchant will have various useful items available for sale, which will be different every map.  "$"When using loadouts, The Merchant will not sell any banned items and may have additional items available (based on the loadout).";
-
-    return msg;
-}
-
-function string GetBingoScaleHelpText()
-{
-    local string msg;
-
-    msg =       "Bingo Scale adjusts the number of times a bingo task needs to be done before completing the square.|n";
-    msg = msg $ "|n";
-    msg = msg $ "For example, a goal to 'Drink 100 Cans of Soda' at 50% Bingo Scale would become 'Drink 50 Cans of Soda'.  Goal amounts will not drop below 1.";
-
-    return msg;
-}
-
 function string GetSkillLevelCostsHelpText(int mode)
 {
     local string msg;
@@ -698,95 +724,6 @@ function string GetSkillLevelCostsHelpText(int mode)
             msg = "The cost of each skill level (for a single skill) are multiplied by a different random value.";
             break;
     }
-
-    return msg;
-}
-
-function string GetAugbotsHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of an augbot being spawned in each map.  Augbots will only be spawned if a medical bot was NOT spawned in the map (based on the 'Medbots %' setting).|n";
-    msg = msg $ "|n";
-    msg = msg $ "A hint datacube will be spawned near the Augbot saying that it has been delivered nearby, which can help you find it.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
-
-    return msg;
-}
-
-function string GetRepairBotHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of a Repair Bot being spawned in each map.|n";
-    msg = msg $ "|n";
-    msg = msg $ "A hint datacube will be spawned near the Repair Bot saying that it has been delivered nearby, which can help you find it.|n";
-
-    return msg;
-}
-
-function string GetMedBotHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of a Medical Bot being spawned in each map.|n";
-    msg = msg $ "|n";
-    msg = msg $ "A hint datacube will be spawned near the Medical Bot saying that it has been delivered nearby, which can help you find it.|n";
-
-    return msg;
-}
-
-function string GetEnemyWeaponsVarietyHelpText()
-{
-    local string msg;
-
-    msg =       "How varied do you want the weapons to be in each map, relative to the original game?  At 0%, enemies will only be given weapons present in the original level.  ";
-    msg = msg $ "At 100%, enemies will be given weapons based on the weapon weighting decided by the randomizer.  Values in between will blend the two pools of weapon choices together.";
-
-    return msg;
-}
-
-function string GetSwapContainersHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of each container to be shuffled in the map.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Containers include obvious things like wooden crates, but also include things like metal crates, barrels, wicker baskets, trash cans, and trash bags.";
-
-    return msg;
-}
-
-function string GetBannedSkillsHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of each skill to be entirely banned.  Bans will get rerolled along with skill costs.|n";
-    msg = msg $ "|n";
-    msg = msg $ "When banned, you will not be allowed to upgrade the skill at all.";
-
-    return msg;
-}
-
-function string GetBannedSkillLevelsHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for any skill level for each skill to be banned.  Bans will get rerolled along with skill costs.|n";
-    msg = msg $ "|n";
-    msg = msg $ "When a skill level is banned, you will not be allowed to upgrade the skill beyond that banned level.  The upgrade from Untrained to Trained will never be banned by this setting.";
-
-    return msg;
-}
-
-function string GetAddTurretsHelpText()
-{
-    local string msg;
-
-    msg =       "The chances to add extra turrets, cameras, and security computers.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Every additional 100% gives another chance to spawn a turret/camera/computer combo (meaning more added turrets).";
 
     return msg;
 }
