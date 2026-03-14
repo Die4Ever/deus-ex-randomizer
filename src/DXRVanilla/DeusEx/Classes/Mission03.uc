@@ -7,7 +7,7 @@ function FirstFrame()
 
     trashEm=False;
 
-    if (localURL == "03_NYC_AIRFIELDHELIBASE" || localURL == "03_NYC_AIRFIELD")
+    if (localURL == "03_NYC_AIRFIELDHELIBASE" || localURL == "03_NYC_AIRFIELD" || localURL == "03_NYC_HANGAR")
     {
         if (flags.GetBool('MeetLebedev_Played') ||
             flags.GetBool('JuanLebedev_Dead'))
