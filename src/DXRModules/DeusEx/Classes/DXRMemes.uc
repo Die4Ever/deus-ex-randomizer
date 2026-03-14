@@ -57,7 +57,7 @@ function RandomLiberty()
     local int i;
 
     foreach AllActors(class'NYLibertyTop',top){
-        if(IsOctober()) {
+        if(IsHalloweenSeason()) {
             top.style = STY_Translucent;
             top.ScaleGlow = 0.5;
         }
@@ -66,7 +66,7 @@ function RandomLiberty()
     foreach AllActors(class'NYLiberty',liberty){
         SetGlobalSeed("RandomLiberty");
 
-        if(IsOctober()) {
+        if(IsHalloweenSeason()) {
             liberty.style = STY_Translucent;
             liberty.ScaleGlow = 0.5;
         }
@@ -1471,7 +1471,7 @@ function MakeAllGhosts()
     local #var(prefix)ScriptedPawn p;
     local bool isEndgame4;
 
-    if(!IsOctober()) return;
+    if(!IsHalloweenSeason()) return;
 
     if(dxr.localURL~="ENDGAME4" || dxr.localURL~="ENDGAME4REV") {
         isEndgame4 = true;

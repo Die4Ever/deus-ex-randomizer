@@ -186,7 +186,7 @@ function IncreaseZoneBrightness(int brightness, ZoneInfo z, DXRStoredZoneInfo sz
     if(szi.AmbientBrightness == 0)
         z.AmbientSaturation = 255;
 
-    if(dxr.flags.IsHalloweenMode()) {
+    if(class'MenuChoice_OctoberCosmetics'.static.TintEnabled(dxr.flags)) {
         z.AmbientBrightness = Max(z.AmbientBrightness, 5);
         z.AmbientSaturation = Min(z.AmbientSaturation, 100);
         z.AmbientHue = 255;
