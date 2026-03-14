@@ -554,7 +554,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_stalkers':
             return "Halloween Stalkers";
         case 'Rando_entrance_rando':
-            return "Entrance Randomizer";
+            return "Entrance Randomization";
         case 'Rando_skills_disable_downgrades':
             return "Disallow downgrades on New Game screen";
         case 'Rando_skills_reroll_missions':
