@@ -38,6 +38,8 @@ function BindControls(optional string action)
     #endif
     }
 
+    CreateSeedInput(f);
+
     //Make sure the starting map values match those in DXRStartMap
     NewMenuItem("Starting Map", "What level you will start in.");
     for(i=0; i<160; i++) {
@@ -386,7 +388,7 @@ function BindControls(optional string action)
 
     NewGroup("New Game+");
 
-    NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops.  Set to -1 to disable.  100% is default.");
+    NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops."$BR$"Set to -1 to disable New Game+.  100% is default.");
     Slider(f.moresettings.newgameplus_curve_scalar, -1, 200);
     NewMenuItem("Max Item Carryover", "Maximum number of the same item that can carry over between loops, not including stackable items.");
     Slider(f.newgameplus_max_item_carryover, 0, 30);
@@ -399,6 +401,22 @@ function BindControls(optional string action)
 
     if( action == "NEXT" ) HandleNewGameButton();
     if( action == "RANDOMIZE" ) RandomizeOptions();
+}
+
+function CreateSeedInput(DXRFlags f)
+{
+    local string sseed;
+
+    NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
+    if(class == class'DXRMenuReSetupRando') sseed = string(f.seed);
+    sseed = EditBox(sseed, "1234567890", GetSeedHelpText());
+    if( sseed != "" ) {
+        f.seed = int(sseed);
+        dxr.seed = f.seed;
+        f.bSetSeed = 1;
+    } else {
+        f.RollSeed();
+    }
 }
 
 function bool EnumOptionMatched(string label, int value, optional out int output, optional string helpText)
@@ -477,6 +495,17 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 }
 
 //#region Help Text Fns
+static function string GetSeedHelpText()
+{
+    local string msg;
+
+    msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
+    msg = msg $ "|n";
+    msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+
+    return msg;
+}
+
 function string GetSkillRerollHelpText(int reroll)
 {
     switch (reroll){

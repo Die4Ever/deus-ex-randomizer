@@ -203,7 +203,7 @@ function NewGroup(string text)
     local vector coords;
 
     width = num_cols / 2;
-    if(id != -1)
+    if(id != -1) // extra row of padding on top when this isn't the first item in the menu
         id += width;
     BreakLine();
     id++;
@@ -368,7 +368,6 @@ function ProcessAction(String actionKey)
 {
     currentAction = actionKey;
     _BindControls(true, actionKey);
-    currentAction = "";
 }
 
 function ResetToDefaults()
@@ -602,7 +601,7 @@ function MenuUIEditWindow CreateSlider(int row, string label, string helptext, o
     if(InStr(helptexts[row], BR)==-1)
         helptexts[row] = helptexts[row] $ BR $ min $ " to " $ max;
     else
-        helptexts[row] = helptexts[row] $ ", " $ min $ " to " $ max;
+        helptexts[row] = helptexts[row] $ "  " $ min $ " to " $ max;
     return CreateEdit(row, label, helptext, "-1234567890", string(deflt), helpBtnText);
     /*local MenuUISliderButtonWindow slider;
     local vector coords;
@@ -941,7 +940,7 @@ event FocusEnteredDescendant(Window enterWindow)
             split = InStr(s, BR$BR);
             if(split==-1) split = InStr(s, "|n|n");
             if(split!=-1) s = Left(s, split); // don't show double line break on the small help text
-            if(Len(s)>115) {
+            if(Len(s) > ClientWidth*8) {
                 split = InStr(s, BR);
                 if(split==-1) split = InStr(s, "|n");
                 if(split!=-1) s = Left(s, split);
