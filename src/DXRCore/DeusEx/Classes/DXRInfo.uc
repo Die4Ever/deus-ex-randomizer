@@ -232,7 +232,7 @@ function bool IsOctober()
 function bool IsHalloweenSeason()
 {
     // Happy Halloween! This will be used for general Halloween things like cosmetic changes and piano song weighting
-    return class'MenuChoice_OctoberCosmetics'.static.IsEnabled(GetDXR().flags);
+    return class'MenuChoice_OctoberCosmetics'.static.IsHalloweenSeason(GetDXR().flags);
 }
 
 function bool IsHalloween()
