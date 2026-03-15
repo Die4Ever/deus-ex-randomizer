@@ -163,24 +163,24 @@ function BindControls(optional string action)
     }
 
     NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown."$BR$"Global: All Medbots have the same cooldown.");
-    EnumOption("Unchanged", 0, f.settings.medbotcooldowns);
-    EnumOption("Individual", 1, f.settings.medbotcooldowns);
-    EnumOption("Global", 2, f.settings.medbotcooldowns);
+    EnumOption("Unchanged", 0, f.settings.medbotcooldowns, GetGoodBotHelpText("med","cooldown",0));
+    EnumOption("Individual", 1, f.settings.medbotcooldowns, GetGoodBotHelpText("med","cooldown",1));
+    EnumOption("Global", 2, f.settings.medbotcooldowns, GetGoodBotHelpText("med","cooldown",2));
 
     NewMenuItem("Repair Bot Cooldowns", "Individual: Each Repair Bot has its own charge cooldown."$BR$"Global: All Repair Bots have the same cooldown.");
-    EnumOption("Unchanged", 0, f.settings.repairbotcooldowns);
-    EnumOption("Individual", 1, f.settings.repairbotcooldowns);
-    EnumOption("Global", 2, f.settings.repairbotcooldowns);
+    EnumOption("Unchanged", 0, f.settings.repairbotcooldowns, GetGoodBotHelpText("repair","cooldown",0));
+    EnumOption("Individual", 1, f.settings.repairbotcooldowns, GetGoodBotHelpText("repair","cooldown",1));
+    EnumOption("Global", 2, f.settings.repairbotcooldowns, GetGoodBotHelpText("repair","cooldown",2));
 
     NewMenuItem("Medbot Heal Amount", "Individual: Each Medbot has its own healing amount."$BR$"Global: All Medbots have the same amount.");
-    EnumOption("Unchanged", 0, f.settings.medbotamount);
-    EnumOption("Individual", 1, f.settings.medbotamount);
-    EnumOption("Global", 2, f.settings.medbotamount);
+    EnumOption("Unchanged", 0, f.settings.medbotamount, GetGoodBotHelpText("med","amount",0));
+    EnumOption("Individual", 1, f.settings.medbotamount, GetGoodBotHelpText("med","amount",1));
+    EnumOption("Global", 2, f.settings.medbotamount, GetGoodBotHelpText("med","amount",2));
 
     NewMenuItem("Repair Bot Charge Amount", "Individual: Each Repair Bot has its own charge amount."$BR$"Global: All Repair Bots have the same amount.");
-    EnumOption("Unchanged", 0, f.settings.repairbotamount);
-    EnumOption("Individual", 1, f.settings.repairbotamount);
-    EnumOption("Global", 2, f.settings.repairbotamount);
+    EnumOption("Unchanged", 0, f.settings.repairbotamount, GetGoodBotHelpText("repair","amount",0));
+    EnumOption("Individual", 1, f.settings.repairbotamount, GetGoodBotHelpText("repair","amount",1));
+    EnumOption("Global", 2, f.settings.repairbotamount, GetGoodBotHelpText("repair","amount",2));
 
     NewGroup("Doors and Keys");
 
@@ -826,6 +826,67 @@ function string GetEntranceRandoHelpText(int mode)
             msg = msg $ "Both Paris missions (missions 11 and 12) are merged together, as are Vandenberg and Ocean Lab (12 and 14).";
 
             break;
+    }
+
+    return msg;
+}
+
+function string GetGoodBotHelpText(string botType, string setting, int mode)
+{
+    local string msg;
+
+    if (botType=="med") {
+        if (setting=="cooldown"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Medical Bot cooldowns after healing will be the same as in the original game (60 seconds).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Medical Bot will have its own randomly selected cooldown.  This cooldown will remain consistent after every heal.";
+                    break;
+                case 2: //Global
+                    msg = "All Medical Bots will use the same single randomly selected cooldown.  This cooldown will remain consistent after every heal.";
+                    break;
+            }
+        }else if (setting=="amount"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Medical Bots will heal for the same amount as they did in the original game (300 health).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Medical Bot will have its own randomly selected heal amount.  This amount will be the same for all heals.";
+                    break;
+                case 2: //Global
+                    msg = "All Medical Bots will use the same single randomly selected heal amount.  This amount will be the same for all heals.";
+                    break;
+            }
+        }
+    } else if (botType=="repair"){
+        if (setting=="cooldown"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Repair Bot cooldowns after charging will be the same as in the original game (60 seconds).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Repair Bot will have its own randomly selected cooldown.  This cooldown will remain consistent after every charge.";
+                    break;
+                case 2: //Global
+                    msg = "All Repair Bots will use the same single randomly selected cooldown.  This cooldown will remain consistent after every charge.";
+                    break;
+            }
+        }else if (setting=="amount"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Repair Bots will recharge for the same amount as they did in the original game (75 energy).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Repair Bot will have its own randomly selected recharge amount.  This amount will be the same for all recharges.";
+                    break;
+                case 2: //Global
+                    msg = "All Repair Bots will use the same single randomly selected recharge amount.  This amount will be the same for all recharges.";
+                    break;
+            }
+        }
     }
 
     return msg;
