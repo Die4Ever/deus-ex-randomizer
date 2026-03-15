@@ -268,7 +268,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     chance_remaining(r);// else keep the same class
 
-    if( newclass == None && IsHuman(base.class) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
+    if( newclass == None && IsHuman(base.class) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;  //newclass == None means the clone will be the same type as the base pawn
     if( IsHuman(newclass) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
     if( #var(prefix)Robot(base) != None && base.Orders == 'Idle' ) return None; //Don't clone off of idle robots (who likely have all reactions disabled)
 

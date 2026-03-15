@@ -59,10 +59,10 @@ function BindControls(optional string action)
     BreakLine();
 
     NewMenuItem("Player Health", "Max health for each body part of the player.");
-    Slider(f.settings.health, 1, 10000);
+    Slider(f.settings.health, 1, 10000, GetGenericHelpText("playerhealth"));
 
     NewMenuItem("Player Energy", "Max bioelectric energy for the player.");
-    Slider(f.settings.energy, 0, 10000);
+    Slider(f.settings.energy, 0, 10000, GetGenericHelpText("playerenergy"));
 
     BreakLine();
 
@@ -104,8 +104,8 @@ function BindControls(optional string action)
     }
 
     NewMenuItem("Splits Overlay", "Splits and total game time overlay");
-    EnumOption("Don't Show", 0, f.moresettings.splits_overlay);
-    EnumOption("Show", 1, f.moresettings.splits_overlay);
+    EnumOption("Don't Show", 0, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
+    EnumOption("Show", 1, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
 
 #ifdef vanilla
     NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
@@ -113,14 +113,14 @@ function BindControls(optional string action)
     EnumOption("Looting Needed", 1, f.clothes_looting, GetClothesLootingHelpText(1));
 
     NewMenuItem("Entrance Randomization", "Level transitions are randomized so they will take you to a different level than usual (within the same mission).");
-    EnumOption("Disabled", 0, f.moresettings.entrance_rando);
-    EnumOption("Enabled", 100, f.moresettings.entrance_rando);
+    EnumOption("Disabled", 0, f.moresettings.entrance_rando, GetEntranceRandoHelpText(0));
+    EnumOption("Enabled", 100, f.moresettings.entrance_rando, GetEntranceRandoHelpText(100));
 #endif
 
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win (or progress in Mean Bingo Machine mode).");
-    Slider(f.settings.bingo_win, 0, 12);
+    Slider(f.settings.bingo_win, 0, 12, GetGenericHelpText("bingowin"));
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
     Slider(f.bingo_scale, 0, 100, GetGenericHelpText("bingoscale"));
@@ -156,10 +156,10 @@ function BindControls(optional string action)
 
     if(!#defined(vmd)) {
         NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal.");
-        Slider(f.settings.medbotuses, 0, 10);
+        Slider(f.settings.medbotuses, 0, 10,GetGenericHelpText("medbotuses"));
 
         NewMenuItem("Repair Bot Uses", "Number of times you can use an individual repair bot to restore energy.");
-        Slider(f.settings.repairbotuses, 0, 10);
+        Slider(f.settings.repairbotuses, 0, 10,GetGenericHelpText("repairbotuses"));
     }
 
     NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown."$BR$"Global: All Medbots have the same cooldown.");
@@ -248,10 +248,10 @@ function BindControls(optional string action)
     Slider(f.settings.bot_weapons, 0, 100);
 
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
-    Slider(f.settings.enemies_nonhumans, 0, 100);
+    Slider(f.settings.enemies_nonhumans, 0, 100, GetGenericHelpText("nonhumanenemies"));
 
     NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn.  Leave blank or 0 to disable.");
-    Slider(f.settings.enemyrespawn, 0, 3600);
+    Slider(f.settings.enemyrespawn, 0, 3600, GetGenericHelpText("enemyrespawn"));
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_move, 0, 100);
@@ -260,10 +260,10 @@ function BindControls(optional string action)
     Slider(f.settings.turrets_add, 0, 10000, GetGenericHelpText("addturrets"));
 
     NewMenuItem("Paris Chill %", "Chance to remove all MJ12 from the Champs-Elysees.");
-    Slider(f.remove_paris_mj12, 0, 100);
+    Slider(f.remove_paris_mj12, 0, 100, GetGenericHelpText("parischill"));
 
     NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies.  Leave blank or 0 to disable.");
-    Slider(f.moresettings.reanimation, 0, 3600);
+    Slider(f.moresettings.reanimation, 0, 3600, GetGenericHelpText("reanimation"));
 
     NewMenuItem("", "Stalkers cannot be permanently killed, but if they take enough damage then they will go away for a while.");
     EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers, "2023 style :(");
@@ -535,12 +535,12 @@ function String GetGenericHelpText(string opt)
         msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
         break;
     case "repairbots":
-        msg =       "The chance of a Repair Bot being spawned in each map.|n";
+        msg =       "The chance of a Repair Bot being spawned in each map.  Vanilla is about 14%.|n";
         msg = msg $ "|n";
         msg = msg $ "A hint datacube will be spawned near the Repair Bot saying that it has been delivered nearby, which can help you find it.|n";
         break;
     case "medbots":
-        msg =       "The chance of a Medical Bot being spawned in each map.|n";
+        msg =       "The chance of a Medical Bot being spawned in each map.  Vanilla is about 14%.|n";
         msg = msg $ "|n";
         msg = msg $ "A hint datacube will be spawned near the Medical Bot saying that it has been delivered nearby, which can help you find it.|n";
         break;
@@ -567,6 +567,45 @@ function String GetGenericHelpText(string opt)
         msg =       "The chances to add extra turrets, cameras, and security computers.|n";
         msg = msg $ "|n";
         msg = msg $ "Every additional 100% gives another chance to spawn a turret/camera/computer combo (meaning more added turrets).";
+        break;
+    case "playerhealth":
+        msg =       "The maximum amount of health that the player has in each body part.  The vanilla setting is 100 health per body part.";
+        break;
+    case "playerenergy":
+        msg =       "The maximum amount of bioelectric energy that the player has.  The vanilla setting is 100 energy.";
+        break;
+    case "splitsoverlay":
+        msg =       "Choose whether or not to show an in-game speedrun timer.";
+        //TODO: THIS DESCRIPTION CERTAINLY COULD BE EXPANDED TO EXPLAIN DXRSplits.ini AND THE THINGS YOU CAN MODIFY IN THERE
+        break;
+    case "bingowin":
+        msg =       "This setting determines how many lines of bingo you must complete in your game.|n";
+        msg = msg $ "|n";
+        msg = msg $ "In a typical game, completing this number of bingo lines will win the game instantly.|n";
+        msg = msg $ "In Mean Bingo Machine mode, completing this number of bingo lines will allow you to progress to the next mission.|n";
+        break;
+    case "medbotuses":
+        msg =       "This setting lets you select how many times each individual medbot can be used to heal the player.";
+        break;
+    case "repairbotuses":
+        msg =       "This setting lets you select how many times each individual repair bot can be used to recharge the players energy.";
+        break;
+    case "enemyrespawn":
+        msg =       "When enemies are killed or knocked unconscious, a new enemy will respawn at the original location after this many seconds.";
+        break;
+    case "reanimation":
+        msg =       "When enemies are killed, they will be reanimated after this many seconds as zombies that attack with their hands and are hostile to everything around them.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Unconscious enemies will not be reanimated.  Corpses can be destroyed (or relocated!) to prevent zombies from appearing!";
+        break;
+    case "nonhumanenemies":
+        msg =       "What percentage of non-human enemies should actually be added?|n";
+        msg = msg $ "|n";
+        msg = msg $ "At 100%, all non-human clones will actually be spawned.  At 0%, no non-human clones will be created.|n";
+        msg = msg $ "Lower values will result in less additional non-human enemies.";
+        break;
+    case "parischill":
+        msg =       "This setting sets the odds of all MJ12 troops being removed from the streets of Paris.  This setting will carry through New Game Plus, giving a chance for some loops to have enemies and others to not have any.";
         break;
     default:
         log("GetGenericHelpText: No help text available for "$opt);
@@ -772,6 +811,26 @@ function string GetPasswordRandoHelpText(int val)
     }
     return "";
 }
+
+function string GetEntranceRandoHelpText(int mode)
+{
+    local string msg;
+
+    switch(mode){
+        case 0: //Entrance Randomization Disabled
+            msg = "Entrance Randomization is disabled.  All level transitions will take you to the original destination levels.";
+            break;
+        case 100: //Entrance Randomization Enabled
+            msg = "Entrance Randomization is enabled.  Transitions between levels will take you to another randomly selected level transition within the same mission.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Both Paris missions (missions 11 and 12) are merged together, as are Vandenberg and Ocean Lab (12 and 14).";
+
+            break;
+    }
+
+    return msg;
+}
+
 //#endregion
 
 defaultproperties
