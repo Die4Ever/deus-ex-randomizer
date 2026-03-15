@@ -128,19 +128,15 @@ simulated function string GenerateMissionString()
     for (i=1;i<=15;i++){
         t=(1<<i) & missions;
         if (t!=0){
-            //msg=msg$i$", ";
             msg=msg $ CreateMissionNameLine(i);
             num++;
         }
     }
 
-    //msg = Left(msg,len(msg)-2); //remove the last ", "
     msg = Left(msg,len(msg)-2); //Remove the last newline
     if(num>1){
-        //msg="Missions: "$msg;
         msg="Missions:|n"$msg;
     } else {
-        //msg="Mission: "$msg;
         msg="Mission:|n"$msg;
     }
 
