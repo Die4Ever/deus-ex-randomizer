@@ -92,10 +92,17 @@ simulated function string CreateMissionNameLine(int missionNum)
     local string msg;
     local DXRando dxr;
     local bool isCurMission;
+    local bool hide;
 
     dxr = class'DXRando'.default.dxr;
     if (dxr!=None){
         isCurMission = (missionNum == dxr.dxInfo.MissionNumber);
+
+        if (dxr.flags!=None && dxr.flags.IsZeroRando() && missionNum > dxr.dxInfo.MissionNumber){
+            //In Zero Rando, hide any mission names beyond the current mission, in case the player
+            //is looking at bingo on their first playthrough and is worried about spoilers
+            hide = true;
+        }
     }
 
     msg = "";
@@ -104,7 +111,13 @@ simulated function string CreateMissionNameLine(int missionNum)
         msg = msg $ "> ";
     }
 
-    msg = msg $ missionNum $ ": " $ class'DXRMapInfo'.static.GetHumanMissionName(missionNum);
+    msg = msg $ missionNum $ ": ";
+
+    if (!hide){
+        msg = msg $ class'DXRMapInfo'.static.GetHumanMissionName(missionNum);
+    } else {
+        msg = msg $ "???"; //No Spoilers!
+    }
 
     if (isCurMission){
         msg = msg $ " <";
