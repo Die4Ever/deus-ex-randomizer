@@ -8,6 +8,7 @@
 
 <details>
 <summary>Click to expand Minor Changes</summary>
+
 - Robots can now be randomly given a pistol weapon or a radioactive weapon.
 - Updated speedrun splits notes defaults.
 - In vanilla, bingo goals for destroying robots can now also be completed by disabling the robots as well.
@@ -19,4 +20,5 @@
 - The 350 skill points for redirecting the missile in Silo (Mission 14) can no longer be acquired by walking in the right spot in the command center.  The skill points will now be properly given only when actually redirecting the missile from the launch computer.
 - Improved faction detection when cloning enemies.  Bots in the Airfield (Mission 3) should now clone NSF-related enemies, and spiderbots in the Vandenberg Tunnels (Mission 12) should now spawn MJ12-related enemies.
 - Enemies cloned from the NSF in Mission 3 will now be cleaned up better in non-vanilla versions of the randomizer.
+- Bingo help window now shows the available missions as a list with human readable names.  If the goal is active in the current mission, the mission will be clearly marked in the window.
 </details>

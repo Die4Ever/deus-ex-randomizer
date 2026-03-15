@@ -132,6 +132,43 @@ static function GetAllMaps(out string maps[128])
     //maps[i++] = "00_Intro";
 }
 
+
+static function string GetHumanMissionName(int num)
+{
+    switch(num){
+        case 0:
+            return "Training";
+        case 1:
+            return "Liberty Island";
+        case 2:
+            return "NSF Generator";
+        case 3:
+            return "Hunting Lebedev";
+        case 4:
+            return "NSF Defection";
+        case 5:
+            return "MJ12 Jail";
+        case 6:
+            return "Hong Kong";
+        case 8:
+            return "Return to NYC";
+        case 9:
+            return "Superfreighter";
+        case 10:
+            return "Paris Streets"; //Paris Catacombs and Streets?
+        case 11:
+            return "Cathedral";
+        case 12:
+            return "Vandenberg";
+        case 14:
+            return "Ocean Lab";
+        case 15:
+            return "Area 51";
+    }
+
+    return "Unrecognized Mission "$num;
+}
+
 static function int GetMissionNumber(string map)
 {
     local int mission, i;

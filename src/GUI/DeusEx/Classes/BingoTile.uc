@@ -87,6 +87,34 @@ simulated function SetHelpText(string event, int mission, bool FemJC)
     helpText = class'DXREvents'.static.GetBingoGoalHelpText(event,mission,FemJC);
 }
 
+simulated function string CreateMissionNameLine(int missionNum)
+{
+    local string msg;
+    local DXRando dxr;
+    local bool isCurMission;
+
+    dxr = class'DXRando'.default.dxr;
+    if (dxr!=None){
+        isCurMission = (missionNum == dxr.dxInfo.MissionNumber);
+    }
+
+    msg = "";
+
+    if (isCurMission){
+        msg = msg $ "> ";
+    }
+
+    msg = msg $ missionNum $ ": " $ class'DXRMapInfo'.static.GetHumanMissionName(missionNum);
+
+    if (isCurMission){
+        msg = msg $ " <";
+    }
+
+    msg = msg  $ "|n";
+
+    return msg;
+}
+
 simulated function string GenerateMissionString()
 {
     local int i,t,num;
@@ -100,16 +128,20 @@ simulated function string GenerateMissionString()
     for (i=1;i<=15;i++){
         t=(1<<i) & missions;
         if (t!=0){
-            msg=msg$i$", ";
+            //msg=msg$i$", ";
+            msg=msg $ CreateMissionNameLine(i);
             num++;
         }
     }
 
-    msg = Left(msg,len(msg)-2);
+    //msg = Left(msg,len(msg)-2); //remove the last ", "
+    msg = Left(msg,len(msg)-2); //Remove the last newline
     if(num>1){
-        msg="Missions: "$msg;
+        //msg="Missions: "$msg;
+        msg="Missions:|n"$msg;
     } else {
-        msg="Mission: "$msg;
+        //msg="Mission: "$msg;
+        msg="Mission:|n"$msg;
     }
 
     return msg;
@@ -121,17 +153,21 @@ simulated function string GetHelpText()
 
     helpmsg=helpText;
 
-    //Display the list of missions the goal is possible in...
-    helpmsg=helpmsg$"|n|n"$GenerateMissionString();
+    helpmsg=helpmsg$"|n";
 
     //mention that the goal has been failed (bit 0: FAILED_MISSION_MASK)
     if ((missions & 1)!=0 && progress<max){
         helpmsg=helpmsg$"|n";
         helpmsg = helpmsg $ "Progress: Failed";
+        helpmsg=helpmsg$"|n";
     } else if (max>1){ //Or show actual progress towards the goal
         helpmsg=helpmsg$"|n";
         helpmsg=helpmsg$"Progress: "$progress$"/"$max;
+        helpmsg=helpmsg$"|n";
     }
+
+    //Display the list of missions the goal is possible in...
+    helpmsg=helpmsg$"|n"$GenerateMissionString();
 
     return helpmsg;
 }
