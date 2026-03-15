@@ -112,32 +112,18 @@ simulated event Destroyed()
     Super.Destroyed();
 }
 
-simulated function int MurmurHash(coerce string str)
-{
-    return MurmurHash3_x86_32(str, dxr.seed); // note that the result depends on the current seed
-}
-
 simulated function int SetSeed(coerce string name)
 {
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
+    oldseed = dxr.SetSeed(dxr.HashCompat( dxr.seed $ dxr.localURL $ name,, dxr.localURL $ name, dxr.seed ));
     dxr.rngraw();// advance the rng
     return oldseed;
 }
 
-// TODO: next compatibility break, delete this and all CRC
 simulated function int SetGlobalSeed(coerce string name)
 {
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(name) );
-    dxr.rngraw();// advance the rng
-    return oldseed;
-}
-
-simulated function int SetGlobalSeedNew(coerce string name)
-{
-    local int oldseed;
-    oldseed = dxr.SetSeed( MurmurHash(name) );
+    oldseed = dxr.SetSeed(dxr.HashCompat( name, dxr.seed ));
     dxr.rngraw();// advance the rng
     return oldseed;
 }
@@ -145,7 +131,7 @@ simulated function int SetGlobalSeedNew(coerce string name)
 simulated function int SetGlobalNGPSeed(coerce string name) // resistant to New Game+
 {
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.seed - dxr.flags.newgameplus_loops + dxr.Crc(name) );
+    oldseed = dxr.SetSeed(dxr.HashCompat( name, dxr.seed - dxr.flags.newgameplus_loops ));
     dxr.rngraw();// advance the rng
     return oldseed;
 }
@@ -153,7 +139,7 @@ simulated function int SetGlobalNGPSeed(coerce string name) // resistant to New 
 simulated function int BranchSeed(coerce string name)
 {
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
+    oldseed = dxr.SetSeed(dxr.HashCompat( dxr.seed $ name $ dxr.tseed,, name, dxr.tseed ));
     dxr.rngraw();// advance the rng
     return oldseed;
 }

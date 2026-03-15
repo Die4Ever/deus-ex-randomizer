@@ -512,7 +512,7 @@ function DXRTick(float deltaTime)
     }
     else if(runPostFirstEntry)
     {
-        SetSeed( Crc(seed $ localURL $ " PostFirstEntry") );
+        SetSeed(HashCompat( seed $ localURL $ " PostFirstEntry",, localURL $ "PostFirstEntry", seed ));
         for(i=0; i<num_modules; i++) {
             modules[i].PostFirstEntry();
         }
@@ -523,7 +523,7 @@ function DXRTick(float deltaTime)
     {
         RunTests();
 
-        SetSeed( Crc(seed $ localURL $ " PostAnyEntry") );
+        SetSeed(HashCompat( seed $ localURL $ " PostAnyEntry",, localURL $ " PostAnyEntry", seed ));
         for(i=0; i<num_modules; i++) {
             modules[i].PostAnyEntry();
         }
@@ -561,7 +561,7 @@ function RandoEnter()
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ map @ GetURLMap());
 
-    SetSeed( Crc(seed $ localURL @ firstTime) );
+    SetSeed(HashCompat( seed $ localURL @ firstTime,, localURL $ firstTime, seed ));
     if ( firstTime == true )
     {
         //if( !IsTravel ) warning(localURL$": loaded save but FirstEntry? firstTime: "$firstTime$", IsTravel: "$IsTravel);
@@ -586,12 +586,12 @@ function RandoEnter()
         }
     }
 
-    SetSeed( Crc(seed $ localURL $ " AnyEntry") );
+    SetSeed(HashCompat( seed $ localURL $ " AnyEntry",, localURL $ "AnyEntry", seed ));
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
 
-    SetSeed( Crc(seed $ localURL $ " PlayerLogin") );
+    SetSeed(HashCompat( seed $ localURL $ " PlayerLogin",, localURL $ " PlayerLogin", seed ));
     foreach AllActors(class'#var(PlayerPawn)', pawn) {
         PlayerLogin(pawn);
     }
@@ -714,7 +714,6 @@ simulated final function CrcInit() {
     }
 }
 
-
 // ============================================================================
 // Crc
 //
@@ -737,9 +736,23 @@ simulated final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
-simulated function DXRando GetDXR()
+simulated function int HashCompat(
+    coerce string crcStr,
+    optional int crcAdd,
+    optional coerce string murmurStr,
+    optional int murmurSeed
+)
 {
-    return Self;
+    if (flags.loop_initial_version >= 3070104) {
+        if (murmurStr == "") {
+            murmurStr = crcStr;
+        }
+        if (murmurSeed == 0) {
+            murmurSeed = crcAdd;
+        }
+        return MurmurHash3(murmurStr, murmurSeed);
+    }
+    return Crc(crcStr) + crcAdd;
 }
 
 function RunTests()
