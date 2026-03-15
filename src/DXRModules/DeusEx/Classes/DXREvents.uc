@@ -434,6 +434,7 @@ function SetWatchFlags() {
         } else {
             WatchFlag('ManBathroomBarks_Played');
         }
+        WatchFlag('M02Briefing_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
@@ -3303,7 +3304,18 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
-
+        case "StatueMissionComplete":
+            failed[num_failed++] = "GuntherFreed";
+            return num_failed;
+        case "M02Briefing_Played":
+            failed[num_failed++] = "TerroristCommander_PlayerDead";
+            return num_failed;
+        case "Josh_Takedown":
+            failed[num_failed++] = "JoshFed";
+            return num_failed;
+        case "Billy_Takedown":
+            failed[num_failed++] = "M02BillyDone";
+            return num_failed;
         case "SubHostageFemale_Takedown":
         case "SubHostageMale_Takedown":
             failed[num_failed++] = "SubwayHostagesSaved";
@@ -3313,9 +3325,6 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "FordSchick_Takedown":
             failed[num_failed++] = "FordSchickRescued";
-            return num_failed;
-        case "GeneratorBlown":
-            failed[num_failed++] = "JockSecondStory";
             return num_failed;
         case "SandraRenton_Takedown":
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
@@ -3331,11 +3340,8 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "MaleHostage_Takedown":
             failed[num_failed++] = "HotelHostagesSaved";
             return num_failed;
-        case "Josh_Takedown":
-            failed[num_failed++] = "JoshFed";
-            return num_failed;
-        case "Billy_Takedown":
-            failed[num_failed++] = "M02BillyDone";
+        case "GeneratorBlown":
+            failed[num_failed++] = "JockSecondStory";
             return num_failed;
         case "Don_Takedown":
         case "Lenny_Takedown":
@@ -3352,6 +3358,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
+            return num_failed;
+        case "SavedPaul":
+            failed[num_failed++] = "PaulToTong";
             return num_failed;
         case "Miguel_Takedown":
             failed[num_failed++] = "Terrorist_peeptime";
@@ -3381,14 +3390,6 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "MaggieChow_Takedown":
             failed[num_failed++] = "MaggieLived";
             return num_failed;
-        case "Mamasan_Takedown":
-        case "Date1_Takedown":
-            failed[num_failed++] = "M06JCHasDate";
-            return num_failed;
-        case "Raid_Underway": //Raid started
-            failed[num_failed++] = "M06JCHasDate";
-            failed[num_failed++] = "ClubEntryPaid_Convo";
-            return num_failed;
         case "ClubMercedes_Takedown":
         case "ClubTessa_Takedown":
             if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
@@ -3400,16 +3401,27 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
                 failed[num_failed++] = "ClubEntryPaid_Convo";
             }
             return num_failed;
+        case "Mamasan_Takedown":
+        case "Date1_Takedown":
+            failed[num_failed++] = "M06JCHasDate";
+            return num_failed;
+        case "Raid_Underway": //Raid started
+            failed[num_failed++] = "M06JCHasDate";
+            failed[num_failed++] = "ClubEntryPaid_Convo";
+            return num_failed;
         case "Supervisor01_Takedown":
             failed[num_failed++] = "Supervisor_Paid";
+            return num_failed;
+        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+            failed[num_failed++] = "HelpSailor_ConvoFlag";
+            return num_failed;
+        case "M08SmugglerNotWarned":
+            failed[num_failed++] = "M08WarnedSmuggler";
             return num_failed;
         case "LeMerchant_Takedown":
             failed[num_failed++] = "MerchantPurchaseBind_lemerchant";
         case "Aimee_Takedown":
             failed[num_failed++] = "AimeeLeMerchantLived";
-            return num_failed;
-        case "DXRNPCs1_Takedown":
-            failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
             return num_failed;
         case "hostage_female_Takedown":
         case "hostage_Takedown":
@@ -3425,27 +3437,22 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "Camille_Takedown":
             failed[num_failed++] = "ParisClubInfo_Convo";
             return num_failed;
-        case "drbernard_Takedown":
-            failed[num_failed++] = "MeetDrBernard_Played";
-            return num_failed;
         case "TimBaker_Takedown":
             failed[num_failed++] = "MeetTimBaker_Played";
             return num_failed;
         case "TiffanySavage_Takedown":
             failed[num_failed++] = "TiffanyHeli";
             return num_failed;
+        case "drbernard_Takedown":
+            failed[num_failed++] = "MeetDrBernard_Played";
+            return num_failed;
+
         case "AnnaNavarre_DeadM3":
             failed[num_failed++] = "AnnaNavarre_DeadM4";
             failed[num_failed++] = "AnnaNavarre_DeadM5";
             return num_failed;
         case "AnnaNavarre_DeadM4":
             failed[num_failed++] = "AnnaNavarre_DeadM5";
-            return num_failed;
-        case "SavedPaul":
-            failed[num_failed++] = "PaulToTong";
-            return num_failed;
-        case "StatueMissionComplete":
-            failed[num_failed++] = "GuntherFreed";
             return num_failed;
         case "JoeGreene_Takedown":
             failed[num_failed++] = "M02QuestionedGreen";
@@ -3454,11 +3461,8 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
             failed[num_failed++] = "M02QuestionedGreen";
             return num_failed;
-        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
-            failed[num_failed++] = "HelpSailor_ConvoFlag";
-            return num_failed;
-        case "M08SmugglerNotWarned":
-            failed[num_failed++] = "M08WarnedSmuggler";
+        case "DXRNPCs1_Takedown":
+            failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
             return num_failed;
     }
 
