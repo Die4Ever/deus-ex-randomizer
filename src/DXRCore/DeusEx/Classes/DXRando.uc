@@ -586,7 +586,7 @@ function RandoEnter()
         }
     }
 
-    SetSeed(HashCompat( seed $ localURL $ " AnyEntry",, localURL $ "AnyEntry", seed ));
+    SetSeed(HashCompat( seed $ localURL $ " AnyEntry",, localURL $ " AnyEntry", seed ));
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
