@@ -68,16 +68,16 @@ function BindControls(optional string action)
 
 #ifndef hx
     starting_locations = NewMenuItem("", "Randomize starting locations on certain maps.");
-    EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
-    EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
+    EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations, GetStartingLocationsHelpText(100));
+    EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations, GetStartingLocationsHelpText(0));
 #endif
 
     goals_rando = NewMenuItem("", "Randomize goal locations on certain maps.");
-    EnumOption("Randomize Goal Locations", 100, f.settings.goals);
-    EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
-    EnumOption("Goal Location Hints", 101, f.settings.goals);
-    EnumOption("Goal Location Spoilers", 102, f.settings.goals);
-    EnumOption("Serious Goal Locations", 200, f.settings.goals);
+    EnumOption("Randomize Goal Locations", 100, f.settings.goals, GetGoalRandoHelpText(100));
+    EnumOption("Unchanged Goal Locations", 0, f.settings.goals, GetGoalRandoHelpText(0));
+    EnumOption("Goal Location Hints", 101, f.settings.goals, GetGoalRandoHelpText(101));
+    EnumOption("Goal Location Spoilers", 102, f.settings.goals, GetGoalRandoHelpText(102));
+    EnumOption("Serious Goal Locations", 200, f.settings.goals, GetGoalRandoHelpText(200));
 
     BreakLine();
 #ifndef hx
@@ -266,17 +266,17 @@ function BindControls(optional string action)
     Slider(f.moresettings.reanimation, 0, 3600, GetGenericHelpText("reanimation"));
 
     NewMenuItem("", "Stalkers cannot be permanently killed, but if they take enough damage then they will go away for a while.");
-    EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers, "2023 style :(");
-    EnumOption("Mr. H will haunt you.", 0x00040001, f.moresettings.stalkers, "2024 style.  Each map will have one Mr. H.");
-    EnumOption("Weeping Anna will haunt you.", 0x00040002, f.moresettings.stalkers, "Each map will have one Weeping Anna.");
-    EnumOption("Mr. H and Weeping Anna will haunt you.", 0x00040003, f.moresettings.stalkers, "Each map will have either a Mr. H or a Weeping Anna.");
-    EnumOption("Bobbys will haunt you.", 0x00040004, f.moresettings.stalkers, "Each map will have a set of Bobbys.");
-    EnumOption("Mr. H and Bobbys will haunt you.", 0x00040005, f.moresettings.stalkers, "Each map will either have one Mr. H, or a set of Bobbys.");
-    EnumOption("Weeping Anna and Bobbys will haunt you.", 0x00040006, f.moresettings.stalkers, "Just the new ones.  Each map will either have one Weeping Anna, or a set of Bobbys.");
-    EnumOption("Stalkers will haunt you.", 0x0004FFFF, f.moresettings.stalkers, "Halloween 2025 style!  Each map will either have one Mr. H, one Weeping Anna, or a set of Bobbys."); // 1x
-    EnumOption("More stalkers will haunt you.", 0x0008FFFF, f.moresettings.stalkers, "You might get 2 different types of stalkers in the same maps!"); // 2x
-    EnumOption("Many stalkers will haunt you.", 0x0010FFFF, f.moresettings.stalkers, "You might get all types of stalkers in the same maps!"); // 4x
-    EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers, "You don't actually think this is a good idea, do you?"); // 10x
+    EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers, GetStalkerHelpText(0));
+    EnumOption("Mr. H will haunt you.", 0x00040001, f.moresettings.stalkers, GetStalkerHelpText(0x00040001));
+    EnumOption("Weeping Anna will haunt you.", 0x00040002, f.moresettings.stalkers, GetStalkerHelpText(0x00040002));
+    EnumOption("Mr. H and Weeping Anna will haunt you.", 0x00040003, f.moresettings.stalkers, GetStalkerHelpText(0x00040003));
+    EnumOption("Bobbys will haunt you.", 0x00040004, f.moresettings.stalkers, GetStalkerHelpText(0x00040004));
+    EnumOption("Mr. H and Bobbys will haunt you.", 0x00040005, f.moresettings.stalkers, GetStalkerHelpText(0x00040005));
+    EnumOption("Weeping Anna and Bobbys will haunt you.", 0x00040006, f.moresettings.stalkers, GetStalkerHelpText(0x00040006));
+    EnumOption("Stalkers will haunt you.", 0x0004FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0004FFFF)); // 1x
+    EnumOption("More stalkers will haunt you.", 0x0008FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0008FFFF)); // 2x
+    EnumOption("Many stalkers will haunt you.", 0x0010FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0010FFFF)); // 4x
+    EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0028FFFF)); // 10x
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
@@ -892,6 +892,146 @@ function string GetGoodBotHelpText(string botType, string setting, int mode)
     return msg;
 }
 
+function string GetStalkerHelpText(int mode)
+{
+    local string msg;
+    local bool anna,bobby,mrh;
+
+    msg = "";
+
+    //This could probably actually parse the information out of
+    //this encoded value, but I'm too lazy for now...
+    switch(mode){
+        case 0:
+            msg = msg $ "2023 style :(";
+            break;
+        case 0x00040001:
+            msg = msg $ "2024 style.  Each map will have one Mr. H.";
+            mrh=true;
+            break;
+        case 0x00040002:
+            msg = msg $ "Each map will have one Weeping Anna.";
+            anna=true;
+            break;
+        case 0x00040003:
+            msg = msg $ "Each map will have either a Mr. H or a Weeping Anna.";
+            mrh=true;
+            anna=true;
+            break;
+        case 0x00040004:
+            msg = msg $ "Each map will have a set of Bobbys.";
+            bobby=true;
+            break;
+        case 0x00040005:
+            msg = msg $ "Each map will either have one Mr. H, or a set of Bobbys.";
+            mrh=true;
+            bobby=true;
+            break;
+        case 0x00040006:
+            msg = msg $ "Just the new ones.  Each map will either have one Weeping Anna, or a set of Bobbys.";
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0004FFFF:
+            msg = msg $ "Halloween 2025 style!  Each map will either have one Mr. H, one Weeping Anna, or a set of Bobbys.";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0008FFFF:
+            msg = msg $ "You might get 2 different types of stalkers in the same maps!";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0010FFFF:
+            msg = msg $ "You might get all types of stalkers in the same maps!";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0028FFFF:
+            msg = msg $ "You don't actually think this is a good idea, do you?";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+    }
+
+    //Append information for the relevant stalkers
+    if (mrh){
+        msg = msg $ "|n";
+        msg = msg $ "|n";
+        msg = msg $ "Mr. H is a hulking menace who will stalk you through each level.  While he cannot be killed, he will retreat if he takes enough damage.  After a while, he will recover his health and return to the hunt.";
+    }
+
+    if (anna){
+        msg = msg $ "|n";
+        msg = msg $ "|n";
+        msg = msg $ "Weeping Anna is a creature that doesn't exist while being observed.  As soon as they are seen, they freeze into rock.  When not being observed, they are fast.  Faster than you could believe.  Don't turn your back, don't look away, and don't blink!";
+    }
+
+    if (bobby){
+        msg = msg $ "|n";
+        msg = msg $ "|n";
+        msg = msg $ "Bobby is your friend till the end!  Bundles of Bobby dolls will be scattered around the levels.  Some of those will be regular dolls, while others...";
+    }
+
+    return msg;
+}
+
+function string GetStartingLocationsHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode)
+    {
+        case 0: //Unchanged
+            msg = msg $ "The player starts each mission in the same spot they normally would in the original game.";
+            break;
+        case 100: //Randomized
+            msg = msg $ "The player will start some missions in randomized locations.";
+            break;
+    }
+
+    return msg;
+}
+
+function string GetGoalRandoHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode)
+    {
+        case 0: //Unchanged
+            msg = msg $ "Goal locations are unchanged from the original game.";
+            break;
+        case 100: //Randomized
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.";
+            break;
+        case 101: //Goal Location Hints
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Markers will be shown on screen to indicate all the possible locations to check to find the randomized goals.";
+            break;
+        case 102: //Goal Location Spoilers
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Markers will be shown on screen to indicate the locations of the randomized goals.";
+            break;
+        case 200: //Serious
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.|n";
+            msg = msg $ "|n";
+            msg = msg $ "The silly goal locations have been removed from the pool of options, so goals will only be randomized into more plausible locations.";
+            break;
+    }
+
+    return msg;
+}
 //#endregion
 
 defaultproperties
