@@ -632,12 +632,12 @@ simulated function string GeneratePassword(string oldpassword, int mode)
             ReapplySeed(oldseed);
             break;
         case 200:
-            oldseed = SetGlobalSeed(Caps(oldpassword));
+            oldseed = SetGlobalSeedNew(Caps(oldpassword));
             out = GeneratePasswordWordLike();
             ReapplySeed(oldseed);
             break;
         case 300:
-            oldseed = SetGlobalSeed(Caps(oldpassword));
+            oldseed = SetGlobalSeedNew(Caps(oldpassword));
             out = GeneratePasswordXKCDStyle();
             ReapplySeed(oldseed);
             break;

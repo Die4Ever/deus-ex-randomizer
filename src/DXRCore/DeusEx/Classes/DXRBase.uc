@@ -128,6 +128,14 @@ simulated function int SetGlobalSeed(coerce string name)
     return oldseed;
 }
 
+simulated function int SetGlobalSeedNew(coerce string name)
+{
+    local int oldseed;
+    oldseed = dxr.SetSeed(MurmurHash3( name, dxr.seed ));
+    dxr.rngraw();// advance the rng
+    return oldseed;
+}
+
 simulated function int SetGlobalNGPSeed(coerce string name) // resistant to New Game+
 {
     local int oldseed;

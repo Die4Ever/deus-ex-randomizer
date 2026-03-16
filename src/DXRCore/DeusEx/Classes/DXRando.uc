@@ -516,7 +516,7 @@ function DXRTick(float deltaTime)
         for(i=0; i<num_modules; i++) {
             modules[i].PostFirstEntry();
         }
-        info("done randomizing "$localURL$" PostFirstEntry using seed " $ seed $ ", deltaTime: " $ deltaTime);
+        info("done randomizing " $ localURL $ " PostFirstEntry using seed " $ seed $ ", deltaTime: " $ deltaTime);
         runPostFirstEntry = false;
     }
     else
@@ -741,8 +741,7 @@ simulated function int HashCompat(
     optional int crcAdd,
     optional coerce string murmurStr,
     optional int murmurSeed
-)
-{
+) {
     if (flags.loop_initial_version >= 3070104) {
         if (murmurStr == "") {
             murmurStr = crcStr;

@@ -210,7 +210,10 @@ function HXRollSeed()
 function NewPlaythroughId() {
     local DataStorage ds;
 
-    playthrough_id = MurmurHash3(class'DataStorage'.static._SystemTime(Level) $ Level.TimeSeconds $ Rand(MaxInt));
+    playthrough_id = MurmurHash3(
+        "Playthrough ID",
+        MurmurHash3(class'DataStorage'.static._SystemTime(Level) $ Level.TimeSeconds $ Rand(MaxInt))
+    );
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None && ds.HasPlaythroughId(playthrough_id) ) {
         l("repeat playthrough id " $ playthrough_id);
@@ -1488,7 +1491,7 @@ function TestRngExp(float minrange, float maxrange, float mid, float curve)
     test( highs > times/10, "exponential ^"$curve$" - highs "$highs$" > times/8 "$(times/10));
 }
 
-// Produces valid results in UCC.lol for up to 100,000 loops
+// Produces valid results in UCC.log for up to 100,000 loops
 // Note that an equal probability from [0, 1000000) will not have an equal probability for all bits,
 // with the higher bits being more likely to be 0
 function TestRollSeed()
