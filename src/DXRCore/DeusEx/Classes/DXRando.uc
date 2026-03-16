@@ -512,7 +512,7 @@ function DXRTick(float deltaTime)
     }
     else if(runPostFirstEntry)
     {
-        SetSeed(HashCompat( seed $ localURL $ " PostFirstEntry",, localURL $ "PostFirstEntry", seed ));
+        SetSeed(HashCompat( seed $ localURL $ " PostFirstEntry",, localURL $ " PostFirstEntry", seed ));
         for(i=0; i<num_modules; i++) {
             modules[i].PostFirstEntry();
         }
