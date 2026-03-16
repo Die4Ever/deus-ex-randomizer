@@ -742,7 +742,7 @@ simulated function int HashCompat(
     optional coerce string murmurStr,
     optional int murmurSeed
 ) {
-    if (flags.loop_initial_version >= 3070104) {
+    if (flags.loop_initial_version >= 3070104 || OnTitleScreen()) {
         if (murmurStr == "") {
             murmurStr = crcStr;
         }
