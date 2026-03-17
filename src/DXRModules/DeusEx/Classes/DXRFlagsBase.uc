@@ -210,10 +210,7 @@ function HXRollSeed()
 function NewPlaythroughId() {
     local DataStorage ds;
 
-    playthrough_id = MurmurHash3(
-        "Playthrough ID",
-        MurmurHash3(class'DataStorage'.static._SystemTime(Level) $ Level.TimeSeconds $ Rand(MaxInt))
-    );
+    playthrough_id = MurmurHash3(class'DataStorage'.static._SystemTime(Level) $ Level.TimeSeconds, Rand(MaxInt));
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None && ds.HasPlaythroughId(playthrough_id) ) {
         l("repeat playthrough id " $ playthrough_id);
