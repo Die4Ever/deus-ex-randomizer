@@ -1935,7 +1935,7 @@ function int DropPiano(string viewer)
         return TempFail;
     }
 
-    if(ccLink.ccModule.IsOctober()) {
+    if(ccLink.ccModule.IsHalloweenSeason()) {
         piano.ItemName = viewer $ "'s Staufway Piano";
     } else {
         piano.ItemName = viewer $ "'s Grand Piano";
