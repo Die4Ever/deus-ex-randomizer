@@ -6,7 +6,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=3;
     minor=7;
     patch=1;
-    build=3;//build can't be higher than 99
+    build=4;//build can't be higher than 99
 }
 
 simulated static function bool VersionIsStable()
@@ -47,6 +47,11 @@ simulated static function string VersionToString(int major, int minor, int patch
         return "v" $ major $"."$ minor;
     else
         return "v" $ major $"."$ minor $"."$ patch;
+}
+
+simulated static function string VersionIntToString(int version, optional bool full)
+{
+    return VersionToString((version / 1000000) % 100, (version / 10000) % 100, (version / 100) % 100, version % 100, full);
 }
 
 simulated static function int VersionNumber()

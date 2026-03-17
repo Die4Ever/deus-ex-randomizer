@@ -41,16 +41,6 @@ function string GetMapNameStripped()
     return mapname;
 }
 
-function int Crc()
-{
-    local DXRando dxr;
-
-    foreach AllActors(class'DXRando', dxr) {
-        return dxr.Crc(plaintext);
-    }
-    return 0;
-}
-
 function MarkTextRead(name ttextTag)
 {
     local DXREvents e;
@@ -410,7 +400,7 @@ static function string GetTextTag(#var(prefix)InformationDevices id)
                 TextTag=injectID.plaintextTag;
             } else {
                 mapname = injectID.GetMapNameStripped();
-                TextTag = mapname$"_"$ injectID.Crc();
+                TextTag = mapname$"_"$ class'DXRando'.default.dxr.HashCompat(injectID.plaintext);
             }
         }
     }

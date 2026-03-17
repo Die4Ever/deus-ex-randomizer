@@ -185,12 +185,12 @@ function bool BindPresets()
     }
     i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves
     if(i>0) s = Left(s, i);
-    if((dxr.rando_beaten >= 1 || dxr.Level.Month == 10) && PresetButton("Halloween Lite Mode", s)) {
+    if((dxr.rando_beaten >= 1 || dxr.IsOctober()) && PresetButton("Halloween Lite Mode", s)) {
         f.gamemode = f.HalloweenMode;
         StartPreset();
         return true;
     }
-    if(dxr.rando_beaten >= 3 && dxr.Level.Month == 10 && PresetButton("WaltonWare Halloween", f.GameModeHelpText(f.WaltonWareHalloween))) {
+    if(dxr.rando_beaten >= 3 && dxr.IsOctober() && PresetButton("WaltonWare Halloween", f.GameModeHelpText(f.WaltonWareHalloween))) {
         f.gamemode = f.WaltonWareHalloween;
         f.autosave = 8; //UnlimitedFixedSaves
         StartPreset();

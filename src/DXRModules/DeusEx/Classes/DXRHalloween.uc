@@ -7,7 +7,7 @@ function PostFirstEntry()
     local #var(prefix)WHPiano piano;
     Super.PostFirstEntry();
 
-    if(IsOctober()) { // cosmetics
+    if(IsHalloweenSeason()) { // cosmetics
         MakeCosmetics();
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
             piano.ItemName = "Staufway Piano";
@@ -211,46 +211,48 @@ function MakeCosmetics()
     local SkyZoneInfo z;
     local #var(DeusExPrefix)Carcass carc;
 
-    foreach AllActors(class'SkyZoneInfo', z) {
+    if (class'MenuChoice_OctoberCosmetics'.static.TintEnabled(dxr.flags)) foreach AllActors(class'SkyZoneInfo', z) {
         z.AmbientBrightness = 5;
         z.AmbientSaturation = 100;
         z.AmbientHue = 255;
     }
 
-    num_nav_points = 0;
-    foreach AllActors(class'NavigationPoint', p) {
-        if(p.Region.Zone.bWaterZone) continue;
-        locs[len++] = p.Location;
+    if (class'MenuChoice_OctoberCosmetics'.static.SpooksEnabled(dxr.flags)) {
+        num_nav_points = 0;
+        foreach AllActors(class'NavigationPoint', p) {
+            if(p.Region.Zone.bWaterZone) continue;
+            locs[len++] = p.Location;
 
-        // calc map size
-        if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
-        if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
-        num_nav_points++;
-    }
+            // calc map size
+            if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
+            if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
+            num_nav_points++;
+        }
 
-    SetSeed("MakeJackOLanterns");
-    ConsoleCommand("set DXRJackOLantern bBlockActors " $ (!dxr.flags.IsSpeedrunMode()));
-    ConsoleCommand("set DXRJackOLantern bBlockPlayers " $ (!dxr.flags.IsSpeedrunMode()));
-    if(IsHalloween()) num = len/40;
-    else num = len/40 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
-    for(i=0; i<num; i++) {
-        slot = rng(len);
-        SpawnJackOLantern(locs[slot]);
-    }
+        SetSeed("MakeJackOLanterns");
+        ConsoleCommand("set DXRJackOLantern bBlockActors " $ (!dxr.flags.IsSpeedrunMode()));
+        ConsoleCommand("set DXRJackOLantern bBlockPlayers " $ (!dxr.flags.IsSpeedrunMode()));
+        if(class'MenuChoice_OctoberCosmetics'.static.SpooksFullyEnabled(dxr.flags)) num = len/40;
+        else num = len * Level.Day / 1600; // (len/40.0)*(Day/40.0), Day divided by 40 instead of 31 to make it weaker
+        for(i=0; i<num; i++) {
+            slot = rng(len);
+            SpawnJackOLantern(locs[slot]);
+        }
 
-    // spiderwebs near lights?
-    foreach AllActors(class'Light', lgt) {
-        if(lgt.Region.Zone.bWaterZone) continue;
-        locs[len++] = lgt.Location;
-    }
+        // spiderwebs near lights?
+        foreach AllActors(class'Light', lgt) {
+            if(lgt.Region.Zone.bWaterZone) continue;
+            locs[len++] = lgt.Location;
+        }
 
-    SetSeed("MakeSpiderWebs");
-    // random order gives better results
-    if(IsHalloween()) num = len/2;
-    else num = len/2 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
-    for(i=0; i<num; i++) {
-        slot = rng(len);
-        SpawnSpiderweb(locs[slot]);
+        SetSeed("MakeSpiderWebs");
+        // random order gives better results
+        if(class'MenuChoice_OctoberCosmetics'.static.SpooksFullyEnabled(dxr.flags)) num = len/2;
+        else num = len * Level.Day / 80; // (len/2.0)*(Day/40.0), Day divided by 40 instead of 31 to make it weaker
+        for(i=0; i<num; i++) {
+            slot = rng(len);
+            SpawnSpiderweb(locs[slot]);
+        }
     }
 }
 
@@ -262,10 +264,10 @@ function MakeBlackCats()
 
     SetSeed("MakeBlackCats");
 
-    if (IsFridayThe13th())                catChance = 50.0;
-    else if (dxr.flags.IsHalloweenMode()) catChance = 30.0;
-    else if (IsOctober())                 catChance = 10.0;
-    else                                  catChance =  1.0;
+    if (IsFridayThe13th())                                                            catChance = 50.0;
+    else if (class'MenuChoice_OctoberCosmetics'.static.SpooksFullyEnabled(dxr.flags)) catChance = 30.0;
+    else if (IsOctober())                                                             catChance = 10.0;
+    else                                                                              catChance =  1.0;
 
     //Chance to convert living cats
     foreach AllActors(class'#var(prefix)Cat',cat){

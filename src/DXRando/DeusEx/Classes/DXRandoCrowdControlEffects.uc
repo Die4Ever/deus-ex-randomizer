@@ -1935,7 +1935,7 @@ function int DropPiano(string viewer)
         return TempFail;
     }
 
-    if(ccLink.ccModule.IsOctober()) {
+    if(ccLink.ccModule.IsHalloweenSeason()) {
         piano.ItemName = viewer $ "'s Staufway Piano";
     } else {
         piano.ItemName = viewer $ "'s Grand Piano";
@@ -2620,7 +2620,7 @@ function bool SpamDatacubes(String viewer)
     num = 0;
     for (i=0;i<5;i++){
         cubeText = RandomSpamDatacubeText(viewer);
-        plaintextTag = "CrowdControlSpamCubes_" $ dxr.localURL $ "_" $ dxr.Crc(cubeText);
+        plaintextTag = "CrowdControlSpamCubes_" $ dxr.localURL $ "_" $ class'DXRInfo'.static.MurmurHash3(cubeText);
         dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),cubeText,plaintextTag);
         if (dc!=None){
             dc.Tag='CrowdControlSpamDatacube';

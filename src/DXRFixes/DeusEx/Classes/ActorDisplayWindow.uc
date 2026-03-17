@@ -1490,7 +1490,7 @@ function DrawSPPatrolPath(GC gc, ScriptedPawn sp)
     }
 
     pp = startPP;
-    colourNum = dxr.Crc(sp.OrderTag) % ArrayCount(patrolColours);
+    colourNum = class'DXRInfo'.static.MurmurHash3(sp.OrderTag) % ArrayCount(patrolColours);
     while (pp.NextPatrolPoint!=None){
         DrawColourLine(gc,pp.Location,pp.NextPatrolPoint.Location,
                        Default.patrolColours[colourNum].R,
