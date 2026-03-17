@@ -319,7 +319,7 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         exp = newgameplus_loops;
     }
 
-    dxr.SetSeed(dxr.Crc("NG+ curve tweak " $ (seed - newgameplus_loops)));
+    dxr.SetSeed(MurmurHash3("NG+ curve tweak", seed - newgameplus_loops));
     rng(9);// advance the rng
 #ifdef hx
     p.CombatDifficulty = 3;// I don't think NG+ works in HX anyways?
@@ -398,7 +398,7 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         if (inv.Class==class'#var(package).WeaponRubberBaton') continue;
 
         //Select the weapon with the pseudorandomly lowest hash
-        hash = MurmurHash(inv.class.name);
+        hash = MurmurHash3(inv.class.name, dxr.seed);
         if (hash < selectedHash || numWeaps == 0) {
             selected = Weapon(inv);
             selectedHash = hash;
@@ -579,7 +579,7 @@ function ExtendedTests()
         for (thisIdx = 0; thisIdx < ArrayCount(weaps); thisIdx++) {
             //thisHash = dxr.Crc(weaps[thisIdx].name $ baseSeed+i);
             //thisHash = dxr.Crc(baseSeed+i $ baseSeed+i $ weaps[thisIdx].name $ baseSeed+i $ baseSeed+i);
-            thisHash = MurmurHash3_x86_32(weaps[thisIdx].name, baseSeed+i);
+            thisHash = MurmurHash3(weaps[thisIdx].name, baseSeed+i);
             if (thisHash < selectedHash || thisIdx == 0) {
                 selectedIdx = thisIdx;
                 selectedHash = thisHash;

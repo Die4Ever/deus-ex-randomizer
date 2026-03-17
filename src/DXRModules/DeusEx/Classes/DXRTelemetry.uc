@@ -121,7 +121,7 @@ function Timer()
 
     for(i=0; i<ArrayCount(fixed); i++) {
         if(fixed[i] == '') continue;
-        slot = Abs(dxr.Crc( String(fixed[i]) )) % ArrayCount(names);
+        slot = Abs(MurmurHash3(String(fixed[i]))) % ArrayCount(names);
         names[slot] = fixed[i];
     }
 
@@ -144,7 +144,7 @@ function Timer()
             }
         }
 
-        slot = Abs(dxr.Crc( String(n) )) % ArrayCount(names);
+        slot = Abs(dxr.HashCompat(n)) % ArrayCount(names);
         if( names[slot] == '' || names[slot] == n ) {
             names[slot] = n;
             counts[slot]++;
