@@ -693,7 +693,14 @@ function AnyEntryMapFixes()
 
         break;
 
+    case "03_NYC_AIRFIELD":
+        CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
+        break;
+    case "03_NYC_HANGAR":
+        CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
+        break;
     case "03_NYC_AIRFIELDHELIBASE":
+        CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
         if (!RevisionMaps){
             //Restore this cut phone conversation
             c = GetConversation('OverhearLebedev');
@@ -802,6 +809,31 @@ function PreTravelMapFixes()
 {
     if(dxr.flagbase.GetBool('MeetLebedev2_Played')) {
         dxr.flagbase.SetBool('MeetLebedev2_Played', true,, 5); // restores some possible dialog with Paul
+    }
+}
+//#endregion
+
+//#region Clean Up NSF
+function CleanUpNSFAfterLebedev()
+{
+    local ScriptedPawn P;
+    local bool trashEm;
+
+    trashEm=False;
+
+    if (dxr.flagbase.GetBool('MeetLebedev_Played') ||
+        dxr.flagbase.GetBool('JuanLebedev_Dead'))
+    {
+        trashEm = True;
+    }
+
+    if (trashEm)
+    {
+        foreach AllActors(class'ScriptedPawn', P)
+        {
+            if (P.GetAllianceType('player')!=ALLIANCE_Hostile) continue; //Only destroy enemies
+            if (InStr(P.Tag,"_clone")!=-1) P.Destroy();
+        }
     }
 }
 //#endregion

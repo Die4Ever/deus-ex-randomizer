@@ -75,6 +75,7 @@ function PreFirstEntryMapFixes()
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)AlarmUnit au;
     local #var(prefix)AutoTurret turret;
+    local #var(prefix)SkillAwardTrigger sat;
 
     local bool VanillaMaps;
 
@@ -617,6 +618,12 @@ function PreFirstEntryMapFixes()
             foreach RadiusActors(class'CrateUnbreakableSmall', cus, 0.1, vectm(288.01, -1402.41, 488.10)) {
                 cus.bIsSecretGoal = true;
                 break;
+            }
+
+            foreach AllActors(class'#var(prefix)SkillAwardTrigger', sat,'klax'){
+                //This is the 350 skill points you get when you redirect the missile.  It gets triggered by the computer, but also has collision...
+                //Remove the collision so it only gets activated by the computer.
+                sat.SetCollision(False,False,False);
             }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
