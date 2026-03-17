@@ -976,9 +976,9 @@ function string GameModeName(int gamemode)
         return "Normal Randomizer";
 #ifdef injections
     case EntranceRando:
-        return "Entrance Randomization";
+        return "Entrance Randomizer";
     case HalloweenEntranceRando:
-        return "Halloween Entrance Randomization";
+        return "Halloween Entrance Randomizer";
     case HordeMode:
         return "Horde Mode";
     case HordeZombies:

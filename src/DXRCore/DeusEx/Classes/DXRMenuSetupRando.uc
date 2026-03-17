@@ -59,30 +59,30 @@ function BindControls(optional string action)
     BreakLine();
 
     NewMenuItem("Player Health", "Max health for each body part of the player.");
-    Slider(f.settings.health, 1, 10000);
+    Slider(f.settings.health, 1, 10000, GetGenericHelpText("playerhealth"));
 
     NewMenuItem("Player Energy", "Max bioelectric energy for the player.");
-    Slider(f.settings.energy, 0, 10000);
+    Slider(f.settings.energy, 0, 10000, GetGenericHelpText("playerenergy"));
 
     BreakLine();
 
 #ifndef hx
     starting_locations = NewMenuItem("", "Randomize starting locations on certain maps.");
-    EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
-    EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
+    EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations, GetStartingLocationsHelpText(100));
+    EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations, GetStartingLocationsHelpText(0));
 #endif
 
     goals_rando = NewMenuItem("", "Randomize goal locations on certain maps.");
-    EnumOption("Randomize Goal Locations", 100, f.settings.goals);
-    EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
-    EnumOption("Goal Location Hints", 101, f.settings.goals);
-    EnumOption("Goal Location Spoilers", 102, f.settings.goals);
-    EnumOption("Serious Goal Locations", 200, f.settings.goals);
+    EnumOption("Randomize Goal Locations", 100, f.settings.goals, GetGoalRandoHelpText(100));
+    EnumOption("Unchanged Goal Locations", 0, f.settings.goals, GetGoalRandoHelpText(0));
+    EnumOption("Goal Location Hints", 101, f.settings.goals, GetGoalRandoHelpText(101));
+    EnumOption("Goal Location Spoilers", 102, f.settings.goals, GetGoalRandoHelpText(102));
+    EnumOption("Serious Goal Locations", 200, f.settings.goals, GetGoalRandoHelpText(200));
 
     BreakLine();
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
-    Slider(f.settings.merchants, 0, 100,GetMerchantHelpText());
+    Slider(f.settings.merchants, 0, 100,GetGenericHelpText("merchant"));
 #endif
 
     NewMenuItem("Dancing %", "How many characters should be dancing.");
@@ -104,26 +104,26 @@ function BindControls(optional string action)
     }
 
     NewMenuItem("Splits Overlay", "Splits and total game time overlay");
-    EnumOption("Don't Show", 0, f.moresettings.splits_overlay);
-    EnumOption("Show", 1, f.moresettings.splits_overlay);
+    EnumOption("Don't Show", 0, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
+    EnumOption("Show", 1, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
 
 #ifdef vanilla
     NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
     EnumOption("Full Closet", 0, f.clothes_looting, GetClothesLootingHelpText(0));
     EnumOption("Looting Needed", 1, f.clothes_looting, GetClothesLootingHelpText(1));
 
-    NewMenuItem("Entrance Randomizer", "Level transitions are randomized so they will take you to a different level than usual (within the same mission).");
-    EnumOption("Disabled", 0, f.moresettings.entrance_rando);
-    EnumOption("Enabled", 100, f.moresettings.entrance_rando);
+    NewMenuItem("Entrance Randomization", "Level transitions are randomized so they will take you to a different level than usual (within the same mission).");
+    EnumOption("Disabled", 0, f.moresettings.entrance_rando, GetEntranceRandoHelpText(0));
+    EnumOption("Enabled", 100, f.moresettings.entrance_rando, GetEntranceRandoHelpText(100));
 #endif
 
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win (or progress in Mean Bingo Machine mode).");
-    Slider(f.settings.bingo_win, 0, 12);
+    Slider(f.settings.bingo_win, 0, 12, GetGenericHelpText("bingowin"));
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
-    Slider(f.bingo_scale, 0, 100, GetBingoScaleHelpText());
+    Slider(f.bingo_scale, 0, 100, GetGenericHelpText("bingoscale"));
 
     NewMenuItem("Bingo Freespaces", "Should the center be a Free Space, or even more Free Spaces?");
     EnumOption("0 Free Spaces", 0, f.settings.bingo_freespaces);
@@ -146,41 +146,41 @@ function BindControls(optional string action)
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.medbots, -1, 100,GetMedBotHelpText());
+    Slider(f.settings.medbots, -1, 100,GetGenericHelpText("medbots"));
 
     NewMenuItem("Augbots", "Percentage chance for a zero-heals medbot to spawn in a map if a regular one doesn't.");
-    Slider(f.moresettings.empty_medbots, 0, 100, GetAugbotsHelpText());
+    Slider(f.moresettings.empty_medbots, 0, 100, GetGenericHelpText("augbots"));
 
     NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.repairbots, -1, 100,GetRepairBotHelpText());
+    Slider(f.settings.repairbots, -1, 100,GetGenericHelpText("repairbots"));
 
     if(!#defined(vmd)) {
         NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal.");
-        Slider(f.settings.medbotuses, 0, 10);
+        Slider(f.settings.medbotuses, 0, 10,GetGenericHelpText("medbotuses"));
 
         NewMenuItem("Repair Bot Uses", "Number of times you can use an individual repair bot to restore energy.");
-        Slider(f.settings.repairbotuses, 0, 10);
+        Slider(f.settings.repairbotuses, 0, 10,GetGenericHelpText("repairbotuses"));
     }
 
     NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown."$BR$"Global: All Medbots have the same cooldown.");
-    EnumOption("Unchanged", 0, f.settings.medbotcooldowns);
-    EnumOption("Individual", 1, f.settings.medbotcooldowns);
-    EnumOption("Global", 2, f.settings.medbotcooldowns);
+    EnumOption("Unchanged", 0, f.settings.medbotcooldowns, GetGoodBotHelpText("med","cooldown",0));
+    EnumOption("Individual", 1, f.settings.medbotcooldowns, GetGoodBotHelpText("med","cooldown",1));
+    EnumOption("Global", 2, f.settings.medbotcooldowns, GetGoodBotHelpText("med","cooldown",2));
 
     NewMenuItem("Repair Bot Cooldowns", "Individual: Each Repair Bot has its own charge cooldown."$BR$"Global: All Repair Bots have the same cooldown.");
-    EnumOption("Unchanged", 0, f.settings.repairbotcooldowns);
-    EnumOption("Individual", 1, f.settings.repairbotcooldowns);
-    EnumOption("Global", 2, f.settings.repairbotcooldowns);
+    EnumOption("Unchanged", 0, f.settings.repairbotcooldowns, GetGoodBotHelpText("repair","cooldown",0));
+    EnumOption("Individual", 1, f.settings.repairbotcooldowns, GetGoodBotHelpText("repair","cooldown",1));
+    EnumOption("Global", 2, f.settings.repairbotcooldowns, GetGoodBotHelpText("repair","cooldown",2));
 
     NewMenuItem("Medbot Heal Amount", "Individual: Each Medbot has its own healing amount."$BR$"Global: All Medbots have the same amount.");
-    EnumOption("Unchanged", 0, f.settings.medbotamount);
-    EnumOption("Individual", 1, f.settings.medbotamount);
-    EnumOption("Global", 2, f.settings.medbotamount);
+    EnumOption("Unchanged", 0, f.settings.medbotamount, GetGoodBotHelpText("med","amount",0));
+    EnumOption("Individual", 1, f.settings.medbotamount, GetGoodBotHelpText("med","amount",1));
+    EnumOption("Global", 2, f.settings.medbotamount, GetGoodBotHelpText("med","amount",2));
 
     NewMenuItem("Repair Bot Charge Amount", "Individual: Each Repair Bot has its own charge amount."$BR$"Global: All Repair Bots have the same amount.");
-    EnumOption("Unchanged", 0, f.settings.repairbotamount);
-    EnumOption("Individual", 1, f.settings.repairbotamount);
-    EnumOption("Global", 2, f.settings.repairbotamount);
+    EnumOption("Unchanged", 0, f.settings.repairbotamount, GetGoodBotHelpText("repair","amount",0));
+    EnumOption("Individual", 1, f.settings.repairbotamount, GetGoodBotHelpText("repair","amount",1));
+    EnumOption("Global", 2, f.settings.repairbotamount, GetGoodBotHelpText("repair","amount",2));
 
     NewGroup("Doors and Keys");
 
@@ -242,41 +242,41 @@ function BindControls(optional string action)
     Slider(f.settings.enemiesshuffled, 0, 100);
 
     NewMenuItem("Enemy Weapons Variety %", "Should enemies be using weapons that normally exist in the map?");
-    Slider(f.moresettings.enemies_weapons, 0, 100, GetEnemyWeaponsVarietyHelpText());
+    Slider(f.moresettings.enemies_weapons, 0, 100, GetGenericHelpText("enemyweaponsvariety"));
 
     NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
     Slider(f.settings.bot_weapons, 0, 100);
 
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
-    Slider(f.settings.enemies_nonhumans, 0, 100);
+    Slider(f.settings.enemies_nonhumans, 0, 100, GetGenericHelpText("nonhumanenemies"));
 
     NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn.  Leave blank or 0 to disable.");
-    Slider(f.settings.enemyrespawn, 0, 3600);
+    Slider(f.settings.enemyrespawn, 0, 3600, GetGenericHelpText("enemyrespawn"));
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
-    Slider(f.settings.turrets_add, 0, 10000, GetAddTurretsHelpText());
+    Slider(f.settings.turrets_add, 0, 10000, GetGenericHelpText("addturrets"));
 
     NewMenuItem("Paris Chill %", "Chance to remove all MJ12 from the Champs-Elysees.");
-    Slider(f.remove_paris_mj12, 0, 100);
+    Slider(f.remove_paris_mj12, 0, 100, GetGenericHelpText("parischill"));
 
     NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies.  Leave blank or 0 to disable.");
-    Slider(f.moresettings.reanimation, 0, 3600);
+    Slider(f.moresettings.reanimation, 0, 3600, GetGenericHelpText("reanimation"));
 
     NewMenuItem("", "Stalkers cannot be permanently killed, but if they take enough damage then they will go away for a while.");
-    EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers, "2023 style :(");
-    EnumOption("Mr. H will haunt you.", 0x00040001, f.moresettings.stalkers, "2024 style.  Each map will have one Mr. H.");
-    EnumOption("Weeping Anna will haunt you.", 0x00040002, f.moresettings.stalkers, "Each map will have one Weeping Anna.");
-    EnumOption("Mr. H and Weeping Anna will haunt you.", 0x00040003, f.moresettings.stalkers, "Each map will have either a Mr. H or a Weeping Anna.");
-    EnumOption("Bobbys will haunt you.", 0x00040004, f.moresettings.stalkers, "Each map will have a set of Bobbys.");
-    EnumOption("Mr. H and Bobbys will haunt you.", 0x00040005, f.moresettings.stalkers, "Each map will either have one Mr. H, or a set of Bobbys.");
-    EnumOption("Weeping Anna and Bobbys will haunt you.", 0x00040006, f.moresettings.stalkers, "Just the new ones.  Each map will either have one Weeping Anna, or a set of Bobbys.");
-    EnumOption("Stalkers will haunt you.", 0x0004FFFF, f.moresettings.stalkers, "Halloween 2025 style!  Each map will either have one Mr. H, one Weeping Anna, or a set of Bobbys."); // 1x
-    EnumOption("More stalkers will haunt you.", 0x0008FFFF, f.moresettings.stalkers, "You might get 2 different types of stalkers in the same maps!"); // 2x
-    EnumOption("Many stalkers will haunt you.", 0x0010FFFF, f.moresettings.stalkers, "You might get all types of stalkers in the same maps!"); // 4x
-    EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers, "You don't actually think this is a good idea, do you?"); // 10x
+    EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers, GetStalkerHelpText(0));
+    EnumOption("Mr. H will haunt you.", 0x00040001, f.moresettings.stalkers, GetStalkerHelpText(0x00040001));
+    EnumOption("Weeping Anna will haunt you.", 0x00040002, f.moresettings.stalkers, GetStalkerHelpText(0x00040002));
+    EnumOption("Mr. H and Weeping Anna will haunt you.", 0x00040003, f.moresettings.stalkers, GetStalkerHelpText(0x00040003));
+    EnumOption("Bobbys will haunt you.", 0x00040004, f.moresettings.stalkers, GetStalkerHelpText(0x00040004));
+    EnumOption("Mr. H and Bobbys will haunt you.", 0x00040005, f.moresettings.stalkers, GetStalkerHelpText(0x00040005));
+    EnumOption("Weeping Anna and Bobbys will haunt you.", 0x00040006, f.moresettings.stalkers, GetStalkerHelpText(0x00040006));
+    EnumOption("Stalkers will haunt you.", 0x0004FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0004FFFF)); // 1x
+    EnumOption("More stalkers will haunt you.", 0x0008FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0008FFFF)); // 2x
+    EnumOption("Many stalkers will haunt you.", 0x0010FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0010FFFF)); // 4x
+    EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0028FFFF)); // 10x
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
@@ -316,10 +316,10 @@ function BindControls(optional string action)
     Slider(f.settings.maxskill, 1, 1000);
 
     NewMenuItem("Banned Skills %", "Chance of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skills, 0, 100, GetBannedSkillsHelpText());
+    Slider(f.settings.banned_skills, 0, 100, GetGenericHelpText("bannedskills"));
 
     NewMenuItem("Banned Skill Levels %", "Chance of a certain level of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skill_levels, 0, 100, GetBannedSkillLevelsHelpText());
+    Slider(f.settings.banned_skill_levels, 0, 100, GetGenericHelpText("bannedskilllevels"));
 
     NewMenuItem("Skill Strength Rando %", "How much to randomize the strength of skills.");
     Slider(f.settings.skill_value_rando, 0, 100);// this is actually a wet/dry scale, so the range should be 0 to 100%
@@ -348,7 +348,7 @@ function BindControls(optional string action)
     Slider(f.settings.swapitems, 0, 100);
 
     NewMenuItem("Swap Containers %", "The chance for container positions to be swapped.");
-    Slider(f.settings.swapcontainers, 0, 100, GetSwapContainersHelpText());
+    Slider(f.settings.swapcontainers, 0, 100, GetGenericHelpText("swapcontainers"));
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
     Slider(f.settings.grenadeswap, 0, 100);
@@ -378,13 +378,13 @@ function BindControls(optional string action)
     Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
-    Slider(f.settings.augcans, 0, 100, GetAugCansRandoHelpText());
+    Slider(f.settings.augcans, 0, 100, GetGenericHelpText("augcanrando"));
 
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
     NewMenuItem("Aug Slot Rando %", "The chance for each aug to randomize the body part it can be installed into");
-    Slider(f.moresettings.aug_loc_rando, 0, 100, GetAugSlotRandoHelpText());
+    Slider(f.moresettings.aug_loc_rando, 0, 100, GetGenericHelpText("augslotrando"));
 
     NewGroup("New Game+");
 
@@ -409,7 +409,7 @@ function CreateSeedInput(DXRFlags f)
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
     if(class == class'DXRMenuReSetupRando') sseed = string(f.seed);
-    sseed = EditBox(sseed, "1234567890", GetSeedHelpText());
+    sseed = EditBox(sseed, "1234567890", GetGenericHelpText("seed"));
     if( sseed != "" ) {
         f.seed = int(sseed);
         dxr.seed = f.seed;
@@ -495,13 +495,122 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 }
 
 //#region Help Text Fns
-static function string GetSeedHelpText()
+
+//A simple spot to add basic help text that doesn't change based on settings
+function String GetGenericHelpText(string opt)
 {
     local string msg;
 
-    msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
-    msg = msg $ "|n";
-    msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+    switch(opt){
+    case "seed":
+        msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
+        msg = msg $ "|n";
+        msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+        break;
+    case "augcanrando":
+        msg =       "The chance for each augmentation canister to have its contents randomized.  At 100%, all aug cans will have random contents.  Likewise, 0% will leave all aug cans with their original contents.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When randomized, the contents of the can will be selected from the augs available based on your selected game mode and loadout.";
+        break;
+    case "augslotrando":
+        msg =       "The chance for each augmentation to get a randomized aug location, allowing them to be installed in a different body part than normal.  "$"At 100%, all augs will be assigned random body parts.  Likewise, at 0%, all augs will be able to be installed in their original location.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Using values between 0% and 100% may result in some body parts being overloaded or other ones lacking in choices,"$" since augs are unlikely to randomize into the slots that were newly freed by other randomized augs.";
+        break;
+    case "merchant":
+        msg =       "The chance for The Merchant to appear in each map.  At 100%, The Merchant will appear in every map.  At 0%, The Merchant will not appear at all.  "$"If you kill or knock out The Merchant, he will not appear again.|n";
+        msg = msg $ "|n";
+        msg = msg $ "The Merchant will have various useful items available for sale, which will be different every map.  "$"When using loadouts, The Merchant will not sell any banned items and may have additional items available (based on the loadout).";
+        break;
+    case "bingoscale":
+        msg =       "Bingo Scale adjusts the number of times a bingo task needs to be done before completing the square.|n";
+        msg = msg $ "|n";
+        msg = msg $ "For example, a goal to 'Drink 100 Cans of Soda' at 50% Bingo Scale would become 'Drink 50 Cans of Soda'.  Goal amounts will not drop below 1.";
+        break;
+    case "augbots":
+        msg =       "The chance of an augbot being spawned in each map.  Augbots will only be spawned if a medical bot was NOT spawned in the map (based on the 'Medbots %' setting).|n";
+        msg = msg $ "|n";
+        msg = msg $ "A hint datacube will be spawned near the Augbot saying that it has been delivered nearby, which can help you find it.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
+        break;
+    case "repairbots":
+        msg =       "The chance of a Repair Bot being spawned in each map.  Vanilla is about 14%.|n";
+        msg = msg $ "|n";
+        msg = msg $ "A hint datacube will be spawned near the Repair Bot saying that it has been delivered nearby, which can help you find it.|n";
+        break;
+    case "medbots":
+        msg =       "The chance of a Medical Bot being spawned in each map.  Vanilla is about 14%.|n";
+        msg = msg $ "|n";
+        msg = msg $ "A hint datacube will be spawned near the Medical Bot saying that it has been delivered nearby, which can help you find it.|n";
+        break;
+    case "enemyweaponsvariety":
+        msg =       "How varied do you want the weapons to be in each map, relative to the original game?  At 0%, enemies will only be given weapons present in the original level.  ";
+        msg = msg $ "At 100%, enemies will be given weapons based on the weapon weighting decided by the randomizer.  Values in between will blend the two pools of weapon choices together.";
+        break;
+    case "swapcontainers":
+        msg =       "The chance of each container to be shuffled in the map.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Containers include obvious things like wooden crates, but also include things like metal crates, barrels, wicker baskets, trash cans, and trash bags.";
+        break;
+    case "bannedskills":
+        msg =       "The chance of each skill to be entirely banned.  Bans will get rerolled along with skill costs.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When banned, you will not be allowed to upgrade the skill at all.";
+        break;
+    case "bannedskilllevels":
+        msg =       "The chance for any skill level for each skill to be banned.  Bans will get rerolled along with skill costs.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When a skill level is banned, you will not be allowed to upgrade the skill beyond that banned level.  The upgrade from Untrained to Trained will never be banned by this setting.";
+        break;
+    case "addturrets":
+        msg =       "The chances to add extra turrets, cameras, and security computers.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Every additional 100% gives another chance to spawn a turret/camera/computer combo (meaning more added turrets).";
+        break;
+    case "playerhealth":
+        msg =       "The maximum amount of health that the player has in each body part.  The vanilla setting is 100 health per body part.";
+        break;
+    case "playerenergy":
+        msg =       "The maximum amount of bioelectric energy that the player has.  The vanilla setting is 100 energy.";
+        break;
+    case "splitsoverlay":
+        msg =       "Choose whether or not to show an in-game speedrun timer.";
+        //TODO: THIS DESCRIPTION CERTAINLY COULD BE EXPANDED TO EXPLAIN DXRSplits.ini AND THE THINGS YOU CAN MODIFY IN THERE
+        break;
+    case "bingowin":
+        msg =       "This setting determines how many lines of bingo you must complete in your game.|n";
+        msg = msg $ "|n";
+        msg = msg $ "In a typical game, completing this number of bingo lines will win the game instantly.|n";
+        msg = msg $ "In Mean Bingo Machine mode, completing this number of bingo lines will allow you to progress to the next mission.|n";
+        break;
+    case "medbotuses":
+        msg =       "This setting lets you select how many times each individual medbot can be used to heal the player.";
+        break;
+    case "repairbotuses":
+        msg =       "This setting lets you select how many times each individual repair bot can be used to recharge the players energy.";
+        break;
+    case "enemyrespawn":
+        msg =       "When enemies are killed or knocked unconscious, a new enemy will respawn at the original location after this many seconds.";
+        break;
+    case "reanimation":
+        msg =       "When enemies are killed, they will be reanimated after this many seconds as zombies that attack with their hands and are hostile to everything around them.|n";
+        msg = msg $ "|n";
+        msg = msg $ "Unconscious enemies will not be reanimated.  Corpses can be destroyed (or relocated!) to prevent zombies from appearing!";
+        break;
+    case "nonhumanenemies":
+        msg =       "What percentage of non-human enemies should actually be added?|n";
+        msg = msg $ "|n";
+        msg = msg $ "At 100%, all non-human clones will actually be spawned.  At 0%, no non-human clones will be created.|n";
+        msg = msg $ "Lower values will result in less additional non-human enemies.";
+        break;
+    case "parischill":
+        msg =       "This setting sets the odds of all MJ12 troops being removed from the streets of Paris.  This setting will carry through New Game Plus, giving a chance for some loops to have enemies and others to not have any.";
+        break;
+    default:
+        log("GetGenericHelpText: No help text available for "$opt);
+        break;
+    }
 
     return msg;
 }
@@ -642,50 +751,6 @@ function string GetCameraModeHelpText(int mode)
 
 }
 
-function string GetAugCansRandoHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for each augmentation canister to have its contents randomized.  At 100%, all aug cans will have random contents.  Likewise, 0% will leave all aug cans with their original contents.|n";
-    msg = msg $ "|n";
-    msg = msg $ "When randomized, the contents of the can will be selected from the augs available based on your selected game mode and loadout.";
-
-    return msg;
-}
-
-function string GetAugSlotRandoHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for each augmentation to get a randomized aug location, allowing them to be installed in a different body part than normal.  "$"At 100%, all augs will be assigned random body parts.  Likewise, at 0%, all augs will be able to be installed in their original location.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Using values between 0% and 100% may result in some body parts being overloaded or other ones lacking in choices,"$" since augs are unlikely to randomize into the slots that were newly freed by other randomized augs.";
-
-    return msg;
-}
-
-function string GetMerchantHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for The Merchant to appear in each map.  At 100%, The Merchant will appear in every map.  At 0%, The Merchant will not appear at all.  "$"If you kill or knock out The Merchant, he will not appear again.|n";
-    msg = msg $ "|n";
-    msg = msg $ "The Merchant will have various useful items available for sale, which will be different every map.  "$"When using loadouts, The Merchant will not sell any banned items and may have additional items available (based on the loadout).";
-
-    return msg;
-}
-
-function string GetBingoScaleHelpText()
-{
-    local string msg;
-
-    msg =       "Bingo Scale adjusts the number of times a bingo task needs to be done before completing the square.|n";
-    msg = msg $ "|n";
-    msg = msg $ "For example, a goal to 'Drink 100 Cans of Soda' at 50% Bingo Scale would become 'Drink 50 Cans of Soda'.  Goal amounts will not drop below 1.";
-
-    return msg;
-}
-
 function string GetSkillLevelCostsHelpText(int mode)
 {
     local string msg;
@@ -698,95 +763,6 @@ function string GetSkillLevelCostsHelpText(int mode)
             msg = "The cost of each skill level (for a single skill) are multiplied by a different random value.";
             break;
     }
-
-    return msg;
-}
-
-function string GetAugbotsHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of an augbot being spawned in each map.  Augbots will only be spawned if a medical bot was NOT spawned in the map (based on the 'Medbots %' setting).|n";
-    msg = msg $ "|n";
-    msg = msg $ "A hint datacube will be spawned near the Augbot saying that it has been delivered nearby, which can help you find it.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
-
-    return msg;
-}
-
-function string GetRepairBotHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of a Repair Bot being spawned in each map.|n";
-    msg = msg $ "|n";
-    msg = msg $ "A hint datacube will be spawned near the Repair Bot saying that it has been delivered nearby, which can help you find it.|n";
-
-    return msg;
-}
-
-function string GetMedBotHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of a Medical Bot being spawned in each map.|n";
-    msg = msg $ "|n";
-    msg = msg $ "A hint datacube will be spawned near the Medical Bot saying that it has been delivered nearby, which can help you find it.|n";
-
-    return msg;
-}
-
-function string GetEnemyWeaponsVarietyHelpText()
-{
-    local string msg;
-
-    msg =       "How varied do you want the weapons to be in each map, relative to the original game?  At 0%, enemies will only be given weapons present in the original level.  ";
-    msg = msg $ "At 100%, enemies will be given weapons based on the weapon weighting decided by the randomizer.  Values in between will blend the two pools of weapon choices together.";
-
-    return msg;
-}
-
-function string GetSwapContainersHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of each container to be shuffled in the map.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Containers include obvious things like wooden crates, but also include things like metal crates, barrels, wicker baskets, trash cans, and trash bags.";
-
-    return msg;
-}
-
-function string GetBannedSkillsHelpText()
-{
-    local string msg;
-
-    msg =       "The chance of each skill to be entirely banned.  Bans will get rerolled along with skill costs.|n";
-    msg = msg $ "|n";
-    msg = msg $ "When banned, you will not be allowed to upgrade the skill at all.";
-
-    return msg;
-}
-
-function string GetBannedSkillLevelsHelpText()
-{
-    local string msg;
-
-    msg =       "The chance for any skill level for each skill to be banned.  Bans will get rerolled along with skill costs.|n";
-    msg = msg $ "|n";
-    msg = msg $ "When a skill level is banned, you will not be allowed to upgrade the skill beyond that banned level.  The upgrade from Untrained to Trained will never be banned by this setting.";
-
-    return msg;
-}
-
-function string GetAddTurretsHelpText()
-{
-    local string msg;
-
-    msg =       "The chances to add extra turrets, cameras, and security computers.|n";
-    msg = msg $ "|n";
-    msg = msg $ "Every additional 100% gives another chance to spawn a turret/camera/computer combo (meaning more added turrets).";
 
     return msg;
 }
@@ -834,6 +810,227 @@ function string GetPasswordRandoHelpText(int val)
             return "Passwords are randomized.  Keypads get randomized numeric code with an equal length to the original code.  ATM accounts get a randomized numeric PIN."$"  Computers get a randomized password made up of two or three randomly selected words.";
     }
     return "";
+}
+
+function string GetEntranceRandoHelpText(int mode)
+{
+    local string msg;
+
+    switch(mode){
+        case 0: //Entrance Randomization Disabled
+            msg = "Entrance Randomization is disabled.  All level transitions will take you to the original destination levels.";
+            break;
+        case 100: //Entrance Randomization Enabled
+            msg = "Entrance Randomization is enabled.  Transitions between levels will take you to another randomly selected level transition within the same mission.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Both Paris missions (missions 11 and 12) are merged together, as are Vandenberg and Ocean Lab (12 and 14).";
+
+            break;
+    }
+
+    return msg;
+}
+
+function string GetGoodBotHelpText(string botType, string setting, int mode)
+{
+    local string msg;
+
+    if (botType=="med") {
+        if (setting=="cooldown"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Medical Bot cooldowns after healing will be the same as in the original game (60 seconds).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Medical Bot will have its own randomly selected cooldown.  This cooldown will remain consistent after every heal.";
+                    break;
+                case 2: //Global
+                    msg = "All Medical Bots will use the same single randomly selected cooldown.  This cooldown will remain consistent after every heal.";
+                    break;
+            }
+        }else if (setting=="amount"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Medical Bots will heal for the same amount as they did in the original game (300 health).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Medical Bot will have its own randomly selected heal amount.  This amount will be the same for all heals.";
+                    break;
+                case 2: //Global
+                    msg = "All Medical Bots will use the same single randomly selected heal amount.  This amount will be the same for all heals.";
+                    break;
+            }
+        }
+    } else if (botType=="repair"){
+        if (setting=="cooldown"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Repair Bot cooldowns after charging will be the same as in the original game (60 seconds).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Repair Bot will have its own randomly selected cooldown.  This cooldown will remain consistent after every charge.";
+                    break;
+                case 2: //Global
+                    msg = "All Repair Bots will use the same single randomly selected cooldown.  This cooldown will remain consistent after every charge.";
+                    break;
+            }
+        }else if (setting=="amount"){
+            switch(mode){
+                case 0: //Unchanged
+                    msg = "Repair Bots will recharge for the same amount as they did in the original game (75 energy).";
+                    break;
+                case 1: //Individual
+                    msg = "Each Repair Bot will have its own randomly selected recharge amount.  This amount will be the same for all recharges.";
+                    break;
+                case 2: //Global
+                    msg = "All Repair Bots will use the same single randomly selected recharge amount.  This amount will be the same for all recharges.";
+                    break;
+            }
+        }
+    }
+
+    return msg;
+}
+
+function string GetStalkerHelpText(int mode)
+{
+    local string msg;
+    local bool anna,bobby,mrh;
+
+    msg = "";
+
+    //This could probably actually parse the information out of
+    //this encoded value, but I'm too lazy for now...
+    switch(mode){
+        case 0:
+            msg = msg $ "2023 style :(";
+            break;
+        case 0x00040001:
+            msg = msg $ "2024 style.  Each map will have one Mr. H.";
+            mrh=true;
+            break;
+        case 0x00040002:
+            msg = msg $ "Each map will have one Weeping Anna.";
+            anna=true;
+            break;
+        case 0x00040003:
+            msg = msg $ "Each map will have either a Mr. H or a Weeping Anna.";
+            mrh=true;
+            anna=true;
+            break;
+        case 0x00040004:
+            msg = msg $ "Each map will have a set of Bobbys.";
+            bobby=true;
+            break;
+        case 0x00040005:
+            msg = msg $ "Each map will either have one Mr. H, or a set of Bobbys.";
+            mrh=true;
+            bobby=true;
+            break;
+        case 0x00040006:
+            msg = msg $ "Just the new ones.  Each map will either have one Weeping Anna, or a set of Bobbys.";
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0004FFFF:
+            msg = msg $ "Halloween 2025 style!  Each map will either have one Mr. H, one Weeping Anna, or a set of Bobbys.";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0008FFFF:
+            msg = msg $ "You might get 2 different types of stalkers in the same maps!";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0010FFFF:
+            msg = msg $ "You might get all types of stalkers in the same maps!";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+        case 0x0028FFFF:
+            msg = msg $ "You don't actually think this is a good idea, do you?";
+            mrh=true;
+            anna=true;
+            bobby=true;
+            break;
+    }
+
+    //Append information for the relevant stalkers
+    if (mrh){
+        msg = msg $ "|n";
+        msg = msg $ "|n";
+        msg = msg $ "Mr. H is a hulking menace who will stalk you through each level.  While he cannot be killed, he will retreat if he takes enough damage.  After a while, he will recover his health and return to the hunt.";
+    }
+
+    if (anna){
+        msg = msg $ "|n";
+        msg = msg $ "|n";
+        msg = msg $ "Weeping Anna is a creature that doesn't exist while being observed.  As soon as they are seen, they freeze into rock.  When not being observed, they are fast.  Faster than you could believe.  Don't turn your back, don't look away, and don't blink!";
+    }
+
+    if (bobby){
+        msg = msg $ "|n";
+        msg = msg $ "|n";
+        msg = msg $ "Bobby is your friend till the end!  Bundles of Bobby dolls will be scattered around the levels.  Some of those will be regular dolls, while others...";
+    }
+
+    return msg;
+}
+
+function string GetStartingLocationsHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode)
+    {
+        case 0: //Unchanged
+            msg = msg $ "The player starts each mission in the same spot they normally would in the original game.";
+            break;
+        case 100: //Randomized
+            msg = msg $ "The player will start some missions in randomized locations.";
+            break;
+    }
+
+    return msg;
+}
+
+function string GetGoalRandoHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode)
+    {
+        case 0: //Unchanged
+            msg = msg $ "Goal locations are unchanged from the original game.";
+            break;
+        case 100: //Randomized
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.";
+            break;
+        case 101: //Goal Location Hints
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Markers will be shown on screen to indicate all the possible locations to check to find the randomized goals.";
+            break;
+        case 102: //Goal Location Spoilers
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Markers will be shown on screen to indicate the locations of the randomized goals.";
+            break;
+        case 200: //Serious
+            msg = msg $ "Some mission goals, important characters, or important things will be randomized between a selection of locations.  These locations will not necessarily always be on the same map as they originally were.|n";
+            msg = msg $ "|n";
+            msg = msg $ "The silly goal locations have been removed from the pool of options, so goals will only be randomized into more plausible locations.";
+            break;
+    }
+
+    return msg;
 }
 //#endregion
 
