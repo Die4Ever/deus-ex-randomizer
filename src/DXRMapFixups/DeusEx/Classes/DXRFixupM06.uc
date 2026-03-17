@@ -1031,7 +1031,6 @@ function PreFirstEntryMapFixes()
 
     //#region Canal
     case "06_HONGKONG_WANCHAI_CANAL":
-
         //Give the drug dealer and pusher 100 credits each, and make them defend each other if attacked
         foreach AllActors(class'#var(prefix)ScriptedPawn',p){
             if (p.BindName=="Canal_Thug1" || p.BindName=="Canal_Thug2"){
@@ -1040,6 +1039,13 @@ function PreFirstEntryMapFixes()
                 p.bHateIndirectInjury = true;
                 p.bHateInjury = true;
                 p.ResetReactions();
+            }
+        }
+
+        foreach AllActors(class'DeusExMover', d) {
+            if (d.Group == 'barge') {
+                d.FragmentClass = class'MetalFragment';
+                break;
             }
         }
 

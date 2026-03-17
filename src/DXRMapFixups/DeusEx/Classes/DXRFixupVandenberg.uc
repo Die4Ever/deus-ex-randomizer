@@ -292,12 +292,14 @@ function PreFirstEntryMapFixes()
             }
             if (door.Tag=='Elevator1'){
                 door.MoverEncroachType=ME_CrushWhenEncroach;
-            }
-            if(door.Tag=='sub_doors'){
+            } else if (door.Tag=='sub_doors'){
                 door.bLocked = true;
                 door.bHighlight = true;
                 door.bFrobbable = true;
                 door.bPickable = false;// make sure DXRDoors sees this as an undefeatable door, also in vanilla this door is obviously not pickable due to not being frobbable
+                door.FragmentScale = 3.0;  // produce larger fragments...
+                door.NumFragments = 12;    // but fewer of them...
+                door.FragmentSpread = 160; // spread more widely, instead of just at the center of the doors
 
                 //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
                 //so that they are centered roughly in the middle of the door.  This doesn't work in HX.
