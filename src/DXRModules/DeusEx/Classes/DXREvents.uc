@@ -374,6 +374,10 @@ function SetWatchFlags() {
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
         WatchFlag('StatueMissionComplete');
+        WatchFlag('M01BoughtScope');
+        WatchFlag('M01Bought10mm');
+        WatchFlag('M01BoughtDarts');
+        WatchFlag('MeetKaplan_Played');
 
         foreach AllActors(class'#var(prefix)SkillAwardTrigger',skillAward) {
             if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
@@ -417,6 +421,38 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'fork',vectm(0,0,0));
         bt.bingoEvent="ForkliftCertified";
+
+        //Benches
+        if (!RevisionMaps){
+            //Near UNATCO
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench1',vectm(-4835,3580,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench1',vectm(-4835,3640,-70),40,40);
+
+            //Near Bunker (right)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench2',vectm(10035,345,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench2',vectm(10035,290,-70),40,40);
+
+            //Near Bunker (Left)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench3',vectm(10035,-125,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench3',vectm(10035,-70,-70),40,40);
+
+            //Corner kind of near nothing (between HQ and North Dock)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench4',vectm(-2500,-5725,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench4',vectm(-2500,-5790,-70),40,40);
+
+            //Statue Base, Upper one (in the editor, lol)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench5',vectm(2930,-900,840),50,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench5',vectm(3020,-900,840),50,40);
+
+            //Statue Base, Lower one (in the editor, lol)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench6',vectm(2930,1155,840),50,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench6',vectm(3020,1155,840),50,40);
+        } else {
+            //Most of the above line up with Revision
+            //but there are also 22 more benches there, no thanks.  Maybe if I'm really bored one day...
+        }
+
+
 
         //Same location in vanilla and Revision
         foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(1818,-818,-84)){
@@ -2663,6 +2699,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 {
     local float loge_duration, medbots, repairbots, merchants;
     local DXRLoadouts loadout;
+    local bool RevisionMaps;
 
     //Precalculate some useful pieces of information
 
@@ -2679,6 +2716,8 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     merchants = dxr.flags.settings.merchants * loge_duration;
 
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -2872,6 +2911,13 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                 }
             }
             return false;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that aren't possible on Revision maps
+        case "LibertyBenches":
+            //Too lazy to mark the 22 extra benches on the Revision maps
+            return RevisionMaps;
+
     }
 
     //More broad loadout checks
@@ -3276,6 +3322,27 @@ function string RemapBingoEvent(string eventname)
             return "ReadText_06_Datacube05";
         case "HelpSailor":
             return "HelpSailor_ConvoFlag";
+        case "M01BoughtScope":
+        case "M01Bought10mm":
+        case "M01BoughtDarts":
+            return "BuyFromKaplan_ConvoFlag";
+        case "MeetKaplan_Played":
+            //Check if Kaplan DOESN'T like the player (explicitly sets the flag to false)
+            if (dxr.flagbase.CheckFlag('KaplanLikesPlayer',FLAG_Bool)){
+                if(dxr.flagbase.GetBool('KaplanLikesPlayer')==False) {
+                    _MarkBingo("KaplanHatesPlayer_ConvoFlag");
+                } else {
+                    _MarkBingo("KaplanLikesPlayer_ConvoFlag");
+                }
+            }
+            return eventname;
+        case "LibertyBench1":
+        case "LibertyBench2":
+        case "LibertyBench3":
+        case "LibertyBench4":
+        case "LibertyBench5":
+        case "LibertyBench6":
+            return "LibertyBenches";
         default:
             return eventname;
     }
@@ -3304,8 +3371,16 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
+        case "TechSergeantKaplan_Takedown":
+            failed[num_failed++] = "BuyFromKaplan_ConvoFlag";
+            failed[num_failed++] = "KaplanHatesPlayer_ConvoFlag";
+            return num_failed;
+        case "KaplanLikesPlayer_ConvoFlag":
+            failed[num_failed++] = "KaplanHatesPlayer_ConvoFlag";
+            return num_failed;
         case "StatueMissionComplete":
             failed[num_failed++] = "GuntherFreed";
+            failed[num_failed++] = "KaplanHatesPlayer_ConvoFlag";
             return num_failed;
         case "M02Briefing_Played":
             failed[num_failed++] = "TerroristCommander_PlayerDead";
@@ -4328,6 +4403,9 @@ defaultproperties
     bingo_options(398)=(event="MakeSoup",desc="Make Soup",max=1,missions=#bit(6))
     bingo_options(399)=(event="HelpSailor_ConvoFlag",desc="My Buddy Vinny",max=1,missions=#bit(8))
     bingo_options(400)=(event="poster01_peepedtex",desc="Yvan Eht Nioj",max=1,missions=#bit(9))
+    bingo_options(401)=(event="BuyFromKaplan_ConvoFlag",desc="Spoils of War",max=1,missions=#bit(1))
+    bingo_options(402)=(event="KaplanHatesPlayer_ConvoFlag",desc="We're Cops",max=1,missions=#bit(1))
+    bingo_options(403)=(event="LibertyBenches",desc="Bench Warmer",max=3,missions=#bit(1),do_not_scale=true)
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4461,5 +4539,6 @@ defaultproperties
     mutually_exclusive(118)=(e1="GibbedPawn",e2="AlliesKilled")
     mutually_exclusive(119)=(e1="IgnitedPawn",e2="AlliesKilled")
     mutually_exclusive(120)=(e1="TongsHotTub",e2="MakeSoup")
+    mutually_exclusive(121)=(e1="BuyFromKaplan_ConvoFlag",e2="KaplanHatesPlayer_ConvoFlag")
 //#endregion
 }

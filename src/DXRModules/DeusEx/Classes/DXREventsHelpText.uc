@@ -542,6 +542,10 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             return "Try to get help from Joe Greene after the raid.";
         case "HelpSailor_ConvoFlag":
             return "Offer to help Vinny find out what's going on at the Advanced Submarine Base.";
+        case "BuyFromKaplan_ConvoFlag":
+            return "Buy something from Tech Sergeant Kaplan in front of UNATCO HQ.";
+        case "KaplanHatesPlayer_ConvoFlag":
+            return "Tell Tech Sergeant Kaplan that you're going to take a minimum-force approach with the NSF.  We're cops, after all.";
     }
 
     //Return nothing so the generic function can handle it
@@ -1511,6 +1515,8 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Step into the atrium of the Free Clinic in Hell's Kitchen and sit down on one of the benches.  Take a moment to breathe and clear your mind.";
         case "MakeSoup":
             return "Make a nice vat of soup by throwing three bodies into Tong's hot tub (The water tank in Tracer Tong's base).";
+        case "LibertyBenches":
+            return "Take your time and enjoy taking a break on 3 different benches scattered around Liberty Island.  Make sure to crouch!";
     }
 
     //Return nothing so the generic function can handle it

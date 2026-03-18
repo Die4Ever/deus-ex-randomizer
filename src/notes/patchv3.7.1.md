@@ -28,4 +28,8 @@
 - Enemies cloned from the NSF in Mission 3 will now be cleaned up better in non-vanilla versions of the randomizer.
 - "Send him back to the people" bingo goal now gets marked as failed as soon as Leo Gold disappears from the game.
 - Bingo help window now shows the available missions as a list with human readable names.  If the goal is active in the current mission, the mission will be clearly marked in the window.  In Zero Rando, missions beyond the current one will only be listed as ??? to avoid spoilers.
+- New Bingo Goals:
+  - "Spoils of War": Buy something from Tech Sergeant Kaplan in Mission 1.
+  - "We're Cops": Tell Tech Sergeant Kaplan you're going to take a minimum-force approach in Mission 1.
+  - "Bench Warmer": Sit on 3 benches scattered around Liberty Island (Mission 1).
 </details>
