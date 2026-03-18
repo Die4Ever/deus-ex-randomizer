@@ -208,7 +208,7 @@ static function class<Fragment> GuessFragmentClass(#var(DeusExPrefix)Mover mov)
     local FragmentGuess guess;
     local int i;
 
-    if (BreakableGlass(mov) != None || BreakableWall(mov) != None) {
+    if (#var(prefix)BreakableGlass(mov) != None || #var(prefix)BreakableWall(mov) != None) {
         return mov.FragmentClass;
     }
 
