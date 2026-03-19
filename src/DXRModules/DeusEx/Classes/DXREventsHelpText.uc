@@ -1517,6 +1517,10 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Make a nice vat of soup by throwing three bodies into Tong's hot tub (The water tank in Tracer Tong's base).";
         case "LibertyBenches":
             return "Take your time and enjoy taking a break on 3 different benches scattered around Liberty Island.  Make sure to crouch!";
+        case "PetRobot_CleanerBot":
+            return "Show your appreciation for those little guys and give enough of those cleaner bots a pet!";
+        case "PetRobot_SecurityBotSmall":
+            return "Commercial security bots might be dangerous, but they've got a little head just ready to be pet.  Give enough of those little treaded bots head pats!  Note that it is not possible to pet a disabled bot.";
     }
 
     //Return nothing so the generic function can handle it

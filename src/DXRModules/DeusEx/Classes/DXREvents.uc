@@ -2918,6 +2918,12 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             //Too lazy to mark the 22 extra benches on the Revision maps
             return RevisionMaps;
 
+/////////////////////////////////////////////////////////////////////
+    //Ban goals for reasons
+        case "PetRobot_CleanerBot":
+        case "PetRobot_SecurityBotSmall":
+            return !(#bool(RoboLover) || (dxr.DateAtLeast(2026,4,1)));
+
     }
 
     //More broad loadout checks
@@ -2977,6 +2983,10 @@ function string RemapBingoEvent(string eventname)
         case "SecurityBot4_ClassTakedown":
         case "DXRSecurityBot4_ClassTakedown":
             return "SecurityBotSmall_ClassTakedown";
+        case "PetRobot_SecurityBot3":
+        case "PetRobot_SecurityBot4":
+        case "PetRobot_DXRSecurityBot4":
+            return "PetRobot_SecurityBotSmall";
         case "SpiderBot2_ClassDead":
             return "SpiderBot_ClassDead";
         case "SpiderBot2_ClassTakedown":
@@ -4406,6 +4416,8 @@ defaultproperties
     bingo_options(401)=(event="BuyFromKaplan_ConvoFlag",desc="Spoils of War",max=1,missions=#bit(1))
     bingo_options(402)=(event="KaplanHatesPlayer_ConvoFlag",desc="We're Cops",max=1,missions=#bit(1))
     bingo_options(403)=(event="LibertyBenches",desc="Bench Warmer",max=3,missions=#bit(1),do_not_scale=true)
+    bingo_options(404)=(event="PetRobot_CleanerBot",desc="Pet %s Cleaner Bots",desc_singular="Pet a Cleaner Bot",max=5,missions=#bit(1,2,3,4,8))
+    bingo_options(405)=(event="PetRobot_SecurityBotSmall",desc="Pet %s Commercial Grade Security Bots",desc_singular="Pet a Commercial Grade Security Bot",max=3,missions=#bit(1,2,3,4,8,11,15))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4540,5 +4552,7 @@ defaultproperties
     mutually_exclusive(119)=(e1="IgnitedPawn",e2="AlliesKilled")
     mutually_exclusive(120)=(e1="TongsHotTub",e2="MakeSoup")
     mutually_exclusive(121)=(e1="BuyFromKaplan_ConvoFlag",e2="KaplanHatesPlayer_ConvoFlag")
+    mutually_exclusive(122)=(e1="PetRobot_CleanerBot",e2="CleanerBot_ClassTakedown")
+    mutually_exclusive(123)=(e1="PetRobot_SecurityBotSmall",e2="SecurityBotSmall_ClassTakedown")
 //#endregion
 }

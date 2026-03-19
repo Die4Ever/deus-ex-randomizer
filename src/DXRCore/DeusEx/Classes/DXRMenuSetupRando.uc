@@ -279,8 +279,8 @@ function BindControls(optional string action)
     EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers, GetStalkerHelpText(0x0028FFFF)); // 10x
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
-    EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
-    EnumOption("Random Non-human Stats", 100, f.settings.bot_stats);
+    EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats, GetGenericHelpText("nonhumanstatsunchanged"));
+    EnumOption("Random Non-human Stats", 100, f.settings.bot_stats, GetGenericHelpText("nonhumanstatsrandom"));
 
 
     NewGroup("Skills");
@@ -575,7 +575,7 @@ function String GetGenericHelpText(string opt)
         msg =       "The maximum amount of bioelectric energy that the player has.  The vanilla setting is 100 energy.";
         break;
     case "splitsoverlay":
-        msg =       "Choose whether or not to show an in-game speedrun timer.";
+        msg =       "Choose whether or not to show an in-game speedrun timer.  You can edit DXRSplits.ini to adjust how your splits display in-game.";
         //TODO: THIS DESCRIPTION CERTAINLY COULD BE EXPANDED TO EXPLAIN DXRSplits.ini AND THE THINGS YOU CAN MODIFY IN THERE
         break;
     case "bingowin":
@@ -606,6 +606,12 @@ function String GetGenericHelpText(string opt)
         break;
     case "parischill":
         msg =       "This setting sets the odds of all MJ12 troops being removed from the streets of Paris.  This setting will carry through New Game Plus, giving a chance for some loops to have enemies and others to not have any.";
+        break;
+    case "nonhumanstatsunchanged":
+        msg =       "Non-human enemies (Animals and robots) will not have randomized stats.";
+        break;
+    case "nonhumanstatsrandom":
+        msg =       "Non-human enemies (Animals and robots) will have randomized stats, such as how long they are surprised, weapon accuracy, and ground speed.";
         break;
     default:
         log("GetGenericHelpText: No help text available for "$opt);
