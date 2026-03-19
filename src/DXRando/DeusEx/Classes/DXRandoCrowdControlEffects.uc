@@ -2563,7 +2563,7 @@ function bool DropMarbles(string viewer)
 
 function string RandomSpamDatacubeText(String viewer)
 {
-    switch(Rand(34)){
+    switch(Rand(35)){
         case 0:   return "Enlarge your Dragon Tooth!  Contact "$viewer$" Corp. for more details on how YOU can gain 4 inches TODAY!";
         case 1:   return "You've won the Gray Death vaccine lottery!  As thanks for signing up for more information on any vaccine news, you have won 1000 credits!  For more details, please send your full name, date of birth, occupation, drivers license, and 5000 credits to "$viewer$"!";
         case 2:   return "Your NYCNet account has violated security policies and will be deleted in three (3) days!  If you would like to keep your account, please send a picture of your ID as well as your mothers maiden name to "$viewer$" to prove your innocence.  Revalidating your account will cost a minimum fee of 12000 credits.";
@@ -2598,6 +2598,7 @@ function string RandomSpamDatacubeText(String viewer)
         case 31:  return "---LOST FLY---|n|nI'm "$viewer$" and I saw this fly and my mom let it out the window!  BTW I named him harley.  He (or she) is a centameter big and if you find him"$" tell him I said hi.  But watever you do dont bring him back he will get killed by a fly swatter.|n|n"$"WARNING: Do not touch him he WILL throw up";
         case 32:  return "Garlic Secrets #41, by "$viewer$"|n|nApply garlic to a freshly opened cut or burn to immediately intensify the pain";
         case 33:  return "We do NOT sell tuna milkshakes, so please don't ask|n|n"$"I've got nothing against tuna.  I like tuna.  In a baked potato or a sandwich it's great and it's got lots of omega-3 which is good for you.  "$"But TUNA in a milkshake is just wrong.  Why don't you have an Oreo Milkshake or a Strawberry Millions, or Dime Bar, or Mars Bar or any of the 70+ flavours on the menu.  "$"But please, please stop asking for Tuna Milkshakes.|n|nThanks,|n  -"$viewer;
+        case 34:  return "Enjoying Deus Ex Randomizer?  Why not pick up some merch at |n|nshop.mods4ever.com|n|nThis message brought to you by "$viewer;
     }
 
     return "SOMEHOW FAILED TO GENERATE SPAM MESSAGE FOR "$viewer$" SO ENJOY THIS COMPLIMENTARY ERROR DATACUBE INSTEAD";
@@ -2621,7 +2622,7 @@ function bool SpamDatacubes(String viewer)
     for (i=0;i<5;i++){
         cubeText = RandomSpamDatacubeText(viewer);
         plaintextTag = "CrowdControlSpamCubes_" $ dxr.localURL $ "_" $ class'DXRInfo'.static.MurmurHash3(cubeText);
-        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),cubeText,plaintextTag);
+        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),ccLink.ccModule.GetRandomYaw(true),cubeText,plaintextTag);
         if (dc!=None){
             dc.Tag='CrowdControlSpamDatacube';
             ccLink.ccModule.GlowUp(dc);
