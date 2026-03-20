@@ -1,6 +1,6 @@
 class DXRHUDActiveAug injects HUDActiveAug;
 
-var #var(prefix)PersonaLevelIconWindow winLevels;
+var #var(injectsprefix)PersonaLevelIconWindow winLevels;
 
 event DestroyWindow()
 {
@@ -38,11 +38,11 @@ function DrawHotKey(GC gc)
         switch(showLevels) {
         case 1: // dots
             if(winLevels == None) {
-                winLevels = #var(prefix)PersonaLevelIconWindow(NewChild(Class'#var(prefix)PersonaLevelIconWindow'));
+                winLevels = #var(injectsprefix)PersonaLevelIconWindow(NewChild(Class'#var(injectsprefix)PersonaLevelIconWindow'));
                 winLevels.SetPos(4, 29);
                 winLevels.SetSelected(True);
-                winLevels.HideMaxLevelCovers=true;
-                winLevels.ShowLevelFive=true;
+                winLevels.HideMaxLevelCovers=true; //So we don't see the unnecessary blockers for augs that have reduced max levels
+                winLevels.ShowLevelFive=true; //So we can see the plus for boosted level five augs
             }
             winLevels.SetLevel(aug.CurrentLevel); //The boostedness will be handled by the DXRPersonaLevelIconWindow
             break;
