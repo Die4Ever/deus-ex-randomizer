@@ -2,22 +2,29 @@ class DXRPersonaLevelIconWindow injects PersonaLevelIconWindow;
 
 event DrawWindow(GC gc)
 {
-    local int levelCount,maxLevel;
+    local int levelCount,maxLevel,actLevel;
     local Window parentWin;
     local Augmentation clientAug;
 
     maxLevel=3;
+    actLevel=currentLevel;
+
     parentWin=GetParent();
     if (parentWin!=None){
         clientAug = Augmentation(parentWin.GetClientObject());
         if(clientAug!=None && clientAug.AugmentationLocation!=LOC_Default){
             maxLevel = clientAug.MaxLevel;
+
+            //Don't show the boosted level, show the actual level
+            if (clientAug.bBoosted){
+                actLevel = actLevel-1;
+            }
         }
     }
 
     for(levelCount=0; levelCount<=3; levelCount++)
     {
-        if (levelCount<=currentLevel){
+        if (levelCount<=actLevel){
             gc.SetTileColor(colText);
             gc.SetStyle(DSTY_Masked);
             gc.DrawTexture(levelCount * (iconSizeX + 1), 0, iconSizeX, iconSizeY,
