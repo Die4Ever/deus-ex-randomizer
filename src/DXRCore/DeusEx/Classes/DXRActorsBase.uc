@@ -1541,9 +1541,28 @@ function vector GetRandomPosition(optional vector target, optional float mindist
     return temp[slot].Location;
 }
 
-function vector JitterPosition(vector loc)
+function vector JitterPosition(vector loc, optional bool skipTrace)
 {
-    return GetRandomPositionNear(loc,160.0); //10 feet in any direction
+    local vector jittered;
+    local Vector HitLocation, HitNormal;
+    local Actor hit;
+
+    jittered = GetRandomPositionNear(loc,160.0); //10 feet in any direction, this could be in a wall though
+
+    if (skipTrace){
+        //We don't want to do the trace for probably performance reasons
+        return jittered;
+    }
+
+    //Trace between the original location and the location we hope to jitter to
+    hit = Trace(HitLocation, HitNormal, jittered, loc);
+    if (hit!=None){
+        //There's something (presumably level geometry!) in the way, spawn where we hit it
+        return HitLocation;
+    }
+
+    //Go as far as we wanted!
+    return jittered;
 }
 
 function vector GetRandomPositionNear(vector loc, float range)
@@ -1553,11 +1572,11 @@ function vector GetRandomPositionNear(vector loc, float range)
     return loc;
 }
 
-function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)
+function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky, optional bool skipJitterTrace)
 {
     local vector loc;
     loc = GetRandomPosition(target, mindist, maxdist, allowWater, allowPain, allowSky);
-    loc = JitterPosition(loc);
+    loc = JitterPosition(loc,skipJitterTrace);
     return loc;
 }
 

@@ -782,8 +782,7 @@ function float GenerateEnemy(DXREnemies dxre)
             // couldn't find anything near the player, player is probably ghosting out of bounds
             loc = GetRandomPosition(vect(0,0,0), 0, 999999);
         }
-        loc.X += rngfn() * 25;
-        loc.Y += rngfn() * 25;
+        loc = GetRandomPositionNear(loc,25); //This could use JitterPosition instead, although it has a 160 range
         p = Spawn(c,, 'hordeenemy', loc );
     }
     if(p==None) {

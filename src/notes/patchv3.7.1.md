@@ -33,4 +33,5 @@
   - "We're Cops": Tell Tech Sergeant Kaplan you're going to take a minimum-force approach in Mission 1.
   - "Bench Warmer": Sit on 3 benches scattered around Liberty Island (Mission 1).
 - Mission starts inside the Ocean Lab or at Silo (Mission 14) will now start with the sub bay doors open in the Sub Base.  Silo starts will also start with the sub bay doors open in the Ocean Lab itself.
+- Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
 </details>
