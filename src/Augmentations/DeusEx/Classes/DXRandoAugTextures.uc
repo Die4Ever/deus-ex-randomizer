@@ -1,6 +1,7 @@
 class DXRandoAugTextures extends Object abstract;
 
 #exec TEXTURE IMPORT FILE="Textures\AugSlotCover.pcx"                       NAME="AugSlotCover"                     GROUP="DXRandoAugs"
+#exec TEXTURE IMPORT FILE="Textures\AugSlotBoosted.pcx"                     NAME="AugSlotBoosted"                   GROUP="DXRandoAugs" MIPS=Off
 
 #exec TEXTURE IMPORT FILE="Textures\AugIconJumpOnly.pcx"                    NAME="AugIconJumpOnly"                  GROUP="DXRandoAugs" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconJumpOnly_Small.pcx"              NAME="AugIconJumpOnly_Small"            GROUP="DXRandoAugs" MIPS=Off
