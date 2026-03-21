@@ -802,8 +802,10 @@ static function GetTrueAugLevels(Augmentation anAug, out int trueLevel, out int 
         //The aug level is bumped up by one
         trueLevel = trueLevel - 1;
         #ifdef injections
-        if (anAug.Level5Value != -1){
+        if (anAug.Level5Value != -1 && anAug.MaxLevel > anAug.Default.MaxLevel){
             //The maximum has been bumped up by one already as well
+            //If the set MaxLevel is equal to the default, it probably wasn't bumped up again because
+            //MaxLevel isn't a travel variable
             trueMax = trueMax - 1;
         }
         #endif
