@@ -457,6 +457,10 @@ function HandleBingoGoal()
         GetBingoMissionBlockerFlags(2,, blockerFlag, expiration);
         UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
     }
+    else if (dxr.dxInfo.missionNumber == 4) {
+        GetBingoMissionBlockerFlags(4,, blockerFlag, expiration);
+        UnblockEarly('GuntherShowdown_Played', blockerFlag, expiration);
+    }
 }
 
 function HandleBingoWin(int numBingos, int oldBingos)

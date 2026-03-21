@@ -546,6 +546,10 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             return "Buy something from Tech Sergeant Kaplan in front of UNATCO HQ.";
         case "KaplanHatesPlayer_ConvoFlag":
             return "Tell Tech Sergeant Kaplan that you're going to take a minimum-force approach with the NSF.  We're cops, after all.";
+        case "PeacekeepingOccupation_Convo":
+            return "Check in with Gunther Hermann after completing a mission objective.  As is standard protocol, he has been assigned the peacekeeping occupation of the area.";
+        case "MeetClinicMaleBum3_Played":
+            return "Meet the Freemason looking for help in the Free Clinic.";
     }
 
     //Return nothing so the generic function can handle it

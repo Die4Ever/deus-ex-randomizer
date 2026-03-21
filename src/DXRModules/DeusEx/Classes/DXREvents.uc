@@ -567,6 +567,7 @@ function SetWatchFlags() {
         WatchFlag('BoughtClinicPlan');
         WatchFlag('MeetClinicOlderBum_Played');
         WatchFlag('MeetWindowBum_Played');
+        WatchFlag('MeetClinicMaleBum3_Played');
 
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
@@ -594,6 +595,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_WAREHOUSE":
         WatchFlag('GeneratorBlown');
+        WatchFlag('M02MeetGunther_Played');
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
             if (dxm.Name=='DeusExMover25'){
                 dxm.Event='CrackSafe';
@@ -670,6 +672,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
+        WatchFlag('M03MeetGunther_Played');
         bt = class'BingoTrigger'.static.Create(self,'arctrigger',vectm(0,0,0));
 
         bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(5347.652344,-4286.462402,328),100,40);
@@ -2699,6 +2702,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 {
     local float loge_duration, medbots, repairbots, merchants;
     local DXRLoadouts loadout;
+    local int start_map;
     local bool RevisionMaps;
 
     //Precalculate some useful pieces of information
@@ -2716,6 +2720,8 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     merchants = dxr.flags.settings.merchants * loge_duration;
 
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+
+    start_map = dxr.flags.GetStartingMap(); //if it's based PURELY on start_map, it should be in DXRStartMap::BingoGoalImpossible instead
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -2829,6 +2835,26 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "missile_launched":
         case "HelpSailor_ConvoFlag":
             return (real_duration!=1);
+
+//////////////////////////////////////////////////////
+
+    //Where mission progress is expected, but we do consider that to be reasonable given some start maps
+        //case "M02MeetGunther_Played":
+        //case "M03MeetGunther_Played":
+        case "PeacekeepingOccupation_Convo":
+            if (real_duration!=1){
+                return false;
+            }
+
+            //1 mission durations...
+            //Progressing through M02 Warehouse is always considered annoying in single mission
+            //We consider M03 Helibase too far, but M03 Airfield close enough for progressing back to UNATCO (finishing the mission)
+            if (start_map >=36 && start_map < 40){
+                return false;
+            }
+
+            return true;
+
 
 /////////////////////////////////////////////////////////////////////
     //Ban goals that require the use of drugs or alcohol as appropriate
@@ -3353,6 +3379,11 @@ function string RemapBingoEvent(string eventname)
         case "LibertyBench5":
         case "LibertyBench6":
             return "LibertyBenches";
+        case "M02MeetGunther_Played":
+        case "M03MeetGunther_Played":
+        case "GuntherShowdown_Played":
+            return "PeacekeepingOccupation_Convo";
+
         default:
             return eventname;
     }
@@ -4418,6 +4449,8 @@ defaultproperties
     bingo_options(403)=(event="LibertyBenches",desc="Bench Warmer",max=3,missions=#bit(1),do_not_scale=true)
     bingo_options(404)=(event="PetRobot_CleanerBot",desc="Pet %s Cleaner Bots",desc_singular="Pet a Cleaner Bot",max=5,missions=#bit(1,2,3,4,8))
     bingo_options(405)=(event="PetRobot_SecurityBotSmall",desc="Pet %s Commercial Grade Security Bots",desc_singular="Pet a Commercial Grade Security Bot",max=3,missions=#bit(1,2,3,4,8,11,15))
+    bingo_options(406)=(event="PeacekeepingOccupation_Convo",desc="Peace Keeping Occupation",max=1,missions=#bit(2,3,4)) //Space between Peace and Keeping for better linebreaking in the bingo viewer
+    bingo_options(407)=(event="MeetClinicMaleBum3_Played",desc="Who will help the widow's son?",max=1,missions=#bit(2))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4554,5 +4587,6 @@ defaultproperties
     mutually_exclusive(121)=(e1="BuyFromKaplan_ConvoFlag",e2="KaplanHatesPlayer_ConvoFlag")
     mutually_exclusive(122)=(e1="PetRobot_CleanerBot",e2="CleanerBot_ClassTakedown")
     mutually_exclusive(123)=(e1="PetRobot_SecurityBotSmall",e2="SecurityBotSmall_ClassTakedown")
+    mutually_exclusive(124)=(e1="MeetClinicMaleBum3_Played",e2="TakeABreather") //These are too close and easy to have both
 //#endregion
 }

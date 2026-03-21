@@ -32,9 +32,12 @@
   - "Spoils of War": Buy something from Tech Sergeant Kaplan in Mission 1.
   - "We're Cops": Tell Tech Sergeant Kaplan you're going to take a minimum-force approach in Mission 1.
   - "Bench Warmer": Sit on 3 benches scattered around Liberty Island (Mission 1).
+  - "Peace Keeping Occupation": Speak to Gunther after completing a mission (Mission 2, 3, or 4).
+  - "Who will help the widow's son?": Speak to the Freemason in the Free Clinic (Mission 2).
 - Mission starts inside the Ocean Lab or at Silo (Mission 14) will now start with the sub bay doors open in the Sub Base.  Silo starts will also start with the sub bay doors open in the Ocean Lab itself.
 - Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
-- Aug levels are always shown as the actual level, instead of the effective level if being boosted by Synthetic Heart (In other words, an aug will show the same level whether Synthetic Heart is active or not).  The extra level from Synthetic Heart is shown as a plus sign next to the aug level when the aug is being boosted.
-- It is now possible to fully upgrade an aug while Synthetic Heart is active.
-- Augs that are removed (Such as at the end of a game or if removed at a Medical Bot) while being boosted by Synthetic Heart will no longer be already in a boosted state when reinstalled, resulting in them being at an effective level 0.  This is most obvious when Synthetic Heart is active when the aug is reinstalled.
+- Synthetic Heart aug improvements and fixes:
+  - Aug levels are always shown as the actual level, instead of the effective level if being boosted by Synthetic Heart (In other words, an aug will show the same level whether Synthetic Heart is active or not).  The extra level from Synthetic Heart is shown as a plus sign next to the aug level when the aug is being boosted.
+  - It is now possible to fully upgrade an aug while Synthetic Heart is active.
+  - Augs that are removed (Such as at the end of a game or if removed at a Medical Bot) while being boosted by Synthetic Heart will no longer be already in a boosted state when reinstalled, resulting in them being at an effective level 0.  This is most obvious when Synthetic Heart is active when the aug is reinstalled.
 </details>
