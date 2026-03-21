@@ -1096,7 +1096,7 @@ static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
 {
     local Augmentation anAug;
     local string augId,augName,augInfo;
-    local int level;
+    local int level,max;
 
     anAug = dxr.player.AugmentationSystem.FirstAug;
     while(anAug != None)
@@ -1107,12 +1107,10 @@ static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
         }
         augId = "Aug-"$anAug.HotKeyNum;
         augName = ""$anAug.Class.Name;
-        level = anAug.CurrentLevel;
-        if (anAug.bBoosted){
-            level = level-1;
-        }
 
-        augInfo = "{\"name\":\"" $ augName $"\",\"level\":"$level$"}";
+        class'DXRAugmentations'.static.GetTrueAugLevels(anAug,level,max);
+
+        augInfo = "{\"name\":\"" $ augName $"\",\"level\":"$level$",\"max\":"$max$"}";
 
         j = j $",\"" $ augId $ "\":" $ augInfo;
 
