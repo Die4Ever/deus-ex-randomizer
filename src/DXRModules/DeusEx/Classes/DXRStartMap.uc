@@ -1371,6 +1371,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return start_map>142;
             case "HeliosBorn":
                 return start_map>=129;
+            case "DL_SecondDoors_Played":
+                return start_map>=145; //Sub bay doors are already open on a silo start
         }
         break;
 
