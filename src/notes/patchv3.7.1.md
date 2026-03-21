@@ -36,4 +36,5 @@
 - Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
 - Aug levels are always shown as the actual level, instead of the effective level if being boosted by Synthetic Heart (In other words, an aug will show the same level whether Synthetic Heart is active or not).  The extra level from Synthetic Heart is shown as a plus sign next to the aug level when the aug is being boosted.
 - It is now possible to fully upgrade an aug while Synthetic Heart is active.
+- Augs that are removed (Such as at the end of a game or if removed at a Medical Bot) while being boosted by Synthetic Heart will no longer be already in a boosted state when reinstalled, resulting in them being at an effective level 0.  This is most obvious when Synthetic Heart is active when the aug is reinstalled.
 </details>

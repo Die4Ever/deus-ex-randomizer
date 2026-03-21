@@ -129,6 +129,17 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
         return; //Also shouldn't happen
     }
 
+    if (aug.bBoosted){
+        //We need to unboost the aug to put it back into a default state again before removing it
+        #ifdef injections
+        //Also resets max level back where it should be
+        aug.BoostAug(false);
+        #else
+        //The rest of the things that BoostAugs does will be reverted after this anyway
+        aug.bBoosted=False;
+        #endif
+    }
+
     aug.Deactivate();
     // Deactivate() skips bAlwaysActive augs
     aug.bIsActive = false;
