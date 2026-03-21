@@ -781,6 +781,24 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot,
     RemoveAug(p,a);
 }
 
+static function GetTrueAugLevels(Augmentation anAug, out int trueLevel, out int trueMax)
+{
+    trueLevel = anAug.CurrentLevel;
+    trueMax = anAug.MaxLevel;
+
+    //Handle boosted augs and level 5 maximums
+    if (anAug.bBoosted){
+        //The aug level is bumped up by one
+        trueLevel = trueLevel - 1;
+        #ifdef injections
+        if (anAug.Level5Value != -1){
+            //The maximum has been bumped up by one already as well
+            trueMax = trueMax - 1;
+        }
+        #endif
+    }
+}
+
 function ExtendedTests()
 {
     local int i;

@@ -35,4 +35,5 @@
 - Mission starts inside the Ocean Lab or at Silo (Mission 14) will now start with the sub bay doors open in the Sub Base.  Silo starts will also start with the sub bay doors open in the Ocean Lab itself.
 - Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
 - Aug levels are always shown as the actual level, instead of the effective level if being boosted by Synthetic Heart (In other words, an aug will show the same level whether Synthetic Heart is active or not).  The extra level from Synthetic Heart is shown as a plus sign next to the aug level when the aug is being boosted.
+- It is now possible to fully upgrade an aug while Synthetic Heart is active.
 </details>

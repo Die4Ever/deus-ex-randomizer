@@ -220,7 +220,8 @@ function DrawAugsScreen(GC gc)
     local Augmentation anaug;
     local float curx, cury, w, h;
     local String str, costStr;
-    local int index, i, numUpgrades, augLevel;
+    local int index, i, numUpgrades;
+    local int trueLevel,trueMax;
     local float barLen, levelx, curvaluex, nextvaluex, val, defaultval;
     local DXRAugmentations dxra;
     local String levelValuesDisplay[5];
@@ -278,13 +279,9 @@ function DrawAugsScreen(GC gc)
                 else
                     str = index $ ". " $ anAug.AugmentationName;
 
-                augLevel = anAug.CurrentLevel;
-                if (anAug.bBoosted){
-                    //Aug level has been boosted by synthetic heart, put it back for the purposes of this menu
-                    augLevel = augLevel - 1;
-                }
+                class'DXRAugmentations'.static.GetTrueAugLevels(anAug,trueLevel,trueMax);
 
-                if ( augLevel == anAug.MaxLevel)
+                if ( trueLevel == trueMax)
                 {
                     gc.SetTileColor( class'MenuChoice_ColorVision'.Static.GetUpgradeMaxColor() );
                     gc.SetTextColor( class'MenuChoice_ColorVision'.Static.GetUpgradeMaxColor() );
@@ -303,7 +300,7 @@ function DrawAugsScreen(GC gc)
                 gc.GetTextExtent( 0, w, h, str );
                 gc.DrawText( curx, cury, w, h, str );
 
-                str = ""$augLevel+1;
+                str = ""$trueLevel+1;
                 gc.GetTextExtent( 0, w, h, str );
                 gc.DrawText( levelx, cury, w, h, str ); //Draw text, not boxes
                 //DrawLevel( gc, levelx, cury, askill.CurrentLevel );
@@ -319,11 +316,11 @@ function DrawAugsScreen(GC gc)
                         levelValuesDisplay[4] = dxra.DescriptionLevelShort(anAug, 4, val);
                     }
                 #endif
-                    gc.GetTextExtent( 0, w, h, levelValuesDisplay[augLevel] );
-                    gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[augLevel]);
-                    if (augLevel<anAug.MaxLevel){
-                        gc.GetTextExtent( 0, w, h, levelValuesDisplay[augLevel+1] );
-                        gc.DrawText( nextvaluex, cury, w, h, levelValuesDisplay[augLevel+1]);
+                    gc.GetTextExtent( 0, w, h, levelValuesDisplay[trueLevel] );
+                    gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[trueLevel]);
+                    if (trueLevel<trueMax){
+                        gc.GetTextExtent( 0, w, h, levelValuesDisplay[trueLevel+1] );
+                        gc.DrawText( nextvaluex, cury, w, h, levelValuesDisplay[trueLevel+1]);
                     }
                 }
 
@@ -479,20 +476,14 @@ function Augmentation GetAugFromIndex( DeusExPlayer thisPlayer, int index )
 function bool AttemptUpgradeAug( DeusExPlayer thisPlayer, Augmentation anAug )
 {
     local #var(prefix)AugmentationUpgradeCannister augCan;
-    local int augLevel;
+    local int trueLevel,trueMax;
 
     if (anAug!=None)
     {
-        augLevel = anAug.CurrentLevel;
-        /*
-        //TODO: There's some jank related to the actual upgrade logic and what the actual max level is, TBD
-        if (anAug.bBoosted){
-            //Aug level has been boosted by synthetic heart, put it back for the purposes of this menu
-            augLevel = augLevel - 1;
-        }
-        */
 
-        if (augLevel==anAug.MaxLevel){
+        class'DXRAugmentations'.static.GetTrueAugLevels(anAug,trueLevel,trueMax);
+
+        if (trueLevel==trueMax){
             thisPlayer.BuySkillSound( 1 );
             return False;
         } else {
@@ -504,15 +495,18 @@ function bool AttemptUpgradeAug( DeusExPlayer thisPlayer, Augmentation anAug )
                 augCan = #var(prefix)AugmentationUpgradeCannister(player.FindInventoryType(Class'#var(prefix)AugmentationUpgradeCannister'));
             }
             if (augCan!=None){
-                anAug.IncLevel();
-                augCan.UseOnce();
-                thisPlayer.BuySkillSound( 0 );
+                if (anAug.IncLevel()){
+                    augCan.UseOnce();
+                    thisPlayer.BuySkillSound( 0 );
+                    return True;
+                }
             } else {
                 thisPlayer.BuySkillSound( 1 );
                 return False;
             }
         }
     }
+    return False;
 }
 
 function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum )

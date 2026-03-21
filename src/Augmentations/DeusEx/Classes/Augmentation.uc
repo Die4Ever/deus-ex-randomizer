@@ -107,6 +107,32 @@ function BoostAug(bool bBoostEnabled)
     }
 }
 
+simulated function bool CanBeUpgraded()
+{
+    local bool bCanUpgrade;
+    local AugmentationUpgradeCannister augCan;
+    local int trueLevel,trueMax;
+
+    bCanUpgrade = False;
+
+    class'DXRAugmentations'.static.GetTrueAugLevels(self,trueLevel,trueMax);
+
+    // Check to see if this augmentation is already at
+    // the maximum level
+    if ( trueLevel < trueMax )
+    {
+        // Now check to see if the player has a cannister that can
+        // be used to upgrade this Augmentation
+        augCan = AugmentationUpgradeCannister(player.FindInventoryType(Class'AugmentationUpgradeCannister'));
+
+        if (augCan != None)
+            bCanUpgrade = True;
+    }
+
+    return bCanUpgrade;
+}
+
+
 simulated function bool IsTicked()
 {
     return (bAutomatic==false && bIsActive)
@@ -218,6 +244,11 @@ function bool IncLevel()
         return False;
     }
 
+    if (bBoosted){
+        if (CurrentLevel==MaxLevel){ //Boosted up to maximum level
+            BoostAug(False); //The boost is no longer needed, unboost and proceed
+        }
+    }
     CurrentLevel++;
 
     if (bIsActive) {
@@ -225,6 +256,8 @@ function bool IncLevel()
     }
 
     Player.ClientMessage(UpgradeMessage());
+
+    return True; //DXRando: This actually didn't even return at the end before, lol
 }
 
 function string UpgradeMessage()
