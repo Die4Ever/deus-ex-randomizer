@@ -498,7 +498,7 @@ function InWaveTick()
                 isAlive=false;
             }
         }
-        if (p.GetStateName()=='Fleeing'){
+        if (p.ShouldFlee()){
             //Fleeing enemies are considered dead (and will get killed)
             isAlive=false;
         }
