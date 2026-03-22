@@ -2531,8 +2531,6 @@ static function CompleteBingoGoal(PlayerDataItem data, int x, int y)
     local string event;
     local int progress, max;
 
-    if (!DontTrollMastodon()) return;
-
     data.GetBingoSpot(x, y, event,, progress, max);
     while (progress < max) {
         class'DXREventsBase'.static.MarkBingo(event);
@@ -2540,16 +2538,17 @@ static function CompleteBingoGoal(PlayerDataItem data, int x, int y)
     }
 }
 
-exec function BingoGoal(int x, int y)
+exec function BingoGoal(int x, int y, optional bool allowTelemetry)
 {
+    if (!allowTelemetry) DisableTelemetryTemporary(20);
     CompleteBingoGoal(class'PlayerDataItem'.static.GiveItem(self), x, y);
 }
 
-exec function Bingo(int line)
+exec function Bingo(int line, optional bool allowTelemetry)
 {
     local PlayerDataItem data;
 
-    if (!DontTrollMastodon()) return;
+    if (!allowTelemetry) DisableTelemetryTemporary(20);
 
     data = class'PlayerDataItem'.static.GiveItem(self);
     if (line >= 0 && line < 5) {
@@ -2579,12 +2578,12 @@ exec function Bingo(int line)
     }
 }
 
-exec function AllBingos()
+exec function AllBingos(optional bool allowTelemetry)
 {
     local PlayerDataItem data;
     local int x, y;
 
-    if (!DontTrollMastodon()) return;
+    if (!allowTelemetry) DisableTelemetryTemporary(20);;
 
     data = class'PlayerDataItem'.static.GiveItem(self);
     for (x = 0; x < 5; x++) {
@@ -2594,16 +2593,9 @@ exec function AllBingos()
     }
 }
 
-static function bool DontTrollMastodon() {
-    local DXRTelemetry telemetry;
-
-    telemetry = class'DXRando'.default.dxr.telemetry;
-    if (telemetry == None) {
-        return false;
-    }
-
-    telemetry.set_enabled(false, false);
-    return true;
+// used to avoid spamming Mastodon with unearned bingos when using bingo cheat commands
+static function bool DisableTelemetryTemporary(int seconds) {
+    class'DXRTelemetry'.default.disable_until = class'DXRando'.default.dxr.SystemTime() + seconds;
 }
 
 exec function FindLoc()
