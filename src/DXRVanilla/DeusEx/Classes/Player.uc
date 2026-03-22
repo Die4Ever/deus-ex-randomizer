@@ -2526,10 +2526,12 @@ exec function ActivateBelt(int objectNum)
     }
 }
 
-function CompleteBingoGoal(PlayerDataItem data, int x, int y)
+static function CompleteBingoGoal(PlayerDataItem data, int x, int y)
 {
     local string event;
     local int progress, max;
+
+    if (!DontTrollMastodon()) return;
 
     data.GetBingoSpot(x, y, event,, progress, max);
     while (progress < max) {
@@ -2546,6 +2548,8 @@ exec function BingoGoal(int x, int y)
 exec function Bingo(int line)
 {
     local PlayerDataItem data;
+
+    if (!DontTrollMastodon()) return;
 
     data = class'PlayerDataItem'.static.GiveItem(self);
     if (line >= 0 && line < 5) {
@@ -2580,12 +2584,26 @@ exec function AllBingos()
     local PlayerDataItem data;
     local int x, y;
 
+    if (!DontTrollMastodon()) return;
+
     data = class'PlayerDataItem'.static.GiveItem(self);
     for (x = 0; x < 5; x++) {
         for (y = 0; y < 5; y++) {
             CompleteBingoGoal(data, x, y);
         }
     }
+}
+
+static function bool DontTrollMastodon() {
+    local DXRTelemetry telemetry;
+
+    telemetry = class'DXRando'.default.dxr.telemetry;
+    if (telemetry == None) {
+        return false;
+    }
+
+    telemetry.set_enabled(false, false);
+    return true;
 }
 
 exec function FindLoc()
