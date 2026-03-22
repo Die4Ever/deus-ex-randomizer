@@ -43,4 +43,5 @@
   - Crowd Control can no longer downgrade an aug to level 0 if it is being boosted by Synthetic Heart.
 - Zombies raised from corpses of the player (or corpses of Crowd Control player clones) now get the proper face skin and hit sounds.
 - Troops that are fleeing during the apartment raid in Mission 4 are now considered dead for the purposes of stopping the raid (So you won't need to hunt down that one troop hiding in a corner to have it counted as being completed).
+- Paul's fashion should now be immaculate after uncloaking and in death.
 </details>

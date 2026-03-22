@@ -17,6 +17,7 @@ var ToolCheckboxWindow	chkAlliances;
 var ToolCheckboxWindow	chkWeaponScore;
 var ToolCheckboxWindow	chkReactions;
 var ToolCheckboxWindow	chkPatrolPaths;
+var ToolCheckboxWindow	chkTextures;
 
 event InitWindow()
 {
@@ -135,6 +136,10 @@ function CreateDXRandoControls()
     chkPatrolPaths = CreateToolCheckbox(rightX, rightY,  "Show Patrol Paths", actorDisplay.ArePatrolPathsVisible());
     rightY += 25;
 
+    // Show Textures
+    chkTextures = CreateToolCheckbox(rightX, rightY,  "Show Textures", actorDisplay.AreTexturesVisible());
+    rightY += 25;
+
 
 //////////////////////////////////////////////////
 }
@@ -159,6 +164,7 @@ function SaveSettings()
     actorDisplay.ShowWeaponScores(chkWeaponScore.GetToggle());
     actorDisplay.ShowReactions(chkReactions.GetToggle());
     actorDisplay.ShowPatrolPaths(chkPatrolPaths.GetToggle());
+    actorDisplay.ShowTextures(chkTextures.GetToggle());
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplay.SetActorRadius(radiusFilter.GetText());
