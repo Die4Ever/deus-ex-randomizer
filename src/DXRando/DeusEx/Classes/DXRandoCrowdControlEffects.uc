@@ -436,8 +436,8 @@ function HandleAugEffectSelectability(string augName)
 
     augClass=getAugClass(augName);
     augIndex=getAugManagerIndex(augClass);
-    augLevel=FindAugLevel(augClass);
-    augMax=FindAugMax(augClass);
+    FindAugLevelMax(augClass, augLevel, augMax);
+
     anAug = player().AugmentationSystem.FindAugmentation(augClass);
 
     if (augLevel==-1){
@@ -488,24 +488,21 @@ function int getAugManagerIndex(class<Augmentation> augClass)
     return -1;
 }
 
-function int FindAugLevel(class<Augmentation> augClass)
+function FindAugLevelMax(class<Augmentation> augClass, out int level, out int max)
 {
     local Augmentation anAug;
     anAug = player().AugmentationSystem.FindAugmentation(augClass);
 
     if (anAug==None){
-        return -1;
-    } else {
-        if (anAug.bHasIt){
-            return anAug.CurrentLevel;
-        } else {
-            return -1;
-        }
+        level = -1;
+        max = augClass.default.MaxLevel;
+        return;
     }
-}
-function int FindAugMax(class<Augmentation> augClass)
-{
-    return augClass.default.MaxLevel;
+
+    class'DXRAugmentations'.static.GetTrueAugLevels(anAug,level,max);
+    if (anAug.bHasIt==false){
+        level = -1;
+    }
 }
 
 function bool IsTrainingLevel()
@@ -1161,6 +1158,7 @@ function int AddCredits(int amount,string viewer) {
 function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
     local Augmentation anAug;
     local bool wasActive;
+    local int trueLevel,trueMax;
 
     // Checks to see if the player already has it, so we can decrease the level,
     // or remove it all together
@@ -1177,7 +1175,9 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
         return Failed;
     }
 
-    if (anAug.CurrentLevel > 0) {
+    class'DXRAugmentations'.static.GetTrueAugLevels(anAug,trueLevel,trueMax);
+
+    if (trueLevel > 0) {
         //Downgrade scenario, has aug above base level
 
         wasActive = anAug.bIsActive;

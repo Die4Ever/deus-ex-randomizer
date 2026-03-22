@@ -283,7 +283,11 @@ function static class<Augmentation> GetRandomAug(DXRando dxr)
 
 function static bool AugCanBeUpgraded(Augmentation anAug)
 {
-    return anAug.bHasIt && anAug.CurrentLevel < anAug.MaxLevel;
+    local int trueLevel, trueMax;
+
+    class'DXRAugmentations'.static.GetTrueAugLevels(anAug,trueLevel,trueMax);
+
+    return anAug.bHasIt && trueLevel < trueMax;
 }
 
 function static UpgradeAug(Augmentation anAug)
