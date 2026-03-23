@@ -102,6 +102,7 @@ simulated function DerandoAugSlots()
     }
 }
 
+// the "Unbalanced" Slot Rando method
 simulated function RandoAugSlotsWeighted()
 {
     local Augmentation a;
@@ -127,6 +128,8 @@ simulated function RandoAugSlotsBalanced()
     local int augLocations[9], augLocIdx, numRemainingLocs;
     local int i, j, k;
     local Augmentation aug;
+
+    SetGlobalSeedNew("RandoAugSlotsBalanced");
 
     _DefaultAugsMask(dxr, augClasses, numAugClasses, true);
     augLocations[0] = 0;
