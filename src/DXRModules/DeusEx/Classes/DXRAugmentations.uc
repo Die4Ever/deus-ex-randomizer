@@ -76,27 +76,33 @@ simulated function CreateAugmentations(#var(PlayerPawn) p)
 
 simulated function RandoAllAugs()
 {
+    local Augmentation aug;
+
     if (dxr.flags.moresettings.aug_loc_rando == 200) {
-        _RandoAllAugsBalancedSlots();
+        RandoAugSlotsBalanced();
     } else if (dxr.flags.moresettings.aug_loc_rando > 0 && dxr.flags.moresettings.aug_loc_rando <= 100) {
-        _RandoAllAugsWeightedSlots();
+        RandoAugSlotsWeighted();
     } else {
-        _RandoAllAugsDefaultSlots();
+        DerandoAugSlots();
     }
+
+    foreach AllActors(class'Augmentation', aug) {
+        RandoAug(aug);
+    }
+
     CleanUpAugCounts(player()); // Recount the number of augs in each slot
 }
 
-simulated function _RandoAllAugsDefaultSlots()
+simulated function DerandoAugSlots()
 {
     local Augmentation aug;
 
     foreach AllActors(class'Augmentation', aug) {
         aug.AugmentationLocation = aug.default.AugmentationLocation;
-        RandoAug(aug);
     }
 }
 
-simulated function _RandoAllAugsWeightedSlots()
+simulated function RandoAugSlotsWeighted()
 {
     local Augmentation a;
 
@@ -111,11 +117,10 @@ simulated function _RandoAllAugsWeightedSlots()
             // (This allows it to revert in a later loop)
             a.AugmentationLocation = a.Default.AugmentationLocation;
         }
-        RandoAug(a);
     }
 }
 
-simulated function _RandoAllAugsBalancedSlots()
+simulated function RandoAugSlotsBalanced()
 {
     local class<Augmentation> augClasses[50], augClass;
     local int numAugClasses;
@@ -124,30 +129,6 @@ simulated function _RandoAllAugsBalancedSlots()
     local Augmentation aug;
 
     _DefaultAugsMask(dxr, augClasses, numAugClasses, true);
-    //LogAugArray(augClasses, numAugClasses);
-
-    // sort and deduplicate augClasses using a modified insertion sort
-    i = 1;
-    while (i < numAugClasses) {
-        augClass = augClasses[i];
-
-        // find the correct index, j, for augClass in the sorted subarray
-        for (j = i; j > 0 && string(augClasses[j - 1].name) >= string(augClass.name); j--);
-
-        // if it's a duplicate, remove it and try again
-        if (j != i && augClasses[j] == augClass) {
-            augClasses[i] = augClasses[--numAugClasses];
-        // otherwise move it to the correct position
-        } else {
-            for (k = i; k > j; k--) {
-                augClasses[k] = augClasses[k - 1];
-            }
-            augClasses[j] = augClass;
-            i++;
-        }
-    }
-    //LogAugArray(augClasses, numAugClasses);
-
     augLocations[0] = 0;
     augLocations[1] = 1;
     augLocations[2] = 2;
@@ -171,10 +152,8 @@ simulated function _RandoAllAugsBalancedSlots()
             if (aug.class != augClasses[i]) {
                 continue;
             }
-
             AssignAugLocation(aug, augLocations[augLocIdx]);
             l("Assigned location " $ class'Augmentation'.default.AugLocsText[aug.AugmentationLocation] $ " to " $ aug);
-            RandoAug(aug);
         }
 
         // remove the selected slot from the current pool but preserve the same number of each slot in the total array
@@ -185,13 +164,13 @@ simulated function _RandoAllAugsBalancedSlots()
     }
 }
 
-function LogAugArray(out class<Augmentation> augs[50], int numAugs)
+static function LogAugArray(/*const*/ out class<Augmentation> augs[50], int numAugs)
 {
     local int i;
 
-    l("LogAugArray()");
+    class'DXRando'.default.dxr.l("LogAugArray()");
     for (i = 0; i < numAugs; i++) {
-        l("  augs [" $ PadString(i $ "]: ", 5) $ augs[i].name);
+        class'DXRando'.default.dxr.l("  augs [" $ PadString(i $ "]: ", 5) $ augs[i].name);
     }
 }
 
@@ -316,38 +295,61 @@ function RandomizeAugCannisters()
 function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50], out int numAugs, bool includeLoadoutAugs)
 {
     local DXRLoadouts loadouts;
-    local class<Augmentation> a;
-    local int i, k;
+    local class<Augmentation> augClass;
+    local int i, j, k;
     local bool exists;
 
     numAugs = 0;
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
     for(i=0; i<ArrayCount(class'#var(prefix)AugmentationManager'.default.augClasses); i++) {
-        a = class'#var(prefix)AugmentationManager'.default.augClasses[i];
+        augClass = class'#var(prefix)AugmentationManager'.default.augClasses[i];
         if (
-            a == None
-            || a.default.AugmentationLocation == LOC_Default
-            || (loadouts != None && (loadouts.IsAugBanned(a) || (!includeLoadoutAugs && loadouts.StartedWithAug(a))))
+            augClass == None
+            || augClass.default.AugmentationLocation == LOC_Default
+            || (loadouts != None && (loadouts.IsAugBanned(augClass) || (!includeLoadoutAugs && loadouts.StartedWithAug(augClass))))
         ) {
             continue;
         }
-        allowed[numAugs++] = a;
+        allowed[numAugs++] = augClass;
     }
     if(loadouts != None) {
         for(i=0; true; i++) {
-            a = loadouts.GetExtraAug(i);
-            if(a==None) break;
+            augClass = loadouts.GetExtraAug(i);
+            if(augClass==None) break;
             exists = false;
             for(k=0; k<numAugs; k++) {
-                if(allowed[k] == a) {
+                if(allowed[k] == augClass) {
                     exists = true;
                     break;
                 }
             }
             if(exists) continue;
-            allowed[numAugs++] = a;
+            allowed[numAugs++] = augClass;
         }
     }
+    //LogAugArray(allowed, numAugs);
+
+    // sort and deduplicate allowed using a modified insertion sort
+    i = 1;
+    while (i < numAugs) {
+        augClass = allowed[i];
+
+        // find the correct index, j, for augClass in the sorted subarray
+        for (j = i; j > 0 && string(allowed[j - 1].name) >= string(augClass.name); j--);
+
+        // if it's a duplicate, remove it and try again
+        if (j != i && allowed[j] == augClass) {
+            allowed[i] = allowed[--numAugs];
+        // otherwise move it to the correct position
+        } else {
+            for (k = i; k > j; k--) {
+                allowed[k] = allowed[k - 1];
+            }
+            allowed[j] = augClass;
+            i++;
+        }
+    }
+    //LogAugArray(allowed, numAugs);
 }
 
 function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)

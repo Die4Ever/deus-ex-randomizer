@@ -811,7 +811,7 @@ function string GetAugSlotRandoHelpText(int val)
     {
         case 0: //Disabled
             return "Augs get installed into their default body parts.";
-        case 100: //Weighted
+        case 100: //Unbalanced
             return "Augs get installed into random body parts, with a chance for body parts to have more or fewer aug types than default.";
         case 200: //Balanced
             return "Augs get installed into random body parts, with the default number of aug types per body part maintained.";
