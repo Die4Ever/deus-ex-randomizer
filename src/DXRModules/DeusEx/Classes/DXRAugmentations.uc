@@ -119,7 +119,6 @@ simulated function _RandoAllAugsBalancedSlots()
 {
     local class<Augmentation> augClasses[50], augClass;
     local int numAugClasses;
-    local int hashes[50], hash;
     local int augLocations[9], augLocIdx, numRemainingLocs;
     local int i, j, k;
     local Augmentation aug;
@@ -128,30 +127,22 @@ simulated function _RandoAllAugsBalancedSlots()
     //LogAugArray(augClasses, numAugClasses);
 
     // sort and deduplicate augClasses using a modified insertion sort
-    hashes[0] = MurmurHash3(augClasses[0].name);
     i = 1;
     while (i < numAugClasses) {
         augClass = augClasses[i];
-        hash = MurmurHash3(augClass.name);
 
         // find the correct index, j, for augClass in the sorted subarray
-        for (j = i; j > 0 && hashes[j - 1] >= hash; j--);
-        // if it's already in the correct position, move on
-        if (j == i) {
-            hashes[i] = hash;
-            i++;
+        for (j = i; j > 0 && string(augClasses[j - 1].name) >= string(augClass.name); j--);
+
         // if it's a duplicate, remove it and try again
-        } else if (hashes[j] == hash) {
+        if (j != i && augClasses[j] == augClass) {
             augClasses[i] = augClasses[--numAugClasses];
         // otherwise move it to the correct position
         } else {
             for (k = i; k > j; k--) {
                 augClasses[k] = augClasses[k - 1];
-                hashes[k] = hashes[k - 1];
             }
             augClasses[j] = augClass;
-            hashes[j] = hash;
-            // move on to the next unsorted element
             i++;
         }
     }
@@ -199,14 +190,9 @@ function LogAugArray(out class<Augmentation> augs[50], int numAugs)
     local int i;
 
     l("LogAugArray()");
-    for (i = 0; i < numAugs; i++) l(
-        "  augs ["
-        $ PadString(i $ "]: ", 5)
-        $ PadString(augs[i].name, 14)
-        $ "("
-        $ PadString(MurmurHash3(augs[i].name), 11,, true)
-        $ ")"
-    );
+    for (i = 0; i < numAugs; i++) {
+        l("  augs [" $ PadString(i $ "]: ", 5) $ augs[i].name);
+    }
 }
 
 static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int level)
@@ -327,7 +313,7 @@ function RandomizeAugCannisters()
     }
 }
 
-function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50], out int numAugs, bool includeStartingAugs)
+function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50], out int numAugs, bool includeLoadoutAugs)
 {
     local DXRLoadouts loadouts;
     local class<Augmentation> a;
@@ -341,7 +327,7 @@ function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50
         if (
             a == None
             || a.default.AugmentationLocation == LOC_Default
-            || (loadouts != None && (loadouts.IsAugBanned(a) || (!includeStartingAugs && loadouts.StartedWithAug(a))))
+            || (loadouts != None && (loadouts.IsAugBanned(a) || (!includeLoadoutAugs && loadouts.StartedWithAug(a))))
         ) {
             continue;
         }
