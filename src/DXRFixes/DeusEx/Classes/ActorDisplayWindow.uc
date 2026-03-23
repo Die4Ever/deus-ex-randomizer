@@ -22,6 +22,7 @@ var bool         bShowAlliances;
 var bool         bShowWeaponScore;
 var bool         bShowReactions;
 var bool         bShowPatrolPaths;
+var bool         bShowTextures;
 
 var Color        patrolColours[10];
 
@@ -202,6 +203,16 @@ function bool ArePatrolPathsVisible()
 function ShowPatrolPaths(bool bShow)
 {
     bShowPatrolPaths = bShow;
+}
+
+function bool AreTexturesVisible()
+{
+    return bShowTextures;
+}
+
+function ShowTextures(bool bShow)
+{
+    bShowTextures = bShow;
 }
 
 
@@ -1044,6 +1055,18 @@ function DrawWindow(GC gc)
                     DrawSPPatrolPath(gc,trackPawn);
                 }
             }
+            //#endregion
+
+            //#region Show Textures
+            if (bShowTextures){
+                str = str $ "|ce4a023"; // #e4a023
+                for(i=0;i<ArrayCount(trackActor.MultiSkins);i++){
+                    str = str $ "MultiSkins["$i$"]="$trackActor.MultiSkins[i]$CR();
+                }
+                str = str $ "Texture="$ trackActor.Texture $CR();
+                str = str $ "Mesh="$ trackActor.Mesh $CR();
+            }
+
             //#endregion
 
             if (str != "")
