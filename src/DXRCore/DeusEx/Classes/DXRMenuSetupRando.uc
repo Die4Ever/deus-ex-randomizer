@@ -383,8 +383,10 @@ function BindControls(optional string action)
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
-    NewMenuItem("Aug Slot Rando %", "The chance for each aug to randomize the body part it can be installed into");
-    Slider(f.moresettings.aug_loc_rando, 0, 100, GetGenericHelpText("augslotrando"));
+    NewMenuItem("Aug Slot Rando", "Randomize the body parts augs can be installed into");
+    EnumOption("Disabled", 0, f.moresettings.aug_loc_rando, GetAugSlotRandoHelpText(0));
+    EnumOption("Balanced", 200, f.moresettings.aug_loc_rando, GetAugSlotRandoHelpText(200));
+    EnumOption("Unbalanced", 100, f.moresettings.aug_loc_rando, GetAugSlotRandoHelpText(100));
 
     NewGroup("New Game+");
 
@@ -801,6 +803,19 @@ function string GetPrisonPocketHelpText(int val)
             return "If taken to prison, you will keep all of your items.";
     }
     return "";
+}
+
+function string GetAugSlotRandoHelpText(int val)
+{
+    switch (val)
+    {
+        case 0: //Disabled
+            return "Augs get installed into their default body parts.";
+        case 100: //Weighted
+            return "Augs get installed into random body parts, with a chance for body parts to have more or fewer aug types than default.";
+        case 200: //Balanced
+            return "Augs get installed into random body parts, with the default number of aug types per body part maintained.";
+    }
 }
 
 function string GetPasswordRandoHelpText(int val)
