@@ -931,7 +931,7 @@ function FixLennyLAMConvo()
 {
     local Conversation c;
     local ConEvent ce,prev,preFlag;
-    local ConEventAddSkillPoints ceasp;
+    local ConEventMoveCamera cemc;
     local ConEventSetFlag cesf;
 
     //Make sure LennyDone isn't marked until *after* the transfer actually happens,
@@ -951,18 +951,17 @@ function FixLennyLAMConvo()
             } else {
                 cesf=None;
             }
-        } else if (ce.eventType==ET_AddSkillPoints && ceasp==None){
-            //There's only one of these in the conversation
-            ceasp = ConEventAddSkillPoints(ce);
+        } else if (ce.eventType==ET_MoveCamera && ce.label=="SkipSkill" && cemc==None){
+            cemc = ConEventMoveCamera(ce);
         }
         prev = ce;
         ce = ce.nextEvent;
     }
 
-    if (cesf!=None && preFlag!=None && ceasp!=None){
+    if (cesf!=None && preFlag!=None && cemc!=None){
         preFlag.nextEvent = cesf.nextEvent;
-        cesf.nextEvent=ceasp.nextEvent;
-        ceasp.nextEvent = cesf;
+        cesf.nextEvent=cemc.nextEvent;
+        cemc.nextEvent = cesf;
     }
 }
 //#endregion
