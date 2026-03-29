@@ -5,6 +5,8 @@ var ToolEditWindow nameFilter;
 var ToolEditWindow tagFilter;
 var ToolEditWindow eventFilter;
 var ToolEditWindow radiusFilter;
+var ToolEditWindow customFilterAttrib;
+var ToolEditWindow customFilterVal;
 var ToolCheckboxWindow	chkCustom;
 var ToolCheckboxWindow	chkInventory;
 var ToolCheckboxWindow	chkLimitRadius;
@@ -124,6 +126,21 @@ function CreateDXRandoControls()
     eventFilter.SetInsertionPoint(Len(actorDisplay.GetEventFilter()) - 1);
     eventFilter.SetSelectedArea(0, Len(actorDisplay.GetEventFilter()));
 
+    CreateToolLabel(rightX, rightY, "Custom Filter");
+    rightY += 20;
+    CreateToolLabel(rightX+3, rightY, "Attribute:");
+    CreateToolLabel(rightX+97, rightY, "Value:");
+    rightY += 15;
+    customFilterAttrib = CreateToolEditWindow(rightX, rightY, 91, 64);
+    customFilterAttrib.SetText(actorDisplay.GetCustomFilterAttrib());
+    customFilterAttrib.SetInsertionPoint(Len(actorDisplay.GetCustomFilterAttrib()) - 1);
+    customFilterAttrib.SetSelectedArea(0, Len(actorDisplay.GetCustomFilterAttrib()));
+    customFilterVal = CreateToolEditWindow(rightX+94, rightY, 91, 64);
+    rightY += 40;
+    customFilterVal.SetText(actorDisplay.GetCustomFilterVal());
+    customFilterVal.SetInsertionPoint(Len(actorDisplay.GetCustomFilterVal()) - 1);
+    customFilterVal.SetSelectedArea(0, Len(actorDisplay.GetCustomFilterVal()));
+
     // Show inventory
     chkInventory = CreateToolCheckbox(rightX, rightY,  "Show Inventory", actorDisplay.IsInventoryVisible());
     rightY += 25;
@@ -186,6 +203,10 @@ function SaveSettings()
     actorDisplay.default.customAttrib = actorDisplay.GetCustomAttrib();
     actorDisplay.ShowCustom(chkCustom.GetToggle());
     actorDisplay.default.bShowCustom = actorDisplay.IsCustomVisible();
+    actorDisplay.SetCustomFilterAttrib(customFilterAttrib.GetText());
+    actorDisplay.default.customFilterAttrib = actorDisplay.GetCustomFilterAttrib();
+    actorDisplay.SetCustomFilterVal(customFilterVal.GetText());
+    actorDisplay.default.customFilterVal = actorDisplay.GetCustomFilterVal();
 
     actorDisplay.ShowInventory(chkInventory.GetToggle());
     actorDisplay.default.bShowInventory = actorDisplay.IsInventoryVisible();
