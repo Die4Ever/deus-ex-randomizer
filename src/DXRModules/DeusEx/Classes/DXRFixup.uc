@@ -32,7 +32,7 @@ struct FragmentGuess {
     var Sound sound;
     var class<Fragment> fragmentClass;
 };
-var FragmentGuess fragmentGuesses[29];
+var FragmentGuess fragmentGuesses[30];
 
 static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> request)
 {
@@ -1698,7 +1698,6 @@ defaultproperties
 {
     // in order of proportion, then number of occurances.
     // in no cases here would vanilla unbreakable DeusExMovers have their FragmentClass changed to anything but 'MetalFragment' from something else
-
     fragmentGuesses(0)=(sound=sound'Pneumatic1Open',fragmentClass=class'MetalFragment')
     fragmentGuesses(1)=(sound=sound'Pneumatic1Close',fragmentClass=class'MetalFragment')
     fragmentGuesses(2)=(sound=sound'Pneumatic2Open',fragmentClass=class'MetalFragment')
@@ -1750,6 +1749,8 @@ defaultproperties
     // fragmentGuesses()=(sound=sound'StallDoorClose',fragmentClass=class'WoodFragment')   //  60.00%    (9 / 15)
     fragmentGuesses(27)=(sound=sound'StoneSlide2Move',fragmentClass=class'MetalFragment')  //  60.00%     (3 / 5)
     fragmentGuesses(28)=(sound=sound'SlideDoorOpen',fragmentClass=class'MetalFragment')    //  57.58%   (19 / 33)
+
+    fragmentGuesses(29)=(sound=sound'StoneSlide1Open',fragmentClass=class'Rockchip')
 }
 
 defaultproperties
