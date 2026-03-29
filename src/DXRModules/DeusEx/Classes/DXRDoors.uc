@@ -1,15 +1,26 @@
 class DXRDoors extends DXRActorsBase transient;
 
+enum ESetBool
+{
+    SB_Noset,
+    SB_True,
+    SB_False
+};
+
 struct door_fix {
-    var name tag;//what about doors that don't have tags? should I use name instead?
-    var bool bBreakable;
+    var name tag;
+    var name event;
+    var vector location;
+    var ESetBool breakable;
     var float minDamageThreshold;
     var float doorStrength;
-    var bool bPickable;
+    var ESetBool pickable;
     var float lockStrength;
-    var bool bHighlight;
+    var ESetBool highlight;
+    var class<Fragment> fragmentClass;
 };
 var door_fix door_fixes[16];
+var int num_door_fixes;
 
 var float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adjust, min_mindmg_adjust, max_mindmg_adjust;
 
@@ -40,146 +51,204 @@ function CheckConfig()
 
 function SetDoorFixes()
 {
-    local int i;
-
     if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.MinorEnabled())
     {
         return;
     }
 
+    num_door_fixes = 0;
+
     //#region minor door fix
     switch(dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+        door_fixes[num_door_fixes].tag = 'KioskDoor';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
     case "02_NYC_WAREHOUSE":
-        door_fixes[i].tag = 'Generator';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'Generator';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
+        break;
+
+    case "04_NYC_NSFHQ":
+        door_fixes[num_door_fixes].tag = 'TurretDoor1';
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'TurretDoor2';
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'TurretDoor3';
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
         break;
 
     case "06_HONGKONG_WANCHAI_MARKET":
         // Make sure random people don't bust down Tong's gate
-        door_fixes[i].tag = 'compound_gate';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'compound_gate';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
         //Make sure the display case isn't highlightable
-        door_fixes[i].tag = 'DispalyCase';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'DispalyCase';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
 
-    case "06_HongKong_MJ12lab":
+    case "06_HONGKONG_MJ12LAB":
         // Elevator doors to overlook area
-        door_fixes[i].tag = 'eledoor02';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = true;
-        door_fixes[i].minDamageThreshold = 1;
-        door_fixes[i].doorStrength = 0.01;
-        i++;
+        door_fixes[num_door_fixes].tag = 'eledoor02';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 1;
+        door_fixes[num_door_fixes].doorStrength = 0.01;
+        num_door_fixes++;
         break;
 
     case "06_HONGKONG_STORAGE":
         // breaking these doors open allows you to skip the computer, which is very confusing for players
-        door_fixes[i].tag = 'UC_Chamber_Door';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'UC_Chamber_Door';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
         break;
 
     case "09_NYC_SHIP":
         // don't break the ramp up to the ship!
-        door_fixes[i].tag = 'ShipRamp';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].minDamageThreshold = 60;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'ShipRamp';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].minDamageThreshold = 60;
+        door_fixes[num_door_fixes].doorStrength = 1;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
         break;
 
     case "09_NYC_SHIPBELOW":
         // don't randomize the weld points
-        door_fixes[i].tag = 'ShipBreech';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 55;
-        door_fixes[i].doorStrength = 0.5;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'ShipBreech';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 55;
+        door_fixes[num_door_fixes].doorStrength = 0.5;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
         break;
 
     case "09_NYC_GRAVEYARD":
         // don't randomize the EMOff transmitter, or the bookcase
-        door_fixes[i].tag = 'BreakableWall';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 1;
-        door_fixes[i].doorStrength = 0.15;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'BreakableWall';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 1;
+        door_fixes[num_door_fixes].doorStrength = 0.15;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
 
-        door_fixes[i].tag = 'Bookcase';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 1;
-        door_fixes[i].doorStrength = 0.15;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'Bookcase';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 1;
+        door_fixes[num_door_fixes].doorStrength = 0.15;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].location = vectm(-1962.0, -94.0, -268.0);
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].location = vectm(-1962.0, -670.0, -268.0);
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].location = vectm(-1506.0, -970.0, -268.0);
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].location = vectm(-1502.0, 202.0, -268.0);
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
         break;
 
-    case "10_Paris_Chateau":
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        door_fixes[num_door_fixes].tag = 'SilSecretDoor';
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].event = 'SilSecretDoor';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        num_door_fixes++;
+        break;
+
+    case "10_PARIS_CHATEAU":
         // make chateau cellar undefeatable, if you have lenient doors rules then you won't be going down here anyways
-        door_fixes[i].tag = 'duclare_chateau_cellar';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].minDamageThreshold = 100;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'duclare_chateau_cellar';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].minDamageThreshold = 100;
+        door_fixes[num_door_fixes].doorStrength = 1;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
         break;
 
-    case "15_area51_final":
+    case "11_PARIS_CATHEDRAL":
+        door_fixes[num_door_fixes].tag = 'secretdoor01';
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+        break;
+
+    case "11_PARIS_EVERETT":
+        door_fixes[num_door_fixes].tag = 'AI_room';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "15_AREA51_FINAL":
         // aquinas hub access, makes tong ending somewhat more viable
-        door_fixes[i].tag = 'blastdoor_upper';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'blastdoor_upper';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
         break;
 
-    case "15_area51_page":
+    case "15_AREA51_PAGE":
         //Make it so the exploding door doesn't become breakable
-        door_fixes[i].tag = 'door_clone_exit';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'door_clone_exit';
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
 
         // Don't let the player close the set of double doors to the gray room
-        door_fixes[i].tag = 'GreyDoors';
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'GreyDoors';
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
 
         //This is already the case in vanilla, but align Revision to it.
         //Make sure the Helios door itself can't be interacted with (keypad is still viable, or computer)
-        door_fixes[i].tag = 'door_helios_room';
-        door_fixes[i].bHighlight = false;
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'door_helios_room';
+        door_fixes[num_door_fixes].highlight = SB_False;
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        num_door_fixes++;
         break;
     }
 
@@ -194,101 +263,101 @@ function SetDoorFixes()
     case "04_NYC_STREET":
     case "08_NYC_STREET":
         // SmugglersFrontDoor for all 3 maps
-        door_fixes[i].tag = 'SmugglersFrontDoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 60;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'SmugglersFrontDoor';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 60;
+        door_fixes[num_door_fixes].doorStrength = 1;
+        door_fixes[num_door_fixes].pickable = SB_True;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
         break;
 
     case "02_NYC_SMUG":
     case "04_NYC_SMUG":
     case "08_NYC_SMUG":
         // Always make smugglers stash highlightable and breakable
-        door_fixes[i].tag = 'mirrordoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 5;
-        door_fixes[i].doorStrength = 0.6;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'mirrordoor';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 5;
+        door_fixes[num_door_fixes].doorStrength = 0.6;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
         break;
 
     case "04_NYC_NSFHQ":
         // door to the basement
-        door_fixes[i].tag = 'ExitDoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 0;// 0 uses a random value instead
-        door_fixes[i].doorStrength = 0;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 0;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'ExitDoor';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 0;// 0 uses a random value instead
+        door_fixes[num_door_fixes].doorStrength = 0;
+        door_fixes[num_door_fixes].pickable = SB_True;
+        door_fixes[num_door_fixes].lockStrength = 0;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
 
         // doors to the computer room
-        door_fixes[i].tag = 'SlidingDoor1Move';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 20;// 0 uses a random value instead
-        door_fixes[i].doorStrength = 0.5;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].lockStrength = 0;
-        door_fixes[i].bHighlight = false;
-        i++;
+        door_fixes[num_door_fixes].tag = 'SlidingDoor1Move';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 20;// 0 uses a random value instead
+        door_fixes[num_door_fixes].doorStrength = 0.5;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].lockStrength = 0;
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
 
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].tag = 'SlidingDoor2Move';
-        i++;
+        door_fixes[num_door_fixes] = door_fixes[num_door_fixes-1];
+        door_fixes[num_door_fixes].tag = 'SlidingDoor2Move';
+        num_door_fixes++;
         break;
 
     case "05_NYC_UNATCOHQ":
         // just in case General Carter's door gets stuck on something
-        door_fixes[i].tag = 'supplydoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 60;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'supplydoor';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 60;
+        door_fixes[num_door_fixes].doorStrength = 1;
+        door_fixes[num_door_fixes].pickable = SB_True;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
         break;
 
     case "12_VANDENBERG_GAS":
         // Always make the junkyard doors weak and breakable
-        door_fixes[i].tag = 'junkyard_doors';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 1;
-        door_fixes[i].doorStrength = 0.1;
-        door_fixes[i].bHighlight = true;
-        i++;
+        door_fixes[num_door_fixes].tag = 'junkyard_doors';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 1;
+        door_fixes[num_door_fixes].doorStrength = 0.1;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
         break;
 
-    case "15_area51_entrance":
+    case "15_AREA51_ENTRANCE":
         // area 51 chambers, in vanilla you can't find the codes for all of these and sometimes the NanoKey you need is in one of them
-        door_fixes[i].tag = 'chamber1';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 60;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = true;
-        i++;
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].tag = 'chamber2';
-        i++;
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].tag = 'chamber3';
-        i++;
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].tag = 'chamber4';
-        i++;
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].tag = 'chamber5';
-        i++;
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].tag = 'chamber6';
-        i++;
+        door_fixes[num_door_fixes].tag = 'chamber1';
+        door_fixes[num_door_fixes].breakable = SB_True;
+        door_fixes[num_door_fixes].minDamageThreshold = 60;
+        door_fixes[num_door_fixes].doorStrength = 1;
+        door_fixes[num_door_fixes].pickable = SB_True;
+        door_fixes[num_door_fixes].lockStrength = 1;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
+        door_fixes[num_door_fixes] = door_fixes[num_door_fixes-1];
+        door_fixes[num_door_fixes].tag = 'chamber2';
+        num_door_fixes++;
+        door_fixes[num_door_fixes] = door_fixes[num_door_fixes-1];
+        door_fixes[num_door_fixes].tag = 'chamber3';
+        num_door_fixes++;
+        door_fixes[num_door_fixes] = door_fixes[num_door_fixes-1];
+        door_fixes[num_door_fixes].tag = 'chamber4';
+        num_door_fixes++;
+        door_fixes[num_door_fixes] = door_fixes[num_door_fixes-1];
+        door_fixes[num_door_fixes].tag = 'chamber5';
+        num_door_fixes++;
+        door_fixes[num_door_fixes] = door_fixes[num_door_fixes-1];
+        door_fixes[num_door_fixes].tag = 'chamber6';
+        num_door_fixes++;
         break;
     }
 }
@@ -384,28 +453,55 @@ function ApplyDoorFixes()
 {
     local #var(DeusExPrefix)Mover d;
     local int i;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(class'DXRando'.default.dxr.player);
 
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
-        for(i=0; i<ArrayCount(door_fixes); i++) {
-            if( door_fixes[i].tag != d.Tag ) continue;
+        for(i=0; i<num_door_fixes; i++) {
+            if(
+                (door_fixes[i].tag != '' && door_fixes[i].tag != d.Tag)
+                || (door_fixes[i].event != '' && door_fixes[i].event != d.Event)
+                || (door_fixes[i].location != vect(0,0,0) && VanillaMaps && VSize(door_fixes[i].location - d.Location) > 0.0001)
+            ) continue;
 
-            if( door_fixes[i].bPickable ) MakePickable(d);
-            d.bPickable = door_fixes[i].bPickable;
-            if(door_fixes[i].lockStrength > 0 )
+            // if( door_fixes[i].bPickable ) MakePickable(d);
+            // d.bPickable = door_fixes[i].bPickable;
+            if(door_fixes[i].pickable == SB_True)
+                MakePickable(d);
+            else if(door_fixes[i].pickable == SB_False)
+                d.bPickable = false;
+
+            if(door_fixes[i].lockStrength > 0)
                 d.lockStrength = door_fixes[i].lockStrength;
-
             d.initiallockStrength = d.lockStrength;
-            if( door_fixes[i].bBreakable ) MakeDestructible(d);
-            d.bBreakable = door_fixes[i].bBreakable;
+
+            // if( door_fixes[i].bBreakable ) MakeDestructible(d);
+            // d.bBreakable = door_fixes[i].bBreakable;
+            if(door_fixes[i].breakable == SB_True)
+                MakeDestructible(d);
+            else if (door_fixes[i].breakable == SB_False)
+                d.bBreakable = false;
+
             if(door_fixes[i].minDamageThreshold > 0)
                 d.minDamageThreshold = door_fixes[i].minDamageThreshold;
+
             if(door_fixes[i].doorStrength > 0)
                 d.doorStrength = door_fixes[i].doorStrength;
 
-            if(door_fixes[i].bHighlight==false){
+            // if(door_fixes[i].bHighlight == false) {
+            //     d.bFrobbable = false;
+            //     d.bHighlight = false;
+            // }
+            if (door_fixes[i].highlight == SB_True) {
+                d.bHighlight = true;
+            } else if (door_fixes[i].highlight == SB_False) {
                 d.bFrobbable = false;
                 d.bHighlight = false;
             }
+
+            if (door_fixes[i].fragmentClass != None && VanillaMaps)
+                d.fragmentClass = door_fixes[i].fragmentClass;
         }
     }
 }
