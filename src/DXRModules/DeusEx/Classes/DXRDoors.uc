@@ -10,7 +10,10 @@ enum ESetBool
 struct door_fix {
     var name tag;
     var name event;
+    var name group;
+    var name keyIDNeeded;
     var vector location;
+
     var ESetBool breakable;
     var float minDamageThreshold;
     var float doorStrength;
@@ -57,17 +60,62 @@ function CheckConfig()
 
 function SetDoorFixes()
 {
+    local door_fix emptyDf;
+
     if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.MinorEnabled())
     {
         return;
     }
 
-    num_door_fixes = 0;
+    while (num_door_fixes > 0) door_fixes[--num_door_fixes] = emptyDf;
 
     //#region minor door fix
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        // these old pre-milenial buildings are riddled with ventilation shafts and maintenance tunnels and this one has a metal grate
+        door_fixes[num_door_fixes].location = vectm(2528.0, -752.0, -80.0);
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        // another shaft grate
+        door_fixes[num_door_fixes].location = vectm(3472.0, -1616.0, -192.0);
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+    case "01_NYC_UNATCOHQ":
+    case "03_NYC_UNATCOHQ":
+    case "04_NYC_UNATCOHQ":
+    case "05_NYC_UNATCOHQ":
+        door_fixes[num_door_fixes].tag = 'cannotopen';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        // armory door
+        door_fixes[num_door_fixes].location = vectm(816.0, -1184.0, 0.0);
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
     case "02_NYC_BATTERYPARK":
+        // TODO: make subway vent grates break into small metal fragments, here and in M03 and M04
+
         door_fixes[num_door_fixes].tag = 'KioskDoor';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "02_NYC_STREET":
+        door_fixes[num_door_fixes].keyIDNeeded = 'SewerKey';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        // Osgood and Sons front door
+        door_fixes[num_door_fixes].keyIDNeeded = 'StreetWarehouse';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        // doors inside Osgood and Sons
+        door_fixes[num_door_fixes].keyIDNeeded = 'WarehouseAccess';
         door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
         num_door_fixes++;
         break;
@@ -77,6 +125,44 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].breakable = SB_True;
         door_fixes[num_door_fixes].pickable = SB_False;
         door_fixes[num_door_fixes].highlight = SB_True;
+        num_door_fixes++;
+        break;
+
+    case "03_NYC_AIRFIELDHELIBASE":
+        // a bunch of clearly wooden doors break into metal in vanilla
+
+        // back entrance door
+        door_fixes[num_door_fixes].location = vectm(-86.0, 1764.0, 56.0);
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        // back entrance door
+        door_fixes[num_door_fixes].location = vectm(42.0, 1764.0, 56.0);
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        // office door
+        door_fixes[num_door_fixes].location = vectm(-988.0, 624.0, 0.0);
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        // office door
+        door_fixes[num_door_fixes].location = vectm(-988.0, 192.0, 0.0);
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'FrontDoor';
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        // bathroom door
+        door_fixes[num_door_fixes].location = vectm(992.0, 640.0, 0.0);
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        // bathroom door
+        door_fixes[num_door_fixes].location = vectm(988.0, 864.0, 128.0);
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
         num_door_fixes++;
         break;
 
@@ -94,6 +180,8 @@ function SetDoorFixes()
         num_door_fixes++;
         break;
 
+    // TODO: at least 3 06_HONGKONG_HELIBASE grates should break into smaller fragments
+
     case "06_HONGKONG_WANCHAI_MARKET":
         // Make sure random people don't bust down Tong's gate
         door_fixes[num_door_fixes].tag = 'compound_gate';
@@ -103,13 +191,69 @@ function SetDoorFixes()
         num_door_fixes++;
         break;
 
+    case "06_HONGKONG_WANCHAI_CANAL":
+        // flat boat hatch
+        door_fixes[num_door_fixes].group = 'barge';
+        door_fixes[num_door_fixes].FragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        // boat person chest
+        door_fixes[num_door_fixes].location = vectm(1502.0, 1760.0, -456.0);
+        door_fixes[num_door_fixes].FragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    // TODO: grate in 06_HONGKONG_WANCHAI_GARAGE to 06_HONGKONG_STORAGE should break into smaller pieces
+
     case "06_HONGKONG_WANCHAI_STREET":
+        // TODO: two fences ('LowerGate' and 'ServiceDoor') should break into smaller fragments
+
         //Make sure the display case isn't highlightable
         door_fixes[num_door_fixes].tag = 'DispalyCase';
         door_fixes[num_door_fixes].breakable = SB_False;
         door_fixes[num_door_fixes].pickable = SB_False;
         door_fixes[num_door_fixes].highlight = SB_False;
         num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'Eledoor01';
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'eledoor02';
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'BreakableWall';
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+
+        // frobbing these does nothing but keep them from closing automatically
+        door_fixes[num_door_fixes].tag = 'main_doors';
+        door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
+
+        // the inner side is clearly metal
+        door_fixes[num_door_fixes].tag = 'SecretDoor02';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        // the inner side is clearly metal
+        door_fixes[num_door_fixes].tag = 'vault_door';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "06_HONGKONG_TONGBASE":
+        door_fixes[num_door_fixes].tag = 'secretdoor01';
+        door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
+        num_door_fixes++;
+        break;
+
+    case "06_HONGKONG_VERSALIFE":
+        door_fixes[num_door_fixes].tag = 'LobbyDoor';
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
+        num_door_fixes++;
+        break;
 
     case "06_HONGKONG_MJ12LAB":
         // Elevator doors to overlook area
@@ -120,14 +264,48 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].minDamageThreshold = 1;
         door_fixes[num_door_fixes].doorStrength = 0.01;
         num_door_fixes++;
+
+        // for each of these elevator door pairs, only one door has a helpful sound set
+        door_fixes[num_door_fixes].tag = 'elevator_door';
+        door_fixes[num_door_fixes].FragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'elevator_door01';
+        door_fixes[num_door_fixes].FragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'eledoor02';
+        door_fixes[num_door_fixes].FragmentClass = class'MetalFragment';
+        num_door_fixes++;
         break;
 
     case "06_HONGKONG_STORAGE":
+        // TODO: grate (DeusExMover21) should break into smaller fragments
+
         // breaking these doors open allows you to skip the computer, which is very confusing for players
         door_fixes[num_door_fixes].tag = 'UC_Chamber_Door';
         door_fixes[num_door_fixes].breakable = SB_False;
         door_fixes[num_door_fixes].pickable = SB_False;
         door_fixes[num_door_fixes].highlight = SB_False;
+        num_door_fixes++;
+
+        // only one of these two doors has a helpful sound set
+        door_fixes[num_door_fixes].tag = 'elevator_door';
+        door_fixes[num_door_fixes].FragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        door_fixes[num_door_fixes].tag = 'FreezerDoor';
+        door_fixes[num_door_fixes].FragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "09_NYC_Dockyard":
+        // TODO: entrance gate should break into smaller fragments
+
+        // grate in the sewer area
+        door_fixes[num_door_fixes].location = vectm(1952.0, 5264.0, -286.0);
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
         num_door_fixes++;
         break;
 
@@ -156,6 +334,8 @@ function SetDoorFixes()
         break;
 
     case "09_NYC_GRAVEYARD":
+        // TODO: front gate should break into smaller fragments
+
         // don't randomize the EMOff transmitter, or the bookcase
         door_fixes[num_door_fixes].tag = 'BreakableWall';
         door_fixes[num_door_fixes].breakable = SB_True;
@@ -175,6 +355,8 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].highlight = SB_False;
         num_door_fixes++;
 
+        // sarcophagus lids
+
         door_fixes[num_door_fixes].location = vectm(-1962.0, -94.0, -268.0);
         door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
         num_door_fixes++;
@@ -192,7 +374,21 @@ function SetDoorFixes()
         num_door_fixes++;
         break;
 
+    case "10_PARIS_CATACOMBS":
+        // TODO: three vent grates in the metro should break into smaller fragments
+
+        door_fixes[num_door_fixes].tag = 'officebldgdoors';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].keyIDNeeded = 'catdoor';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
     case "10_PARIS_CATACOMBS_TUNNELS":
+        // TODO: fence doors ('maintdoors') should break into smaller fragments
+
         door_fixes[num_door_fixes].tag = 'SilSecretDoor';
         door_fixes[num_door_fixes].fragmentClass = class'Rockchip';
         num_door_fixes++;
@@ -201,6 +397,8 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].breakable = SB_False;
         num_door_fixes++;
         break;
+
+    // TODO: vent grates in 10_PARIS_CLUB should break into smaller fragments
 
     case "10_PARIS_CHATEAU":
         // make chateau cellar undefeatable, if you have lenient doors rules then you won't be going down here anyways
@@ -220,9 +418,84 @@ function SetDoorFixes()
         num_door_fixes++;
         break;
 
+    // TODO: 3 vent grates in 11_PARIS_UNDERGROUND should break into smaller fragments
+
     case "11_PARIS_EVERETT":
         door_fixes[num_door_fixes].tag = 'AI_room';
         door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "12_VANDENBERG_COMPUTER":
+        // server room door
+        door_fixes[num_door_fixes].keyIDNeeded = 'Lab02';
+        door_fixes[num_door_fixes].fragmentClass = class'GlassFragment';
+        num_door_fixes++;
+        break;
+
+    case "12_VANDENBERG_TUNNELS":
+        // trap doors on both ends of the map
+        // not quite reachable before hitting a teleporter unless you're really careful but they have keyIDNeeded set anyway
+        // but it's not one of the two keyIDs you can get on this map
+        // also they're unlocked
+        door_fixes[num_door_fixes].keyIDNeeded = 'Tunnel_access1';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    // TODO: metal bar door in pipe entrance in 12_VANDENBERG_GAS should break into smaller fragments
+
+    case "14_OCEANLAB_LAB":
+        // 8 lockers in the crew chambers
+        door_fixes[num_door_fixes].group = 'locker';
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "14_OCEANLAB_SILO":
+        // lower door to radio building
+        door_fixes[num_door_fixes].location = vectm(-1672.0, -6428.0, 1442.0);
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+
+        // upper door to radio building
+        door_fixes[num_door_fixes].location = vectm(-1672.0, -6132.0, 1616.0);
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "15_AREA51_BUNKER":
+        // TODO: "Jump! You can make it!" grate should break into smaller fragments. consider moving some or all of its changes to here from DXRFixupM15
+
+        // "Restricted Area" shack roof hatch
+        door_fixes[num_door_fixes].location = vectm(-1876.0, 3400.0, -32.000126);
+        door_fixes[num_door_fixes].fragmentClass = class'MetalFragment';
+        num_door_fixes++;
+        break;
+
+    case "15_AREA51_ENTRANCE":
+        door_fixes[num_door_fixes].tag = 'chamber1';
+        door_fixes[num_door_fixes].fragmentClass = class'GlassFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'chamber2';
+        door_fixes[num_door_fixes].fragmentClass = class'GlassFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'chamber3';
+        door_fixes[num_door_fixes].fragmentClass = class'GlassFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'chamber4';
+        door_fixes[num_door_fixes].fragmentClass = class'GlassFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'chamber5';
+        door_fixes[num_door_fixes].fragmentClass = class'GlassFragment';
+        num_door_fixes++;
+
+        door_fixes[num_door_fixes].tag = 'chamber6';
+        door_fixes[num_door_fixes].fragmentClass = class'GlassFragment';
         num_door_fixes++;
         break;
 
@@ -288,6 +561,7 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].minDamageThreshold = 5;
         door_fixes[num_door_fixes].doorStrength = 0.6;
         door_fixes[num_door_fixes].highlight = SB_True;
+        door_fixes[num_door_fixes].fragmentClass = class'WoodFragment';
         num_door_fixes++;
         break;
 
@@ -496,11 +770,8 @@ static function class<Fragment> GuessFragmentClass(#var(DeusExPrefix)Mover mov)
 
 function AdjustRestrictions(int doorspickable, int doorsdestructible, int deviceshackable)
 {
-    local Keypoint kp;
     SetSeed( "AdjustRestrictions" );
-
     AdjustUndefeatableDoors(doorspickable, doorsdestructible);
-
     ApplyDoorFixes();
 }
 
@@ -515,8 +786,10 @@ function ApplyDoorFixes()
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
         for(i=0; i<num_door_fixes; i++) {
             if(
-                (door_fixes[i].tag != '' && door_fixes[i].tag != d.Tag)
+                   (door_fixes[i].tag != '' && door_fixes[i].tag != d.Tag)
                 || (door_fixes[i].event != '' && door_fixes[i].event != d.Event)
+                || (door_fixes[i].group != '' && door_fixes[i].group != d.Group)
+                || (door_fixes[i].keyIDNeeded != '' && door_fixes[i].keyIDNeeded != d.KeyIDNeeded)
                 || (door_fixes[i].location != vect(0,0,0) && VanillaMaps && VSize(door_fixes[i].location - d.Location) > 0.0001)
             ) continue;
 
@@ -540,9 +813,9 @@ function ApplyDoorFixes()
             if(door_fixes[i].doorStrength > 0)
                 d.doorStrength = door_fixes[i].doorStrength;
 
-            if (door_fixes[i].highlight == SB_True) {
+            if(door_fixes[i].highlight == SB_True) {
                 d.bHighlight = true;
-            } else if (door_fixes[i].highlight == SB_False) {
+            } else if(door_fixes[i].highlight == SB_False) {
                 d.bFrobbable = false;
                 d.bHighlight = false;
             }
@@ -647,14 +920,16 @@ static function StaticMakeDestructible(#var(DeusExPrefix)Mover d)
 
 defaultproperties
 {
-    // in order of proportion, then number of occurances.
-    // in no cases here would vanilla unbreakable DeusExMovers have their FragmentClass changed to anything but 'MetalFragment' from something else
     fragmentGuesses(0)=(sound=sound'Pneumatic1Open',fragmentClass=class'MetalFragment')
     fragmentGuesses(1)=(sound=sound'Pneumatic1Close',fragmentClass=class'MetalFragment')
     fragmentGuesses(2)=(sound=sound'Pneumatic2Open',fragmentClass=class'MetalFragment')
     fragmentGuesses(3)=(sound=sound'Pneumatic2Close',fragmentClass=class'MetalFragment')
     fragmentGuesses(4)=(sound=sound'Pneumatic3Open',fragmentClass=class'MetalFragment')
     fragmentGuesses(5)=(sound=sound'Pneumatic3Close',fragmentClass=class'MetalFragment')
+
+    // in order of proportion, then number of occurances.
+    // in no cases here would vanilla unbreakable DeusExMovers have their FragmentClass changed to anything but 'MetalFragment' from something else
+
     // fragmentGuesses()=(sound=sound'GlassBreakLarge',fragmentClass=class'GlassFragment') // 100.00% (241 / 241)
     // fragmentGuesses()=(sound=sound'WoodDoor2Close',fragmentClass=class'WoodFragment')   // 100.00%   (67 / 67)
     fragmentGuesses(6)=(sound=sound'SmallExplosion2',fragmentClass=class'MetalFragment')   // 100.00%   (66 / 66)
