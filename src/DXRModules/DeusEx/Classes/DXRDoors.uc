@@ -79,14 +79,11 @@ function CheckConfig()
 function SetDoorFixes()
 {
     local bool VanillaMaps;
-    local door_fix emptyDf;
 
     if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.MinorEnabled())
         return;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(dxr.player);
-
-    while (num_door_fixes > 0) door_fixes[--num_door_fixes] = emptyDf;
 
     // TODO: determine which fragment changes are also good for Revision. also add any Revision-specific fragment changes
     //#region minor door fix
@@ -109,6 +106,7 @@ function SetDoorFixes()
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
     case "05_NYC_UNATCOHQ":
+        // Scott's normally undefeatable door by the entrance
         door_fixes[num_door_fixes].tag = 'cannotopen';
         door_fixes[num_door_fixes].frag = sf(class'MetalFragment', BIT_VANILLA);
         num_door_fixes++;
