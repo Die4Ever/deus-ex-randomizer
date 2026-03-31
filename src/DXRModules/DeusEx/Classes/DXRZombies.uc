@@ -342,8 +342,8 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     #ifndef vmd
     if(#var(prefix)JCDouble(sp)!=None || #var(prefix)PaulDenton(sp)!=None) {
         if(#var(prefix)JCDouble(sp)!=None){
-            //Make sure the double gets the right face first
-            #var(prefix)JCDouble(sp).SetSkin(module.player());
+            //Make sure the double gets the right face first, HXJCDouble doesn't have SetSkin
+            if(!#bool(hx)) JCDouble(sp).SetSkin(module.player());
 
             //Also set the carcass class back to the male carcass, we'll feminize it as necessary on death
             sp.CarcassType = class'JCDentonMaleCarcass';
@@ -352,7 +352,6 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
             sp.HitSound1 = module.player().HitSound1;
             sp.HitSound2 = module.player().HitSound2;
             sp.Die = module.player().Die;
-
         }
         foreach sp.AllActors(class'DXRFashionManager', fashion) { break; }
         i = 0;
