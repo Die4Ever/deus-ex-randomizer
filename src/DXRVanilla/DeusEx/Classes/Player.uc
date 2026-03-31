@@ -2583,7 +2583,7 @@ exec function AllBingos(optional bool allowTelemetry)
     local PlayerDataItem data;
     local int x, y;
 
-    if (!allowTelemetry) DisableTelemetryTemporary(20);;
+    if (!allowTelemetry) DisableTelemetryTemporary(20);
 
     data = class'PlayerDataItem'.static.GiveItem(self);
     for (x = 0; x < 5; x++) {
