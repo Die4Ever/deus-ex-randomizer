@@ -76,13 +76,105 @@ simulated function CreateAugmentations(#var(PlayerPawn) p)
 
 simulated function RandoAllAugs()
 {
+    local Augmentation aug;
+
+    if (dxr.flags.moresettings.aug_loc_rando == 200) {
+        RandoAugSlotsBalanced();
+    } else if (dxr.flags.moresettings.aug_loc_rando > 0 && dxr.flags.moresettings.aug_loc_rando <= 100) {
+        RandoAugSlotsWeighted();
+    } else {
+        DerandoAugSlots();
+    }
+
+    foreach AllActors(class'Augmentation', aug) {
+        RandoAug(aug);
+    }
+
+    CleanUpAugCounts(player()); // Recount the number of augs in each slot
+}
+
+simulated function DerandoAugSlots()
+{
+    local Augmentation aug;
+
+    foreach AllActors(class'Augmentation', aug) {
+        aug.AugmentationLocation = aug.default.AugmentationLocation;
+    }
+}
+
+// the "Unbalanced" Slot Rando method
+simulated function RandoAugSlotsWeighted()
+{
     local Augmentation a;
 
     foreach AllActors(class'Augmentation', a) {
-        RandoAug(a);
+        SetGlobalSeed("RandoAugLoc " $ a.class.name);
+        // TODO: consider replacing the chance_single() check eventually if weighted randomization stays a binary choice
+        if (a.AugmentationLocation!=LOC_Default && chance_single(dxr.flags.moresettings.aug_loc_rando)){
+            PickRandomAugLocation(a);
+            l("Assigned location " $ class'Augmentation'.default.AugLocsText[a.AugmentationLocation] $ " to " $ a);
+        } else {
+            // Make sure it's set to the default location if not randomizing
+            // (This allows it to revert in a later loop)
+            a.AugmentationLocation = a.Default.AugmentationLocation;
+        }
     }
+}
 
-    CleanUpAugCounts(player()); //Recount the number of augs in each slot
+simulated function RandoAugSlotsBalanced()
+{
+    local class<Augmentation> augClasses[50], augClass;
+    local int numAugClasses;
+    local int augLocations[9], augLocIdx, numRemainingLocs;
+    local int i, j, k;
+    local Augmentation aug;
+
+    SetGlobalSeedNew("RandoAugSlotsBalanced");
+
+    _DefaultAugsMask(dxr, augClasses, numAugClasses, true);
+    augLocations[0] = 0;
+    augLocations[1] = 1;
+    augLocations[2] = 2;
+    augLocations[3] = 2;
+    augLocations[4] = 2;
+    augLocations[5] = 3;
+    augLocations[6] = 4;
+    augLocations[7] = 5;
+    augLocations[8] = 5;
+
+    for (i = 0; i < numAugClasses; i++) {
+        // after assigning to every aug location the correct number of times, start over for any remaining augs
+        // augLocations will be shuffled at that point but it doesn't matter
+        if (numRemainingLocs == 0) {
+            numRemainingLocs = ArrayCount(augLocations);
+        }
+
+        augLocIdx = rng(numRemainingLocs);
+
+        foreach AllActors(class'Augmentation', aug) {
+            if (aug.class != augClasses[i]) {
+                continue;
+            }
+            AssignAugLocation(aug, augLocations[augLocIdx]);
+            l("Assigned location " $ class'Augmentation'.default.AugLocsText[aug.AugmentationLocation] $ " to " $ aug);
+        }
+
+        // remove the selected slot from the current pool but preserve the same number of each slot in the total array
+        numRemainingLocs--;
+        j = augLocations[augLocIdx];
+        augLocations[augLocIdx] = augLocations[numRemainingLocs];
+        augLocations[numRemainingLocs] = j;
+    }
+}
+
+static function LogAugArray(/*const*/ out class<Augmentation> augs[50], int numAugs)
+{
+    local int i;
+
+    class'DXRando'.default.dxr.l("LogAugArray()");
+    for (i = 0; i < numAugs; i++) {
+        class'DXRando'.default.dxr.l("  augs [" $ PadString(i $ "]: ", 5) $ augs[i].name);
+    }
 }
 
 static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int level)
@@ -203,45 +295,64 @@ function RandomizeAugCannisters()
     }
 }
 
-function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50], out int numAugs)
+function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50], out int numAugs, bool includeLoadoutAugs)
 {
     local DXRLoadouts loadouts;
-    local class<Augmentation> a;
-    local int i, k;
+    local class<Augmentation> augClass;
+    local int i, j, k;
     local bool exists;
 
     numAugs = 0;
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
     for(i=0; i<ArrayCount(class'#var(prefix)AugmentationManager'.default.augClasses); i++) {
-        a = class'#var(prefix)AugmentationManager'.default.augClasses[i];
-        if( a == None ) {
+        augClass = class'#var(prefix)AugmentationManager'.default.augClasses[i];
+        if (
+            augClass == None
+            || augClass.default.AugmentationLocation == LOC_Default
+            || (loadouts != None && (loadouts.IsAugBanned(augClass) || (!includeLoadoutAugs && loadouts.StartedWithAug(augClass))))
+        ) {
             continue;
         }
-        if( a.default.AugmentationLocation == LOC_Default ) {
-            continue;
-        }
-        if( loadouts != None ) {
-            if(loadouts.IsAugBanned(a)) {
-                continue;
-            }
-        }
-        allowed[numAugs++] = a;
+        allowed[numAugs++] = augClass;
     }
     if(loadouts != None) {
         for(i=0; true; i++) {
-            a = loadouts.GetExtraAug(i);
-            if(a==None) break;
+            augClass = loadouts.GetExtraAug(i);
+            if(augClass==None) break;
             exists = false;
             for(k=0; k<numAugs; k++) {
-                if(allowed[k] == a) {
+                if(allowed[k] == augClass) {
                     exists = true;
                     break;
                 }
             }
             if(exists) continue;
-            allowed[numAugs++] = a;
+            allowed[numAugs++] = augClass;
         }
     }
+    //LogAugArray(allowed, numAugs);
+
+    // sort and deduplicate allowed using a modified insertion sort
+    i = 1;
+    while (i < numAugs) {
+        augClass = allowed[i];
+
+        // find the correct index, j, for augClass in the sorted subarray
+        for (j = i; j > 0 && string(allowed[j - 1].name) >= string(augClass.name); j--);
+
+        // if it's a duplicate, remove it and try again
+        if (j != i && allowed[j] == augClass) {
+            allowed[i] = allowed[--numAugs];
+        // otherwise move it to the correct position
+        } else {
+            for (k = i; k > j; k--) {
+                allowed[k] = allowed[k - 1];
+            }
+            allowed[j] = augClass;
+            i++;
+        }
+    }
+    //LogAugArray(allowed, numAugs);
 }
 
 function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
@@ -253,7 +364,7 @@ function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
     local bool augOk;
     local Augmentation anAug;
 
-    _DefaultAugsMask(dxr, allowed, numAugs);
+    _DefaultAugsMask(dxr, allowed, numAugs, false);
 
     for (i=0;i<num;i++)
     {
@@ -277,7 +388,7 @@ function static class<Augmentation> GetRandomAug(DXRando dxr)
     local int numAugs;
     local class<Augmentation> allowed[50];
 
-    _DefaultAugsMask(dxr, allowed, numAugs);
+    _DefaultAugsMask(dxr, allowed, numAugs, false);
     return PickRandomAug(dxr, allowed, numAugs);
 }
 
@@ -344,7 +455,7 @@ function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCanni
     local class<Augmentation> allowed[50];
     local class<Augmentation> augs[2];
 
-    _DefaultAugsMask(dxr, allowed, numAugs);
+    _DefaultAugsMask(dxr, allowed, numAugs, false);
 
     augs[0] = PickRandomAug(dxr, allowed, numAugs);
     augs[1] = PickRandomAug(dxr, allowed, numAugs);
@@ -373,6 +484,30 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out class<Augment
     allowed[slot] = None;
     numAugs--;
     return aug;
+}
+
+simulated function AssignAugLocation(Augmentation a, int augLocInt)
+{
+    switch (augLocInt) {
+        case 0:
+            a.AugmentationLocation = LOC_Cranial;
+            break;
+        case 1:
+            a.AugmentationLocation = LOC_Eye;
+            break;
+        case 2:
+            a.AugmentationLocation = LOC_Torso;
+            break;
+        case 3:
+            a.AugmentationLocation = LOC_Arm;
+            break;
+        case 4:
+            a.AugmentationLocation = LOC_Leg;
+            break;
+        case 5:
+            a.AugmentationLocation = LOC_Subdermal;
+            break;
+    }
 }
 
 //Weighted to match the number of slots per location
@@ -412,15 +547,6 @@ simulated function RandoAug(Augmentation a)
 #ifdef vanilla
     a.SetAutomatic();// fixes descriptions/balance now that we have loaded flags
 #endif
-
-    SetGlobalSeed("RandoAugLoc " $ a.class.name);
-    if (a.AugmentationLocation!=LOC_Default && chance_single(dxr.flags.moresettings.aug_loc_rando)){
-        PickRandomAugLocation(a);
-    } else {
-        //Make sure it's set to the default location if not randomizing
-        //(This allows it to revert in a later loop)
-        a.AugmentationLocation = a.Default.AugmentationLocation;
-    }
 
 #ifdef injections
     if(a.activationCost >= 1) {

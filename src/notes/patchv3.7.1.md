@@ -41,6 +41,7 @@
   - It is now possible to fully upgrade an aug while Synthetic Heart is active.
   - Augs that are removed (Such as at the end of a game or if removed at a Medical Bot) while being boosted by Synthetic Heart will no longer be already in a boosted state when reinstalled, resulting in them being at an effective level 0.  This is most obvious when Synthetic Heart is active when the aug is reinstalled.
   - Crowd Control can no longer downgrade an aug to level 0 if it is being boosted by Synthetic Heart.
+- New Aug Slot Rando option: Balanced. Keeps the proportional number of augs per slot as close to default as possible.
 - Zombies raised from corpses of the player (or corpses of Crowd Control player clones) now get the proper face skin and hit sounds.
 - Troops that are fleeing during the apartment raid in Mission 4 are now considered dead for the purposes of stopping the raid (So you won't need to hunt down that one troop hiding in a corner to have it counted as being completed).
 - Paul's fashion should now be immaculate after uncloaking and in death.
