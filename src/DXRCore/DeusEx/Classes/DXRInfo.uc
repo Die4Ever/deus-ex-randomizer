@@ -426,6 +426,31 @@ simulated static function string TrimTrailingZeros(coerce string s)
     return Left(s, end);
 }
 
+simulated static function string PadString(coerce string s, int length, optional coerce string padStr, optional bool padLeft)
+{
+    local int nps;
+
+    if (padStr == "") {
+        padStr = " ";
+    }
+    nps = Len(padStr);
+    nps = (length - Len(s) + nps - 1) / nps;
+
+    if (padLeft) {
+        while (nps > 0) {
+            s = padStr $ s;
+            nps--;
+        }
+    } else {
+        while (nps > 0) {
+            s = s $ padStr;
+            nps--;
+        }
+    }
+
+    return s;
+}
+
 static function string ToHex(int val)
 {
     local int t;
