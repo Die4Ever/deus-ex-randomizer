@@ -11,6 +11,8 @@ var bool         bShowInventory;
 var string       nameFilter;
 var string       tagFilter;
 var string       eventFilter;
+var string       customFilterAttrib;
+var string       customFilterVal;
 var bool         bLimitRadius;
 var int          actorRadius;
 var bool         bShowTagEvent;
@@ -70,6 +72,22 @@ function SetEventFilter(string newFilter)
 
 function String GetEventFilter(){
     return eventFilter;
+}
+
+function String GetCustomFilterAttrib(){
+    return customFilterAttrib;
+}
+
+function SetCustomFilterAttrib(string newAttrib){
+    customFilterAttrib = newAttrib;
+}
+
+function String GetCustomFilterVal(){
+    return customFilterVal;
+}
+
+function SetCustomFilterVal(string newVal){
+    customFilterVal = newVal;
 }
 
 function SetViewClass(Class<Actor> newViewClass)
@@ -312,13 +330,12 @@ function DrawWindow(GC gc)
 
     Super(Window).DrawWindow(gc);
 
-    if (viewClass == None && nameFilter=="")
+    if (viewClass != None)
+        classToShow = viewClass;
+    else if (nameFilter != "")
+        classToShow = class'Actor';
+    else
         return;
-
-    classToShow = viewClass;
-    if ((nameFilter!="" || tagFilter!="" || eventFilter!="") && classToShow==None){
-        classToShow=class'Actor';
-    }
 
     player  = GetPlayerPawn();
 
@@ -343,6 +360,8 @@ function DrawWindow(GC gc)
         if (tagFilter!="" && !(tagFilter~=string(trackActor.Tag)))
             continue;
         if (eventFilter!="" && !(eventFilter~=string(trackActor.Event)))
+            continue;
+        if (customFilterAttrib!="" && !(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib)))
             continue;
 
         dxMover = DeusExMover(trackActor);
@@ -1531,7 +1550,6 @@ defaultproperties
     textfont=Font'DXRFontFixedWidthSmall'
     bShowHidden=true
     bShowLineOfSight=false
-    bShowPos=true
     patrolColours(0)=(R=255,G=0,B=0,A=0)     //Red
     patrolColours(1)=(R=156,G=39,B=176,A=0)  //Purple
     patrolColours(2)=(R=0,G=0,B=255,A=0)     //Blue
