@@ -57,7 +57,7 @@ function RandomLiberty()
     local int i;
 
     foreach AllActors(class'NYLibertyTop',top){
-        if(IsOctober()) {
+        if(IsHalloweenSeason()) {
             top.style = STY_Translucent;
             top.ScaleGlow = 0.5;
         }
@@ -66,7 +66,7 @@ function RandomLiberty()
     foreach AllActors(class'NYLiberty',liberty){
         SetGlobalSeed("RandomLiberty");
 
-        if(IsOctober()) {
+        if(IsHalloweenSeason()) {
             liberty.style = STY_Translucent;
             liberty.ScaleGlow = 0.5;
         }
@@ -151,8 +151,7 @@ function RandomBobPage()
 function RandomMJ12Globe()
 {
     local Earth earth;
-    local int i;
-    local float scaleMult;
+    local float newScale;
     local Rotator startRot;
 
     foreach AllActors(class'Earth',earth){
@@ -161,7 +160,7 @@ function RandomMJ12Globe()
         earth.bIsSecretGoal=True;
 
         startRot = earth.Rotation;
-        scaleMult=1.0;
+        newScale=-1;
 
         if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random globe
 
@@ -169,87 +168,88 @@ function RandomMJ12Globe()
         case 0:
             PlayDressUp(earth,class'Basketball',0);
             startRot = rotm(8000,0,7000,0); //Give it a bit of tilt for more drama
-            scaleMult = 2;
+            newScale=9.0; //default calculation is 4.725
             break;
         case 1:
             PlayDressUp(earth,class'BoneSkull',0);
             startRot = rotm(0,32765,-5000,0); //Slightly tilted down
-            scaleMult = 1.0;
             break;
         case 2:
             PlayDressUp(earth,class'Liquor40oz',0);
             startRot = rotm(0,16000,12000,0);
-            scaleMult = 2;
+            newScale=12.0;
             break;
         case 3:
             PlayDressUp(earth,class'#var(prefix)DXLogo',0);
             startRot = earth.Rotation;
-            scaleMult = 3;
+            newScale=1.0; //Default calculation is 0.845
             break;
         case 4:
             PlayDressUp(earth,class'SodaCan',0);
             startRot = rotm(6000,16000,12000,0);
-            scaleMult = 1.0;
+            newScale=15.0; //Default calculation is 10.5
             break;
         case 5: //Does this one even look good?
             PlayDressUp(earth,class'BoneFemur',0);
             startRot = rotm(0,16000,12000,0);
-            scaleMult = 0.25;
+            newScale=7.0; //Default calculation is 28.125
             break;
         case 6:
             PlayDressUp(earth,class'ChildMale2',24000);
             startRot = earth.Rotation;
-            scaleMult = 1.5;
+            newScale=2.5; //Default calculation is 1.45
             break;
         case 7:
             PlayDressUp(earth,class'Trophy',0);
             startRot = earth.Rotation;
-            scaleMult = 1.0;
+            newScale=6.0; //Default calculation is 4.319
             break;
         case 8:
             PlayDressUp(earth,class'GrayCarcass',0);
             startRot = rotm(-16385,20000,0,0);
-            scaleMult = 0.25;
+            newScale=2.0; //Default calculation is 7.57
             break;
         case 9:
             PlayDressUp(earth,class'Mutt',24000);
             startRot = earth.Rotation;
-            scaleMult = 1.5;
+            newScale=3.0; //Default calculation is 1.81
             break;
         case 10:
             PlayDressUp(earth,class'IonStormLogo',-20000);
             startRot = earth.Rotation;
-            scaleMult = 8;
+            newScale = 8.0;
             break;
         case 11:
             PlayDressUp(earth,class'EidosLogo',-20000);
             startRot = earth.Rotation;
-            scaleMult = 0.4;
+            newScale=1.5; //Default calculation is 2.964
             break;
         case 12:
             PlayDressUp(earth,class'HKTukTuk',-20000);
             startRot = earth.Rotation;
-            scaleMult = 0.6;
+            newScale=1.0; //Default calculation is 1.15
             break;
         case 13:
             PlayDressUp(earth,class'CarWrecked',-20000);
             startRot = earth.Rotation;
-            scaleMult = 1.0;
+            //default scale calculation is 0.95
             break;
         case 14:
             PlayDressUp(earth,class'MiniSub',-20000);
             startRot = earth.Rotation;
-            scaleMult = 1.0;
+            //default scale calculation is 0.884
             break;
         case 15:
             PlayDressUp(earth,class'JCDouble',24000);
             startRot = earth.Rotation;
-            scaleMult = 1.5;
+            newScale=1.75; //Default calculation is 0.995
             break;
         }
 
         earth.RotationRate = rot(0,-750,0);
-        earth.DrawScale = earth.DrawScale * scaleMult;
+        if (newScale>0){
+            earth.DrawScale = newScale;
+        }
         earth.SetRotation(startRot);
 
         return;
@@ -1471,7 +1471,7 @@ function MakeAllGhosts()
     local #var(prefix)ScriptedPawn p;
     local bool isEndgame4;
 
-    if(!IsOctober()) return;
+    if(!IsHalloweenSeason()) return;
 
     if(dxr.localURL~="ENDGAME4" || dxr.localURL~="ENDGAME4REV") {
         isEndgame4 = true;

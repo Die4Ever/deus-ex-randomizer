@@ -1141,9 +1141,6 @@ function bool StartedWithAug(class<Augmentation> a)
 // used for determining aug can contents
 function bool IsAugBanned(class<Augmentation> a)
 {
-    //Always allow augs you started with
-    if(StartedWithAug(a)) return true;
-
     //Ban Run Silent aug in speedruns with aug slot rando disabled
     if(dxr.flags.IsSpeedrunMode() && dxr.flags.moresettings.aug_loc_rando==0 && class<#var(prefix)AugStealth>(a)!=None) return true;
 

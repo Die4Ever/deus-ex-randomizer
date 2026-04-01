@@ -5,6 +5,8 @@ var ToolEditWindow nameFilter;
 var ToolEditWindow tagFilter;
 var ToolEditWindow eventFilter;
 var ToolEditWindow radiusFilter;
+var ToolEditWindow customFilterAttrib;
+var ToolEditWindow customFilterVal;
 var ToolCheckboxWindow	chkCustom;
 var ToolCheckboxWindow	chkInventory;
 var ToolCheckboxWindow	chkLimitRadius;
@@ -17,6 +19,7 @@ var ToolCheckboxWindow	chkAlliances;
 var ToolCheckboxWindow	chkWeaponScore;
 var ToolCheckboxWindow	chkReactions;
 var ToolCheckboxWindow	chkPatrolPaths;
+var ToolCheckboxWindow	chkTextures;
 
 event InitWindow()
 {
@@ -123,6 +126,21 @@ function CreateDXRandoControls()
     eventFilter.SetInsertionPoint(Len(actorDisplay.GetEventFilter()) - 1);
     eventFilter.SetSelectedArea(0, Len(actorDisplay.GetEventFilter()));
 
+    CreateToolLabel(rightX, rightY, "Custom Filter");
+    rightY += 20;
+    CreateToolLabel(rightX+3, rightY, "Attribute:");
+    CreateToolLabel(rightX+97, rightY, "Value:");
+    rightY += 15;
+    customFilterAttrib = CreateToolEditWindow(rightX, rightY, 91, 64);
+    customFilterAttrib.SetText(actorDisplay.GetCustomFilterAttrib());
+    customFilterAttrib.SetInsertionPoint(Len(actorDisplay.GetCustomFilterAttrib()) - 1);
+    customFilterAttrib.SetSelectedArea(0, Len(actorDisplay.GetCustomFilterAttrib()));
+    customFilterVal = CreateToolEditWindow(rightX+94, rightY, 91, 64);
+    rightY += 40;
+    customFilterVal.SetText(actorDisplay.GetCustomFilterVal());
+    customFilterVal.SetInsertionPoint(Len(actorDisplay.GetCustomFilterVal()) - 1);
+    customFilterVal.SetSelectedArea(0, Len(actorDisplay.GetCustomFilterVal()));
+
     // Show inventory
     chkInventory = CreateToolCheckbox(rightX, rightY,  "Show Inventory", actorDisplay.IsInventoryVisible());
     rightY += 25;
@@ -135,6 +153,10 @@ function CreateDXRandoControls()
     chkPatrolPaths = CreateToolCheckbox(rightX, rightY,  "Show Patrol Paths", actorDisplay.ArePatrolPathsVisible());
     rightY += 25;
 
+    // Show Textures
+    chkTextures = CreateToolCheckbox(rightX, rightY,  "Show Textures", actorDisplay.AreTexturesVisible());
+    rightY += 25;
+
 
 //////////////////////////////////////////////////
 }
@@ -143,23 +165,74 @@ function SaveSettings()
 {
     Super.SaveSettings();
 
+    actorDisplay.default.viewClass = actorDisplay.GetViewClass();
+    actorDisplay.default.bShowEyes = actorDisplay.AreEyesVisible();
+    actorDisplay.default.bShowArea = actorDisplay.IsAreaVisible();
+    actorDisplay.default.bShowCylinder = actorDisplay.IsCylinderVisible();
+    actorDisplay.default.bShowMesh = actorDisplay.IsMeshVisible();
+    actorDisplay.default.bShowZone = actorDisplay.IsZoneVisible();
+    actorDisplay.default.bShowLineOfSight = actorDisplay.IsLOSVisible();
+    // actorDisplay.default.bShowData = actorDisplay.bShowData;
+    actorDisplay.default.bShowVisibility = actorDisplay.IsVisibilityVisible();
+    actorDisplay.default.bShowState = actorDisplay.IsStateVisible();
+    actorDisplay.default.bShowEnemy = actorDisplay.IsEnemyVisible();
+    actorDisplay.default.bShowInstigator = actorDisplay.IsInstigatorVisible();
+    actorDisplay.default.bShowBase = actorDisplay.IsBaseVisible();
+    actorDisplay.default.bShowOwner = actorDisplay.IsOwnerVisible();
+    actorDisplay.default.bShowBindName = actorDisplay.IsBindNameVisible();
+    actorDisplay.default.bShowLightLevel = actorDisplay.IsLightVisible();
+    actorDisplay.default.bShowDist = actorDisplay.IsDistVisible();
+    actorDisplay.default.bShowPos = actorDisplay.IsPosVisible();
+    actorDisplay.default.bShowHealth = actorDisplay.IsHealthVisible();
+    actorDisplay.default.bShowMass = actorDisplay.IsMassVisible();
+    actorDisplay.default.bShowPhysics = actorDisplay.ArePhysicsVisible();
+    actorDisplay.default.bShowVelocity = actorDisplay.IsVelocityVisible();
+    actorDisplay.default.bShowAcceleration= actorDisplay.IsAccelerationVisible();
+    actorDisplay.default.bShowLastRendered = actorDisplay.IsLastRenderedVisible();
+    actorDisplay.default.bShowEnemyResponse = actorDisplay.IsEnemyResponseVisible();
+    // actorDisplay.default.maxPoints = actorDisplay.maxPoints;
+    // actorDisplay.default.sinTable = actorDisplay.sinTable;
+
     actorDisplay.SetNameFilter(nameFilter.GetText());
+    actorDisplay.default.nameFilter = actorDisplay.GetNameFilter();
     actorDisplay.SetTagFilter(tagFilter.GetText());
+    actorDisplay.default.tagFilter = actorDisplay.GetTagFilter();
     actorDisplay.SetEventFilter(eventFilter.GetText());
+    actorDisplay.default.eventFilter = actorDisplay.GetEventFilter();
     actorDisplay.SetCustomAttrib(custAttribName.GetText());
+    actorDisplay.default.customAttrib = actorDisplay.GetCustomAttrib();
     actorDisplay.ShowCustom(chkCustom.GetToggle());
+    actorDisplay.default.bShowCustom = actorDisplay.IsCustomVisible();
+    actorDisplay.SetCustomFilterAttrib(customFilterAttrib.GetText());
+    actorDisplay.default.customFilterAttrib = actorDisplay.GetCustomFilterAttrib();
+    actorDisplay.SetCustomFilterVal(customFilterVal.GetText());
+    actorDisplay.default.customFilterVal = actorDisplay.GetCustomFilterVal();
 
     actorDisplay.ShowInventory(chkInventory.GetToggle());
+    actorDisplay.default.bShowInventory = actorDisplay.IsInventoryVisible();
     actorDisplay.ShowAlliances(chkAlliances.GetToggle());
+    actorDisplay.default.bShowAlliances = actorDisplay.AreAlliancesVisible();
     actorDisplay.ShowTagEvent(chkTagEvent.GetToggle());
+    actorDisplay.default.bShowTagEvent = actorDisplay.IsTagEventVisible();
     actorDisplay.ShowTagConns(chkTagConns.GetToggle());
+    actorDisplay.default.bShowTagConnections = actorDisplay.IsTagConnsVisible();
     actorDisplay.ShowEventConns(chkEventConns.GetToggle());
+    actorDisplay.default.bShowEventConnections = actorDisplay.IsEventConnsVisible();
     actorDisplay.ShowCollision(chkCollision.GetToggle());
+    actorDisplay.default.bShowCollision = actorDisplay.IsCollisionVisible();
     actorDisplay.ShowTextTags(chkTextTags.GetToggle());
+    actorDisplay.default.bShowTextTags = actorDisplay.AreTextTagsVisible();
     actorDisplay.ShowWeaponScores(chkWeaponScore.GetToggle());
+    actorDisplay.default.bShowWeaponScore = actorDisplay.AreWeaponScoresVisible();
     actorDisplay.ShowReactions(chkReactions.GetToggle());
+    actorDisplay.default.bShowReactions = actorDisplay.AreReactionsVisible();
     actorDisplay.ShowPatrolPaths(chkPatrolPaths.GetToggle());
+    actorDisplay.default.bShowPatrolPaths = actorDisplay.ArePatrolPathsVisible();
+    actorDisplay.ShowTextures(chkTextures.GetToggle());
+    actorDisplay.default.bShowTextures = actorDisplay.AreTexturesVisible();
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
+    actorDisplay.default.bLimitRadius = actorDisplay.IsRadiusLimited();
     actorDisplay.SetActorRadius(radiusFilter.GetText());
+    actorDisplay.default.actorRadius = actorDisplay.GetActorRadius();
 }

@@ -693,7 +693,14 @@ function AnyEntryMapFixes()
 
         break;
 
+    case "03_NYC_AIRFIELD":
+        CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
+        break;
+    case "03_NYC_HANGAR":
+        CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
+        break;
     case "03_NYC_AIRFIELDHELIBASE":
+        CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
         if (!RevisionMaps){
             //Restore this cut phone conversation
             c = GetConversation('OverhearLebedev');
@@ -806,6 +813,31 @@ function PreTravelMapFixes()
 }
 //#endregion
 
+//#region Clean Up NSF
+function CleanUpNSFAfterLebedev()
+{
+    local ScriptedPawn P;
+    local bool trashEm;
+
+    trashEm=False;
+
+    if (dxr.flagbase.GetBool('MeetLebedev_Played') ||
+        dxr.flagbase.GetBool('JuanLebedev_Dead'))
+    {
+        trashEm = True;
+    }
+
+    if (trashEm)
+    {
+        foreach AllActors(class'ScriptedPawn', P)
+        {
+            if (P.GetAllianceType('player')!=ALLIANCE_Hostile) continue; //Only destroy enemies
+            if (InStr(P.Tag,"_clone")!=-1) P.Destroy();
+        }
+    }
+}
+//#endregion
+
 //#region BP Return Jock
 function AddBatteryParkReturnJock()
 {
@@ -899,7 +931,7 @@ function FixLennyLAMConvo()
 {
     local Conversation c;
     local ConEvent ce,prev,preFlag;
-    local ConEventAddSkillPoints ceasp;
+    local ConEventMoveCamera cemc;
     local ConEventSetFlag cesf;
 
     //Make sure LennyDone isn't marked until *after* the transfer actually happens,
@@ -919,18 +951,17 @@ function FixLennyLAMConvo()
             } else {
                 cesf=None;
             }
-        } else if (ce.eventType==ET_AddSkillPoints && ceasp==None){
-            //There's only one of these in the conversation
-            ceasp = ConEventAddSkillPoints(ce);
+        } else if (ce.eventType==ET_MoveCamera && ce.label=="SkipSkill" && cemc==None){
+            cemc = ConEventMoveCamera(ce);
         }
         prev = ce;
         ce = ce.nextEvent;
     }
 
-    if (cesf!=None && preFlag!=None && ceasp!=None){
+    if (cesf!=None && preFlag!=None && cemc!=None){
         preFlag.nextEvent = cesf.nextEvent;
-        cesf.nextEvent=ceasp.nextEvent;
-        ceasp.nextEvent = cesf;
+        cesf.nextEvent=cemc.nextEvent;
+        cemc.nextEvent = cesf;
     }
 }
 //#endregion

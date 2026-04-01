@@ -1,6 +1,6 @@
 class DXRHUDActiveAug injects HUDActiveAug;
 
-var PersonaLevelIconWindow winLevels;
+var #var(injectsprefix)PersonaLevelIconWindow winLevels;
 
 event DestroyWindow()
 {
@@ -11,7 +11,8 @@ event DestroyWindow()
 function DrawHotKey(GC gc)
 {
     local Augmentation aug;
-    local int showLevels;
+    local int showLevels,augLevel;
+    local string boostText;
 
     aug = Augmentation(GetClientObject());
     if(aug != None && aug.bDeleteMe) {
@@ -27,24 +28,33 @@ function DrawHotKey(GC gc)
         gc.SetFont(Font'DXRFontMenuSmall_DS');
         gc.SetTextColor(colText);
 
+        augLevel = aug.CurrentLevel;
+        if (aug.bBoosted){
+            //Aug level has been boosted by synthetic heart, put it back for the purposes of this menu
+            augLevel = augLevel - 1;
+            boostText = "+";
+        }
+
         switch(showLevels) {
         case 1: // dots
             if(winLevels == None) {
-                winLevels = PersonaLevelIconWindow(NewChild(Class'PersonaLevelIconWindow'));
+                winLevels = #var(injectsprefix)PersonaLevelIconWindow(NewChild(Class'#var(injectsprefix)PersonaLevelIconWindow'));
                 winLevels.SetPos(4, 29);
                 winLevels.SetSelected(True);
+                winLevels.HideMaxLevelCovers=true; //So we don't see the unnecessary blockers for augs that have reduced max levels
+                winLevels.ShowLevelFive=true; //So we can see the plus for boosted level five augs
             }
-            winLevels.SetLevel(aug.CurrentLevel);
+            winLevels.SetLevel(aug.CurrentLevel); //The boostedness will be handled by the DXRPersonaLevelIconWindow
             break;
 
         case 2: // left
             gc.SetAlignments(HALIGN_Left, VALIGN_Top);
-            gc.DrawText(2, 24, 17, 11, aug.CurrentLevel+1);
+            gc.DrawText(2, 24, 17, 11, (augLevel+1)$boostText);
             break;
 
         case 3: // right
             gc.SetAlignments(HALIGN_Right, VALIGN_Top);
-            gc.DrawText(15, 25, 17, 11, aug.CurrentLevel+1);
+            gc.DrawText(15, 25, 17, 11, (augLevel+1)$boostText);
             break;
         }
     }

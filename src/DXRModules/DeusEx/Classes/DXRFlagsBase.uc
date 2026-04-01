@@ -16,6 +16,7 @@ var #var(flagvarprefix) int next_seed;
 
 var #var(flagvarprefix) int seed, playthrough_id;
 var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
+var #var(flagvarprefix) int loop_initial_version;
 
 // these config vars will be remembered for next time you open the new game screen
 var config int gamemode;// see DXRFlags.uc for definitions
@@ -179,11 +180,9 @@ function AnyEntry()
 
 function RollSeed()
 {
-    seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
-    dxr.seed = seed;
-    dxr.tseed = seed;
-    bSetSeed = 0;
-    seed = rng(1000000);
+    do {
+        seed = MurmurHash3( Rand(MaxInt) $ FRand() $ Level.TimeSeconds ) >>> 12;
+    } until (seed < 1000000); // avoid bias toward seeds <=48575. 4.6% chance of looping
     dxr.seed = seed;
     dxr.tseed = seed;
 }
@@ -210,9 +209,8 @@ function HXRollSeed()
 
 function NewPlaythroughId() {
     local DataStorage ds;
-    playthrough_id = class'DataStorage'.static._SystemTime(Level);
-    playthrough_id += Rand(MaxInt) + dxr.Crc(Level.TimeSeconds) * 65536;
 
+    playthrough_id = MurmurHash3(class'DataStorage'.static._SystemTime(Level) $ Level.TimeSeconds, Rand(MaxInt));
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None && ds.HasPlaythroughId(playthrough_id) ) {
         l("repeat playthrough id " $ playthrough_id);
@@ -461,6 +459,8 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
 
+    FlagInt('Rando_loop_initial_version',loop_initial_version,mode,str);
+
     if(mode!=Reading && mode!=Writing) {
         i = int(class'MenuChoice_BalanceAugs'.static.IsEnabled());
         FlagInt('MenuChoice_BalanceAugs', i, mode, str);
@@ -554,7 +554,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_stalkers':
             return "Halloween Stalkers";
         case 'Rando_entrance_rando':
-            return "Entrance Randomizer";
+            return "Entrance Randomization";
         case 'Rando_skills_disable_downgrades':
             return "Disallow downgrades on New Game screen";
         case 'Rando_skills_reroll_missions':
@@ -669,6 +669,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy weapons rando";
         case 'Rando_aug_loc_rando':
             return "Aug Slot Randomization";
+        case 'Rando_loop_initial_version':
+            return "Starting Version";
         case 'MenuChoice_BalanceAugs':
             return "Aug Balance Changes";
         case 'MenuChoice_BalanceEtc':
@@ -1038,6 +1040,9 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_newgameplus_retries_time':
             return class'DXRStats'.static.fmtTimeToString(val);
 
+        case 'Rando_loop_initial_version':
+            return VersionIntToString(val, true);
+
         default:
             err("flagValToHumanVal: " $ flagname @ val $ " is unhandled");
             return val $ " (Unhandled!)";
@@ -1192,10 +1197,7 @@ simulated function string StringifyFlags(int mode)
 
 simulated function int FlagsHash()
 {
-    local int hash;
-    hash = dxr.Crc(StringifyFlags(Hashing));
-    hash = int(abs(hash));
-    return hash;
+    return MurmurHash3(StringifyFlags(Hashing));
 }
 
 function InitVersion()
@@ -1334,6 +1336,7 @@ function ExtendedTests()
     teststring(ToHex(0x1F), "1F", "ToHex(0x1F)");
     teststring(ToHex(0x100F), "100F", "ToHex(0x100F)");
     teststring(ToHex(0x9001F), "9001F", "ToHex(0x9001F)");
+    teststring(ToHex(MaxInt + 1), "80000000", "ToHex(MaxInt + 1)");
 
     text = VersionString();
     testbool(VersionIsStable(), InStr(text, "Alpha")==-1 && InStr(text, "Beta")==-1, "VersionIsStable() matches version text, " $ text);
@@ -1485,22 +1488,35 @@ function TestRngExp(float minrange, float maxrange, float mid, float curve)
     test( highs > times/10, "exponential ^"$curve$" - highs "$highs$" > times/8 "$(times/10));
 }
 
+// Produces valid results in UCC.log for up to 100,000 loops
+// Note that an equal probability from [0, 1000000) will not have an equal probability for all bits,
+// with the higher bits being more likely to be 0
 function TestRollSeed()
 {
-    local int i, b, t, a[32];
+    local int loops, i, bit, bitCounts[32];
+    local float bitPercents[32];
 
-    for(i=0; i<1000; i++) {
+    loops = 1000;
+
+    for(i=0; i<loops; i++) {
         RollSeed();
-        for(b=0; b<32; b++) {
-            t = seed & (1<<b);
-            a[b] += int(t!=0);
+        for(bit=0; bit<32; bit++) {
+            bitCounts[bit] += (seed >>> bit) & 1;
         }
     }
 
-    for(b=0; b<20; b++) {
-        test(a[b] > 400 && a[b] < 600, "RollSeed bit "$b$" hit "$a[b]$" times");
+    for (bit=0; bit<32; bit++) {
+        bitPercents[bit] = 100.0 * bitCounts[bit] / loops;
+        log("TestRollSeed bitCounts[" $ bit $ "]: " $ bitCounts[bit] $ " (" $ class'DXRInfo'.static.TruncateFloat(bitPercents[bit], 3) $ "%)");
     }
-    for(b=20; b<32; b++) {
-        test(a[b] == 0, "RollSeed bit "$b$" hit "$a[b]$" times");
+
+    for(bit=0; bit<20; bit++) {
+        test(
+            bitPercents[bit] > 40.0 && bitPercents[bit] < 60.0,
+            "RollSeed bit " $ bit $ " hit " $ bitCounts[bit] $ " times (" $ class'DXRInfo'.static.TruncateFloat(bitPercents[bit], 3) $ "%)"
+        );
+    }
+    for(bit=20; bit<32; bit++) {
+        test(bitCounts[bit] == 0, "RollSeed bit "$bit$" hit "$bitCounts[bit]$" times");
     }
 }

@@ -226,17 +226,17 @@ function bool IsAprilFools()
 
 function bool IsOctober()
 {
-    // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
-    if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
-    if(!class'MenuChoice_OctoberCosmetics'.static.IsEnabled(GetDXR().flags)) return false;
     return Level.Month == 10;
+}
+
+function bool IsHalloweenSeason()
+{
+    // Happy Halloween! This will be used for general Halloween things like cosmetic changes and piano song weighting
+    return class'MenuChoice_OctoberCosmetics'.static.IsHalloweenSeason(GetDXR().flags);
 }
 
 function bool IsHalloween()
 {
-    // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
-    if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
-    if(!class'MenuChoice_OctoberCosmetics'.static.IsEnabled(GetDXR().flags)) return false;
     return Level.Month == 10 && Level.Day == 31;
 }
 
@@ -426,7 +426,32 @@ simulated static function string TrimTrailingZeros(coerce string s)
     return Left(s, end);
 }
 
-static static function string ToHex(int val)
+simulated static function string PadString(coerce string s, int length, optional coerce string padStr, optional bool padLeft)
+{
+    local int nps;
+
+    if (padStr == "") {
+        padStr = " ";
+    }
+    nps = Len(padStr);
+    nps = (length - Len(s) + nps - 1) / nps;
+
+    if (padLeft) {
+        while (nps > 0) {
+            s = padStr $ s;
+            nps--;
+        }
+    } else {
+        while (nps > 0) {
+            s = s $ padStr;
+            nps--;
+        }
+    }
+
+    return s;
+}
+
+static function string ToHex(int val)
 {
     local int t;
     local string s;
@@ -559,8 +584,8 @@ simulated static function String CR()
     return Chr(13) $ Chr(10);
 }
 
-// https://github.com/aappleby/smhasher
-simulated static function int MurmurHash3_x86_32(coerce string str, int seed)
+// MurmurHash3_x86_32 https://github.com/aappleby/smhasher
+simulated static function int MurmurHash3(coerce string str, optional int seed)
 {
     local int strLen, h1, k1, i;
 

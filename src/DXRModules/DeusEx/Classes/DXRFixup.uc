@@ -28,12 +28,6 @@ struct AddDatacube {
 };
 var AddDatacube add_datacubes[32];
 
-struct FragmentGuess {
-    var Sound sound;
-    var class<Fragment> fragmentClass;
-};
-var FragmentGuess fragmentGuesses[25];
-
 static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> request)
 {
     switch(dxr.dxInfo.missionNumber) {
@@ -202,41 +196,9 @@ function CheckConfig()
     }
 }
 
-static function class<Fragment> GuessFragmentClass(#var(DeusExPrefix)Mover mov)
-{
-    local class<Fragment> fragmentClass;
-    local FragmentGuess guess;
-    local int i;
-
-    for (i = 0; i < ArrayCount(default.fragmentGuesses); i++) {
-        guess = default.fragmentGuesses[i];
-        if (
-            mov.ExplodeSound1 == guess.sound
-            || mov.ExplodeSound2 == guess.sound
-            || mov.OpeningSound == guess.sound
-            || mov.ClosingSound == guess.sound
-            || mov.ClosedSound == guess.sound
-            || mov.MoveAmbientSound == guess.sound
-        ) {
-            fragmentClass = guess.fragmentClass;
-            break;
-        }
-    }
-
-    if (fragmentClass != None) {
-        if (fragmentClass != mov.fragmentClass) {
-            log("Guessing that " $ mov $ " fragmentClass should be '" $ fragmentClass $ "' instead of '" $ mov.fragmentClass $ "'");
-        }
-        return fragmentClass;
-    }
-
-    return mov.FragmentClass;
-}
-
 function PreFirstEntry()
 {
     local #var(prefix)Lamp lmp;
-    local #var(DeusExPrefix)Mover mov;
 
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
@@ -257,14 +219,6 @@ function PreFirstEntry()
 #ifdef gmdx
     FixGMDXObjects();
 #endif
-
-    if (dxr.flags.settings.doorsdestructible > 0) {
-        foreach AllActors(class'#var(DeusExPrefix)Mover', mov) {
-            if (!mov.bBreakable) {
-                mov.FragmentClass = GuessFragmentClass(mov);
-            }
-        }
-    }
 
 #ifdef vanilla
     if (class'MenuChoice_AutoLamps'.static.IsEnabled()) {
@@ -1688,60 +1642,6 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
 
 
 
-}
-
-defaultproperties
-{
-    // in order of proportion, then number of occurances.
-    // in no cases here would vanilla unbreakable DeusExMovers have their FragmentClass changed to anything but 'MetalFragment' from something else
-
-    fragmentGuesses(0)=(sound=sound'Pneumatic1Open',fragmentClass=class'MetalFragment')    // never breakable
-    fragmentGuesses(1)=(sound=sound'Pneumatic1Close',fragmentClass=class'MetalFragment')   // never breakable
-    // fragmentGuesses()=(sound=sound'GlassBreakLarge',fragmentClass=class'GlassFragment') // 100.00% (241 / 241)
-    // fragmentGuesses()=(sound=sound'WoodDoor2Close',fragmentClass=class'WoodFragment')   // 100.00%   (67 / 67)
-    fragmentGuesses(2)=(sound=sound'SmallExplosion2',fragmentClass=class'MetalFragment')   // 100.00%   (66 / 66)
-    fragmentGuesses(3)=(sound=sound'MediumExplosion1',fragmentClass=class'MetalFragment')  // 100.00%   (63 / 63)
-    fragmentGuesses(4)=(sound=sound'MediumExplosion2',fragmentClass=class'MetalFragment')  // 100.00%   (53 / 53)
-    fragmentGuesses(5)=(sound=sound'MetalHit1',fragmentClass=class'MetalFragment')         // 100.00%   (15 / 15)
-    fragmentGuesses(6)=(sound=sound'MetalHit2',fragmentClass=class'MetalFragment')         // 100.00%   (15 / 15)
-    // fragmentGuesses()=(sound=sound'WoodDrawerMove',fragmentClass=class'WoodFragment')   // 100.00%   (15 / 15)
-    fragmentGuesses(7)=(sound=sound'LargeElevStop',fragmentClass=class'MetalFragment')     // 100.00%   (14 / 14)
-    fragmentGuesses(8)=(sound=sound'LargeElevMove',fragmentClass=class'MetalFragment')     // 100.00%     (8 / 8)
-    fragmentGuesses(9)=(sound=sound'GarageDoorMove',fragmentClass=class'MetalFragment')    // 100.00%     (7 / 7)
-    // fragmentGuesses()=(sound=sound'WoodDrawerOpen',fragmentClass=class'WoodFragment')   // 100.00%     (6 / 6)
-    // fragmentGuesses()=(sound=sound'WoodSlide2Open',fragmentClass=class'WoodFragment')   // 100.00%     (3 / 3)
-    // fragmentGuesses()=(sound=sound'MetalDrawerClos',fragmentClass=class'WoodFragment')  // 100.00%     (2 / 2)
-    // fragmentGuesses()=(sound=sound'WoodSlide2Close',fragmentClass=class'WoodFragment')  // 100.00%     (2 / 2)
-    // fragmentGuesses()=(sound=sound'WoodSlide2Move',fragmentClass=class'WoodFragment')   // 100.00%     (2 / 2)
-    fragmentGuesses(10)=(sound=sound'LargeExplosion2',fragmentClass=class'MetalFragment')  // 100.00%     (2 / 2)
-    // fragmentGuesses()=(sound=sound'SmallElevMove',fragmentClass=class'WoodFragment')    // 100.00%     (1 / 1)
-    fragmentGuesses(11)=(sound=sound'SmallElevStop',fragmentClass=class'MetalFragment')    // 100.00%     (1 / 1)
-    // fragmentGuesses()=(sound=sound'GlassBreakSmall',fragmentClass=class'GlassFragment') //  98.71% (230 / 233)
-    fragmentGuesses(12)=(sound=sound'SmallExplosion1',fragmentClass=class'MetalFragment')  //  94.53% (121 / 128)
-    // fragmentGuesses()=(sound=sound'WoodBreakLarge',fragmentClass=class'WoodFragment')   //  90.53% (258 / 285)
-    // fragmentGuesses()=(sound=sound'WoodBreakSmall',fragmentClass=class'WoodFragment')   //  90.21% (258 / 286)
-    // fragmentGuesses()=(sound=sound'WoodDoor2Open',fragmentClass=class'WoodFragment')    //  88.57%   (62 / 70)
-    fragmentGuesses(13)=(sound=sound'LargeExplosion1',fragmentClass=class'MetalFragment')  //  86.79%   (46 / 53)
-    // fragmentGuesses()=(sound=sound'WoodDrawerClose',fragmentClass=class'WoodFragment')  //  86.67%   (26 / 30)
-    fragmentGuesses(14)=(sound=sound'MetalDoorOpen',fragmentClass=class'MetalFragment')    //  81.25%   (65 / 80)
-    fragmentGuesses(15)=(sound=sound'SlideDoorMove',fragmentClass=class'MetalFragment')    //  81.25%   (13 / 16)
-    // fragmentGuesses()=(sound=sound'WoodDoorOpen',fragmentClass=class'WoodFragment')     //  80.85%   (76 / 94)
-    // fragmentGuesses()=(sound=sound'MetalLockerOpen',fragmentClass=class'GlassFragment') //  80.00%     (4 / 5)
-    // fragmentGuesses()=(sound=sound'MetalLockerClos',fragmentClass=class'GlassFragment') //  80.00%     (4 / 5)
-    fragmentGuesses(16)=(sound=sound'MetalDoorClose',fragmentClass=class'MetalFragment')   //  79.02% (113 / 143)
-    fragmentGuesses(17)=(sound=sound'GarageDoorOpen',fragmentClass=class'MetalFragment')   //  77.78%     (7 / 9)
-    fragmentGuesses(18)=(sound=sound'GarageDoorClose',fragmentClass=class'MetalFragment')  //  77.78%     (7 / 9)
-    fragmentGuesses(19)=(sound=sound'MetalDoorMove',fragmentClass=class'MetalFragment')    //  76.84% (136 / 177)
-    // fragmentGuesses()=(sound=sound'WoodDoor2Move',fragmentClass=class'WoodFragment')    //  75.00%   (24 / 32)
-    fragmentGuesses(20)=(sound=sound'StoneSlide2Open',fragmentClass=class'MetalFragment')  //  75.00%     (3 / 4)
-    fragmentGuesses(21)=(sound=sound'WoodSlide1Move',fragmentClass=class'MetalFragment')   //  75.00%     (3 / 4)
-    // fragmentGuesses()=(sound=sound'WoodDoorClose',fragmentClass=class'WoodFragment')    //  74.55%   (41 / 55)
-    // fragmentGuesses()=(sound=sound'WoodSlide1Close',fragmentClass=class'WoodFragment')  //  72.73%   (16 / 22)
-    // fragmentGuesses()=(sound=sound'StallDoorOpen',fragmentClass=class'WoodFragment')    //  64.71%   (11 / 17)
-    fragmentGuesses(22)=(sound=sound'SlideDoorClose',fragmentClass=class'MetalFragment')   //  62.50%   (15 / 24)
-    // fragmentGuesses()=(sound=sound'StallDoorClose',fragmentClass=class'WoodFragment')   //  60.00%    (9 / 15)
-    fragmentGuesses(23)=(sound=sound'StoneSlide2Move',fragmentClass=class'MetalFragment')  //  60.00%     (3 / 5)
-    fragmentGuesses(24)=(sound=sound'SlideDoorOpen',fragmentClass=class'MetalFragment')    //  57.58%   (19 / 33)
 }
 
 defaultproperties

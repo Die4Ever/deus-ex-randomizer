@@ -16,6 +16,8 @@ var string newsdates[5];
 var string newsheaders[5];
 var string newstexts[5];
 
+var int disable_until;
+
 var Json j;
 
 function CheckConfig()
@@ -121,7 +123,7 @@ function Timer()
 
     for(i=0; i<ArrayCount(fixed); i++) {
         if(fixed[i] == '') continue;
-        slot = Abs(dxr.Crc( String(fixed[i]) )) % ArrayCount(names);
+        slot = Abs(MurmurHash3(String(fixed[i]))) % ArrayCount(names);
         names[slot] = fixed[i];
     }
 
@@ -144,7 +146,7 @@ function Timer()
             }
         }
 
-        slot = Abs(dxr.Crc( String(n) )) % ArrayCount(names);
+        slot = Abs(dxr.HashCompat(n)) % ArrayCount(names);
         if( names[slot] == '' || names[slot] == n ) {
             names[slot] = n;
             counts[slot]++;
@@ -334,7 +336,7 @@ function CheckDeaths(Json j, int oldCount) {
 
 function _SendLog(Actor a, string LogLevel, string message)
 {
-    if( ! enabled ) return;
+    if( ! enabled || SystemTime() < default.disable_until ) return;
     message = LogLevel $ ": " $ a $ ": " $ message;
     if( t != None && t.Queue(message) )  return;
 

@@ -75,6 +75,7 @@ function PreFirstEntryMapFixes()
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)AlarmUnit au;
     local #var(prefix)AutoTurret turret;
+    local #var(prefix)SkillAwardTrigger sat;
 
     local bool VanillaMaps;
 
@@ -291,12 +292,14 @@ function PreFirstEntryMapFixes()
             }
             if (door.Tag=='Elevator1'){
                 door.MoverEncroachType=ME_CrushWhenEncroach;
-            }
-            if(door.Tag=='sub_doors'){
+            } else if (door.Tag=='sub_doors'){
                 door.bLocked = true;
                 door.bHighlight = true;
                 door.bFrobbable = true;
                 door.bPickable = false;// make sure DXRDoors sees this as an undefeatable door, also in vanilla this door is obviously not pickable due to not being frobbable
+                door.FragmentScale = 3.0;  // produce larger fragments...
+                door.NumFragments = 12;    // but fewer of them...
+                door.FragmentSpread = 160; // spread more widely, instead of just at the center of the doors
 
                 //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
                 //so that they are centered roughly in the middle of the door.  This doesn't work in HX.
@@ -615,6 +618,12 @@ function PreFirstEntryMapFixes()
             foreach RadiusActors(class'CrateUnbreakableSmall', cus, 0.1, vectm(288.01, -1402.41, 488.10)) {
                 cus.bIsSecretGoal = true;
                 break;
+            }
+
+            foreach AllActors(class'#var(prefix)SkillAwardTrigger', sat,'klax'){
+                //This is the 350 skill points you get when you redirect the missile.  It gets triggered by the computer, but also has collision...
+                //Remove the collision so it only gets activated by the computer.
+                sat.SetCollision(False,False,False);
             }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla

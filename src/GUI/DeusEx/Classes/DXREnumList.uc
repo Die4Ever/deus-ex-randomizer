@@ -153,7 +153,7 @@ defaultproperties
     //actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Open In Browser",Key="OPEN")
     Title="Choose Option"
     ClientWidth=400
-    ClientHeight=350
+    ClientHeight=370
     button_y_pos=20
     x_pad=20
     y_pad=10

@@ -768,6 +768,28 @@ function bool WeaponModAutoApply(WeaponMod wm)
 
 }
 
+function string PianoStrInfo(Actor frobTarget, out int numLines)
+{
+    local string strInfo;
+#ifdef injections
+    local WHPiano piano;
+    piano = WHPiano(frobTarget);
+#else
+    local DXRPiano piano;
+    piano = DXRPiano(frobTarget);
+#endif
+
+    strInfo = player.GetDisplayName(frobTarget);
+
+    if(class'MenuChoice_ToggleMemes'.static.IsEnabled(class'DXRando'.default.dxr.flags)) {
+        strInfo = strInfo $ CR() $ "Songs Played: " $ piano.numSongsPlayed;
+    }
+
+    strInfo = strInfo $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+
+    return strInfo;
+}
+
 function string OtherStrInfo(Actor frobTarget, out int numLines)
 {
     local string strInfo;
@@ -796,13 +818,8 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ CR() $ "Right click to apply to current weapon";
 #endif
     }
-#ifdef injections
-    else if (frobTarget.IsA('WHPiano'))
-        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ WHPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
-#else
-    else if (frobTarget.IsA('DXRPiano'))
-        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ DXRPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
-#endif
+    else if (frobTarget.IsA(#switch(injections:'WHPiano','DXRPiano')))
+        strInfo = PianoStrInfo(frobTarget,numLines);
     else if (frobTarget.IsA('#var(injectsprefix)ClothesRack'))
         strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Right Click to change clothing " $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExDecoration'))

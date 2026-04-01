@@ -2526,7 +2526,7 @@ exec function ActivateBelt(int objectNum)
     }
 }
 
-function CompleteBingoGoal(PlayerDataItem data, int x, int y)
+static function CompleteBingoGoal(PlayerDataItem data, int x, int y)
 {
     local string event;
     local int progress, max;
@@ -2538,14 +2538,17 @@ function CompleteBingoGoal(PlayerDataItem data, int x, int y)
     }
 }
 
-exec function BingoGoal(int x, int y)
+exec function BingoGoal(int x, int y, optional bool allowTelemetry)
 {
+    if (!allowTelemetry) DisableTelemetryTemporary(20);
     CompleteBingoGoal(class'PlayerDataItem'.static.GiveItem(self), x, y);
 }
 
-exec function Bingo(int line)
+exec function Bingo(int line, optional bool allowTelemetry)
 {
     local PlayerDataItem data;
+
+    if (!allowTelemetry) DisableTelemetryTemporary(20);
 
     data = class'PlayerDataItem'.static.GiveItem(self);
     if (line >= 0 && line < 5) {
@@ -2575,10 +2578,12 @@ exec function Bingo(int line)
     }
 }
 
-exec function AllBingos()
+exec function AllBingos(optional bool allowTelemetry)
 {
     local PlayerDataItem data;
     local int x, y;
+
+    if (!allowTelemetry) DisableTelemetryTemporary(20);
 
     data = class'PlayerDataItem'.static.GiveItem(self);
     for (x = 0; x < 5; x++) {
@@ -2586,6 +2591,11 @@ exec function AllBingos()
             CompleteBingoGoal(data, x, y);
         }
     }
+}
+
+// used to avoid spamming Mastodon with unearned bingos when using bingo cheat commands
+static function bool DisableTelemetryTemporary(int seconds) {
+    class'DXRTelemetry'.default.disable_until = class'DXRando'.default.dxr.SystemTime() + seconds;
 }
 
 exec function FindLoc()

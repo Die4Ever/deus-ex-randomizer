@@ -136,6 +136,13 @@ function PreFirstEntry()
                 break;
             }
         }
+        if (starting_map >= 141 ){ //Anything past sub base
+            //Open the sub base sub bay doors
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'sub_doors') {
+                dxMover.InterpolateTo(1, 0.0); //Instantly open
+                dxMover.FinishedOpening(); //To trigger the event, pretend we opened the door the real way
+            }
+        }
         break;
 
     case "14_OCEANLAB_LAB":
@@ -145,6 +152,14 @@ function PreFirstEntry()
                 break;
             }
         }
+        if (starting_map >= 145 ){ //Silo onwards (whatever that might be)
+            //Open the sub bay doors, HAL
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'subdoor') {
+                dxMover.InterpolateTo(1, 0.0); //Instantly open
+                dxMover.FinishedOpening(); //To trigger the event, pretend we opened the door the real way
+            }
+        }
+
         break;
 
     case "15_Area51_Bunker":
@@ -1356,6 +1371,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return start_map>142;
             case "HeliosBorn":
                 return start_map>=129;
+            case "DL_SecondDoors_Played":
+                return start_map>=145; //Sub bay doors are already open on a silo start
         }
         break;
 

@@ -885,6 +885,7 @@ function NYC_04_CheckPaulRaid()
         if( !IsRelevantPawn(p.class) ) continue;
         if( p.bHidden ) continue;
         if( p.Alliance != 'UNATCO' ) continue;
+        if (p.ShouldFlee()) continue; //Fleeing guys are no longer a threat (in theory)
         p.bStasis = false;
         pawns++;
     }

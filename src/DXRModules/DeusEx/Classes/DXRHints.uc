@@ -311,7 +311,7 @@ simulated function InitHints()
         }
 
         if(dxr.flags.moresettings.entrance_rando > 0) {
-            AddHint("Entrance Randomizer is enabled,", "check the wiki on our GitHub for help.");
+            AddHint("Entrance Randomization is enabled,", "check the wiki on our GitHub for help.");
         }
 
         if(dxr.flags.settings.medbots > 0) {

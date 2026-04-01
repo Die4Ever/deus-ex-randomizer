@@ -174,6 +174,7 @@ function PopulateSpoilers()
     UpdateSpoilerButtonLabels();
     actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
     actorDisplay.SetViewClass(class'DXRGoalMarker');
+    actorDisplay.default.viewClass = None;
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(false);
     if(!#defined(injections))
@@ -231,6 +232,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             UpdateSpoilerButtonLabels();
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
+            actorDisplay.default.viewClass = None;
             actorDisplay.ShowLOS(false);
             actorDisplay.ShowPos(false);
 #ifdef injections
@@ -251,6 +253,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             UpdateSpoilerButtonLabels();
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
+            actorDisplay.default.viewClass = None;
             actorDisplay.ShowLOS(false);
             actorDisplay.ShowPos(false);
 #ifdef injections
@@ -428,6 +431,7 @@ function generateGoalLocationNote()
     UpdateSpoilerButtonLabels();
     actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
     actorDisplay.SetViewClass(class'DXRLocationMarker');
+    actorDisplay.default.viewClass = None;
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(false);
     if(!#defined(injections))
@@ -528,6 +532,7 @@ function DisableSpoilers()
 
     if (actorDisplay!=None) {
         actorDisplay.SetViewClass(None);
+        actorDisplay.default.viewClass = None;
     }
 
     curSpoilers = SS_None;

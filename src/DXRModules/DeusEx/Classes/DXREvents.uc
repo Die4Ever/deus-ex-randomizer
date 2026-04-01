@@ -374,6 +374,10 @@ function SetWatchFlags() {
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
         WatchFlag('StatueMissionComplete');
+        WatchFlag('M01BoughtScope');
+        WatchFlag('M01Bought10mm');
+        WatchFlag('M01BoughtDarts');
+        WatchFlag('MeetKaplan_Played');
 
         foreach AllActors(class'#var(prefix)SkillAwardTrigger',skillAward) {
             if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
@@ -418,6 +422,38 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'fork',vectm(0,0,0));
         bt.bingoEvent="ForkliftCertified";
 
+        //Benches
+        if (!RevisionMaps){
+            //Near UNATCO
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench1',vectm(-4835,3580,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench1',vectm(-4835,3640,-70),40,40);
+
+            //Near Bunker (right)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench2',vectm(10035,345,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench2',vectm(10035,290,-70),40,40);
+
+            //Near Bunker (Left)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench3',vectm(10035,-125,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench3',vectm(10035,-70,-70),40,40);
+
+            //Corner kind of near nothing (between HQ and North Dock)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench4',vectm(-2500,-5725,-70),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench4',vectm(-2500,-5790,-70),40,40);
+
+            //Statue Base, Upper one (in the editor, lol)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench5',vectm(2930,-900,840),50,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench5',vectm(3020,-900,840),50,40);
+
+            //Statue Base, Lower one (in the editor, lol)
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench6',vectm(2930,1155,840),50,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'LibertyBench6',vectm(3020,1155,840),50,40);
+        } else {
+            //Most of the above line up with Revision
+            //but there are also 22 more benches there, no thanks.  Maybe if I'm really bored one day...
+        }
+
+
+
         //Same location in vanilla and Revision
         foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(1818,-818,-84)){
             AddWatchedActor(bg,"InCaseOfEmergency");
@@ -434,6 +470,7 @@ function SetWatchFlags() {
         } else {
             WatchFlag('ManBathroomBarks_Played');
         }
+        WatchFlag('M02Briefing_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
@@ -530,6 +567,7 @@ function SetWatchFlags() {
         WatchFlag('BoughtClinicPlan');
         WatchFlag('MeetClinicOlderBum_Played');
         WatchFlag('MeetWindowBum_Played');
+        WatchFlag('MeetClinicMaleBum3_Played');
 
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
@@ -557,6 +595,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_WAREHOUSE":
         WatchFlag('GeneratorBlown');
+        WatchFlag('M02MeetGunther_Played');
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
             if (dxm.Name=='DeusExMover25'){
                 dxm.Event='CrackSafe';
@@ -633,6 +672,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
+        WatchFlag('M03MeetGunther_Played');
         bt = class'BingoTrigger'.static.Create(self,'arctrigger',vectm(0,0,0));
 
         bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(5347.652344,-4286.462402,328),100,40);
@@ -2662,6 +2702,8 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 {
     local float loge_duration, medbots, repairbots, merchants;
     local DXRLoadouts loadout;
+    local int start_map;
+    local bool RevisionMaps;
 
     //Precalculate some useful pieces of information
 
@@ -2678,6 +2720,10 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     merchants = dxr.flags.settings.merchants * loge_duration;
 
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+
+    start_map = dxr.flags.GetStartingMap(); //if it's based PURELY on start_map, it should be in DXRStartMap::BingoGoalImpossible instead
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -2790,6 +2836,26 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "HelpSailor_ConvoFlag":
             return (real_duration!=1);
 
+//////////////////////////////////////////////////////
+
+    //Where mission progress is expected, but we do consider that to be reasonable given some start maps
+        //case "M02MeetGunther_Played":
+        //case "M03MeetGunther_Played":
+        case "PeacekeepingOccupation_Convo":
+            if (real_duration!=1){
+                return false;
+            }
+
+            //1 mission durations...
+            //Progressing through M02 Warehouse is always considered annoying in single mission
+            //We consider M03 Helibase too far, but M03 Airfield close enough for progressing back to UNATCO (finishing the mission)
+            if (start_map >=36 && start_map < 40){
+                return false;
+            }
+
+            return true;
+
+
 /////////////////////////////////////////////////////////////////////
     //Ban goals that require the use of drugs or alcohol as appropriate
         case "DrinkAlcohol_Activated": //Only impossible if *all* alcohol is banned
@@ -2871,6 +2937,19 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                 }
             }
             return false;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that aren't possible on Revision maps
+        case "LibertyBenches":
+            //Too lazy to mark the 22 extra benches on the Revision maps
+            return RevisionMaps;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals for reasons
+        case "PetRobot_CleanerBot":
+        case "PetRobot_SecurityBotSmall":
+            return !(#bool(RoboLover) || (dxr.DateAtLeast(2026,4,1)));
+
     }
 
     //More broad loadout checks
@@ -2930,6 +3009,10 @@ function string RemapBingoEvent(string eventname)
         case "SecurityBot4_ClassTakedown":
         case "DXRSecurityBot4_ClassTakedown":
             return "SecurityBotSmall_ClassTakedown";
+        case "PetRobot_SecurityBot3":
+        case "PetRobot_SecurityBot4":
+        case "PetRobot_DXRSecurityBot4":
+            return "PetRobot_SecurityBotSmall";
         case "SpiderBot2_ClassDead":
             return "SpiderBot_ClassDead";
         case "SpiderBot2_ClassTakedown":
@@ -3275,6 +3358,32 @@ function string RemapBingoEvent(string eventname)
             return "ReadText_06_Datacube05";
         case "HelpSailor":
             return "HelpSailor_ConvoFlag";
+        case "M01BoughtScope":
+        case "M01Bought10mm":
+        case "M01BoughtDarts":
+            return "BuyFromKaplan_ConvoFlag";
+        case "MeetKaplan_Played":
+            //Check if Kaplan DOESN'T like the player (explicitly sets the flag to false)
+            if (dxr.flagbase.CheckFlag('KaplanLikesPlayer',FLAG_Bool)){
+                if(dxr.flagbase.GetBool('KaplanLikesPlayer')==False) {
+                    _MarkBingo("KaplanHatesPlayer_ConvoFlag");
+                } else {
+                    _MarkBingo("KaplanLikesPlayer_ConvoFlag");
+                }
+            }
+            return eventname;
+        case "LibertyBench1":
+        case "LibertyBench2":
+        case "LibertyBench3":
+        case "LibertyBench4":
+        case "LibertyBench5":
+        case "LibertyBench6":
+            return "LibertyBenches";
+        case "M02MeetGunther_Played":
+        case "M03MeetGunther_Played":
+        case "GuntherShowdown_Played":
+            return "PeacekeepingOccupation_Convo";
+
         default:
             return eventname;
     }
@@ -3303,7 +3412,26 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
-
+        case "TechSergeantKaplan_Takedown":
+            failed[num_failed++] = "BuyFromKaplan_ConvoFlag";
+            failed[num_failed++] = "KaplanHatesPlayer_ConvoFlag";
+            return num_failed;
+        case "KaplanLikesPlayer_ConvoFlag":
+            failed[num_failed++] = "KaplanHatesPlayer_ConvoFlag";
+            return num_failed;
+        case "StatueMissionComplete":
+            failed[num_failed++] = "GuntherFreed";
+            failed[num_failed++] = "KaplanHatesPlayer_ConvoFlag";
+            return num_failed;
+        case "M02Briefing_Played":
+            failed[num_failed++] = "TerroristCommander_PlayerDead";
+            return num_failed;
+        case "Josh_Takedown":
+            failed[num_failed++] = "JoshFed";
+            return num_failed;
+        case "Billy_Takedown":
+            failed[num_failed++] = "M02BillyDone";
+            return num_failed;
         case "SubHostageFemale_Takedown":
         case "SubHostageMale_Takedown":
             failed[num_failed++] = "SubwayHostagesSaved";
@@ -3313,9 +3441,6 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "FordSchick_Takedown":
             failed[num_failed++] = "FordSchickRescued";
-            return num_failed;
-        case "GeneratorBlown":
-            failed[num_failed++] = "JockSecondStory";
             return num_failed;
         case "SandraRenton_Takedown":
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
@@ -3331,11 +3456,8 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "MaleHostage_Takedown":
             failed[num_failed++] = "HotelHostagesSaved";
             return num_failed;
-        case "Josh_Takedown":
-            failed[num_failed++] = "JoshFed";
-            return num_failed;
-        case "Billy_Takedown":
-            failed[num_failed++] = "M02BillyDone";
+        case "GeneratorBlown":
+            failed[num_failed++] = "JockSecondStory";
             return num_failed;
         case "Don_Takedown":
         case "Lenny_Takedown":
@@ -3352,6 +3474,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
+            return num_failed;
+        case "SavedPaul":
+            failed[num_failed++] = "PaulToTong";
             return num_failed;
         case "Miguel_Takedown":
             failed[num_failed++] = "Terrorist_peeptime";
@@ -3381,14 +3506,6 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "MaggieChow_Takedown":
             failed[num_failed++] = "MaggieLived";
             return num_failed;
-        case "Mamasan_Takedown":
-        case "Date1_Takedown":
-            failed[num_failed++] = "M06JCHasDate";
-            return num_failed;
-        case "Raid_Underway": //Raid started
-            failed[num_failed++] = "M06JCHasDate";
-            failed[num_failed++] = "ClubEntryPaid_Convo";
-            return num_failed;
         case "ClubMercedes_Takedown":
         case "ClubTessa_Takedown":
             if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
@@ -3400,16 +3517,27 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
                 failed[num_failed++] = "ClubEntryPaid_Convo";
             }
             return num_failed;
+        case "Mamasan_Takedown":
+        case "Date1_Takedown":
+            failed[num_failed++] = "M06JCHasDate";
+            return num_failed;
+        case "Raid_Underway": //Raid started
+            failed[num_failed++] = "M06JCHasDate";
+            failed[num_failed++] = "ClubEntryPaid_Convo";
+            return num_failed;
         case "Supervisor01_Takedown":
             failed[num_failed++] = "Supervisor_Paid";
+            return num_failed;
+        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+            failed[num_failed++] = "HelpSailor_ConvoFlag";
+            return num_failed;
+        case "M08SmugglerNotWarned":
+            failed[num_failed++] = "M08WarnedSmuggler";
             return num_failed;
         case "LeMerchant_Takedown":
             failed[num_failed++] = "MerchantPurchaseBind_lemerchant";
         case "Aimee_Takedown":
             failed[num_failed++] = "AimeeLeMerchantLived";
-            return num_failed;
-        case "DXRNPCs1_Takedown":
-            failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
             return num_failed;
         case "hostage_female_Takedown":
         case "hostage_Takedown":
@@ -3425,27 +3553,22 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "Camille_Takedown":
             failed[num_failed++] = "ParisClubInfo_Convo";
             return num_failed;
-        case "drbernard_Takedown":
-            failed[num_failed++] = "MeetDrBernard_Played";
-            return num_failed;
         case "TimBaker_Takedown":
             failed[num_failed++] = "MeetTimBaker_Played";
             return num_failed;
         case "TiffanySavage_Takedown":
             failed[num_failed++] = "TiffanyHeli";
             return num_failed;
+        case "drbernard_Takedown":
+            failed[num_failed++] = "MeetDrBernard_Played";
+            return num_failed;
+
         case "AnnaNavarre_DeadM3":
             failed[num_failed++] = "AnnaNavarre_DeadM4";
             failed[num_failed++] = "AnnaNavarre_DeadM5";
             return num_failed;
         case "AnnaNavarre_DeadM4":
             failed[num_failed++] = "AnnaNavarre_DeadM5";
-            return num_failed;
-        case "SavedPaul":
-            failed[num_failed++] = "PaulToTong";
-            return num_failed;
-        case "StatueMissionComplete":
-            failed[num_failed++] = "GuntherFreed";
             return num_failed;
         case "JoeGreene_Takedown":
             failed[num_failed++] = "M02QuestionedGreen";
@@ -3454,11 +3577,8 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
             failed[num_failed++] = "M02QuestionedGreen";
             return num_failed;
-        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
-            failed[num_failed++] = "HelpSailor_ConvoFlag";
-            return num_failed;
-        case "M08SmugglerNotWarned":
-            failed[num_failed++] = "M08WarnedSmuggler";
+        case "DXRNPCs1_Takedown":
+            failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
             return num_failed;
     }
 
@@ -4324,6 +4444,13 @@ defaultproperties
     bingo_options(398)=(event="MakeSoup",desc="Make Soup",max=1,missions=#bit(6))
     bingo_options(399)=(event="HelpSailor_ConvoFlag",desc="My Buddy Vinny",max=1,missions=#bit(8))
     bingo_options(400)=(event="poster01_peepedtex",desc="Yvan Eht Nioj",max=1,missions=#bit(9))
+    bingo_options(401)=(event="BuyFromKaplan_ConvoFlag",desc="Spoils of War",max=1,missions=#bit(1))
+    bingo_options(402)=(event="KaplanHatesPlayer_ConvoFlag",desc="We're Cops",max=1,missions=#bit(1))
+    bingo_options(403)=(event="LibertyBenches",desc="Bench Warmer",max=3,missions=#bit(1),do_not_scale=true)
+    bingo_options(404)=(event="PetRobot_CleanerBot",desc="Pet %s Cleaner Bots",desc_singular="Pet a Cleaner Bot",max=5,missions=#bit(1,2,3,4,8))
+    bingo_options(405)=(event="PetRobot_SecurityBotSmall",desc="Pet %s Commercial Grade Security Bots",desc_singular="Pet a Commercial Grade Security Bot",max=3,missions=#bit(1,2,3,4,8,11,15))
+    bingo_options(406)=(event="PeacekeepingOccupation_Convo",desc="Peace Keeping Occupation",max=1,missions=#bit(2,3,4)) //Space between Peace and Keeping for better linebreaking in the bingo viewer
+    bingo_options(407)=(event="MeetClinicMaleBum3_Played",desc="Who will help the widow's son?",max=1,missions=#bit(2))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4457,5 +4584,9 @@ defaultproperties
     mutually_exclusive(118)=(e1="GibbedPawn",e2="AlliesKilled")
     mutually_exclusive(119)=(e1="IgnitedPawn",e2="AlliesKilled")
     mutually_exclusive(120)=(e1="TongsHotTub",e2="MakeSoup")
+    mutually_exclusive(121)=(e1="BuyFromKaplan_ConvoFlag",e2="KaplanHatesPlayer_ConvoFlag")
+    mutually_exclusive(122)=(e1="PetRobot_CleanerBot",e2="CleanerBot_ClassTakedown")
+    mutually_exclusive(123)=(e1="PetRobot_SecurityBotSmall",e2="SecurityBotSmall_ClassTakedown")
+    mutually_exclusive(124)=(e1="MeetClinicMaleBum3_Played",e2="TakeABreather") //These are too close and easy to have both
 //#endregion
 }

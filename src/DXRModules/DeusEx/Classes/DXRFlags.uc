@@ -596,6 +596,7 @@ function SetDifficulty(int new_difficulty)
         settings.swapcontainers = 0;
         settings.health = 100;
         settings.energy = 100;
+        settings.merchants = 0;
         if(IsZeroRando()) {
             #ifndef hx
             switch(difficulty) {
@@ -630,7 +631,6 @@ function SetDifficulty(int new_difficulty)
             settings.max_weapon_dmg = 100;
             settings.min_weapon_shottime = 100;
             settings.max_weapon_shottime = 100;
-            settings.merchants = 0;
             settings.medbotcooldowns = 0;
             settings.repairbotcooldowns = 0;
             settings.medbotamount = 0;
@@ -739,10 +739,10 @@ function SetDifficulty(int new_difficulty)
         }
         else if(gamemode == WaltonWarex3) {
             settings.bingo_win = 3;
-            settings.bingo_freespaces = 1;
+            settings.bingo_freespaces = 3;
             bingo_duration = 3;
             bingo_scale = 33;
-            moresettings.newgameplus_curve_scalar = 65;
+            moresettings.newgameplus_curve_scalar = 66;
         }
 
         if(newgameplus_loops == 0) { // this gets overwritten by LoadFlags anyways, but the logging is noisy
@@ -976,9 +976,9 @@ function string GameModeName(int gamemode)
         return "Normal Randomizer";
 #ifdef injections
     case EntranceRando:
-        return "Entrance Randomization";
+        return "Entrance Randomizer";
     case HalloweenEntranceRando:
-        return "Halloween Entrance Randomization";
+        return "Halloween Entrance Randomizer";
     case HordeMode:
         return "Horde Mode";
     case HordeZombies:
@@ -1136,8 +1136,7 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ Weapon Stats|n";
         s = s$"  ~ Item Quantities|n";
         s = s$"  ~ Weapon Mod Types|n";
-        s = s$"  ~ Planted Grenade Types|n";
-        s = s$"  ~ Randomly Added Merchants";
+        s = s$"  ~ Planted Grenade Types";
         return s;
     case RandoMedium:
         s = "Similar to Randomizer Lite but with many more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.  Randomizes:|n";

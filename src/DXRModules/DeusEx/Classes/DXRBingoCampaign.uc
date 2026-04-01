@@ -2,17 +2,9 @@ class DXRBingoCampaign extends DXRActorsBase transient;
 
 function FirstEntry()
 {
-    local #var(prefix)FlagTrigger ft;
-    local DeusExMover mover;
-    local Vector loc;
-    local DXRHoverHint hoverHint;
-    local name blockerFlag;
-
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.FirstEntry();
-
-    GetBingoMissionBlockerFlags(dxr.dxInfo.missionNumber, blockerFlag);
 
     if(IsLateStart(dxr.dxInfo.missionNumber)) return;
 
@@ -25,11 +17,6 @@ function FirstEntry()
         case "03_NYC_UNATCOISLAND":
             if (IsBingoEnd(2, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
-            }
-            break;
-        case "03_NYC_AIRFIELD":
-            if (IsBingoEnd(3, dxr.flags.bingo_duration)) {
-                AddBingoEventBlocker('MoveHelicopter', blockerFlag);
             }
             break;
         case "04_NYC_UNATCOISLAND":
@@ -62,14 +49,62 @@ function FirstEntry()
                 NewBingoBoard();
             }
             break;
+        case "11_PARIS_CATHEDRAL":
+            if (IsBingoEnd(10, dxr.flags.bingo_duration)) {
+                NewBingoBoard();
+            }
+            break;
+        case "12_VANDENBERG_CMD":
+            if (IsBingoEnd(11, dxr.flags.bingo_duration)) {
+                NewBingoBoard();
+            }
+            break;
+        case "14_VANDENBERG_SUB":
+            if (IsBingoEnd(12, dxr.flags.bingo_duration)) {
+                NewBingoBoard();
+            }
+            break;
+        case "15_AREA51_BUNKER":
+            if (IsBingoEnd(14, dxr.flags.bingo_duration)) {
+                NewBingoBoard();
+            }
+            break;
+    }
+}
+
+function PostFirstEntry()
+{
+    local #var(prefix)FlagTrigger ft;
+    local DeusExMover mover;
+    local Vector loc;
+    local DXRHoverHint hoverHint;
+    local name blockerFlag;
+
+    if (!dxr.flags.IsBingoCampaignMode()) return;
+
+    Super.PostFirstEntry();
+
+    GetBingoMissionBlockerFlags(dxr.dxInfo.missionNumber, blockerFlag);
+
+    switch (dxr.localURL) {
+        case "03_NYC_AIRFIELD":
+            if (IsBingoEnd(3, dxr.flags.bingo_duration)) {
+                AddBingoEventBlocker('MoveHelicopter', blockerFlag);
+            }
+            break;
+        case "04_NYC_STREET":
+        case "04_NYC_HOTEL":
+        case "04_NYC_BatteryPark":
+            HandleSpecialPerson("AnnaNavarre", "AnnaNavarre_DeadM4", "AnnaNavarre_DeadM5");
+            break;
         case "10_PARIS_CHATEAU":
             if (IsBingoEnd(10, dxr.flags.bingo_duration)) {
-                loc = vect(0, 0, 0);
+                loc = vect(0,0,0);
                 foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
                     mover.bBreakable = false;
                     mover.bPickable = false;
                     mover.bFrobbable = false;
-                    if (loc != vect(0, 0, 0)) {
+                    if (loc != vect(0,0,0)) {
                         loc = (loc + mover.Location) * 0.5;
                         loc.z += 120.0;
                         hoverHint = class'DXRHoverHint'.static.Create(self, "", loc, 50.0, 96.0,,, true);
@@ -93,30 +128,15 @@ function FirstEntry()
             }
 
             break;
-        case "11_PARIS_CATHEDRAL":
-            if (IsBingoEnd(10, dxr.flags.bingo_duration)) {
-                NewBingoBoard();
-            }
-            break;
-        case "12_VANDENBERG_CMD":
-            if (IsBingoEnd(11, dxr.flags.bingo_duration)) {
-                NewBingoBoard();
-            }
-            break;
         case "12_Vandenberg_GAS":
             if (IsBingoEnd(12, dxr.flags.bingo_duration)) {
                 AddBingoEventBlocker('UN_BlackHeli', blockerFlag);
             }
             break;
         case "14_VANDENBERG_SUB":
-            if (IsBingoEnd(12, dxr.flags.bingo_duration)) {
-                NewBingoBoard();
-            }
-            break;
-        case "15_AREA51_BUNKER":
-            if (IsBingoEnd(14, dxr.flags.bingo_duration)) {
-                NewBingoBoard();
-            }
+        case "14_OceanLab_Lab":
+        case "14_OceanLab_UC":
+            HandleSpecialPerson("WaltonSimons", "WaltonSimons_Dead");
             break;
         case "15_AREA51_FINAL":
             AddBingoEventBlocker('Merge_helios_exit', blockerFlag);
@@ -129,24 +149,6 @@ function FirstEntry()
             break;
         case "15_AREA51_PAGE":
             AddBingoEventBlocker('kill_page',blockerFlag);
-            break;
-    }
-}
-
-function PostFirstEntry()
-{
-    if (!dxr.flags.IsBingoCampaignMode()) return;
-
-    switch (dxr.localURL) {
-        case "04_NYC_STREET":
-        case "04_NYC_HOTEL":
-        case "04_NYC_BatteryPark":
-            HandleSpecialPerson("AnnaNavarre", "AnnaNavarre_DeadM4", "AnnaNavarre_DeadM5");
-            break;
-        case "14_VANDENBERG_SUB":
-        case "14_OceanLab_Lab":
-        case "14_OceanLab_UC":
-            HandleSpecialPerson("WaltonSimons", "WaltonSimons_Dead");
             break;
     }
 }
@@ -456,6 +458,10 @@ function HandleBingoGoal()
     if (dxr.dxInfo.missionNumber == 2) {
         GetBingoMissionBlockerFlags(2,, blockerFlag, expiration);
         UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
+    }
+    else if (dxr.dxInfo.missionNumber == 4) {
+        GetBingoMissionBlockerFlags(4,, blockerFlag, expiration);
+        UnblockEarly('GuntherShowdown_Played', blockerFlag, expiration);
     }
 }
 

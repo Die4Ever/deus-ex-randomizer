@@ -1,6 +1,10 @@
 class DXRConPlay injects ConPlay;
 
 var float pitchAdjust;
+var bool fastForwarding, ffDone;
+
+var bool bContinueSpeechFF;
+var bool bNoPlayedFlagFF;
 
 //Copied from ConPlay, but added pitchAdjust
 function PlaySpeech( int soundID, Actor speaker )
@@ -51,6 +55,31 @@ function PlaySpeech( int soundID, Actor speaker )
     StartSpeakingAnimation();
 }
 
+function FastForward()
+{
+    fastForwarding = true;
+    ProcessAction( EA_NextEvent, "" );
+}
+
+function TerminateConversation(optional bool bContinueSpeech, optional bool bNoPlayedFlag)
+{
+    if (fastForwarding && !ffDone) return; //Don't interrupt fast forward while it's active
+
+    // Fast forward terminated first-person conversations
+    if(displayMode == DM_FirstPerson && currentEvent!=None && currentEvent.EventType!=ET_End && !ffDone){
+        //Stash for when the conversation actually finishes
+        bContinueSpeechFF = bContinueSpeech;
+        bNoPlayedFlagFF   = bNoPlayedFlag;
+        FastForward();
+    } else {
+        if (fastForwarding){
+            //Use the stashed values from above
+            bContinueSpeech = bContinueSpeechFF;
+            bNoPlayedFlag = bNoPlayedFlagFF;
+        }
+        Super.TerminateConversation(bContinueSpeech,bNoPlayedFlag);
+    }
+}
 
 state WaitForSpeech
 {
@@ -112,6 +141,37 @@ Begin:
 
     Goto('Idle');
 }
+
+function bool ShouldFastForwardEvent(ConEvent event)
+{
+    switch(event.EventType){
+        case ET_Speech:
+        case ET_Choice:
+        case ET_Random:
+        case ET_End:
+            return false;
+    }
+    return true;
+}
+
+state PlayEvent
+{
+
+    function PlayEventBegin()
+    {
+        if ( currentEvent == None ||
+             (fastForwarding && !ShouldFastForwardEvent(currentEvent)))
+        {
+            ffDone=True;
+            TerminateConversation();
+        }else{
+            SetupEvent();
+        }
+    }
+Begin:
+    PlayEventBegin();
+}
+
 
 defaultproperties
 {

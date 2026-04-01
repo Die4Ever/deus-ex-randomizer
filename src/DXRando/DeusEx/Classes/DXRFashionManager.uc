@@ -299,6 +299,15 @@ function InitClothes(bool giveAll)
         AddClothing(G_Male,CT_Helmet,Texture'NSFHelmet',None);
         AddClothing(G_Male,CT_Helmet,Texture'PlainRiotHelmet',None);
 
+        #ifdef revision
+        //These are included in the base Revision install and use non-vanilla textures that would be covered by the defaults above
+        IngestCarcass(class'RevisionPawn.TrestPlainCarcass',true);
+        IngestCarcass(class'RevisionPawn.TrestCoatCarcass',true);
+        IngestCarcass(class'RevisionPawn.ZeroPresenceNormalCarcass',true);
+        IngestCarcass(class'RevisionPawn.ZeroPresenceCarcass',true);
+        IngestCarcass(class'RevisionPawn.GateGuardCarcass',true); //Mostly standard textures, but has special pants
+        #endif
+
     }
 
 /*
@@ -1102,6 +1111,9 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
     switch(carcassClass.Default.mesh){
         case LodMesh'DeusExCharacters.GM_Trench_F_Carcass':
         case LodMesh'DeusExCharacters.GM_Trench_Carcass':
+#ifdef revision
+        case LodMesh'RevisionPawn.GM_Trenchkon_Carcass':
+#endif
             num += AddClothing(GetCarcassShirtGender(carcassClass),CT_TrenchShirt,carcassClass.Default.MultiSkins[4],None);
             num += AddClothing(G_Both,CT_Pants,carcassClass.Default.MultiSkins[2],None);
             num += AddClothing(G_Both,CT_Jacket,carcassClass.Default.MultiSkins[1],carcassClass.Default.MultiSkins[5]);
@@ -1145,6 +1157,9 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
             num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
             break;
         case LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass':
+#ifdef revision
+        case LodMesh'RevisionPawn.GM_Trestkon_Jumpsuit_Carcass':
+#endif
             num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[2],None);
             num += AddClothing(G_Both,CT_Pants,carcassClass.Default.MultiSkins[1],None);
             num += AddClothing(G_Male,CT_Helmet,carcassClass.Default.MultiSkins[6],None);

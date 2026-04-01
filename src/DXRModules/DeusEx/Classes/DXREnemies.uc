@@ -237,6 +237,7 @@ function RandoEnemies(int percent, int hidden_percent)
 
 function int GetFactionId(ScriptedPawn p)
 {
+    //Rough check by class
     switch(p.class) {
     case class'#var(prefix)UNATCOTroop':
         return UNATCO;
@@ -251,14 +252,29 @@ function int GetFactionId(ScriptedPawn p)
     case class'#var(prefix)RiotCop':
         return Police;
     }
+
+    //Check by alliance name
     switch(p.Alliance) {
     case 'UNATCO':
+    case 'UNATCOBot':
         return UNATCO;
     case 'MJ12':
+    case 'MJ12bot':
+    case 'ParisMJ12Bots':
+    case 'Bots_MJ12':
+    case 'MIB':
+    case 'spider': //Silo and OceanLab UC spider bots
+    case 'spider_bots': //Vandenberg Tunnels spider bots
         return MJ12;
     case 'NSF':
+    case 'Terrorist':
+    case 'Terrorists':
+    case 'TerroristBots':
+    case 'NSFRobots':
         return NSF;
     case 'Cops':
+    case 'Cop':
+    case 'RiotCop':
         return Police;
     }
     return FactionOther;

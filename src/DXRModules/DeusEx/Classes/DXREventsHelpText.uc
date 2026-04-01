@@ -542,6 +542,14 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             return "Try to get help from Joe Greene after the raid.";
         case "HelpSailor_ConvoFlag":
             return "Offer to help Vinny find out what's going on at the Advanced Submarine Base.";
+        case "BuyFromKaplan_ConvoFlag":
+            return "Buy something from Tech Sergeant Kaplan in front of UNATCO HQ.";
+        case "KaplanHatesPlayer_ConvoFlag":
+            return "Tell Tech Sergeant Kaplan that you're going to take a minimum-force approach with the NSF.  We're cops, after all.";
+        case "PeacekeepingOccupation_Convo":
+            return "Check in with Gunther Hermann after completing a mission objective.  As is standard protocol, he has been assigned the peacekeeping occupation of the area.";
+        case "MeetClinicMaleBum3_Played":
+            return "Meet the Freemason looking for help in the Free Clinic.";
     }
 
     //Return nothing so the generic function can handle it
@@ -1511,6 +1519,12 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Step into the atrium of the Free Clinic in Hell's Kitchen and sit down on one of the benches.  Take a moment to breathe and clear your mind.";
         case "MakeSoup":
             return "Make a nice vat of soup by throwing three bodies into Tong's hot tub (The water tank in Tracer Tong's base).";
+        case "LibertyBenches":
+            return "Take your time and enjoy taking a break on 3 different benches scattered around Liberty Island.  Make sure to crouch!";
+        case "PetRobot_CleanerBot":
+            return "Show your appreciation for those little guys and give enough of those cleaner bots a pet!";
+        case "PetRobot_SecurityBotSmall":
+            return "Commercial security bots might be dangerous, but they've got a little head just ready to be pet.  Give enough of those little treaded bots head pats!  Note that it is not possible to pet a disabled bot.";
     }
 
     //Return nothing so the generic function can handle it

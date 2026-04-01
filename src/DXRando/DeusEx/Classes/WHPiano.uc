@@ -797,7 +797,7 @@ function int GetSongWeight(int songIdx)
         case 33: // SH2EndingTheme, I guess...
         case 45: // REMansionBasement
         case 62: // SOTNTragicPrince
-            if(dxr.IsOctober()) return 3;
+            if(dxr.IsHalloweenSeason()) return 3;
             break; // else use the default return at the bottom
 
         //Halloween-themed songs (These are inactive outside of October or Halloween mode)
@@ -813,7 +813,7 @@ function int GetSongWeight(int songIdx)
         case 82: //SpookyScarySkeletons
         case 83: //ThisIsHalloween
         case 86: //Thriller
-            if(dxr.IsOctober()) return 3;
+            if(dxr.IsHalloweenSeason()) return 3;
             return 0; // else these songs are not active
 
         case 84: //AllIWantForChristmas

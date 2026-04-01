@@ -143,6 +143,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 
     foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
         fan.bHighlight=True;
+        // TODO: should break into smaller fragments
     }
 
     FixJockExplosion();  //Only actually does anything with injections, but theoretically could work if we replaced the helicopter
