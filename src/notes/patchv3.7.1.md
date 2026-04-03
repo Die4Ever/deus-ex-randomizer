@@ -3,6 +3,7 @@
 - New game mode: Speedrun Shuffle!  This is the same as Speedrun Mode, but the order of the missions is shuffled.
 - New game mode: Mr. Page's Nice Bingo Machine!  This is a combination of Normal Randomizer and the Mean Bingo Machine, making it a great starting point for people to learn bingo.
 - The new game screen now shows recommended presets.
+- You can pet the robots! (Except for Medical and Repair Bots)
 
 ## Minor Changes
 
@@ -34,6 +35,8 @@
   - "Bench Warmer": Sit on 3 benches scattered around Liberty Island (Mission 1).
   - "Peace Keeping Occupation": Speak to Gunther after completing a mission (Mission 2, 3, or 4).
   - "Who will help the widow's son?": Speak to the Freemason in the Free Clinic (Mission 2).
+  - "Pet x Cleaner Bots": Pet enough cleaner bots (Missions 1, 2, 3, 4, 8).
+  - "Pet x Commercial Grade Security Bots": Pet enough commercial grade security bots (Missions 1, 2, 3, 4, 8, 11, 15).
 - Mission starts inside the Ocean Lab or at Silo (Mission 14) will now start with the sub bay doors open in the Sub Base.  Silo starts will also start with the sub bay doors open in the Ocean Lab itself.
 - Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
 - Synthetic Heart aug improvements and fixes:
