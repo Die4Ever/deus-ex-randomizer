@@ -30,7 +30,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PaulDenton paul;
     local #var(prefix)PaulDentonCarcass paulcarc;
     local ComputerPersonal c;
-    local DeusExMover dxm;
+    local #var(DeusExPrefix)Mover dxm;
     local #var(prefix)UNATCOTroop lloyd;
     local #var(prefix)AlexJacobson alex;
     local #var(prefix)JaimeReyes j;
@@ -103,7 +103,7 @@ function PreFirstEntryMapFixes()
         }
 
         if (VanillaMaps){
-            foreach AllActors(class'DeusExMover',dxm){
+            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
                 if (dxm.Name=='DeusExMover34'){
                     //I think this filing cabinet door was supposed to
                     //be unlockable with Agent Sherman's key as well
@@ -134,12 +134,12 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'Beastdoor'){
                 ot.Tag = 'BeastDoorOpened';
             }
-            foreach AllActors(class'DeusExMover',dxm,'Beastdoor'){
+            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Beastdoor'){
                 dxm.Event = 'BeastDoorOpened';
             }
 
         } else {
-            foreach AllActors(class'DeusExMover',dxm){
+            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
                 if (dxm.Name=='DeusExMover34'){
                     //I think this filing cabinet door was supposed to
                     //be unlockable with Agent Sherman's key as well
@@ -157,7 +157,7 @@ function PreFirstEntryMapFixes()
         class'FakeMirrorInfo'.static.Create(self,vectm(-2542,1035,-64),vectm(-2672,1047,-160)); //Miguel Cell
         class'FakeMirrorInfo'.static.Create(self,vectm(-2833,1300,-64),vectm(-2702,1290,-160)); //Empty Cell
 
-        foreach AllActors(class'DeusExMover',dxm,'Mirror'){break;}
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Mirror'){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(-3168,1300,-64),vectm(-3039,1290,-160),dxm); //JC's Cell (but we only want this while the window is reflective)
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
