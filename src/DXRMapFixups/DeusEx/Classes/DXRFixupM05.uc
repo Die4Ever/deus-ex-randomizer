@@ -124,6 +124,20 @@ function PreFirstEntryMapFixes()
                     cigs.Destroy();
                 }
             }
+
+            //Make the karkians go hostile and try to escape regardless of how the doors are opened
+            //The computer (or blowing the doors up) doesn't change their alliance normally
+            //Revision already fixes this.
+            foreach AllActors(class'#var(prefix)AllianceTrigger', at, 'Beastdoor'){
+                at.Tag = 'BeastDoorOpened';
+            }
+            foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'Beastdoor'){
+                ot.Tag = 'BeastDoorOpened';
+            }
+            foreach AllActors(class'DeusExMover',dxm,'Beastdoor'){
+                dxm.Event = 'BeastDoorOpened';
+            }
+
         } else {
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover34'){

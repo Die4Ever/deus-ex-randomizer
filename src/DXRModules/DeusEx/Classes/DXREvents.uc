@@ -849,8 +849,10 @@ function SetWatchFlags() {
             }
         }
 
-        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Beastdoor'){
-            dxm.Event='KarkianDoorsBingo';
+        if (RevisionMaps){
+            AddDelayEvent('KarkianAlliances','KarkianDoorsBingo',0.1); //This event is hit by default in Revision by the doors
+        }else{
+            AddDelayEvent('BeastDoorOpened','KarkianDoorsBingo',0.1); //This event gets set in DXRFixupM05, not default
         }
         bt = class'BingoTrigger'.static.Create(self,'KarkianDoorsBingo',vectm(0,0,0));
 
