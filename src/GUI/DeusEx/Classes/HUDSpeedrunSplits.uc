@@ -478,6 +478,7 @@ function DrawSplits(GC gc, int cur)
     local float f, delta;
     local string msg, msg2;
     local Color cmpColor;
+    local bool bShuffle;
 
     total = TotalTime();
     curTime = stats.missions_times[cur];
@@ -511,7 +512,10 @@ function DrawSplits(GC gc, int cur)
     //#region drawing text
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
+    bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.IsSpeedrunShuffle());
+
     for(i=1; i<ArrayCount(Golds); i++) {
+        // TODO: fix ordering when Speedrun Shuffle
         if(showAllSplits
         || (alwaysShowSplit[i] != 0)
         || (i == prevprev && showPrevprev)
@@ -519,6 +523,7 @@ function DrawSplits(GC gc, int cur)
         || (i == cur && showCurrentMission)
         || (i == next && showNext)
         || (i == ArrayCount(Golds)-1 && showPB)
+        || (bShuffle && stats.missions_times[i] > 0) // Speedrun Shuffle always show completed missions
         ) {
             y = DrawSplit(gc, i, cur, x, y);
         }

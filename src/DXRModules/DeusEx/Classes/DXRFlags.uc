@@ -1258,6 +1258,11 @@ function bool IsSeriousRando()
     return gamemode == SeriousRando;
 }
 
+function bool IsSpeedrunShuffle()
+{
+    return gamemode == SpeedShuffle;
+}
+
 function bool IsSpeedrunMode()
 {
     return gamemode == SpeedrunMode || gamemode == SpeedrunTraining || gamemode == SpeedShuffle;
