@@ -91,6 +91,8 @@ function InitAdvancedDefaults()
     newgameplus_num_removed_weapons = 1;
 
     clothes_looting=0;
+
+    loop_initial_version = VersionNumber();
 }
 
 function InitDefaults()

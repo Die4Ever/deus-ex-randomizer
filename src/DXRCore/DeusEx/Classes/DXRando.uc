@@ -736,13 +736,18 @@ simulated final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
+simulated function DXRando GetDXR()
+{
+    return Self;
+}
+
 simulated function int HashCompat(
     coerce string crcStr,
     optional int crcAdd,
     optional coerce string murmurStr,
     optional int murmurSeed
 ) {
-    if (flags.loop_initial_version >= 3070104 || OnTitleScreen()) {
+    if (flags.loop_initial_version >= 3070104) {
         if (murmurStr == "") {
             murmurStr = crcStr;
         }
