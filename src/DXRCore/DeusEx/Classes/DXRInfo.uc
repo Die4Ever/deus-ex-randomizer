@@ -221,7 +221,7 @@ static function int _SystemTime(LevelInfo Level)
 function bool IsAprilFools()
 {
     // April Fools!
-    return Level.Month == 4 && Level.Day == 1 && class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags);
+    return Level.Month == 4 && Level.Day == 1 && class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags) && class'DXRando'.default.rando_beaten >= 1;
 }
 
 function bool IsOctober()
