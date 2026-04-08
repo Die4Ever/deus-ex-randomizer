@@ -1950,11 +1950,10 @@ function int DropPiano(string viewer)
 }
 
 //Make a clone of the player with the same weapons and ammo as you
-//TODO: For the future, this could be a custom JCDouble subclass that inherits some resistances from your augs
 function int ClonePlayer(string viewer, bool friendly)
 {
     local #var(PlayerPawn) p;
-    local #var(prefix)JCDouble jcd;
+    local CrowdControlClone jcd;
     local vector loc;
     local rotator rot;
     local int num;
@@ -1975,7 +1974,7 @@ function int ClonePlayer(string viewer, bool friendly)
     }
 
     //Only allow a certain number of clones in each level
-    foreach AllActors(class'#var(prefix)JCDouble',jcd){
+    foreach AllActors(class'CrowdControlClone',jcd){
         if (++num>=MAX_PLAYER_CLONE) {
             return TempFail;
         }
@@ -1996,7 +1995,7 @@ function int ClonePlayer(string viewer, bool friendly)
         rot = Rotator(p.Location-loc); //Face enemies towards the player
     }
 
-    jcd = Spawn(class'#var(prefix)JCDouble',,, loc,rot);
+    jcd = Spawn(class'CrowdControlClone',,, loc,rot);
 
     if( jcd == None ) {
         info("failed to spawn clone into "$loc);
@@ -2004,78 +2003,7 @@ function int ClonePlayer(string viewer, bool friendly)
     }
     info("spawning clone");
 
-#ifndef hx
-    jcd.SetSkin(p);
-#endif
-
-    //Make sure they use the same pain sounds (In case they're female)
-    jcd.HitSound1 = p.HitSound1;
-    jcd.HitSound2 = p.HitSound2;
-    jcd.Die = p.Die;
-
-#ifndef vmd
-    //Make them use the JCDentonMaleCarcass, since it will be adjusted for FemJC anyway
-    jcd.CarcassType = class'JCDentonMaleCarcass';
-#endif
-
-    //Make sure they aren't invincible
-    jcd.bInvincible = False;
-
-    //Make them stronger than base 100 health.
-    ccLink.ccModule.SetPawnHealth(jcd,300);
-
-    //Give the clone the players name
-    jcd.UnfamiliarName = p.TruePlayerName;
-    jcd.FamiliarName   = p.TruePlayerName;
-
-#ifndef vmd
-    //Make sure they're dressed like you
-    fashion = class'DXRFashionManager'.static.GiveItem(p);
-    fashion.GetDressed();
-#endif
-
-    //Clone the player weapons and ammo into the... Clone
-    //Might be nice to copy armour into the clone for VMD, where they'll actually use them (but need to make them not drop the armour as well)
-    for(pInv = p.Inventory;pInv!=None;pInv=pInv.Inventory){
-        newAmmo = None;
-        newWeap = None;
-
-        dxAmmo = #var(DeusExPrefix)Ammo(pInv);
-        dxWeap = #var(DeusExPrefix)Weapon(pInv);
-        if (dxAmmo!=None || dxWeap!=None){
-            newInv =  ccLink.ccModule.GiveItem(jcd,pInv.Class,1);
-            newAmmo = #var(DeusExPrefix)Ammo(newInv);
-            newWeap = #var(DeusExPrefix)Weapon(newInv);
-        }
-
-        if (dxAmmo!=None && newAmmo!=None){
-            //Give the clone just as much ammo as the player has
-            newAmmo.AmmoAmount = dxAmmo.AmmoAmount;
-        }
-
-        if (newWeap!=None){
-            newWeap.bNativeAttack=True; //Mark as Native so that the clone doesn't drop it
-        }
-    }
-
-    //Make sure they keep their weapon drawn
-    jcd.bKeepWeaponDrawn=true;
-    jcd.SetupWeapon(true);
-
-    //Make sure they can hear you
-    jcd.bReactAlarm=True;
-    jcd.bReactCarcass=True;
-    jcd.bReactDistress=True;
-    jcd.bReactFutz=True;
-    jcd.bReactLoudNoise=True;
-    jcd.bReactPresence=True;
-    jcd.bReactProjectiles=True;
-    jcd.bReactShot=True;
-    jcd.ResetReactions();
-
-    //Your clone actually leaves if it runs away due to low health
-    //(so one that is cowering doesn't block a new one from spawning)
-    jcd.bLeaveAfterFleeing=true;
+    jcd.InitFromPlayer(p);
 
     if (friendly){
         jcd.Alliance = 'FriendlyCCSpawn';

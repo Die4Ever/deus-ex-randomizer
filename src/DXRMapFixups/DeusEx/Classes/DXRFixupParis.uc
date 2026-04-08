@@ -593,6 +593,7 @@ function AnyEntryMapFixes()
 
         break;
     case "10_PARIS_CHATEAU":
+        FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
         FixConversationFlag(GetConversation('NicoletteInCellar'), 'ChateauInCeller', true, 'ChateauInCellar', true);
         break;
     case "10_PARIS_METRO":

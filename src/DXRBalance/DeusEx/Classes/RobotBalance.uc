@@ -135,11 +135,6 @@ function Frob(Actor Frobber, Inventory frobWith)
     if (p!=None){
         canPet = true;
 
-        dxr = class'DXRando'.default.dxr;
-        if (!(#bool(RoboLover) || (dxr!=None && dxr.DateAtLeast(2026,4,1)))){
-            canPet = false;
-        }
-
         //Robots probably don't have conversations, but check anyway
         //(basically, make sure the Super.Frob above didn't put us in a conversation)
         if (p.conPlay!=None && p.conPlay.con!=None && p.conPlay.con.bFirstPerson==False){

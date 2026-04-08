@@ -180,6 +180,13 @@ function PostFirstEntryMapFixes()
 //#region Any Entry
 function AnyEntryMapFixes()
 {
+
+    if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+        //Make the LAM guy give you LAMs before his voice line, so you can't just walk away without getting them
+        //Do this even in Zero Rando, as long as you've agreed to minor map changes (aka fixes)
+        FixLamGuyConversation();
+    }
+
     if(dxr.flags.IsZeroRando()) return;
 
     switch(dxr.localURL) {
@@ -196,6 +203,75 @@ function AnyEntryMapFixes()
 }
 //#endregion
 
+function FixLamGuyConversation()
+{
+    /*
+    Original conversation order:
+        ConEventRandomLabel (go to A1 first, then A2)
+        A1: ConEventSpeech (You'll need some LAMs, here, catch!)
+            ConEventTransferObject (give you LAMs)
+            ConEventEnd
+            ...the rest of the conversation
+
+    What we want:
+        ConEventRandomLabel (go to A1 first, then A2)
+        A1: ConEventTransferObject (give you LAMs)
+            ConEventSpeech (You'll need some LAMs, here, catch!)
+            ConEventEnd
+            ...the rest of the conversation
+
+    In vanilla, if you walked away from the trooper before he finished talking to you,
+    you wouldn't get any LAMs from him until you went back and talked to him again.
+    */
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventRandomLabel cerl;
+    local ConEventSpeech ces;
+    local ConEventTransferObject ceto;
+
+    c = GetConversation('LAMBarks');
+
+    ce = c.eventList;
+    if (ce==None) return;
+    if (ce.eventType==ET_Random){
+        cerl = ConEventRandomLabel(ce);
+        if (cerl==None) return;
+        if (cerl.GetLabel(0)!="A1"){
+            return; //It's not what we expect!  Bail!
+        }
+    }
+    if (cerl==None) return;
+
+    ce = cerl.nextEvent;
+    if (ce==None) return;
+    if (ce.eventType==ET_Speech){
+        ces = ConEventSpeech(ce);
+        if (ces==None) return;
+        if (ces.label!="A1") return;
+        if (ces.conSpeech==None || InStr(ces.conSpeech.speech,"catch!")==-1) return;
+    }
+    if (ces==None) return;
+
+    ce = ces.nextEvent;
+    if (ce==None) return;
+    if (ce.eventType==ET_TransferObject){
+        ceto = ConEventTransferObject(ce);
+        if (ceto==None) return;
+        if (ceto.objectName!="WeaponLAM") return;
+        if (ceto.nextEvent==None) return;
+        if (ceto.nextEvent.eventType!=ET_End) return;
+    }
+    if (ceto==None) return;
+
+    //We now have the three elements necessary to rearrange.
+
+    cerl.nextEvent = ceto; //Random Label goes to transfer object
+    ces.nextEvent = ceto.nextEvent; //Speech goes to the "End" after the transfer object
+    ceto.nextEvent = ces;  //Transfer object goes to the speech
+
+    ceto.label = ces.label; //Transfer Object is what gets jumped to immediately
+    ces.label = "";         //Speech no longer gets jumped to.
+}
 
 //#region Training Merchant
 function SpawnTrainingMerchant(vector loc, rotator rot,

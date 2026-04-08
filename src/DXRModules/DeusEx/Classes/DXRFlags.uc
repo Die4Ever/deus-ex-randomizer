@@ -91,6 +91,8 @@ function InitAdvancedDefaults()
     newgameplus_num_removed_weapons = 1;
 
     clothes_looting=0;
+
+    loop_initial_version = VersionNumber();
 }
 
 function InitDefaults()
@@ -1254,6 +1256,11 @@ function bool IsReducedRando()
 function bool IsSeriousRando()
 {
     return gamemode == SeriousRando;
+}
+
+function bool IsSpeedrunShuffle()
+{
+    return gamemode == SpeedShuffle;
 }
 
 function bool IsSpeedrunMode()

@@ -3,6 +3,7 @@
 - New game mode: Speedrun Shuffle!  This is the same as Speedrun Mode, but the order of the missions is shuffled.
 - New game mode: Mr. Page's Nice Bingo Machine!  This is a combination of Normal Randomizer and the Mean Bingo Machine, making it a great starting point for people to learn bingo.
 - The new game screen now shows recommended presets.
+- You can pet the robots! (Except for Medical and Repair Bots)
 
 ## Minor Changes
 
@@ -18,7 +19,6 @@
 - "Songs Played" count on piano highlight info no longer shows if Memes are disabled, since this also disables the additional songs to be played.
 - Some doors that have pneumatic sounds now break into metal fragments instead of wood, such as the Ocean Lab surface map sub bay doors.
 - Fixed the size of some objects that replace the Earth being grasped by the hand statue.
-- Conversations that play while in first person will now try to trigger other events that happen after a voice line gets interrupted.  This fixes/improves some cases where you get items, notes, or flags get set after the voice line plays (for example, the trooper that gives you LAMs in the training mission, or Nicolette giving a password note when in the study of Chateau DuClare).
 - The 350 skill points for redirecting the missile in Silo (Mission 14) can no longer be acquired by walking in the right spot in the command center.  The skill points will now be properly given only when actually redirecting the missile from the launch computer.
 - Changes to October Cosmetics settings
   - Spooks (spiderwebs and jack-o'-lanterns) and red screen tint can now be turned on or off separately in global settings
@@ -34,6 +34,8 @@
   - "Bench Warmer": Sit on 3 benches scattered around Liberty Island (Mission 1).
   - "Peace Keeping Occupation": Speak to Gunther after completing a mission (Mission 2, 3, or 4).
   - "Who will help the widow's son?": Speak to the Freemason in the Free Clinic (Mission 2).
+  - "Pet x Cleaner Bots": Pet enough cleaner bots (Missions 1, 2, 3, 4, 8).
+  - "Pet x Commercial Grade Security Bots": Pet enough commercial grade security bots (Missions 1, 2, 3, 4, 8, 11, 15).
 - Mission starts inside the Ocean Lab or at Silo (Mission 14) will now start with the sub bay doors open in the Sub Base.  Silo starts will also start with the sub bay doors open in the Ocean Lab itself.
 - Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
 - Synthetic Heart aug improvements and fixes:
@@ -46,4 +48,6 @@
 - Troops that are fleeing during the apartment raid in Mission 4 are now considered dead for the purposes of stopping the raid (So you won't need to hunt down that one troop hiding in a corner to have it counted as being completed).
 - Paul's fashion should now be immaculate after uncloaking and in death.
 - "Who Needs Rock?" bingo goal progress is now properly marked when trading zyme to Lenny after getting a LAM from El Rey.
+- Karkians in the MJ12 Lab (Mission 5) will now properly go hostile and try to escape regardless of how the door is opened.
+- Player clones spawned by Crowd Control can now use defensive augs, speed, cloak, medkits, biocells, and fire extinguishers that the player had when the clone was spawned.
 </details>

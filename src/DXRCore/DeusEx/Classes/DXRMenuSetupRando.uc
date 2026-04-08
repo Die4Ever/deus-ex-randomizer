@@ -42,14 +42,16 @@ function BindControls(optional string action)
 
     //Make sure the starting map values match those in DXRStartMap
     NewMenuItem("Starting Map", "What level you will start in.");
+    bMatched = false;
     for(i=0; i<160; i++) {
         if(i == 10) continue;// Liberty Island dupe
         s = class'DXRStartMap'.static.GetStartingMapName(i);
         if(s != "") {
-            EnumOption(s, i, f.settings.starting_map);
+            bMatched = EnumOption(s, i, f.settings.starting_map) || bMatched;
         }
     }
-    if(f.settings.starting_map != 0) {
+    if(f.settings.starting_map != 0 && !bMatched) {
+        if(writing) f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, -1); // reroll to make sure we respect the current seed which could've been changed in the input box above
         EnumOption("Random", f.settings.starting_map, f.settings.starting_map);
     }
     else if(EnumOption("Random", -1)) {

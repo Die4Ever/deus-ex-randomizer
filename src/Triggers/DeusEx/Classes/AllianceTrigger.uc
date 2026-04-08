@@ -32,7 +32,18 @@ function bool SetAlliances()
         {
             if( P.Tag != Event && P.Tag != newtag ) continue;
 
-            P.SetAlliance(Alliance);
+            if (Alliance!=''){
+                //In the vanilla game, MOST alliance triggers set an alliance,
+                //but there are a few that leave it blank, which unintentionally
+                //clears the alliance of the targeted pawn.  This changes the
+                //behaviour of who they will listen to to determine who might
+                //be a possible enemy.  Most places, this doesn't really matter,
+                //but if there are multiple alliances in-fighting, or multiple
+                //blank alliances, they could get themselves confused.  See
+                //commit 471ccad for an example of where a blank alliance
+                //caused problems.
+                P.SetAlliance(Alliance);
+            }
             for (i=0; i<ArrayCount(Alliances); i++)
                 if (Alliances[i].AllianceName != '')
                     P.ChangeAlly(Alliances[i].AllianceName, Alliances[i].AllianceLevel, Alliances[i].bPermanent);

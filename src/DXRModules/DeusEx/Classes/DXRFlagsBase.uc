@@ -459,7 +459,16 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
 
-    FlagInt('Rando_loop_initial_version',loop_initial_version,mode,str);
+    if(!FlagInt('Rando_loop_initial_version',loop_initial_version,mode,str) && stored_version != 0 && mode==Reading) {
+        // if the flag didn't exist, make sure to set it to 0 for compatibility
+        loop_initial_version = 0;
+    }
+    switch(dxr.dxInfo.missionNumber) {
+        case 0: // always update this between games
+        case 98:
+        case 99:
+            loop_initial_version = VersionNumber();
+    }
 
     if(mode!=Reading && mode!=Writing) {
         i = int(class'MenuChoice_BalanceAugs'.static.IsEnabled());

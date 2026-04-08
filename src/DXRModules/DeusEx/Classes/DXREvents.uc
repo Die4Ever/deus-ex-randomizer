@@ -849,8 +849,10 @@ function SetWatchFlags() {
             }
         }
 
-        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Beastdoor'){
-            dxm.Event='KarkianDoorsBingo';
+        if (RevisionMaps){
+            AddDelayEvent('KarkianAlliances','KarkianDoorsBingo',0.1); //This event is hit by default in Revision by the doors
+        }else{
+            AddDelayEvent('BeastDoorOpened','KarkianDoorsBingo',0.1); //This event gets set in DXRFixupM05, not default
         }
         bt = class'BingoTrigger'.static.Create(self,'KarkianDoorsBingo',vectm(0,0,0));
 
@@ -2943,13 +2945,6 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "LibertyBenches":
             //Too lazy to mark the 22 extra benches on the Revision maps
             return RevisionMaps;
-
-/////////////////////////////////////////////////////////////////////
-    //Ban goals for reasons
-        case "PetRobot_CleanerBot":
-        case "PetRobot_SecurityBotSmall":
-            return !(#bool(RoboLover) || (dxr.DateAtLeast(2026,4,1)));
-
     }
 
     //More broad loadout checks
