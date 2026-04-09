@@ -81,10 +81,10 @@ function CreateActionButton()
 defaultproperties
 {
     numTicks=9
-    startValue=0
-    endValue=8
-    defaultValue=1
-    StartingMeleeSlot=1
+    startValue=1
+    endValue=9
+    defaultValue=2
+    StartingMeleeSlot=2
     choiceControlPosX=203
     actionText="Starting Melee Belt Slot"
     HelpText="Which belt slot your starting melee weapon gets put on."

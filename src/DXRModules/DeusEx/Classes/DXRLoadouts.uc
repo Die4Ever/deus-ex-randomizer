@@ -1287,7 +1287,7 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
 
     if(dxre != None) {
         belt = DeusExRootWindow(player.rootWindow).hud.belt;
-        slot = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot + 1;
+        slot = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
         for(i=0; i<100; i++) {
             iclass = dxre.GiveRandomMeleeWeaponClass(player, false);
             if(iclass == None || is_banned(iclass)) continue;
