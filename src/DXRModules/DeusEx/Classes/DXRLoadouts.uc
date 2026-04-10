@@ -1296,7 +1296,7 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
             item = _GiveRandoStartingItem(player, item, bFrob);
             if(item == None) continue;
 
-            if(belt.GetObjectFromBelt(slot) == None) {
+            if(belt.IsValidPos(slot) && belt.GetObjectFromBelt(slot) == None) {
                 belt.RemoveObjectFromBelt(item);
                 belt.AddObjectToBelt(item, slot, false);
             }
