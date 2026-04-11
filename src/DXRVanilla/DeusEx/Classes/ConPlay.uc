@@ -291,25 +291,34 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
     return Super.StartConversation(newPlayer, newInvokeActor, bForcePlay);
 }
 
+function FastForward()
+{
+    if (fastForwarding) return;
+
+    //player.ClientMessage("Fast forwarding conversation "$con.conName);
+
+    fastForwarding=true;
+
+    //If interrupted mid-speech event, skip to the next event before starting the fast forward
+    if (currentEvent.EventType==ET_Speech){
+        lastEvent = currentEvent;
+        currentEvent = currentEvent.nextEvent;
+    }
+
+    SetupEventFastForward();
+}
+
 //Fast forward if appropriate, otherwise terminate as normal
 function TerminateConversation(optional bool bContinueSpeech, optional bool bNoPlayedFlag)
 {
     if (!fastForwarding){
         if (displayMode == DM_FirstPerson && currentEvent!=None && currentEvent.EventType!=ET_End){
-            //player.ClientMessage("Fast forwarding conversation "$con.conName);
-
-            //If interrupted mid-speech event, skip to the next event before starting the fast forward
-            if (currentEvent.EventType==ET_Speech){
-                lastEvent = currentEvent;
-                currentEvent = currentEvent.nextEvent;
-            }
-
             //Save these to reuse once the fast forward is finished
             savedContinueSpeech = bContinueSpeech;
             savedNoPlayedFlag = bNoPlayedFlag;
 
-            fastForwarding=true;
-            SetupEventFastForward();
+            FastForward();
+
             return;
         }
     }
