@@ -42,6 +42,7 @@ function PreFirstEntryMapFixes()
     local HomeBase hb;
     local DXRReinforcementPoint reinforce;
     local #var(prefix)Poolball pb;
+    local #var(prefix)SecurityBot3 bot;
     local int i;
 #ifdef revision
     local JockHelicopter jockheli;
@@ -523,6 +524,12 @@ function PreFirstEntryMapFixes()
             reinforce=Spawn(class'DXRReinforcementPoint',,'SmugBotDest',vectm(0,-400,-10));
             reinforce.SetCollisionSize(16,32);
             reinforce.SetAsHomeBase(false);
+        }
+
+        //The bot starts "standing" instead of "idle".
+        //This makes it so he would still attack hostiles if present (and also makes him pettable)
+        foreach AllActors(class'#var(prefix)SecurityBot3', bot, 'smugglerbots') {
+            bot.SetOrders('Standing');
         }
 
         foreach AllActors(class'Smuggler', smug) {

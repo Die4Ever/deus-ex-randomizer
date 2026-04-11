@@ -50,4 +50,5 @@
 - "Who Needs Rock?" bingo goal progress is now properly marked when trading zyme to Lenny after getting a LAM from El Rey.
 - Karkians in the MJ12 Lab (Mission 5) will now properly go hostile and try to escape regardless of how the door is opened.
 - Player clones spawned by Crowd Control can now use defensive augs, speed, cloak, medkits, biocells, and fire extinguishers that the player had when the clone was spawned.
+- Smuggler's bot starts "standing" instead of "idle", which means he will still react to threats when Smuggler knows you (and he becomes pettable).
 </details>
