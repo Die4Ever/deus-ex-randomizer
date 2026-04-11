@@ -51,4 +51,5 @@
 - Karkians in the MJ12 Lab (Mission 5) will now properly go hostile and try to escape regardless of how the door is opened.
 - Player clones spawned by Crowd Control can now use defensive augs, speed, cloak, medkits, biocells, and fire extinguishers that the player had when the clone was spawned.
 - Smuggler's bot starts "standing" instead of "idle", which means he will still react to threats when Smuggler knows you (and he becomes pettable).
+- Paul actually disappears after talking to you and going to the train in Mission 2.
 </details>

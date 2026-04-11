@@ -412,6 +412,14 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if (!RevisionMaps){
+            //Revision already fixes Paul's exit trigger
+            foreach AllActors(class'#var(prefix)OrdersTrigger', ot){
+                if (ot.ClassProximityType!=class'#var(prefix)PaulDenton') continue;
+                ot.Event = 'PaulDenton'; //Actually hit Paul with the orders
+            }
+        }
+
         break;
     //#endregion
 
