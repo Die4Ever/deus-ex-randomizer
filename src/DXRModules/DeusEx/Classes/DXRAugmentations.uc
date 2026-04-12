@@ -173,7 +173,7 @@ static function LogAugArray(/*const*/ out class<Augmentation> augs[50], int numA
 
     class'DXRando'.default.dxr.l("LogAugArray()");
     for (i = 0; i < numAugs; i++) {
-        class'DXRando'.default.dxr.l("  augs [" $ PadString(i $ "]: ", 5) $ augs[i].name);
+        class'DXRando'.default.dxr.l("  augs[" $ PadString(i $ "]: ", 5) $ augs[i].name);
     }
 }
 
