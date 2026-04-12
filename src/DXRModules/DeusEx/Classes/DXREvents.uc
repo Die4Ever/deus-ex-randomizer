@@ -1351,26 +1351,35 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
         bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-993,-60,-80),40,20);
 
-        bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(0,0,0)); //Bilge Pumps
+        bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(-2888,-1208,-448)); //Bilge Pumps
 
         //Weld Points
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,100));
         bt.Tag='wall1';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,75));
         bt.Tag='wall2';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,50));
         bt.Tag='wall3';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,25));
         bt.Tag='wall4';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,0));
         bt.Tag='wall5';
         bt.bDestroyOthers=False;
 
-        break;
+        //Crawl under helipad
+        bt = class'BingoTrigger'.static.Create(self,'CrawlUnderHelipad',vectm(-3865,660,-550),60,20);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'CrawlUnderHelipad',vectm(-4500,660,-550),60,20);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'CrawlUnderHelipad',vectm(-5960,660,-550),60,20);
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'EngineeringBridge',vectm(-254,241,-432));
+        bt.Tag = 'Bridge';
 
         break;
     case "09_NYC_GRAVEYARD":
@@ -4446,6 +4455,8 @@ defaultproperties
     bingo_options(405)=(event="PetRobot_SecurityBotSmall",desc="Pet %s Commercial Grade Security Bots",desc_singular="Pet a Commercial Grade Security Bot",max=3,missions=#bit(1,2,3,4,8,11,15))
     bingo_options(406)=(event="PeacekeepingOccupation_Convo",desc="Peace Keeping Occupation",max=1,missions=#bit(2,3,4)) //Space between Peace and Keeping for better linebreaking in the bingo viewer
     bingo_options(407)=(event="MeetClinicMaleBum3_Played",desc="Who will help the widow's son?",max=1,missions=#bit(2))
+    bingo_options(408)=(event="CrawlUnderHelipad",desc="Crawl under the super freighter helipad",max=3,missions=#bit(9),do_not_scale=true)
+    bingo_options(409)=(event="EngineeringBridge",desc="Raise the bridge in engineering",max=1,missions=#bit(9))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
