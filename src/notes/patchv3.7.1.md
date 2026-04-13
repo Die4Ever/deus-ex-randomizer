@@ -56,4 +56,5 @@
 - Paul actually disappears after talking to you and going to the train in Mission 2.
 - Conversations that play while in first person will now try to trigger other events that happen after a voice line gets interrupted.  This fixes/improves some cases where you get items, notes, or flags get set after the voice line plays (for example, the trooper that gives you LAMs in the training mission, or Nicolette giving a password note when in the study of Chateau DuClare).
 - The Crowd Control setting will now automatically be enabled if there is a session connected when starting a new game.
+- When playing with Toggle Crouch disabled, you can now crouch while jumping.  This was already possible when Toggle Crouch was enabled.
 </details>
