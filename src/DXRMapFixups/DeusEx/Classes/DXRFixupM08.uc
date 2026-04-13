@@ -476,6 +476,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BarrelFire bf;
     local #var(prefix)Keypad2 kp;
     local #var(prefix)SecurityBot3 bot;
+    local Switch1 s1;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -730,6 +731,11 @@ function PreFirstEntryMapFixes()
 
             if(#bool(vanilla)) {
                 class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
+                foreach RadiusActors(class'Switch1', s1, 0.1, vectm(-59.050560, -1450.105591, 17.855021)) {
+                    s1.moverTag = 'elevatorbutton';
+                    s1.BeginPlay();
+                    break;
+                }
             }
 
             //Verified in both vanilla and Revision
