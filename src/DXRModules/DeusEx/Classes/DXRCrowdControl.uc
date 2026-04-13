@@ -12,7 +12,7 @@ struct stupidQuestion {
 };
 
 var int numStupidQuestions;
-var        stupidQuestion    _StupidQuestions[50];
+var        stupidQuestion    _StupidQuestions[60];
 var int curStupidQuestion;
 var DataStorage datastorage;
 
@@ -391,6 +391,42 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "80";
     _StupidQuestions[numStupidQuestions].answers[2] = "83";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Which would you rather find living in your attic";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "1000 Roaches";
+    _StupidQuestions[numStupidQuestions].answers[1] = "A Person";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Would you rather eat a shotglass worth of live wasps, or just the shotglass?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Wasps";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Shotglass";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If all the planks of a ship are replaced one at a time, is it the same ship it started as?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "A runaway train is headed for five people tied onto the tracks.  If you pull a lever, you will redirect the train to hit one person instead.  Do you pull it?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If a giraffe wore a tie, would it wear it at the top of the neck or at the bottom?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Top";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Bottom";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Which tastes better?  Ambrosia or Biocells?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Ambrosia";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Biocell";
+    numStupidQuestions++;
 }
 
 
@@ -438,7 +474,7 @@ function RunTests()
     local int i,j,count;
     Super.RunTests();
 
-    test(numStupidQuestions <= arrayCount(_StupidQuestions), "numStupidQuestions within bounds");
+    test(numStupidQuestions <= arrayCount(_StupidQuestions), "numStupidQuestions within bounds ("$numStupidQuestions$"<"$arrayCount(_StupidQuestions)$")");
 
     for(i=0; i<numStupidQuestions; i++) {
         count=0;

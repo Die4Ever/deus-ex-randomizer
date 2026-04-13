@@ -73,6 +73,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(PlayerPawn) p;
     local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)SecurityBot3 bot;
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
@@ -628,6 +629,12 @@ function PreFirstEntryMapFixes()
             reinforce.SetCollisionSize(16,32);
             reinforce.SetAsHomeBase(false);
 
+        }
+
+        //The bot starts "standing" instead of "idle".
+        //This makes it so he would still attack hostiles if present (and also makes him pettable)
+        foreach AllActors(class'#var(prefix)SecurityBot3', bot, 'smugglerbots') {
+            bot.SetOrders('Standing');
         }
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
