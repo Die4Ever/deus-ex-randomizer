@@ -2372,6 +2372,18 @@ exec function PlayerRot()
     ClientMessage("Player rotation: (" $ Rotation.pitch $ ", " $ Rotation.yaw $ ", " $ Rotation.roll $ ")");
 }
 
+// log the Location of the Actor looked at, so you don't have to type it manually
+exec function LookedLoc()
+{
+    local Actor act;
+
+    act = class'DXRInfo'.static.ActorLookedAt(self);
+    if (act == None)
+        ClientMessage("No Actor looked at.");
+    else
+        ClientMessage("Looking at " $ act $ " at Location (" $ act.Location.x $ ", " $ act.Location.y $ ", " $ act.Location.z $ ")");
+}
+
 exec function LootActions()
 {
     local string lootActions, msg;
