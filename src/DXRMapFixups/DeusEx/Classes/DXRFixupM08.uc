@@ -732,7 +732,7 @@ function PreFirstEntryMapFixes()
             if (#bool(vanilla)) {
                 class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
             }
-            if (#defined(vanilla)) {
+            if (VanillaMaps) {
                 foreach RadiusActors(class'Switch1', s1, 0.1, vectm(-59.050560, -1450.105591, 17.855021)) {
                     s1.moverTag = 'elevatorbutton';
                     s1.BeginPlay();
