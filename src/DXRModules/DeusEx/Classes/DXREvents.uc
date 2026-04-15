@@ -2215,28 +2215,16 @@ simulated function AnyEntry()
     Super.AnyEntry();
 
     switch(dxr.localURL) {
-    case "10_PARIS_METRO":
-        // SoldRenaultZyme bingo goal issue #705
-        conv = GetConversation('RenaultPays');
-        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
-        ce = conv.GetEventFromLabel("SellRepeat");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
-        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
-        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
-        ce = conv.GetEventFromLabel("MoreMoney3");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
-        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
-        // remove the event with label Sell which checks for the RenaultPaid flag
-        RemoveConvEventByLabel(conv, "Sell");
 
-        // remove the flag checks for entering the bakery, since you can get zyme from other places
-        ce = conv.GetEventFromLabel("ActualChoice");
-        for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
-            DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
-        }
+    case "05_NYC_UNATCOISLAND":
+        //Add a trigger event to hit the SavedMiguel bingo trigger
+        conv = GetConversation('MiguelHack');
+        ce = conv.GetEventFromLabel("Hop");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;
+        ConEventTrigger(ce).triggerTag = 'SavedMiguel';
         break;
+
     case "06_HONGKONG_TONGBASE":
         //Add a SetFlag to "What are you doing here?" that we can watch
         conv = GetConversation('M06TongBarks2');
@@ -2265,14 +2253,6 @@ simulated function AnyEntry()
         ces.label = "";
 
         break;
-    case "05_NYC_UNATCOISLAND":
-        //Add a trigger event to hit the SavedMiguel bingo trigger
-        conv = GetConversation('MiguelHack');
-        ce = conv.GetEventFromLabel("Hop");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;
-        ConEventTrigger(ce).triggerTag = 'SavedMiguel';
-        break;
 
     case "08_NYC_SMUG":
         //Add a flag for explicitly not warning smuggler (for bingo failure, maybe to toot for being a dick?)
@@ -2285,6 +2265,30 @@ simulated function AnyEntry()
         cesf.flagRef.value=True;
         cesf.flagRef.expiration=9;
         break;
+
+    case "10_PARIS_METRO":
+        // SoldRenaultZyme bingo goal issue #705
+        conv = GetConversation('RenaultPays');
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
+        ce = conv.GetEventFromLabel("SellRepeat");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
+        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
+        ce = conv.GetEventFromLabel("MoreMoney3");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
+        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        // remove the event with label Sell which checks for the RenaultPaid flag
+        RemoveConvEventByLabel(conv, "Sell");
+
+        // remove the flag checks for entering the bakery, since you can get zyme from other places
+        ce = conv.GetEventFromLabel("ActualChoice");
+        for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
+            DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
+        }
+        break;
+
     }
 }
 
