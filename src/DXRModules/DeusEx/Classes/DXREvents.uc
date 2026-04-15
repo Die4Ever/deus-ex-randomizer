@@ -505,6 +505,9 @@ function SetWatchFlags() {
         WatchFlag('M02BillyDone');
         WatchFlag('AmbrosiaTagged');
         WatchFlag('MS_DL_Played', true);// this is the datalink played after dealing with the hostage situation, from Mission02.uc
+        WatchFlag('DXREvents_M02BumSong1');
+        WatchFlag('DXREvents_M02BumSong2');
+        WatchFlag('DXREvents_M02BumSong3');
 
         foreach AllActors(class'#var(prefix)ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
@@ -2216,6 +2219,36 @@ simulated function AnyEntry()
 
     switch(dxr.localURL) {
 
+    case "02_NYC_BATTERYPARK":
+        //Add flags for each part of the bums song
+        conv = GetConversation('ParkBum1Barks');
+
+        ce = conv.GetEventFromLabel("A1");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='DXREvents_M02BumSong1';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=3;
+
+        ce = conv.GetEventFromLabel("A2");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='DXREvents_M02BumSong2';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=3;
+
+        ce = conv.GetEventFromLabel("A3");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='DXREvents_M02BumSong3';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=3;
+
+        break;
+
     case "05_NYC_UNATCOISLAND":
         //Add a trigger event to hit the SavedMiguel bingo trigger
         conv = GetConversation('MiguelHack');
@@ -3409,6 +3442,10 @@ function string RemapBingoEvent(string eventname)
         case "M03MeetGunther_Played":
         case "GuntherShowdown_Played":
             return "PeacekeepingOccupation_Convo";
+        case "DXREvents_M02BumSong1":
+        case "DXREvents_M02BumSong2":
+        case "DXREvents_M02BumSong3":
+            return "M02BumSong_Convo";
 
         default:
             return eventname;
@@ -3605,6 +3642,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "DXRNPCs1_Takedown":
             failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
+            return num_failed;
+        case "ParkBum1_Takedown":
+            failed[num_failed++] = "M02BumSong_Convo";
             return num_failed;
     }
 
@@ -4479,6 +4519,7 @@ defaultproperties
     bingo_options(407)=(event="MeetClinicMaleBum3_Played",desc="Who will help the widow's son?",max=1,missions=#bit(2))
     bingo_options(408)=(event="CrawlUnderHelipad",desc="Crawl under the super freighter helipad",max=3,missions=#bit(9),do_not_scale=true)
     bingo_options(409)=(event="EngineeringBridge",desc="Raise the bridge in engineering",max=1,missions=#bit(9))
+    bingo_options(410)=(event="M02BumSong_Convo",desc="Our Country 'Tis of Thee",max=3,missions=#bit(2),do_not_scale=true)
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion

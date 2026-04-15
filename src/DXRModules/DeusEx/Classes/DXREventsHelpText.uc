@@ -550,6 +550,8 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             return "Check in with Gunther Hermann after completing a mission objective.  As is standard protocol, he has been assigned the peacekeeping occupation of the area.";
         case "MeetClinicMaleBum3_Played":
             return "Meet the Freemason looking for help in the Free Clinic.";
+        case "M02BumSong_Convo":
+            return "Listen to the bum in Battery Park sing his whole rendition of My Country 'Tis of Thee.";
     }
 
     //Return nothing so the generic function can handle it

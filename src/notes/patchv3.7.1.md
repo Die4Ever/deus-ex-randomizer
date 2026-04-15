@@ -38,6 +38,7 @@
   - "Pet x Commercial Grade Security Bots": Pet enough commercial grade security bots (Missions 1, 2, 3, 4, 8, 11, 15).
   - "Crawl under the super freighter helipad": Crawl through the tunnel connecting the electrical room to the helipad (Mission 9).
   - "Raise the bridge in engineering": Use the keypad next to the bridge in the superfreighter engine room to raise it.
+  - "Our Country 'Tis of Thee": Listen to the bum in Battery Park sing his whole rendition of My Country 'Tis of Thee (Mission 2)
 - Mission starts inside the Ocean Lab or at Silo (Mission 14) will now start with the sub bay doors open in the Sub Base.  Silo starts will also start with the sub bay doors open in the Ocean Lab itself.
 - Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
 - Synthetic Heart aug improvements and fixes:
