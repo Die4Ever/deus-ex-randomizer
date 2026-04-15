@@ -1408,6 +1408,9 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CATACOMBS":
         WatchFlag('IcarusCalls_Played');
+
+        //Don't mark AimeeLeMerchantLived here, since this is where you could kill them
+
         foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
             if(jf.BindName == "aimee")
                 jf.bImportant = true;
@@ -1426,6 +1429,7 @@ function SetWatchFlags() {
 
         break;
     case "10_PARIS_CATACOMBS_METRO":  //Revision-only map
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
         foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(2134,-1758,-580)){
             AddWatchedActor(bg,"InCaseOfEmergency");
             break;
@@ -1443,7 +1447,8 @@ function SetWatchFlags() {
                 wib.bImportant = true;
         }
         WatchFlag('SilhouetteHostagesAllRescued');
-        MarkBingo("AimeeLeMerchantLived", true);
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         //Regular forwards direction catacombs timing
         if (RevisionMaps){
@@ -1483,6 +1488,8 @@ function SetWatchFlags() {
         WatchFlag('MeetRenault_Played');
         WatchFlag('JoshuaInterrupted_Played');
         RewatchFlag('KnowsGuntherKillphrase');
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         foreach AllActors(class'#var(prefix)Mutt', starr) {
             starr.bImportant = true;// you're important to me
@@ -1533,6 +1540,9 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         if (RevisionMaps){
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2016,785,144),40,20);  //Actual Front Door
             bt.bDestroyOthers = false;
@@ -1570,6 +1580,8 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_beth_room');
         WatchFlag('WatchKeys_nico_room');
         WatchFlag('WatchKeys_duclare_chateau');
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         bt = class'BingoTrigger'.static.Create(self,'nico_fireplace',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'dumbwaiter',vectm(0,0,0));
@@ -1616,6 +1628,8 @@ function SetWatchFlags() {
         WatchFlag('M11WaltonHolo_Played');
         WatchFlag('templar_upload');
 
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         if (RevisionMaps){
             class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3811,-3200,-64),20,15,class'#var(prefix)ChefCarcass');
@@ -1650,6 +1664,8 @@ function SetWatchFlags() {
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
 
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         foreach AllActors(class'WaterZone',water){
             water.ZonePlayerEvent = 'EverettAquarium';
             break;
@@ -1676,6 +1692,8 @@ function SetWatchFlags() {
 
         break;
     case "11_PARIS_UNDERGROUND":
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         foreach AllActors(class'ZoneInfo',zone){
             if (zone.bPainZone && zone.DamageType=='Shocked'){
                 //zone.ZonePlayerEvent = 'TrainTracks';
