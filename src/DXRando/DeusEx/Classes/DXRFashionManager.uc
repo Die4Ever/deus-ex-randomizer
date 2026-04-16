@@ -791,6 +791,10 @@ simulated function ApplyCarcassMeshes(Actor a)
     if (c==None) return;
 
     GetCarcassMeshes(c.Mesh,c.Mesh,c.Mesh2,c.Mesh3);
+
+    if (c.Region.Zone.bWaterZone){
+        c.Mesh = c.Mesh3;
+    }
 }
 
 simulated function ApplyCarcassDefaults(class<#var(DeusExPrefix)Carcass> carcClass, actor a)

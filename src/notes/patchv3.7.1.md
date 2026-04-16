@@ -50,6 +50,7 @@
 - Zombies raised from corpses of the player (or corpses of Crowd Control player clones) now get the proper face skin and hit sounds.
 - Troops that are fleeing during the apartment raid in Mission 4 are now considered dead for the purposes of stopping the raid (So you won't need to hunt down that one troop hiding in a corner to have it counted as being completed).
 - Paul's fashion should now be immaculate after uncloaking and in death.
+- Paul and JC's corpses will now correctly use the "floating" mesh if clothes are changed while the body is in the water
 - "Who Needs Rock?" bingo goal progress is now properly marked when trading zyme to Lenny after getting a LAM from El Rey.
 - Karkians in the MJ12 Lab (Mission 5) will now properly go hostile and try to escape regardless of how the door is opened.
 - Player clones spawned by Crowd Control can now use defensive augs, speed, cloak, medkits, biocells, and fire extinguishers that the player had when the clone was spawned.
