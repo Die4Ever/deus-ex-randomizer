@@ -350,10 +350,12 @@ simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
     local int num;
 
     for(i=p.Inventory; i!=None; i=i.Inventory) {
+        if(i.invPosX==-1 && i.invPosY==-1) continue; //Skip items that don't actually live in the inventory grid
         num=1;
         for(i2=i.Inventory; i2!=None; i2=next) {
             next = i2.Inventory;
             if(i2.class.name != i.class.name) continue;
+            if(i2.invPosX==-1 && i2.invPosY==-1) continue; //Skip items that don't actually live in the inventory grid
             num++;
             if(num > maxcopies) {
                 i2.Destroy();
