@@ -51,6 +51,11 @@ simulated function int CalcChargeDrain(DeusExPlayer Player)
     local float skillValue;
     local float drain;
 
+    if ((Player.IsInState('Paralyzed')) || (Player.IsInState('Interpolating'))){
+        //Don't tick down charged pickups during cutscenes
+        return 0;
+    }
+
     drain = 400.0;// multiplied by 100 to fix rounding issues with ints
     skillValue = 1.0;
 
@@ -90,6 +95,8 @@ function HandleTickSound(DeusExPlayer Player)
 
     endDrain = CalcChargeDrain(Player) * 30;
     defaultCharge = default.Charge * 100;
+
+    if (endDrain==0) return; //Don't tick if we aren't draining
 
     if(ticksRemaining-- <= 0){
 
