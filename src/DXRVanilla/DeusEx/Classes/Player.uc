@@ -1900,6 +1900,8 @@ exec function OpenControllerAugWindow()
     local DeusExRootWindow Root;
     local OATMenuAugsSelector TarWindow;
 
+    if (RestrictInput()) return;
+
     Root = DeusExRootWindow(RootWindow);
     if (Root != None)
     {

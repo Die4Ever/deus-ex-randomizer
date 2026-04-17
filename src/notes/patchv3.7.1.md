@@ -60,4 +60,5 @@
 - The Crowd Control setting will now automatically be enabled if there is a session connected when starting a new game.
 - When playing with Toggle Crouch disabled, you can now crouch while jumping.  This was already possible when Toggle Crouch was enabled.
 - "Let Aimee and Le Merchant Live" bingo goal now gets properly marked as completed when traveling to another map other than Denfert-Rochereau.  This fixes the goal with Entrance Randomization, where it would previously only be marked completed when you get to the Catacombs tunnels.
+- Open Aug Tree can no longer be opened on the title screen.
 </details>
