@@ -223,6 +223,14 @@ function PreFirstEntryMapFixes()
 
         PreventShufflingAmbrosia();
 
+        if (dxr.flags.moresettings.entrance_rando > 0) {
+            foreach AllActors(class'#var(prefix)NanoKey', k) {
+                if (k.Owner != None && k.keyID == 'Sewerdoor') {
+                    ThrowItem(k, 0.1);
+                }
+            }
+        }
+
         class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
         AddActor(class'PoolTableResetButton',vect(1060.3,468,227),rot(-1600,32768,0));
         AddActor(class'PoolTableResetButton',vect(1060.3,719,227),rot(-1600,32768,0));
@@ -266,6 +274,14 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
             unatco.bHateCarcass = false;
             unatco.bHateDistress = false;
+        }
+
+        if (dxr.flags.moresettings.entrance_rando > 0) {
+            foreach AllActors(class'#var(prefix)NanoKey', k) {
+                if (k.Owner != None && k.keyID == 'eastgate') {
+                    ThrowItem(k, 0.1);
+                }
+            }
         }
 
         // fix collision with the static crates https://github.com/Die4Ever/deus-ex-randomizer/issues/665
