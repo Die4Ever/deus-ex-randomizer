@@ -818,7 +818,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	local Inventory previousItemInHand;
     local DeusExPickup existingStack; //DXRando added
 	local Vector X, Y, Z, dropVect;
-	local float size, mult;
+	local float mult;
 	local bool bDropped;
 	local bool bRemovedFromSlots;
 	local int  itemPosX, itemPosY;
@@ -1481,7 +1481,6 @@ exec function slowmo(float s)
 exec function animtrack()
 {// a single command to start work on DXRAnimTracker
     local DXRAnimTracker a;
-    local int i;
 
     slowmo(0.1);
     SetPause(true);
@@ -1770,7 +1769,6 @@ function Bool IsFiring()
 function bool IsThemeAdded(Class<ColorTheme> themeClass)
 {
     local ColorTheme curTheme;
-    local ColorTheme prevTheme;
     local Bool bDeleted;
 
     bDeleted    = False;
@@ -1798,7 +1796,6 @@ function AddColorTheme(Class<ColorTheme> themeClass)
 
 function CreateColorThemeManager()
 {
-    local ColorTheme theme;
     Super.CreateColorThemeManager();
 
     AddColorTheme(Class'ColorThemeHUD_HotDogStand');
@@ -2427,7 +2424,6 @@ function bool ConsumableWouldHelp(Inventory item) {
 function InvokeUIScreen(Class<DeusExBaseWindow> windowClass)
 {
     local DeusExRootWindow root;
-    local Window w;
     root = DeusExRootWindow(rootWindow);
     if (root != None)
     {

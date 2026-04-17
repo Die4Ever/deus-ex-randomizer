@@ -33,7 +33,7 @@ event Destroyed()
 function ThrowInventory(bool gibbed)
 {
     local Inventory item, nextItem;
-    local bool drop, melee;
+    local bool drop;
 
     item = Inventory;
     while( item != None ) {
@@ -59,7 +59,6 @@ function ThrowInventory(bool gibbed)
 function PlayDying(name damageType, vector hitLoc)
 {
     local DeusExPlayer p;
-    local Inventory item, nextItem;
     local bool gibbed;
     local Vector X, Y, Z;
     local float dotp;
@@ -194,7 +193,6 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 {
     local name baseDamageType;
     local DeusExPlayer p;
-    local Human h;
     local bool wasOnFire;
 
     if (damageType == 'FlareFlamed') {
@@ -690,7 +688,7 @@ function SupportActor(Actor standingActor)
 
 function PlayFootStep()
 {
-    local float shakeRadius, shakeMagnitude, shakeAmount, hdDist;
+    local float shakeRadius, shakeMagnitude, shakeAmount;
     local vector shakeStrength;
     local HangingDecoration hd;
     local CCResidentEvilCam cam;
@@ -772,7 +770,7 @@ function MoveAwayFrom(Actor other)
 {
     // DXRando: move away when bumped, similar to state Following
     local Rotator rot;
-    local float extra, dist;
+    local float extra;
     local bool bSuccess;
 
     if(destLoc != vect(0,0,0) && VSize(Velocity)>0) return; // already moving somewhere

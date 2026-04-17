@@ -218,7 +218,7 @@ function AddNoRoomToJordanSheaConvo(){
     //When you buy from Jordan in this mission, they got lazy and didn't have a failure path
     //for when you don't have room to accept the candy or booze you buy.  Luckily, there's a
     //line that's good enough that we can yoink from the conversation with Smuggler.
-    local ConEventSpeech ces, origNoRoom, newNoRoom, normalSpeech;
+    local ConEventSpeech origNoRoom, newNoRoom, normalSpeech;
     local Conversation c;
     local ConEvent ce;
     local ConEventTransferObject ceto;
@@ -290,7 +290,6 @@ function RearrangeJockExitDialog()
 {
     local Conversation c;
     local ConEvent ce,prev;
-    local ConEventSpeech ces;
     local ConEventAddSkillPoints ceasp;
     local ConEventAddGoal ceag,goalComplete;
 

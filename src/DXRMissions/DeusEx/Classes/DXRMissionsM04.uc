@@ -3,7 +3,7 @@ class DXRMissionsM04 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal;
 
     // GOAL_TYPE1 for the dish computer, 2 for transmitter, 3 for Anna
     AddGoal("04_NYC_NSFHQ", "Dish Alignment Computer", GOAL_TYPE1, 'ComputerPersonal3', PHYS_Falling);
@@ -30,7 +30,7 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal;
 
     // GOAL_TYPE1 for the dish computer, 2 for transmitter, 3 for Anna
     AddGoal("04_NYC_NSFHQ", "Dish Alignment Computer", GOAL_TYPE1, 'ComputerPersonal3', PHYS_Falling);

@@ -176,7 +176,7 @@ static function string ConstructTimeStr(float timeSecs)
 
 static function int _SystemTime(LevelInfo Level)
 {
-    local int time, m;
+    local int time;
     time = Level.Second + (Level.Minute*60) + (Level.Hour*3600) + (Level.Day*86400);
 
     switch(Level.Month) {

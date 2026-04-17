@@ -69,7 +69,6 @@ function FixJockExplosion()
 function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 {
     local DeusExMover d;
-    local ComputerSecurity c;
     local Keypad k;
     local #var(prefix)Button1 b;
     local Switch2 s2;

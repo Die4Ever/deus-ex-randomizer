@@ -51,7 +51,6 @@ function bool CheckHighlighted(Actor frobTarget)
 
 function CheckSettings()
 {
-
     if( player == None || player.FlagBase == None ) return;
 
     dxr = class'DXRando'.default.dxr;
@@ -194,10 +193,9 @@ function DrawWindowBase(GC gc, actor frobTarget)
 {
     local float     infoX, infoY, infoW, infoH;
     local string    strInfo;
-    local float     boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
+    local float     boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
     local float     corner;
     local int       i, offset, numLines;
-    local Color     col;
 
     // move the box in and out based on time
     offset = (24.0 * (frobTarget.Level.TimeSeconds % 0.3));

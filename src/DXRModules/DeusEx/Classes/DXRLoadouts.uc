@@ -886,7 +886,7 @@ function string GetName(int i)
 //#region AnyEntry
 function AnyEntry()
 {
-    local ConEventTransferObject c;
+    // local ConEventTransferObject c;
 
     Super.AnyEntry();
 
@@ -1015,8 +1015,6 @@ function bool is_starting_equipment(Inventory eqpt, optional bool allow_subclass
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    local bool bFixGlitches;
-
     if(IsMeleeWeapon(item) && Carcass(item.Owner) != None && player.FindInventoryType(item.class) != None) {
         return true;
     } else if ( _is_banned( item_set, item.class) ) {
@@ -1320,7 +1318,7 @@ function SpawnItems()
     local Actor a;
     local class<Actor> aclass;
     local DXRReduceItems reducer;
-    local int i, j, chance, max;
+    local int i, j, chance;
 
     if(dxr.dxInfo.MissionNumber < 0) return;
 

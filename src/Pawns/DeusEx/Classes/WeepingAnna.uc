@@ -139,7 +139,7 @@ function Destroyed()
 
 function CheckWakeup(float deltaSeconds)
 {
-    local bool bSeen, inConv;
+    local bool inConv;
     local #var(PlayerPawn) seer;
     local name StateName;
 

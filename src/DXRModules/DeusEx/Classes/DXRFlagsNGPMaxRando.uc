@@ -481,12 +481,12 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 
 function ExtendedTests()
 {
-    local int val, i, j, oldSeed, prev, iterations;
+    local int val, i, oldSeed, prev, iterations;
     local float fval, old_scaling;
     local string s;
     local class<Weapon> weaps[24];
     local int weapSelectedCount[24];
-    local int selectedIdx, selectedHash, thisIdx, thisHash, baseSeed, numWeaps;
+    local int selectedIdx, selectedHash, thisIdx, thisHash, baseSeed;
 
     Super.ExtendedTests();
 

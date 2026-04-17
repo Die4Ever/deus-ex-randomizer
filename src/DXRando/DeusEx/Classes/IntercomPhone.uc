@@ -19,7 +19,6 @@ function Timer()
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-    local float rnd;
     local Pawn p;
 
     Super(#var(prefix)ElectronicDevices).Frob(Frobber, frobWith);

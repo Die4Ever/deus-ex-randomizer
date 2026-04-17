@@ -2,8 +2,6 @@ class DXRComputerScreenATM injects #var(prefix)ComputerScreenATM;
 
 function CloseScreen(String action)
 {
-    local int compIndex;
-
     if (action=="LOGIN")
     {
         //Mark the account as known

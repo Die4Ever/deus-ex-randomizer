@@ -322,7 +322,6 @@ function bool ValidateConnections()
     local int numMaps;
     local int numPasses;
     local int i,j,k;
-    local bool foundMap;
 
     local string canvisit[15];
     local int visitable, oldVisitable;
@@ -1248,7 +1247,7 @@ function ExtendedTests()
 
 function BasicTests()
 {
-    local int i;
+    // local int i;
     local string old_dead_end;
 
     numXfers = 0;
@@ -1415,8 +1414,6 @@ function TestAllMissions(int newseed)
 
 function TestDependencies()
 {
-    local int i;
-
     numXfers = 0;
     numFixedConns = 0;
 

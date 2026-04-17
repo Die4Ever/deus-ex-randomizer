@@ -262,7 +262,6 @@ function bool ProcessDataVaultSelection(EInputKey key)
 
 function bool IsKeyAssigned(EInputKey key, String function)
 {
-    local int pos;
     local string InputKeyName;
     local string AllAlias,Alias;
     local DeusExPlayer player;

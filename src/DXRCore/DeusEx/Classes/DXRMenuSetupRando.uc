@@ -21,7 +21,7 @@ event InitWindow()
 function BindControls(optional string action)
 {
     local DXRFlags f;
-    local string doors_option, s;
+    local string s;
     local int iDifficulty, i;
     local bool bMatched;
     f = GetFlags();

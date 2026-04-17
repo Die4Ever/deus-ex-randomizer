@@ -107,10 +107,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MJ12Commando commando;
     local WaterCooler wc;
     local Rotator rot;
-    local Male1 male;
     local GordonQuick gordon;
-    local DXRReinforcementPoint reinforce;
-    local Dispatcher disp;
+    // local DXRReinforcementPoint reinforce;
+    // local Dispatcher disp;
     local #var(prefix)Trigger t;
     local #var(prefix)ControlPanel panel;
     local #var(prefix)HKHangingLantern lantern;
@@ -936,7 +935,6 @@ function PreFirstEntryMapFixes()
         oot.Tag='Self_Destruct';
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
-
             //The lockdown door should only close once the UC has been destroyed,
             //so that there's always an exit available.
             foreach AllActors(class'#var(DeusExPrefix)Mover',m,'VirusUploaded'){
@@ -1121,7 +1119,6 @@ function FixMaggieMoveSpeed()
 function AnyEntryMapFixes()
 {
     local Actor a;
-    local ScriptedPawn p;
     local #var(DeusExPrefix)Mover m;
     local bool boolFlag;
     local bool recruitedFlag;

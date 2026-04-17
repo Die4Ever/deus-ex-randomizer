@@ -244,9 +244,7 @@ function bool BindPresets()
 function bool PresetButton(string label, optional string helpText)
 {
     local bool ret;
-    local int i;
     local DXRFlags f;
-    local string sseed, name, help;
     local bool mirrored_maps_files_found;
 
     ret = CollapsibleButtonOnClick(false, label, helpText);
@@ -440,7 +438,7 @@ function string GetHelpText(DXRMenuUIHelpButtonWindow helpButton)
 function string SetEnumValue(int e, string text)
 {
     local int i, temp;
-    local string old, s;
+    local string old;
     local DXRFlags f;
     local bool oldZeroRando;
 

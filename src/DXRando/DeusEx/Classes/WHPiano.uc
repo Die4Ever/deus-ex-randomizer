@@ -99,7 +99,6 @@ simulated function Tick(float deltaTime)
     if (bUsing){
         LastRenderTime = Level.TimeSeconds; //Hack to keep it out of stasis while it's playing (bAlwaysTick doesn't help)
         if (PlayDoneTime<=Level.TimeSeconds) {
-
             if (!PianoIsBroken() && SongPlayed[currentSong]==0){
                 SongPlayed[currentSong]++;
                 class'DXREvents'.static.MarkBingo("PianoSong"$currentSong$"Played");
@@ -147,7 +146,6 @@ function bool PianoIsBroken()
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-    local int rnd;
     local float duration;
     local Sound SelectedSound;
 

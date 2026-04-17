@@ -78,7 +78,6 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous, bo
 }
 
 function Timer() {
-
     ticker++;
     if (IsConnected()) {
         if (effectsDisabled==False){
@@ -305,7 +304,6 @@ function int RandomOfflineEffects() {
 }
 
 function bool isCrowdControl(string msg) {
-    local string tmp;
     //Check to see if it looks like it has the right fields in it
 
     //id field
@@ -393,7 +391,6 @@ function sendReply(int id, int status) {
 
 
 function handleMessage(string msg) {
-
     local int id,type,duration;
     local string code,viewer;
     local string param[5];

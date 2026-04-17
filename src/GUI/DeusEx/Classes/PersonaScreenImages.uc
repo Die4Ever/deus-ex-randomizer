@@ -35,8 +35,6 @@ event DestroyWindow()
 
 function CreateButtons()
 {
-    local PersonaButtonBarWindow winActionButtons;
-
     Super.CreateButtons();
 
     winGoalHintButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));

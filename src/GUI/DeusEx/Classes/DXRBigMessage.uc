@@ -16,7 +16,6 @@ const kpColumn1X = 0.20;
 const kpColumn2X = 0.60;
 
 static function DXRBigMessage GetCurrentBigMessage(#var(PlayerPawn) player) {
-    local DXRBigMessage m;
     local DeusExRootWindow root;
 
     root = DeusExRootWindow(player.rootWindow);
@@ -176,9 +175,7 @@ function string FindKeyBinding(string binding)
 function string GetKeyAssigned(EInputKey key)
 {
     // based on DeusExRootWindow.IsKeyAssigned
-    local int pos;
     local string InputKeyName;
-    local string Alias;
 
     InputKeyName = mid(string(GetEnum(enum'EInputKey',key)),3);
 

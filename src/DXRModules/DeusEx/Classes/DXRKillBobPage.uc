@@ -17,10 +17,9 @@ function CheckConfig()
 
 function FirstEntry()
 {
-    local MapExit exit;
     local NavigationPoint p;
     //local NYPoliceBoat b;
-    local int i ,slot, num;
+    local int slot, num;
     local string map;
 
     if( dxr.flags.gamemode != 100 ) return;

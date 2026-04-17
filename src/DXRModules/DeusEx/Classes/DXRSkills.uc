@@ -11,8 +11,6 @@ replication
 
 function CheckConfig()
 {
-    local int i;
-
     min_skill_weaken = 0.3;
     max_skill_str = 1.0;
     skill_cost_curve = 2;
@@ -277,7 +275,6 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
 simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 {
     local float percent;
-    local int m;
     local float f, perk;
     local bool banAllowed;
     local DXRLoadouts loadout;

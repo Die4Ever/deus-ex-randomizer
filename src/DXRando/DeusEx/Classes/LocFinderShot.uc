@@ -9,7 +9,6 @@ auto simulated state Flying
     {
         local Vector TraceHitLocation, TraceHitNormal, EndTrace, PrevVelocity;
         local Actor hit;
-        local DeusExPlayer p;
 
         PrevVelocity = Velocity;
 

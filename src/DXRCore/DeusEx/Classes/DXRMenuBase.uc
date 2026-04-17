@@ -63,7 +63,6 @@ const HELP_BTN_PAD = 5;
 event Init(DXRando d)
 {
     local vector coords;
-    local int i;
     dxr = d;
     flags = dxr.flags;
     BR = Chr(10);
@@ -433,7 +432,6 @@ function BindControls(optional string action)
 
 function InitHelp()
 {
-    local MenuUILabelWindow winLabel;
     local vector coords;
 
     if(!bUsesHelpWindow) return;
@@ -721,7 +719,6 @@ function DXRMenuUIHelpButtonWindow CreateEnumHelpBtn(MenuUIActionButtonWindow ma
 
 function EnumBtn CreateEnum(int row, string label, string helptext, optional EnumBtn e)
 {
-    local int i;
     if(e.values[0] == "") {
         e.values[0] = "Off";
         e.values[1] = "On";
@@ -783,7 +780,6 @@ function bool CheckClickEnum( Window buttonPressed, optional bool rightClick )
 
 function bool CheckClickHelpBtn( Window buttonPressed )
 {
-    local int i;
     local DXRMenuUIHelpButtonWindow helpButton;
 
     helpButton = DXRMenuUIHelpButtonWindow(buttonPressed);

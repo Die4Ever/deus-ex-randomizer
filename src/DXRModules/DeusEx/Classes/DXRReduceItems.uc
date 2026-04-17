@@ -122,7 +122,7 @@ function PostFirstEntry()
 
 function OneItemMode()
 {
-    local Inventory item, nextItem, items[1024];
+    local Inventory item, items[1024];
     local #var(prefix)Containers d;
     local class<Actor> contents[1024];
     local class<Inventory> newclass;

@@ -92,7 +92,6 @@ function HandleTickSound(DeusExPlayer Player)
     defaultCharge = default.Charge * 100;
 
     if(ticksRemaining-- <= 0){
-
         PlayTickSound(Player);
 
         if (Charge > (defaultCharge/2)){

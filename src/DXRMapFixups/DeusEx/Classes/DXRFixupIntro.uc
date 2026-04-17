@@ -2,7 +2,6 @@ class DXRFixupIntro extends DXRFixup;
 
 function PreFirstEntryMapFixes()
 {
-    local Actor a;
     local #var(DeusExPrefix)Mover dxm;
 
     switch(dxr.localURL) {

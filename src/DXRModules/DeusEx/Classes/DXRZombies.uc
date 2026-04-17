@@ -189,7 +189,7 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local class<Actor> livingClass;
     local vector respawnLoc, desiredRespawnLoc, hitNormal;
     local Actor hitActor;
-    local ScriptedPawn sp,otherSP;
+    local ScriptedPawn sp;
     local class<DeusExFragment> fragClass;
     local int i, numFrags;
     local Inventory item, nextItem;
@@ -197,7 +197,6 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     #ifndef vmd
     local DXRFashionManager fashion;
     #endif
-    local bool removeItem;
     local string s;
 
     if(carc==None || carc.bDeleteMe) return False;
