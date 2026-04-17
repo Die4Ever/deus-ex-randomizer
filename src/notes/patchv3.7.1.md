@@ -62,4 +62,5 @@
 - "Let Aimee and Le Merchant Live" bingo goal now gets properly marked as completed when traveling to another map other than Denfert-Rochereau.  This fixes the goal with Entrance Randomization, where it would previously only be marked completed when you get to the Catacombs tunnels.
 - Open Aug Tree can no longer be opened on the title screen.
 - "AL" will now appear over the oxygen meter when swimming underwater while Aqualung is active (Manually or automatically).
+- The electrical panel in the basement of the NSF Warehouse (Mission 2) near the sewer entrance will properly disable the nearby laser triggers, as well as disable the rest of the basement lasers (Without disabling unrelated lasers elsewhere in the map).
 </details>
