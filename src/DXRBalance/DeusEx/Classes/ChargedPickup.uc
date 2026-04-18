@@ -114,6 +114,23 @@ function HandleTickSound(DeusExPlayer Player)
     }
 }
 
+//Don't play the ambient sound during cutscenes
+//(particularly since the pickup will last forever during them)
+function HandleAmbientSound(DeusExPlayer Player)
+{
+    local bool inCutscene;
+
+    if (LoopSound==None) return;
+
+    inCutscene = ((Player.IsInState('Paralyzed')) || (Player.IsInState('Interpolating')));
+
+    if (AmbientSound==None && !inCutscene){
+        AmbientSound = LoopSound;
+    } else if (AmbientSound!=None && inCutscene){
+        AmbientSound = None;
+    }
+}
+
 function ChargedPickupUpdate(DeusExPlayer Player)
 {
     _ChargedPickupUpdate(Player);
@@ -122,6 +139,9 @@ function ChargedPickupUpdate(DeusExPlayer Player)
     if (DXRandoCrowdControlTimer(Self)==None){
         HandleTickSound(Player);
     }
+
+    //Turn the ambient sound off while in cutscenes
+    HandleAmbientSound(Player);
 }
 
 function BeginPlay()
