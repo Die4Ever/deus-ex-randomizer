@@ -65,4 +65,5 @@
 - The electrical panel in the basement of the NSF Warehouse (Mission 2) near the sewer entrance will properly disable the nearby laser triggers, as well as disable the rest of the basement lasers (Without disabling unrelated lasers elsewhere in the map).
 - Items that don't exist in the inventory grid will not be counted for the purposes of removing items beyond the "Max Item Carryover" limit.  For example, with a "Max Item Carryover" of 5, you can wear 1 ballistic armor through the end of a loop while holding 5 unused ballistic armors in your inventory and not lose any of them due to the limit.
 - Charged Pickups (things like ballistic armor, thermoptic camo, tech goggles) no longer count down their timers while in cutscenes (Like game endings or helicopter rides).
+- Items like fire extinguishers or armors that are in use when finishing the game will be removed when starting New Game Plus.
 </details>
