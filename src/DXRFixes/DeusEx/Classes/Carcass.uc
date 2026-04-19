@@ -273,14 +273,21 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     action = class'DXRLoadouts'.static.GetLootAction(item.class);
 
-    if (action == 2 && Human(player).ConsumableWouldHelp(item) && DeusExPickup(item) != None) { // consume
+    if (action == 2 && Human(player).ConsumableWouldHelp(item) && DeusExPickup(item) != None) { // consume if helpful
         DeleteInventory(item);
         DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
         Human(player).InstantlyUseItem(DeusExPickup(item));
         return true;
     }
 
-    if (action > 0) { // drop is 1, also drop autoconsume items that wouldn't help
+    if (
+        action > 0 // drop is 1
+        && ( // don't drop stackable items that are already in the inventory
+            DeusExPickup(item) == None
+            || DeusExPickup(item).bCanHaveMultipleCopies == false
+            || player.FindInventoryType(item.class) == None
+        )
+    ) {
         weap = Weapon(item);
         if (weap != None && weap.AmmoName != class'AmmoNone' && !fakeAmmo) {
             playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
