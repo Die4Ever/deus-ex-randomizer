@@ -67,4 +67,5 @@
 - Charged Pickups (things like ballistic armor, thermoptic camo, tech goggles) no longer count down their timers while in cutscenes (Like game endings or helicopter rides).
 - Items like fire extinguishers or armors that are in use when finishing the game will be removed when starting New Game Plus.
 - Items should no longer be lost sometimes when dropped and picked up again quickly (GEP Gun juggling, for example).
+- Adjustments to the alliances of everybody in the Versalife offices.  Security guards should now spawn police-related clones, and the commandos that show up later will spawn MJ12-related clones.  Workers with weapons will spawn more generic clones.
 </details>
