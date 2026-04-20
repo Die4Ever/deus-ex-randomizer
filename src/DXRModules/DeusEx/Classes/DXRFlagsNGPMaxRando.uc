@@ -360,11 +360,11 @@ simulated function RemoveInUseItems(#var(PlayerPawn) p)
         fe = #var(prefix)FireExtinguisher(i);
 
         if (cp!=None){
-            if (DXRandoCrowdControlTimer(cp)==None){ //Don't destroy crowd control timers
-                //Destroy any active charged pickups
-                if (cp.bIsActive){
-                    cp.Destroy();
-                }
+            #ifndef hx
+            if (DXRandoCrowdControlTimer(cp)!=None) continue; //Don't destroy crowd control timers
+            #endif
+            if (cp.bIsActive){
+                cp.Destroy();
             }
         } else if (fe!=None){
             //Kill an active fire extinguisher.
