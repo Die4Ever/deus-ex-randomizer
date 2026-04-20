@@ -68,4 +68,5 @@
 - Items like fire extinguishers or armors that are in use when finishing the game will be removed when starting New Game Plus.
 - Items should no longer be lost sometimes when dropped and picked up again quickly (GEP Gun juggling, for example).
 - Adjustments to the alliances of everybody in the Versalife offices.  Security guards should now spawn police-related clones, and the commandos that show up later will spawn MJ12-related clones.  Workers with weapons will spawn more generic clones.
+- Zombies will now resurrect with the same head gear as they had before (Helmets, visors, or lack thereof).
 </details>
