@@ -132,7 +132,6 @@ simulated function _PreTravel()
 function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
-    tdxr.seed = seed;
 #ifdef flags
     InitVersion();
 #endif

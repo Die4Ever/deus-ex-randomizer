@@ -104,6 +104,13 @@ function DXRFlags GetFlags()
     return flags;
 }
 
+function DXRSavedSetup GetSavedSetup()
+{
+    log(Self$".GetSavedSetup calling GetDxr");
+    GetDxr();
+    return DXRSavedSetup(dxr.LoadModule(class'DXRSavedSetup'));
+}
+
 function DXRando GetDxr()
 {
     if( dxr != None ) return dxr;
@@ -896,6 +903,36 @@ function string SetEnumValue(int e, string text)
     s = enums[e].values[old];
     if(enums[e].isBoundEvent) ProcessAction(text);
     return s;
+}
+
+function string GetTextWindowText(int twId)
+{
+    local TextWindow tw;
+
+    tw = TextWindow(wnds[twId]);
+    if (tw == None) return "";
+    return tw.GetText();
+}
+
+function SetTextWindowText(int twId, string str)
+{
+    local TextWindow tw;
+
+    tw = TextWindow(wnds[twId]);
+    if (tw == None) return;
+    tw.SetText(str);
+}
+
+function int GetIdFromLabel(string label)
+{
+    local int i;
+
+    for (i = 0; i < ArrayCount(labels); i++) {
+        if (labels[i] == label) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 event StyleChanged()

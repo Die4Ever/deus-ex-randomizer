@@ -403,8 +403,20 @@ function BindControls(optional string action)
     NewMenuItem("Weapons Removed", "Number of weapons removed per loop.");
     Slider(f.newgameplus_num_removed_weapons, 0, 18);
 
-    if( action == "NEXT" ) HandleNewGameButton();
-    if( action == "RANDOMIZE" ) RandomizeOptions();
+    switch(action) {
+        case "NEXT":
+            HandleNewGameButton();
+            break;
+        case "RANDOMIZE":
+            RandomizeOptions();
+            break;
+        case "RESTORE":
+            RestoreOptions();
+            break;
+        case "SAVE":
+            SaveOptions();
+            break;
+    }
 }
 
 function CreateSeedInput(DXRFlags f)
@@ -441,6 +453,39 @@ function RandomizeOptions()
     f.InitMaxRandoSettings();
     f.RandomizeSettings(True);
     _BindControls(False);
+
+    //Scroll to same position again
+    winScroll.vScale.SetTickPosition(scrollPos);
+}
+
+function SaveOptions()
+{
+    local DXRSavedSetup savedSetup;
+
+    savedSetup = GetSavedSetup();
+    savedSetup.Save( GetTextWindowText(GetIdFromLabel("Seed")), GetEnumValue(GetIdFromLabel("Starting Map")) );
+}
+
+function RestoreOptions()
+{
+    local int scrollPos;
+    local DXRFlags flags;
+    local DXRSavedSetup savedSetup;
+
+    flags = GetFlags();
+    savedSetup = GetSavedSetup();
+
+    if (savedSetup.bSaved == false) return;
+
+    scrollPos = winScroll.vScale.GetTickPosition();
+
+    _BindControls(True);
+    savedSetup.Restore();
+    _BindControls(False);
+
+    SetTextWindowText(GetIdFromLabel("Seed"), savedSetup.seedStr);
+    SetEnumValue(GetIdFromLabel("Starting Map"), savedSetup.startingMapStr);
+    SetDifficulty(flags.settings.CombatDifficulty);
 
     //Scroll to same position again
     winScroll.vScale.SetTickPosition(scrollPos);

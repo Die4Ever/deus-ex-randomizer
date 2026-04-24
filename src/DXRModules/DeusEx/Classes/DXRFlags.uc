@@ -78,6 +78,12 @@ simulated function SetGlobals()
     default.bCrowdControl = (crowdcontrol!=0);
 }
 
+function Init(DXRando tdxr)
+{
+    Super.Init(tdxr);
+    tdxr.seed = seed;
+}
+
 function InitAdvancedDefaults()
 {
     bingo_duration=0;
