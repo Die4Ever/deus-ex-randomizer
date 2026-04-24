@@ -67,7 +67,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         f.SetBool('AchievementsDisabled', true,, 999);
     }
 
-    l("starting map is set to "$settings.starting_map);
+    l("starting map is set to "$moresettings.starting_map);
 }
 
 simulated function SetGlobals()
@@ -188,11 +188,11 @@ function CheckConfig()
     difficulty_settings[i].max_weapon_shottime = 150;
     difficulty_settings[i].bingo_win = 0;
     difficulty_settings[i].bingo_freespaces = 1;
-    difficulty_settings[i].spoilers = 1;
+    more_difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 200;
     difficulty_settings[i].energy = 200;
-    difficulty_settings[i].starting_map = 0;
-    difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -265,11 +265,11 @@ function CheckConfig()
     difficulty_settings[i].max_weapon_shottime = 150;
     difficulty_settings[i].bingo_win = 0;
     difficulty_settings[i].bingo_freespaces = 1;
-    difficulty_settings[i].spoilers = 1;
+    more_difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
-    difficulty_settings[i].starting_map = 0;
-    difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -341,11 +341,11 @@ function CheckConfig()
     difficulty_settings[i].max_weapon_shottime = 150;
     difficulty_settings[i].bingo_win = 0;
     difficulty_settings[i].bingo_freespaces = 1;
-    difficulty_settings[i].spoilers = 1;
+    more_difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
-    difficulty_settings[i].starting_map = 0;
-    difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -417,11 +417,11 @@ function CheckConfig()
     difficulty_settings[i].max_weapon_shottime = 150;
     difficulty_settings[i].bingo_win = 0;
     difficulty_settings[i].bingo_freespaces = 1;
-    difficulty_settings[i].spoilers = 1;
+    more_difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
-    difficulty_settings[i].starting_map = 0;
-    difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -493,11 +493,11 @@ function CheckConfig()
     difficulty_settings[i].max_weapon_shottime = 150;
     difficulty_settings[i].bingo_win = 0;
     difficulty_settings[i].bingo_freespaces = 1;
-    difficulty_settings[i].spoilers = 1;
+    more_difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 90;
     difficulty_settings[i].energy = 80;
-    difficulty_settings[i].starting_map = 0;
-    difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -506,7 +506,7 @@ function CheckConfig()
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
-        difficulty_settings[i].menus_pause = 1;
+        more_difficulty_settings[i].menus_pause = 1;
         if(#defined(hx)) {
             difficulty_settings[i].startinglocations = 0;
             difficulty_settings[i].merchants = 0;
@@ -639,7 +639,7 @@ function SetDifficulty(int new_difficulty)
             settings.repairbotamount = 0;
             settings.medbotuses = 0;
             settings.repairbotuses = 0;
-            settings.grenadeswap = 0;
+            moresettings.grenadeswap = 0;
             // disable NG+ by default
             moresettings.newgameplus_curve_scalar = -1;
         } else {
@@ -684,7 +684,7 @@ function SetDifficulty(int new_difficulty)
             }
         } else {
             // realtime menus, not for training mode
-            settings.menus_pause = 0;
+            moresettings.menus_pause = 0;
         }
         if(gamemode==SpeedShuffle) {
             bingo_duration = 5;
@@ -749,7 +749,7 @@ function SetDifficulty(int new_difficulty)
 
         if(newgameplus_loops == 0) { // this gets overwritten by LoadFlags anyways, but the logging is noisy
             l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
-            settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, -1); // avoid Liberty Island first
+            moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, -1); // avoid Liberty Island first
         }
     }
     else if (IsBingoCampaignMode()) {
@@ -915,11 +915,11 @@ simulated function string DescribeDifficulty()
     FlagInt('Rando_bingo_win', settings.bingo_win, mode, str);
     FlagInt('Rando_bingo_freespaces', settings.bingo_freespaces, mode, str);
 
-    FlagInt('Rando_menus_pause', settings.menus_pause, mode, str);
+    FlagInt('Rando_menus_pause', moresettings.menus_pause, mode, str);
     FlagInt('Rando_health', settings.health, mode, str);
     FlagInt('Rando_energy', settings.energy, mode, str);
 
-    FlagInt('Rando_grenadeswap', settings.grenadeswap, mode, str);
+    FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
     FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
     FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
@@ -1311,7 +1311,7 @@ function bool IsSpeedShuffleMode()
 
 function int GetStartingMap()
 {
-    return settings.starting_map & 0xFF;
+    return moresettings.starting_map & 0xFF;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
@@ -1415,7 +1415,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
 
     settings.aug_value_rando = 0;*/
 
-    settings.grenadeswap = 0;
+    moresettings.grenadeswap = 0;
 }
 
 //Nothing fancy happening here, but gives a consistent place to change how we want to clamp across
@@ -1512,7 +1512,7 @@ function int ScoreFlags()
     //settings.max_weapon_shottime = 150;
     //settings.bingo_win = 0;
     //settings.bingo_freespaces = 1;
-    //settings.spoilers = 1;
+    //moresettings.spoilers = 1;
     score -= settings.health;
     score -= settings.energy;
     score -= remove_paris_mj12;
@@ -1533,8 +1533,8 @@ function ExtendedTests()
     moresettings.splits_overlay = 50;// testing for struct size
     SetDifficulty(0);
     testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
-    testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
-    testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
+    testint(moresettings.spoilers, 1, "SetDifficulty check spoilers");
+    testint(moresettings.menus_pause, 1, "SetDifficulty check menus_pause");
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
     testint(moresettings.splits_overlay, 0, "SetDifficulty check splits_overlay");

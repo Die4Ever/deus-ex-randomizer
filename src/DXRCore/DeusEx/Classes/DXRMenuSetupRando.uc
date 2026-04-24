@@ -47,15 +47,15 @@ function BindControls(optional string action)
         if(i == 10) continue;// Liberty Island dupe
         s = class'DXRStartMap'.static.GetStartingMapName(i);
         if(s != "") {
-            bMatched = EnumOption(s, i, f.settings.starting_map) || bMatched;
+            bMatched = EnumOption(s, i, f.moresettings.starting_map) || bMatched;
         }
     }
-    if(f.settings.starting_map != 0 && !bMatched) {
-        if(writing) f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, -1); // reroll to make sure we respect the current seed which could've been changed in the input box above
-        EnumOption("Random", f.settings.starting_map, f.settings.starting_map);
+    if(f.moresettings.starting_map != 0 && !bMatched) {
+        if(writing) f.moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, -1); // reroll to make sure we respect the current seed which could've been changed in the input box above
+        EnumOption("Random", f.moresettings.starting_map, f.moresettings.starting_map);
     }
     else if(EnumOption("Random", -1)) {
-        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
+        f.moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
     }
 
     BreakLine();
@@ -91,12 +91,12 @@ function BindControls(optional string action)
     Slider(f.settings.dancingpercent, 0, 100);
 
     NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them).");
-    EnumOption("Available", 1, f.settings.spoilers,GetSpoilerButtonHelpText(1));
-    EnumOption("Disallowed", 0, f.settings.spoilers,GetSpoilerButtonHelpText(0));
+    EnumOption("Available", 1, f.moresettings.spoilers,GetSpoilerButtonHelpText(1));
+    EnumOption("Disallowed", 0, f.moresettings.spoilers,GetSpoilerButtonHelpText(0));
 
     NewMenuItem("Menus Pause Game", "Should the game keep playing while a menu is open?");
-    EnumOption("Pause", 1, f.settings.menus_pause);
-    EnumOption("Don't Pause", 0, f.settings.menus_pause);
+    EnumOption("Pause", 1, f.moresettings.menus_pause);
+    EnumOption("Don't Pause", 0, f.moresettings.menus_pause);
 
     NewMenuItem("Camera Mode", "What camera mode should be used");
     EnumOption("First Person", 0, f.moresettings.camera_mode,GetCameraModeHelpText(0));
@@ -353,7 +353,7 @@ function BindControls(optional string action)
     Slider(f.settings.swapcontainers, 0, 100, GetGenericHelpText("swapcontainers"));
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
-    Slider(f.settings.grenadeswap, 0, 100);
+    Slider(f.moresettings.grenadeswap, 0, 100);
 
     BreakLine();
     NewMenuItem("Min Weapon Damage %", "The minimum damage for weapons.");
@@ -1071,6 +1071,8 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
+    actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Restore Settings",Key="RESTORE")
+    actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Save Settings",Key="SAVE")
     SplitsBtnTitle="Mismatched Splits!"
     SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
 }
