@@ -70,4 +70,5 @@
 - Adjustments to the alliances of everybody in the Versalife offices.  Security guards should now spawn police-related clones, and the commandos that show up later will spawn MJ12-related clones.  Workers with weapons will spawn more generic clones.
 - Zombies will now resurrect with the same head gear as they had before (Helmets, visors, or lack thereof).
 - New Loadout: "No Rifles".  Assault Rifle, Assault Shotgun, Sniper Rifle, and Sawed-Off Shotgun are banned, along with their associated ammos.
+- Enemies will no longer use a PS40 at extremely close range.
 </details>
