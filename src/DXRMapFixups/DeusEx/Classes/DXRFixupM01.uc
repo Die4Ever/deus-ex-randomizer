@@ -51,6 +51,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponShuriken tk;
     local #var(prefix)Female2 shannon;
     local #var(prefix)InformationDevices id;
+    local #var(prefix)DatalinkTrigger dlt;
     local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -235,6 +236,12 @@ function PreFirstEntryMapFixes()
                     id.Destroy();
                 }
             }
+        }
+
+        foreach AllActors(class'#var(prefix)DatalinkTrigger',dlt){
+            if (dlt.datalinkTag!='DL_WarmCold') continue;
+            dlt.bTriggerOnceOnly=False;
+            break;
         }
 
         //Spawn some placeholders for new item locations

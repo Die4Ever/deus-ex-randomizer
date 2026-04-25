@@ -20,6 +20,8 @@ var ToolCheckboxWindow	chkWeaponScore;
 var ToolCheckboxWindow	chkReactions;
 var ToolCheckboxWindow	chkPatrolPaths;
 var ToolCheckboxWindow	chkTextures;
+var ToolCheckboxWindow	chkPhysics;
+var ToolCheckboxWindow	chkConvoInfo;
 
 event InitWindow()
 {
@@ -103,6 +105,9 @@ function CreateDXRandoControls()
     chkReactions  = CreateToolCheckbox(middleX, middleY,  "Show Reactions", actorDisplay.AreReactionsVisible());
     middleY += 25;
 
+    chkConvoInfo  = CreateToolCheckbox(middleX, middleY,  "Show Conversation Info", actorDisplay.IsConvoInfoVisible());
+    middleY += 25;
+
 
 ////////////////////////////////////////////////////////
 
@@ -157,6 +162,10 @@ function CreateDXRandoControls()
     chkTextures = CreateToolCheckbox(rightX, rightY,  "Show Textures", actorDisplay.AreTexturesVisible());
     rightY += 25;
 
+    // Show Physics
+    chkPhysics = CreateToolCheckbox(rightX, rightY,  "Show Physics", actorDisplay.ArePhysicsVisible());
+    rightY += 25;
+
 
 //////////////////////////////////////////////////
 }
@@ -190,6 +199,7 @@ function SaveSettings()
     actorDisplay.default.bShowAcceleration= actorDisplay.IsAccelerationVisible();
     actorDisplay.default.bShowLastRendered = actorDisplay.IsLastRenderedVisible();
     actorDisplay.default.bShowEnemyResponse = actorDisplay.IsEnemyResponseVisible();
+    actorDisplay.default.bShowConvoInfo = actorDisplay.IsConvoInfoVisible();
     // actorDisplay.default.maxPoints = actorDisplay.maxPoints;
     // actorDisplay.default.sinTable = actorDisplay.sinTable;
 
@@ -230,6 +240,10 @@ function SaveSettings()
     actorDisplay.default.bShowPatrolPaths = actorDisplay.ArePatrolPathsVisible();
     actorDisplay.ShowTextures(chkTextures.GetToggle());
     actorDisplay.default.bShowTextures = actorDisplay.AreTexturesVisible();
+    actorDisplay.ShowPhysics(chkPhysics.GetToggle());
+    actorDisplay.default.bShowPhysics = actorDisplay.ArePhysicsVisible();
+    actorDisplay.ShowConvoInfo(chkConvoInfo.GetToggle());
+    actorDisplay.default.bShowConvoInfo = actorDisplay.IsConvoInfoVisible();
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplay.default.bLimitRadius = actorDisplay.IsRadiusLimited();

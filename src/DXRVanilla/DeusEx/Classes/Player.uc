@@ -251,6 +251,18 @@ exec function ShowMainMenu()
     Super.ShowMainMenu();
 }
 
+function DoFrob(Actor Frobber, Inventory frobWith)
+{
+    Super.DoFrob(Frobber,frobWith);
+
+    // set the base so the inventory follows us around correctly
+    if (FrobTarget!=None && FrobTarget.IsA('Inventory') && (FrobTarget.Owner == Self)){
+        FrobTarget.SetLocation(Frobber.Location); //Also put the item at the location of the frobber for convenience
+        FrobTarget.SetBase(Frobber); //This is vanilla DoFrob logic
+        FrobTarget.SetPhysics(PHYS_None); //Set the physics to None so it doesn't fall through the floor if it's still trying to become a pickup as well
+    }
+}
+
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 {
     local bool bCanPickup,banned;

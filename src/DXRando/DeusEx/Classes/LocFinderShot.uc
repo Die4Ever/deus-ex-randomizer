@@ -20,6 +20,20 @@ auto simulated state Flying
         SetLocation(TraceHitLocation);
         log("LocFinderShot: "$TraceHitLocation);  //Log the location, in case that's convenient
     }
+
+    simulated function ProcessTouch (Actor Other, Vector HitLocation)
+    {
+        local #var(PlayerPawn) p;
+
+        if (bStuck) return;
+        if (Other==Owner) return; //Don't bump into the player mid flight
+
+        p = #var(PlayerPawn)(Owner);
+
+        p.ClientMessage("Hit " $ Other.Name $ ": " $ Other.Location);
+
+        Destroy();
+    }
 }
 
 defaultproperties

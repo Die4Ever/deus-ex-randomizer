@@ -2214,11 +2214,20 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
     local LocationNormal ln;
     local FMinMax mm;
     local Rotator forwardRot;
+    local Vector HitLocation, HitNormal;
+    local Actor hit;
 
     // pick a location for the spawned Actor in front of `who`
     forwardRot.Yaw = who.Rotation.Yaw;
     loc = vector(forwardRot) * distance;
     loc += who.Location;
+
+    //trace forward so it doesn't try to place it in a wall
+    hit = Trace(HitLocation, HitNormal, loc, who.Location, False);
+
+    if (LevelInfo(hit)!=None){
+        loc = HitLocation;
+    }
 
     // move it down to the floor
     ln.loc = loc;
@@ -2228,6 +2237,9 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
         loc.z = ln.loc.Z + (what.default.CollisionHeight / 2.0);
     }
 
+    l("Spawning "$what$" at "$loc$" (Dist: "$VSize(loc-who.Location)$")");
+
+    //Maybe this could use _AddActor instead of a plain Spawn?
     return Spawn(what,,, loc, spawnedRot);
 }
 

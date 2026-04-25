@@ -25,8 +25,9 @@ var bool         bShowWeaponScore;
 var bool         bShowReactions;
 var bool         bShowPatrolPaths;
 var bool         bShowTextures;
+var bool         bShowConvoInfo;
 
-var Color        patrolColours[10];
+var Color        patrolColours[14];
 
 function SetActorRadius(string newRadius)
 {
@@ -231,6 +232,16 @@ function bool AreTexturesVisible()
 function ShowTextures(bool bShow)
 {
     bShowTextures = bShow;
+}
+
+function bool IsConvoInfoVisible()
+{
+    return bShowConvoInfo;
+}
+
+function ShowConvoInfo(bool bShow)
+{
+    bShowConvoInfo = bShow;
 }
 
 
@@ -1085,7 +1096,16 @@ function DrawWindow(GC gc)
                 str = str $ "Texture="$ trackActor.Texture $CR();
                 str = str $ "Mesh="$ trackActor.Mesh $CR();
             }
+            //#endregion
 
+            //#region Show Convo Info
+            if (bShowConvoInfo){
+                str = str $ "|ce4a023"; // #e4a023
+                str = str $ "FamiliarName="$ trackActor.FamiliarName $CR();
+                str = str $ "UnfamiliarName="$ trackActor.UnfamiliarName $CR();
+                str = str $ "BindName="$ trackActor.BindName $CR();
+                str = str $ "BarkBindName="$ trackActor.BarkBindName $CR();
+            }
             //#endregion
 
             if (str != "")
@@ -1550,14 +1570,18 @@ defaultproperties
     textfont=Font'DXRFontFixedWidthSmall'
     bShowHidden=true
     bShowLineOfSight=false
-    patrolColours(0)=(R=255,G=0,B=0,A=0)     //Red
-    patrolColours(1)=(R=156,G=39,B=176,A=0)  //Purple
-    patrolColours(2)=(R=0,G=0,B=255,A=0)     //Blue
-    patrolColours(3)=(R=255,G=111,B=0,A=0)   //Orange
-    patrolColours(4)=(R=239,G=154,B=154,A=0) //Pink
-    patrolColours(5)=(R=121,G=85,B=72,A=0)   //Brown
-    patrolColours(6)=(R=179,G=229,B=252,A=0) //Sky Blue
-    patrolColours(7)=(R=255,G=255,B=0,A=0)   //Yellow
-    patrolColours(8)=(R=158,G=157,B=36,A=0)  //Olive Green
-    patrolColours(9)=(R=97,G=97,B=97,A=0)    //Gray
+    patrolColours(0)=(R=255,G=0,B=0,A=0)     //Red rgb(255,0,0)
+    patrolColours(1)=(R=156,G=39,B=176,A=0)  //Purple rgb(156,39,176)
+    patrolColours(2)=(R=0,G=0,B=255,A=0)     //Blue rgb(0,0,255)
+    patrolColours(3)=(R=255,G=111,B=0,A=0)   //Orange rgb(255,111,0)
+    patrolColours(4)=(R=239,G=154,B=154,A=0) //Pink rgb(239,154,154)
+    patrolColours(5)=(R=121,G=85,B=72,A=0)   //Brown rgb(121,85,72)
+    patrolColours(6)=(R=179,G=229,B=252,A=0) //Sky Blue rgb(179,229,252)
+    patrolColours(7)=(R=255,G=255,B=0,A=0)   //Yellow rgb(255,255,0)
+    patrolColours(8)=(R=158,G=157,B=36,A=0)  //Olive Green rgb(158,157,36)
+    patrolColours(9)=(R=97,G=97,B=97,A=0)    //Gray rgb(97,97,97)
+    patrolColours(10)=(R=146,G=74,B=98,A=0)    //Grayish pink rgb(146, 74, 98)
+    patrolColours(11)=(R=72,G=230,B=156,A=0)    //Mint Green rgb(72, 230, 156)
+    patrolColours(12)=(R=45,G=95,B=4,A=0)    //Dark Green rgb(45, 95, 4)
+    patrolColours(13)=(R=206,G=60,B=219,A=0)    //Bright pink rgb(206, 60, 219)
 }
