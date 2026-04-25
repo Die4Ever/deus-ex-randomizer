@@ -54,7 +54,6 @@ function RandomLiberty()
 {
     local NYLiberty liberty;
     local NYLibertyTop top;
-    local int i;
 
     foreach AllActors(class'NYLibertyTop',top){
         if(IsHalloweenSeason()) {
@@ -105,7 +104,6 @@ function RandomLiberty()
 function RandomBobPage()
 {
     local BobPageAugmented bob;
-    local int i;
 
     foreach AllActors(class'BobPageAugmented',bob){
         SetGlobalSeed("RandomBobPage");
@@ -822,11 +820,11 @@ function FixEndgameEndCamera()
 function PostFirstEntry()
 {
     local ScriptedPawn sp;
-    local InterpolationPoint p;
+    // local InterpolationPoint p;
     local LuciusDeBeers lucius;
     local #var(prefix)SignFloor sf;
-    local vector v;
-    local rotator r;
+    // local vector v;
+    // local rotator r;
 
     Super.PostFirstEntry();
 
@@ -1508,8 +1506,8 @@ function RandomizeDialog()
 {
     local ConSpeech speech[100];
     local ConEventSpeech ces;
-    local int i, j, num, soundID;
-    local string subtitle, strConName;
+    local int i, j, num;
+    local string strConName;
     local bool checkGender;
     local bool isFemale,femConv;
     //local Conversation conv;
@@ -1559,9 +1557,8 @@ function RandomizeDialogConversation(Conversation conv)
 {
     local ConEvent co;
     local ConEventSpeech es;
-    local ConSpeech s, speech[100];
-    local int i, j, num, soundID;
-    local string subtitle;
+    local ConSpeech speech[100];
+    local int i, j, num;
 
     SetSeed("RandomizeDialogConversation "$conv.conName);
     for(co=conv.eventList; co!=None; co=co.nextEvent) {

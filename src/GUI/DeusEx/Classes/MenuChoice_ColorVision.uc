@@ -205,7 +205,6 @@ static function Color GetNeutralColor()
 //Friendly laser is normally green
 static function Texture GetFriendlyLaserColor()
 {
-
     switch(Default.Value){
         case VIS_REDGREEN:
             return Texture'Extension.SolidGreen';
@@ -221,8 +220,6 @@ static function Texture GetFriendlyLaserColor()
 //Hostile is normally red
 static function Texture GetHostileLaserColor()
 {
-    local Color c;
-
     switch(Default.Value){
         case VIS_REDGREEN:
             return Texture'Extension.SolidRed';
@@ -238,8 +235,6 @@ static function Texture GetHostileLaserColor()
 //Neutral (aiming at an object or neutral person) is normally yellow
 static function Texture GetNeutralLaserColor()
 {
-    local Color c;
-
     switch(Default.Value){
         case VIS_REDGREEN:
             return Texture'Extension.SolidYellow';
@@ -255,8 +250,6 @@ static function Texture GetNeutralLaserColor()
 //Nothing (not aiming at an Actor) is normally white
 static function Texture GetNothingLaserColor()
 {
-    local Color c;
-
     switch(Default.Value){
         case VIS_REDGREEN:
             return Texture'Extension.Solid';
@@ -272,8 +265,6 @@ static function Texture GetNothingLaserColor()
 //Aiming with grenade at a wall (in range) is normally light blue
 static function Texture GetGrenadePlantLaserColor()
 {
-    local Color c;
-
     switch(Default.Value){
         case VIS_REDGREEN:
             return Texture'Extension.VisionBlue';

@@ -84,9 +84,6 @@ function BindPlayer(DeusExPlayer play)
 
 function Tick(float deltaTime)
 {
-    local float ang;
-    local Rotator rot;
-
     Super(#var(prefix)HackableDevices).Tick(deltaTime);
 
     if (p==None){
@@ -130,10 +127,8 @@ function Tick(float deltaTime)
 
 function UpdateCameraRoll()
 {
-    local Rotator rot, drugRot;
+    local Rotator rot;
     local float roll,drugRoll,Mult, maxRoll, levelTimeSin, drunkSkew;
-    local DataStorage datastorage;
-    local int ccRollAmount;
 
     roll = 0;
 

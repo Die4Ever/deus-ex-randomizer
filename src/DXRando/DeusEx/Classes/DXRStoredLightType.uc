@@ -7,7 +7,6 @@ var ELightType origLightType;
 
 static function DXRStoredLightType Init(Light l)
 {
-    local int i;
     local DXRStoredLightType slf;
 
     //Only store information for lights that have problematic light types

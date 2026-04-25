@@ -36,7 +36,6 @@ static function PoolTableManager Init(#var(prefix)Poolball cue)
 {
     local PoolTableManager ptm;
     local #var(prefix)Poolball ball;
-    local int index;
 
     ptm = cue.Spawn(class'PoolTableManager',,,cue.Location);
 

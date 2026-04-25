@@ -245,7 +245,8 @@ function FixMolePeoplePhoneboothCode()
 
 function FixCodes(int mode)
 {
-    local string newpassword, replacement;
+    local string newpassword;
+    // local string replacement;
     local int i;
 
     for(i=0; i<ArrayCount(yes_passwords); i++) {

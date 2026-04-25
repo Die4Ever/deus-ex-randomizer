@@ -344,7 +344,6 @@ function AnyEntryMapFixes()
     local Conversation c;
     local ConEvent ce,before,after;
     local ConEventSpeech ces;
-    local name conName;
     local string afterTextLine;
 
     // if you can talk to gunther then obviously he's been rescued

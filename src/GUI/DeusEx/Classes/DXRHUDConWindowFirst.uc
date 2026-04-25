@@ -4,8 +4,6 @@ class DXRHUDConWindowFirst injects HUDConWindowFirst;
 function DisplayText(string text, Actor speakingActor)
 {
     local TextWindow newText;
-    local float txtWidth;
-    local GC gc;
 
     newText = TextWindow(lowerConWindow.NewChild(Class'TextWindow'));
     newText.SetTextAlignments( HALIGN_Left, VALIGN_Center);
