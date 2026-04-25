@@ -83,6 +83,17 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     }
 }
 
+simulated function ResetMissionTimes()
+{
+    local int mission;
+
+    for (mission = 1; mission <= 15; mission++) {
+        missions_times[mission] = 0;
+        missions_menu_times[mission] = 0;
+    }
+}
+
+
 function IncMissionTimer(int mission)
 {
     local string flagname, dataname;

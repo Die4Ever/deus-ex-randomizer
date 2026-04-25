@@ -203,6 +203,10 @@ function InitStats(DXRStats newstats)
         }
     }
 
+    if (stats.dxr.flags.newgameplus_loops == 0 && class'DXRStartMap'.static._IsStartMap(stats.dxr)) {
+        stats.ResetMissionTimes();
+    }
+
     total = TotalTime();
 
     msg = "Total IGT: " $ stats.fmtTimeToString(total);
