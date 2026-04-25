@@ -26,7 +26,6 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
 
 function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 {
-    local DXRando dxr;
     local DXRHints hints;
     local Conversation con;
     local ConEvent ce;

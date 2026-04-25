@@ -702,7 +702,6 @@ simulated function string flagNameToHumanName(name flagname){
 
 simulated function string flagValToHumanVal(name flagname, int val){
     local DXRLoadouts loadout;
-    local string ret;
 
     switch(flagname){
         //Basic true/false

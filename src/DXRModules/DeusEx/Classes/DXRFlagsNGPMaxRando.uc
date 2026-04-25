@@ -360,11 +360,11 @@ simulated function RemoveInUseItems(#var(PlayerPawn) p)
         fe = #var(prefix)FireExtinguisher(i);
 
         if (cp!=None){
-            if (DXRandoCrowdControlTimer(cp)==None){ //Don't destroy crowd control timers
-                //Destroy any active charged pickups
-                if (cp.bIsActive){
-                    cp.Destroy();
-                }
+            #ifndef hx
+            if (DXRandoCrowdControlTimer(cp)!=None) continue; //Don't destroy crowd control timers
+            #endif
+            if (cp.bIsActive){
+                cp.Destroy();
             }
         } else if (fe!=None){
             //Kill an active fire extinguisher.
@@ -526,12 +526,12 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 
 function ExtendedTests()
 {
-    local int val, i, j, oldSeed, prev, iterations;
+    local int val, i, oldSeed, prev, iterations;
     local float fval, old_scaling;
     local string s;
     local class<Weapon> weaps[24];
     local int weapSelectedCount[24];
-    local int selectedIdx, selectedHash, thisIdx, thisHash, baseSeed, numWeaps;
+    local int selectedIdx, selectedHash, thisIdx, thisHash, baseSeed;
 
     Super.ExtendedTests();
 

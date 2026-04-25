@@ -7,7 +7,6 @@ class LipSyncScriptedPawn shims ScriptedPawn;
 function LipSynch(float deltaTime)
 {
     local name animseq;
-    local float rnd;
     local float tweentime;
 
     // update the animation timers that we are using

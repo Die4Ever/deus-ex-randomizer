@@ -6,9 +6,6 @@ var int              purchasePrice;
 
 function bool DoBingoThing()
 {
-    local DXRando dxr;
-    local BingoTrigger bt;
-
     if (purchaseItem==None){
         return false;
     }

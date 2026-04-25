@@ -844,7 +844,6 @@ function TimerMapFixes()
 function NYC_04_CheckPaulUndead()
 {
     local PaulDenton paul;
-    local int count;
 
     if( ! class'MenuChoice_BalanceMaps'.static.MinorEnabled() ) return;
     if( ! dxr.flagbase.GetBool('PaulDenton_Dead')) return;
@@ -959,7 +958,7 @@ function NYC_04_MarkPaulSafe()
 
 function NYC_04_LeaveHotel()
 {
-    local FlagTrigger t;
+    // local FlagTrigger t;
     local PaulDenton paul;
 
     if( ! class'MenuChoice_BalanceMaps'.static.MinorEnabled() ) return;

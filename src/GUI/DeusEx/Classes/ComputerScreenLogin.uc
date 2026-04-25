@@ -2,8 +2,6 @@ class DXRComputerScreenLogin injects #var(prefix)ComputerScreenLogin;
 
 function CloseScreen(String action)
 {
-    local int compIndex;
-
     if (action=="LOGIN")
     {
 #ifdef injections

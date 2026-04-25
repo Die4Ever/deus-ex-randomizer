@@ -39,7 +39,6 @@ function PreFirstEntryMapFixes()
     local DynamicLight light;
     local DeusExDecoration s;
     local Smuggler smug;
-    local HomeBase hb;
     local DXRReinforcementPoint reinforce;
     local #var(prefix)Poolball pb;
     local #var(prefix)SecurityBot3 bot;

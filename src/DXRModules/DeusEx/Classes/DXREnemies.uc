@@ -10,8 +10,6 @@ const Police = 5;
 
 function CheckConfig()
 {
-    local int i;
-
     enemy_multiplier = 1;
     min_rate_adjust = 0.3;
     max_rate_adjust = 4.0;

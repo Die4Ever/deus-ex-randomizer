@@ -367,7 +367,6 @@ log("  event.transferCount = " $ event.transferCount);
 	// increment the count
 	else if ((invItemTo.IsA('DeusExPickup')) && (DeusExPickup(invItemTo).bCanHaveMultipleCopies))
 	{
-
 		//RANDO: It may be possible that you can carry less of the item than the game wants to give you.
 		//Reduce the number of items to be transferred to prevent a softlock
 		if (event.transferCount > DeusExPickup(invItemTo).maxCopies) {

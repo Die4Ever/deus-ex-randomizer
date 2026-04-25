@@ -23,7 +23,6 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function BindBarkNameEvent()
 {
-    local DXRando dxr;
     local ScriptedPawn a;
 
     foreach AllActors(class'ScriptedPawn',a,event)

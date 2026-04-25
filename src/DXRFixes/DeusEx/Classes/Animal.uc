@@ -56,7 +56,7 @@ function Destroyed()
 function PetAnimal(#var(PlayerPawn) petter)
 {
     local DXRCameraModes camera;
-    local float animTime,tweenTime;
+    local float animTime;
     local bool highPet;
 
     if (petter==None) return;

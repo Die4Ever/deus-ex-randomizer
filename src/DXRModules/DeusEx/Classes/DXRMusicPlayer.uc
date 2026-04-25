@@ -580,9 +580,6 @@ function EnterAmbient()
 
 function bool InCombat()
 {
-    local ScriptedPawn npc;
-    local Pawn CurPawn;
-
     if(!allowCombat) return false;
     if(CombatSection == LevelSongSection) return false;
 

@@ -76,10 +76,8 @@ function PlayTakeHitSound(int Damage, name damageType, int Mult)
 function RandomizeAugStates()
 {
     local Augmentation aug;
-    local DXRBase dxrb;
 
     for(aug = AugmentationSystem.FirstAug; aug!=None; aug = aug.next){
-
         //Skip synthetic heart since deactivating it turns off all your augs
         //(Maybe this could only skip it for deactivation?)
         if (aug.bHasIt && !aug.bAlwaysActive && (AugHeartLung(aug)==None)) {
@@ -232,7 +230,7 @@ function float ArmorReduceDamage(float damage)
 function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, out int adjustedDamage, bool bCheckOnly)
 {
     local float newDamage, oldDamage;
-    local float augLevel, skillLevel;
+    local float augLevel;
     local float pct;
     local bool bReduced;
     local float damageMult;
@@ -431,10 +429,8 @@ function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
 
 function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, optional bool bFixLegs)
 {
-    local float mult;
     local int adjustedHealAmount, aha2, tempaha;
     local int origHealAmount;
-    local float dividedHealAmount;
 
     if (bUseMedicineSkill)
         adjustedHealAmount = CalculateSkillHealAmount(baseHealPoints);
@@ -549,8 +545,6 @@ function HealPart(out int points, out int amt)
 exec function ActivateAugmentation(int num)
 {
     local Augmentation anAug;
-    local int count, wantedSlot, slotIndex;
-    local bool bFound;
 
     if (RestrictInput())
         return;
@@ -586,7 +580,6 @@ function Augmentation FindAugByName(string augName)
 function ActivateAugByName(string augName)
 {
     local Augmentation anAug;
-    local bool bFound;
 
     if (RestrictInput())
         return;
@@ -752,13 +745,13 @@ state PlayerWalking
     function ProcessMove(float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
     {
         local int newSpeed, defSpeed;
-        local name mat;
         local vector HitLocation, HitNormal, checkpoint, downcheck;
         local Actor HitActor, HitActorDown;
         local bool bCantStandUp;
         local Vector loc, traceSize;
         local float alpha, maxLeanDist;
-        local float legTotal, weapSkill, augValue, carriedMass;
+        local float weapSkill, augValue, carriedMass;
+        // local float legTotal;
 
         //Allow mid-air crouching without toggle crouch (Toggle crouch will handle this itself)
         //Toggle crouch only allows *crouching* in mid-air, not *uncrouching*, do the same here

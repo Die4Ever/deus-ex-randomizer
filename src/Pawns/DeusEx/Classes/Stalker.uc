@@ -60,7 +60,6 @@ function InitializePawn()
 {
     local NavigationPoint p, closest;
     local float dist, minDist;
-    local int i;
 
     Super.InitializePawn();
 

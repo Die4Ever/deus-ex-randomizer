@@ -9,7 +9,6 @@ function bool StartBark(DeusExRootWindow newRoot, ScriptedPawn newBarkPawn, EBar
     local Float        barkDuration;
     local bool         bBarkStarted;
     local ConPlayBark  conPlayBark;
-    local String       conSpeechString;
     local ConSpeech    conSpeech;
     local Sound        speechAudio;
     local bool         bHaveSpeechAudio;

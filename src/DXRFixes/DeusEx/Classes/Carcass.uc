@@ -384,7 +384,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
     local DXRando dxr;
     local DXRLoadouts loadout;
     local DeusExWeapon W;
-    local Inventory otheritem;
+    // local Inventory otheritem;
 
     if (item.PickupAmmoCount < 0) {
         DeleteInventory(item);

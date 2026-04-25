@@ -30,7 +30,6 @@ function AddMissionTime(string missionNum, string missionName, string dyingTime,
 event DrawWindow(GC gc)
 {
     local color c;
-    local float p;
     local int i, yPos;
 
     c.R = 255;

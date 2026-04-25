@@ -48,7 +48,6 @@ function int ApplyGeneralHealing(int healAmount)
 // ----------------------------------------------------------------------
 function int HealAllParts()
 {
-	local MedKit medkit;
 	local int    healPointsAvailable;
 	local int    healPointsRemaining;
 	local int    pointsHealed;

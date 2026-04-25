@@ -41,7 +41,6 @@ static simulated function bool IsPawnDeathSuffix(string suffix)
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string prefix,suffix,msg;
-    local int idx;
 
     //Get the prefix and suffix
     FindEventPrefixSuffix(event,prefix,suffix);
@@ -562,7 +561,6 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
 //#region Items Used
 static simulated function string GetBingoHelpTextItemsUsed(string event,int mission, bool FemJC)
 {
-    local string msg;
     local DXRando dxr;
     local bool RevisionMaps;
 
@@ -743,7 +741,6 @@ static simulated function string GetBingoHelpTextImages(string event,int mission
 //#region NanoKeys
 static simulated function string GetBingoHelpNanoKeys(string event,int mission, bool FemJC)
 {
-    local string msg;
     local DXRando dxr;
     local bool RevisionMaps;
 
