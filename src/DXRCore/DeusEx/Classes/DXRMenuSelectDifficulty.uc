@@ -222,13 +222,13 @@ function bool BindPresets()
     }
     if(dxr.rando_beaten >= 1 && dxr.rando_beaten < 5 && PresetButton("Speedrun Training Mode", f.GameModeHelpText(f.SpeedrunMode))) {
         f.gamemode = f.SpeedrunTraining;
-        f.loadout = 2; // speed enhancement
+        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }
     if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
         f.gamemode = f.SpeedrunMode;
-        f.loadout = 2; // speed enhancement
+        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }
