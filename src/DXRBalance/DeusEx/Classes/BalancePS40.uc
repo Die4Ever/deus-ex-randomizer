@@ -38,4 +38,5 @@ defaultproperties
 {
     HitDamage=25// GOTY is 8 damage, the description says 25, the original release did 40, the first multiplayer patch did 12
     ProjectileClass=Class'PlasmaBoltFixTicks'
+    AIMinRange=500.000000 // Please give a little bit of an opportunity to dodge the shot
 }

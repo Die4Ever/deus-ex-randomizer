@@ -263,6 +263,29 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.BindName = "";// Zombies don't talk
     sp.BarkBindName = "";
 
+    if(sp.Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit'){
+        //Jumpsuit mesh can have visors and helmets, which we want to bring back
+        //This should follow the possibilities from DXREnemies::CheckHelmet
+        //We don't want to copy these willy-nilly, since some of the aug guys with the goggles
+        //have a different texture on the goggles when dead.
+
+        if (carc.Texture==Texture'DeusExCharacters.Skins.VisorTex1'){
+            //Corpse has a visor and helmet
+            sp.Texture = carc.Texture; //Bring a visor along if the corpse had one
+            sp.MultiSkins[6] = carc.MultiSkins[6]; //Also need to copy the helmet along with it
+        }else if (carc.MultiSkins[5]==Texture'DeusExItems.Skins.GrayMaskTex' && carc.MultiSkins[6]==Texture'DeusExItems.Skins.PinkMaskTex'){
+            //Corpse has NO helmet
+            sp.MultiSkins[5]=carc.MultiSkins[5];
+            sp.MultiSkins[6]=carc.MultiSkins[6];
+            sp.Texture = carc.Texture;
+        } else if (carc.MultiSkins[6] == Texture'#var(package).DXRandoPawns.NSFHelmet' ||
+                   carc.MultiSkins[6] == Texture'#var(package).DXRandoPawns.PlainRiotHelmet'){
+            //Corpse has a helmet but no visor
+            sp.MultiSkins[6]=carc.MultiSkins[6];
+            sp.Texture = carc.Texture;
+        }
+    }
+
     sp.DrawScale = carc.DrawScale;
     sp.SetCollisionSize(sp.CollisionRadius*sp.DrawScale, sp.CollisionHeight*sp.DrawScale);
     sp.Fatness = carc.Fatness;

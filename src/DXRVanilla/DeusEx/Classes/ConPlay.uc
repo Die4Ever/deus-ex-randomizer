@@ -1,6 +1,9 @@
 class DXRConPlay injects ConPlay;
 
 var float pitchAdjust;
+var bool fastForwarding;
+var bool savedContinueSpeech;
+var bool savedNoPlayedFlag;
 
 //Copied from ConPlay, but added pitchAdjust
 function PlaySpeech( int soundID, Actor speaker )
@@ -111,6 +114,222 @@ Begin:
     }
 
     Goto('Idle');
+}
+
+//Copied from ConPlay::SetupEvent, but stripped out event types that we don't want to fast forward through
+function SetupEventFastForward()
+{
+    local EEventAction nextAction;
+    local String nextLabel;
+
+    //player.ClientMessage("Fast Forwarding through Event Type "$currentEvent.EventType);
+
+    switch( currentEvent.EventType )
+    {
+        case ET_SetFlag:
+            nextAction = SetupEventSetFlag( ConEventSetFlag(currentEvent), nextLabel );
+            break;
+
+        case ET_CheckFlag:
+            nextAction = SetupEventCheckFlag( ConEventCheckFlag(currentEvent), nextLabel );
+            break;
+
+        case ET_CheckObject:
+            nextAction = SetupEventCheckObject( ConEventCheckObject(currentEvent), nextLabel );
+            break;
+
+        case ET_TransferObject:
+            nextAction = SetupEventTransferObject( ConEventTransferObject(currentEvent), nextLabel );
+            break;
+
+        case ET_MoveCamera:
+            // Not allowed in passive mode
+            if ( playMode == PM_Active )
+            {
+                nextAction = SetupEventMoveCamera( ConEventMoveCamera(currentEvent), nextLabel );
+            }
+            break;
+
+        case ET_Animation:
+            nextAction = SetupEventAnimation( ConEventAnimation(currentEvent), nextLabel );
+            break;
+
+        case ET_Jump:
+            nextAction = SetupEventJump( ConEventJump(currentEvent), nextLabel );
+            break;
+
+        case ET_Trigger:
+            nextAction = SetupEventTrigger( ConEventTrigger(currentEvent), nextLabel );
+            break;
+
+        case ET_AddGoal:
+            nextAction = SetupEventAddGoal( ConEventAddGoal(currentEvent), nextLabel );
+            break;
+
+        case ET_AddNote:
+            nextAction = SetupEventAddNote( ConEventAddNote(currentEvent), nextLabel );
+            break;
+
+        case ET_AddSkillPoints:
+            nextAction = SetupEventAddSkillPoints( ConEventAddSkillPoints(currentEvent), nextLabel );
+            break;
+
+        case ET_AddCredits:
+            nextAction = SetupEventAddCredits( ConEventAddCredits(currentEvent), nextLabel );
+            break;
+
+        case ET_CheckPersona:
+            nextAction = SetupEventCheckPersona( ConEventCheckPersona(currentEvent), nextLabel );
+            break;
+
+        case ET_Trade: //Moved (This isn't real though???)
+        case ET_Random: //Moved
+        case ET_Choice: //Moved
+        case ET_Speech: //Moved (We don't play any more speech)
+        case ET_End:
+            //player.ClientMessage("Fast Forward ending conversation");
+            nextAction = SetupEventEnd( ConEventEnd(currentEvent), nextLabel );
+            break;
+    }
+
+    // Based on the result of the setup, we either need to jump to another event
+    // or wait for some input from the user.
+
+    ProcessActionFastForward( nextAction, nextLabel ); //DXRando
+}
+
+function ProcessActionFastForward( EEventAction nextAction, string nextLabel )
+{
+    // Don't do squat if the currentEvent is NONE
+    if (currentEvent == None)
+        return;
+
+    switch( nextAction )
+    {
+        case EA_NextEvent:
+        case EA_WaitForSpeech:
+        case EA_WaitForText:
+        case EA_PlayAnim:
+        case EA_ConTurnActors:
+            // Proceed to the next event.
+            lastEvent = currentEvent;
+            currentEvent = currentEvent.nextEvent;
+            SetupEventFastForward(); //DXRando
+            break;
+
+        case EA_JumpToLabel:
+            // Use the label passed back and jump to it
+            lastEvent = currentEvent;
+            currentEvent = con.GetEventFromLabel( nextLabel );
+            if ( currentEvent == None )
+            {
+                Log("ConPlay::ProcessActionFastForward() - EA_JumpToLabel ----------------------------");
+                Log("  WARNING!  Label " $ nextLabel $ " NOT FOUND in Conversation " $ con.conName);
+                log("  Conversation Terminated for real.");
+            }
+            SetupEventFastForward(); //DXRando
+            break;
+
+        case EA_JumpToConversation:
+            lastEvent = currentEvent;
+            JumpToConversationFastForward( ConEventJump(currentEvent).jumpCon, nextLabel ); //DXRando
+            break;
+
+        case EA_WaitForInput: //DXRando
+        case EA_End:
+            TerminateConversation();
+            break;
+    }
+}
+
+function JumpToConversationFastForward( Conversation jumpCon, String startLabel )
+{
+    assert( jumpCon != None );
+
+    // If this is a new conversation, assign it to our "Con" variable
+    // and set the con.conName $ "_Played" flag to True.
+    if (jumpCon != con)
+    {
+        SetPlayedFlag();
+
+        // Some cleanup for the existing conversation
+        con.ClearBindEvents();
+        con.radiusDistance = saveRadiusDistance;
+
+        // Assign the new conversation and bind the events
+        con = jumpCon;
+        con.BindEvents(ConActorsBound, startActor);
+    }
+
+    // Get the event to start at, or the beginning if one wasn't
+    // passed in.  However, if a label is passed in *and* it's not
+    // found, then abort the conversation!!
+
+    currentEvent = con.GetEventFromLabel( startLabel );
+
+    if (( currentEvent == None ) && ( startLabel != "" ))
+    {
+        Log("ConPlay::JumpToConversationFastForward() --------------------------------------");
+        Log("  WARNING!  Label [" $ startLabel $ "] NOT FOUND in Conversation [" $ jumpCon.conName $ "]");
+        log("  Conversation Terminated for real.");
+        TerminateConversation();
+        return;
+    }
+
+    if ( currentEvent == None )
+        currentEvent = con.eventList;
+
+    // Start the conversation!
+    SetupEventFastForward(); //DXRando
+}
+
+
+//Make sure the fast forward flag is cleared when starting a new conversation
+function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvokeActor, optional bool bForcePlay)
+{
+    fastForwarding = false;
+    return Super.StartConversation(newPlayer, newInvokeActor, bForcePlay);
+}
+
+function FastForward()
+{
+    if (fastForwarding) return;
+
+    //player.ClientMessage("Fast forwarding conversation "$con.conName);
+
+    fastForwarding=true;
+
+    //If interrupted mid-speech event, skip to the next event before starting the fast forward
+    if (currentEvent.EventType==ET_Speech){
+        lastEvent = currentEvent;
+        currentEvent = currentEvent.nextEvent;
+    }
+
+    SetupEventFastForward();
+}
+
+//Fast forward if appropriate, otherwise terminate as normal
+function TerminateConversation(optional bool bContinueSpeech, optional bool bNoPlayedFlag)
+{
+    if (!fastForwarding){
+        if (displayMode == DM_FirstPerson && currentEvent!=None && currentEvent.EventType!=ET_End){
+            //Save these to reuse once the fast forward is finished
+            savedContinueSpeech = bContinueSpeech;
+            savedNoPlayedFlag = bNoPlayedFlag;
+
+            FastForward();
+
+            return;
+        }
+    }
+
+    if (fastForwarding){
+        //Restore the settings from when the conversation was first being terminated
+        bContinueSpeech = savedContinueSpeech;
+        bNoPlayedFlag = savedNoPlayedFlag;
+    }
+
+    Super.TerminateConversation(bContinueSpeech,bNoPlayedFlag);
 }
 
 defaultproperties

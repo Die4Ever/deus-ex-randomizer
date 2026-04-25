@@ -36,6 +36,9 @@
   - "Who will help the widow's son?": Speak to the Freemason in the Free Clinic (Mission 2).
   - "Pet x Cleaner Bots": Pet enough cleaner bots (Missions 1, 2, 3, 4, 8).
   - "Pet x Commercial Grade Security Bots": Pet enough commercial grade security bots (Missions 1, 2, 3, 4, 8, 11, 15).
+  - "Crawl under the super freighter helipad": Crawl through the tunnel connecting the electrical room to the helipad (Mission 9).
+  - "Raise the bridge in engineering": Use the keypad next to the bridge in the superfreighter engine room to raise it.
+  - "Our Country 'Tis of Thee": Listen to the bum in Battery Park sing his whole rendition of My Country 'Tis of Thee (Mission 2)
 - Mission starts inside the Ocean Lab or at Silo (Mission 14) will now start with the sub bay doors open in the Sub Base.  Silo starts will also start with the sub bay doors open in the Ocean Lab itself.
 - Randomly placed datacubes (such as Medbot or Repairbot hints) should no longer be able to get placed in unreachable areas (Such as underneath the shanty town huts in Mission 2 Battery Park).
 - Synthetic Heart aug improvements and fixes:
@@ -47,7 +50,26 @@
 - Zombies raised from corpses of the player (or corpses of Crowd Control player clones) now get the proper face skin and hit sounds.
 - Troops that are fleeing during the apartment raid in Mission 4 are now considered dead for the purposes of stopping the raid (So you won't need to hunt down that one troop hiding in a corner to have it counted as being completed).
 - Paul's fashion should now be immaculate after uncloaking and in death.
+- Paul and JC's corpses will now correctly use the "floating" mesh if clothes are changed while the body is in the water
 - "Who Needs Rock?" bingo goal progress is now properly marked when trading zyme to Lenny after getting a LAM from El Rey.
 - Karkians in the MJ12 Lab (Mission 5) will now properly go hostile and try to escape regardless of how the door is opened.
 - Player clones spawned by Crowd Control can now use defensive augs, speed, cloak, medkits, biocells, and fire extinguishers that the player had when the clone was spawned.
+- Smuggler's bot starts "standing" instead of "idle", which means he will still react to threats when Smuggler knows you (and he becomes pettable).
+- Paul actually disappears after talking to you and going to the train in Mission 2.
+- Conversations that play while in first person will now try to trigger other events that happen after a voice line gets interrupted.  This fixes/improves some cases where you get items, notes, or flags get set after the voice line plays (for example, the trooper that gives you LAMs in the training mission, or Nicolette giving a password note when in the study of Chateau DuClare).
+- The Crowd Control setting will now automatically be enabled if there is a session connected when starting a new game.
+- When playing with Toggle Crouch disabled, you can now crouch while jumping.  This was already possible when Toggle Crouch was enabled.
+- "Let Aimee and Le Merchant Live" bingo goal now gets properly marked as completed when traveling to another map other than Denfert-Rochereau.  This fixes the goal with Entrance Randomization, where it would previously only be marked completed when you get to the Catacombs tunnels.
+- Open Aug Tree can no longer be opened on the title screen.
+- "AL" will now appear over the oxygen meter when swimming underwater while Aqualung is active (Manually or automatically).
+- The electrical panel in the basement of the NSF Warehouse (Mission 2) near the sewer entrance will properly disable the nearby laser triggers, as well as disable the rest of the basement lasers (Without disabling unrelated lasers elsewhere in the map).
+- Items that don't exist in the inventory grid will not be counted for the purposes of removing items beyond the "Max Item Carryover" limit.  For example, with a "Max Item Carryover" of 5, you can wear 1 ballistic armor through the end of a loop while holding 5 unused ballistic armors in your inventory and not lose any of them due to the limit.
+- Charged Pickups (things like ballistic armor, thermoptic camo, tech goggles) no longer count down their timers while in cutscenes (Like game endings or helicopter rides).
+- Items like fire extinguishers or armors that are in use when finishing the game will be removed when starting New Game Plus.
+- Items should no longer be lost sometimes when dropped and picked up again quickly (GEP Gun juggling, for example).
+- Adjustments to the alliances of everybody in the Versalife offices.  Security guards should now spawn police-related clones, and the commandos that show up later will spawn MJ12-related clones.  Workers with weapons will spawn more generic clones.
+- Zombies will now resurrect with the same head gear as they had before (Helmets, visors, or lack thereof).
+- New Loadout: "No Rifles".  Assault Rifle, Assault Shotgun, Sniper Rifle, and Sawed-Off Shotgun are banned, along with their associated ammos.
+- Enemies will no longer use a PS40 at extremely close range.
+- More reliable timer storage across crashes.
 </details>

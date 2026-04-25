@@ -259,6 +259,7 @@ function NewGamePlus()
     }
 
     SetGlobalSeed("NewGamePlus items " $ dxr.seed);
+    RemoveInUseItems(p);
     MaxMultipleItems(p, newgameplus_max_item_carryover);
     ClearInHand(p);
     for (i = 0; i < newgameplus_num_removed_weapons; i++)
@@ -344,16 +345,62 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
     settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
 }
 
+simulated function RemoveInUseItems(#var(PlayerPawn) p)
+{
+    local inventory i,next;
+    local #var(prefix)ChargedPickup cp;
+    local #var(prefix)FireExtinguisher fe;
+    local Actor a;
+    local #var(prefix)HalonGas hg;
+
+    for(i=p.Inventory; i!=None; i=next) {
+        next = i.Inventory;
+
+        cp = #var(prefix)ChargedPickup(i);
+        fe = #var(prefix)FireExtinguisher(i);
+
+        if (cp!=None){
+            #ifndef hx
+            if (DXRandoCrowdControlTimer(cp)!=None) continue; //Don't destroy crowd control timers
+            #endif
+            if (cp.bIsActive){
+                cp.Destroy();
+            }
+        } else if (fe!=None){
+            //Kill an active fire extinguisher.
+            if (fe.IsInState('Activated')){
+                foreach fe.BasedActors(class'Actor',a){
+                    //Destroy anything based on the fire extinguisher (ie. the projectile generator)
+                    a.Destroy();
+                }
+
+                //Destroy any halon gas as well
+                //Theoretically this could be done in some radius around the fire extinguisher, but who cares
+                foreach AllActors(class'#var(prefix)HalonGas',hg){
+                    hg.Destroy();
+                }
+
+                fe.SetTimer(0,False); //Disable the timer
+                fe.Timer(); //Manually trigger the end of the timer
+                //Doing this is easiest, since we allow stacking in Vanilla rando (with appropriate balance enabled)
+                //but it's not a stacked item outside of that.  The timer logic will always do the right thing at the end of the day.
+            }
+        }
+    }
+}
+
 simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 {
     local Inventory i, i2, next;
     local int num;
 
     for(i=p.Inventory; i!=None; i=i.Inventory) {
+        if(i.invPosX==-1 && i.invPosY==-1) continue; //Skip items that don't actually live in the inventory grid
         num=1;
         for(i2=i.Inventory; i2!=None; i2=next) {
             next = i2.Inventory;
             if(i2.class.name != i.class.name) continue;
+            if(i2.invPosX==-1 && i2.invPosY==-1) continue; //Skip items that don't actually live in the inventory grid
             num++;
             if(num > maxcopies) {
                 i2.Destroy();
