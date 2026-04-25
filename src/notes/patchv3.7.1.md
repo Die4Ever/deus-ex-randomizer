@@ -72,4 +72,5 @@
 - New Loadout: "No Rifles".  Assault Rifle, Assault Shotgun, Sniper Rifle, and Sawed-Off Shotgun are banned, along with their associated ammos.
 - Enemies will no longer use a PS40 at extremely close range.
 - More reliable timer storage across crashes.
+- Fix patrol points in the 'Ton Hotel in Mission 8 so that the riot cops actually patrol the hotel.
 </details>
