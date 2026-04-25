@@ -75,4 +75,5 @@
 - Fix patrol points in the 'Ton Hotel in Mission 8 so that the riot cops actually patrol the hotel.
 - "Getting Colder..." infolink from Alex in Mission 1 UNATCO HQ actually works if you leave his office without talking to him.
 - Values in the Environmental Training skill description align better.
+- Smuggler's elevator button in the final New York mission no longer moves around.
 </details>
