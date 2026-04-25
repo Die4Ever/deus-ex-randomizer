@@ -935,6 +935,19 @@ simulated function string DescribeDifficulty()
     return str;
 }
 
+function int GameModeIdForName(string modeName)
+{
+    local int i, modeId;
+
+    for (i = 0; i < 50; i++) {
+        modeId = GameModeIdForSlot(i);
+        if (modeId != 999999 && GameModeName(modeId) == modeName) {
+            return modeId;
+        }
+    }
+    return 999999;
+}
+
 function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
     if(slot--==0) return NormalRandomizer;
@@ -1237,6 +1250,12 @@ function string GameModeHelpText(int gamemode)
     return "";
 }
 //#endregion
+
+function SetGameMode(int modeId)
+{
+    if (modeId == 999999) return;
+    gamemode = modeId;
+}
 
 //#region IsGameModes
 function bool IsHordeMode()

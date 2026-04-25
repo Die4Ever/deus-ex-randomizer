@@ -1,7 +1,8 @@
 class DXRMenuSetupRando extends DXRMenuBase;
 
 var float combatDifficulty;
-var int starting_locations, goals_rando;
+var int gamemode_enum, starting_locations, goals_rando;
+var bool showMode, showLoadout, showAutosave, showCrowdControl, showOnlineFeatures, showMirroredMaps;
 
 var string SplitsBtnTitle, SplitsBtnMessage;
 
@@ -25,6 +26,8 @@ function BindControls(optional string action)
     local int iDifficulty, i;
     local bool bMatched;
     f = GetFlags();
+
+    CreateBasicOptions(f);
 
     NewGroup("General");
 
@@ -419,6 +422,20 @@ function BindControls(optional string action)
     }
 }
 
+function CreateBasicOptions(DXRFlags f)
+{
+    local int i, temp;
+
+    NewGroup("Basic");
+
+    if (showMode) gamemode_enum = class'DXRMenuSelectDifficulty'.static.CreateGameModeEnum(self, f);
+    if (showLoadout) class'DXRMenuSelectDifficulty'.static.CreateLoadoutEnum(self, f);
+    if (showAutosave) class'DXRMenuSelectDifficulty'.static.CreateAutosaveEnum(self, f);
+    if (showCrowdControl) class'DXRMenuSelectDifficulty'.static.CreateCrowdControlEnum(self, f);
+    if (showOnlineFeatures) class'DXRMenuSelectDifficulty'.static.CreateOnlineFeaturesEnum(self, f);
+    if (showMirroredMaps) class'DXRMenuSelectDifficulty'.static.CreateMirroredMapsSlider(self, f);
+}
+
 function CreateSeedInput(DXRFlags f)
 {
     local string sseed;
@@ -541,6 +558,19 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     }
 
     return Super.BoxOptionSelected(button,buttonNumber);
+}
+
+function string SetEnumValue(int e, string text)
+{
+    local int modeId, i;
+    local DXRFlags f;
+
+    if (e == gamemode_enum) {
+        f = GetFlags();
+        f.SetGameMode(f.GameModeIdForName(text));
+    }
+
+    return Super.SetEnumValue(e, text);
 }
 
 //#region Help Text Fns
@@ -1120,4 +1150,10 @@ defaultproperties
     actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Save Settings",Key="SAVE")
     SplitsBtnTitle="Mismatched Splits!"
     SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
+    showMode=True
+    showLoadout=True
+    showAutosave=True
+    showCrowdControl=True
+    showOnlineFeatures=True
+    showMirroredMaps=True
 }

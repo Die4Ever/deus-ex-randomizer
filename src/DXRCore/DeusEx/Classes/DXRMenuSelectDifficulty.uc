@@ -53,7 +53,7 @@ function BindControls(optional string action)
     local float difficulty;
     local DXRFlags f;
     local string name, help;
-    local int temp, i;
+    local int i;
 
     f = GetFlags();
     if(writing) {
@@ -67,16 +67,8 @@ function BindControls(optional string action)
 
     NewGroup("Customize");
 
-    gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!"$BR$BR$"For first time Randomizer players we recommend Randomizer Lite, Normal Randomizer, or Mr. Page's Nice Bingo Machine.");
-    for(i=0; i<50; i++) {
-        temp = f.GameModeIdForSlot(i);
-        if(temp==999999) continue;
-        name = f.GameModeName(temp);
-        if(name == "") continue;
-        help = f.GameModeHelpText(temp);
-        EnumOption(name, temp, f.gamemode, help);
-    }
 
+    gamemode_enum = CreateGameModeEnum(self, f);
     loadout_enum = CreateLoadoutEnum(self, f);
 
     if( #defined(vmd) )
@@ -302,6 +294,23 @@ function ResetToDefaults()
     Super.ResetToDefaults();
 }
 
+static function int CreateGameModeEnum(DXRMenuBase slf, DXRFlags f)
+{
+    local int i, e, temp;
+    local string name, help;
+
+    e = slf.NewMenuItem("Game Mode", "Choose a game mode!"$Chr(10)$Chr(10)$ "For first time Randomizer players we recommend Randomizer Lite, Normal Randomizer, or Mr. Page's Nice Bingo Machine.");
+    for(i=0; i<50; i++) {
+        temp = f.GameModeIdForSlot(i);
+        if(temp==999999) continue;
+        name = f.GameModeName(temp);
+        if(name == "") continue;
+        help = f.GameModeHelpText(temp);
+        slf.EnumOption(name, temp, f.gamemode, help);
+    }
+    return e;
+}
+
 static function int CreateLoadoutEnum(DXRMenuBase slf, DXRFlags f)
 {
     local DXRLoadouts loadout;
@@ -463,13 +472,7 @@ function string SetEnumValue(int e, string text)
     if(e == gamemode_enum) {
         f = GetFlags();
         oldZeroRando = f.IsZeroRando();
-        for(i=0; i<50; i++) {
-            temp = f.GameModeIdForSlot(i);
-            if(temp==999999) continue;
-            if(f.GameModeName(temp) == text) {
-                f.gamemode = temp;
-            }
-        }
+        f.SetGameMode(f.GameModeIdForName(text));
         if(f.IsZeroRando() != oldZeroRando) {
             i = 0;
             if( f.VersionIsStable() && !#bool(hx)) {
