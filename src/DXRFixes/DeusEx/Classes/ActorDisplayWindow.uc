@@ -25,6 +25,7 @@ var bool         bShowWeaponScore;
 var bool         bShowReactions;
 var bool         bShowPatrolPaths;
 var bool         bShowTextures;
+var bool         bShowConvoInfo;
 
 var Color        patrolColours[14];
 
@@ -231,6 +232,16 @@ function bool AreTexturesVisible()
 function ShowTextures(bool bShow)
 {
     bShowTextures = bShow;
+}
+
+function bool IsConvoInfoVisible()
+{
+    return bShowConvoInfo;
+}
+
+function ShowConvoInfo(bool bShow)
+{
+    bShowConvoInfo = bShow;
 }
 
 
@@ -1085,7 +1096,16 @@ function DrawWindow(GC gc)
                 str = str $ "Texture="$ trackActor.Texture $CR();
                 str = str $ "Mesh="$ trackActor.Mesh $CR();
             }
+            //#endregion
 
+            //#region Show Convo Info
+            if (bShowConvoInfo){
+                str = str $ "|ce4a023"; // #e4a023
+                str = str $ "FamiliarName="$ trackActor.FamiliarName $CR();
+                str = str $ "UnfamiliarName="$ trackActor.UnfamiliarName $CR();
+                str = str $ "BindName="$ trackActor.BindName $CR();
+                str = str $ "BarkBindName="$ trackActor.BarkBindName $CR();
+            }
             //#endregion
 
             if (str != "")
