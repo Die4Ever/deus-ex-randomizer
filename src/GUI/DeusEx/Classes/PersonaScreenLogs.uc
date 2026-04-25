@@ -15,7 +15,6 @@ function PopulateLog()
 
     local string finalLogLines[10];
     local int numLines,i, strLen;
-    local bool moreText;
 
 
 	// Now loop through all the conversations and add them to the list

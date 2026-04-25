@@ -33,6 +33,21 @@ event InitWindow()
     Init(GetDxr());
 }
 
+function CheckCrowdControlConnection(DXRFlags f)
+{
+    local DXRandoCrowdControlLink ccLink;
+
+    if (f==None) return;
+
+    //Look to see if there's a connected Crowd Control link
+    foreach f.AllActors(class'DXRandoCrowdControlLink',ccLink){
+        if (ccLink.IsConnected()){
+            //Crowd Control is connected!
+            f.crowdcontrol=1; //Enabled (Streaming)
+        }
+    }
+}
+
 function BindControls(optional string action)
 {
     local float difficulty;
@@ -47,6 +62,8 @@ function BindControls(optional string action)
     }
 
     if(BindPresets()) return;
+
+    CheckCrowdControlConnection(f); //Enable Crowd Control if there's a connected session
 
     NewGroup("Customize");
 
@@ -227,9 +244,7 @@ function bool BindPresets()
 function bool PresetButton(string label, optional string helpText)
 {
     local bool ret;
-    local int i;
     local DXRFlags f;
-    local string sseed, name, help;
     local bool mirrored_maps_files_found;
 
     ret = CollapsibleButtonOnClick(false, label, helpText);
@@ -238,6 +253,7 @@ function bool PresetButton(string label, optional string helpText)
         f = GetFlags();
         f.RollSeed();
         f.crowdcontrol = 0; // set some defaults for the preset
+        CheckCrowdControlConnection(f); //Automatically handle Crowd Control setting if connected
         f.loadout = 0; // All Items Allowed
         f.autosave = 2; // Autosave Every Entry
         #ifdef injections
@@ -422,7 +438,7 @@ function string GetHelpText(DXRMenuUIHelpButtonWindow helpButton)
 function string SetEnumValue(int e, string text)
 {
     local int i, temp;
-    local string old, s;
+    local string old;
     local DXRFlags f;
     local bool oldZeroRando;
 

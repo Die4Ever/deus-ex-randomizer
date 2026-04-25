@@ -39,10 +39,11 @@ function PreFirstEntryMapFixes()
     local DynamicLight light;
     local DeusExDecoration s;
     local Smuggler smug;
-    local HomeBase hb;
     local DXRReinforcementPoint reinforce;
     local #var(prefix)Poolball pb;
     local #var(prefix)SecurityBot3 bot;
+    local #var(prefix)ControlPanel cp;
+    local #var(prefix)LaserTrigger lt;
     local int i;
 #ifdef revision
     local JockHelicopter jockheli;
@@ -237,6 +238,24 @@ function PreFirstEntryMapFixes()
         buttonHint.SetBaseActor(button);
 
         ReduceHelicopterDelay('ChopperExit');
+
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            //The control panel in the basement of the warehouse near the sewer entrance does a bunch of things wrong
+            //The tag is for "UndergroundLasers", but ControlPanels use their UntriggerEvent list when hacked
+            //One of the nearby lasers has the tag "UndergroundLasers", but the rest nearby use LaserTrigger (Which is the UntriggerEvent)
+            //Unfortunately, a bunch of other lasers in the map also have the LaserTrigger tag (in the alley, the rooftop, etc etc), so
+            //they get disabled as well when you hack that panel for no good reason.  Change the nearby lasers to UndergroundLasers,
+            //and change the ControlPanel to Untrigger UndergroundLasers(meaning it turns off all the lasers in the basement)
+            //These lasers and things are equally broken in Revision.
+            foreach AllActors(class'#var(prefix)ControlPanel',cp,'UndergroundLasers') break; //The panel is mistagged (probably) as UndergroundLasers, at least we can take advantage of that to find it
+            if (cp!=None){
+                cp.Tag='UndergroundLasersPanel';
+                cp.UnTriggerEvent[0]='UndergroundLasers';  //If we want this panel to actually only disable the nearby ones, we can change this
+                foreach cp.RadiusActors(class'#var(prefix)LaserTrigger',lt,250){
+                    lt.Tag = cp.UnTriggerEvent[0];
+                }
+            }
+        }
 
         foreach RadiusActors(class'#var(DeusExPrefix)Mover', d,10,vectm(1552,-1136,384)){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(1553,-1130,380),vectm(1645,-1135,260),d); //Mirror door in computer room.  This doesn't actually rotate with the door yet...

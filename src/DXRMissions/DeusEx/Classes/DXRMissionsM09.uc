@@ -3,7 +3,7 @@ class DXRMissionsM09 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc;
     local bool bMemes;
 
     bMemes = (dxr.flags.settings.goals != 200);
@@ -154,7 +154,7 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc;
     local bool bMemes;
 
     bMemes = (dxr.flags.settings.goals != 200);

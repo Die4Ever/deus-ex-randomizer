@@ -9,7 +9,6 @@ function string GetTelemMessage()
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-    local Actor a;
     local DXRando dxr;
 
     Super.Trigger(Other, Instigator);

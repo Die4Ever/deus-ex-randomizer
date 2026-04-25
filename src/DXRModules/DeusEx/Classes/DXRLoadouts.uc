@@ -104,6 +104,7 @@ function int GetIdForSlot(int i)
     if(i-- == 0) return 4; // Don't Give Me the GEP Gun
     if(i-- == 0) return 6; // Grenades Only
     if(i-- == 0) return 7; // No Pistols
+    if(i-- == 0) return 18; // No Rifles
     if(i-- == 0) return 8; // No Swords
     if(i-- == 0) return 5; // Freeman Mode
 
@@ -511,6 +512,26 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     #endif
     //#endregion
 /////////////////////////////////////////////////////////////////
+    //#region No Rifles
+    case 18:
+        name = "No Rifles";
+        if(get_name) return name;
+        AddLoadoutPlayerMsg("No Rifles");
+        AddInvBan(class'#var(prefix)WeaponAssaultGun');
+        AddInvBan(class'#var(prefix)WeaponAssaultShotgun');
+        AddInvBan(class'#var(prefix)WeaponRifle');
+        AddInvBan(class'#var(prefix)WeaponSawedOffShotgun');
+        AddInvBan(class'#var(prefix)Ammo762mm');
+        AddInvBan(class'#var(prefix)Ammo20mm');
+        AddInvBan(class'#var(prefix)Ammo3006');
+        AddInvBan(class'#var(prefix)AmmoShell');
+        AddInvBan(class'#var(prefix)AmmoSabot');
+        AddSkillBan(class'#var(prefix)SkillWeaponRifle');
+        AddStandardAugSet();
+        return name;
+    //#endregion
+/////////////////////////////////////////////////////////////////
+
     }
     return "";
 }
@@ -628,6 +649,9 @@ function string LoadoutHelpText(int loadout)
         helpText = helpText $ "Enables Aug Slot Rando by default.";
         return helpText;
     #endif
+    case 18:
+        //No Rifles
+        return "All items and augs are allowed except for the Rifle-type weapons (Assault Rifle, Assault Shotgun, Sniper Rifle, Sawed-Off Shotgun).|n|n" $ normalAugs;
     }
 
     return "";
@@ -886,7 +910,7 @@ function string GetName(int i)
 //#region AnyEntry
 function AnyEntry()
 {
-    local ConEventTransferObject c;
+    // local ConEventTransferObject c;
 
     Super.AnyEntry();
 
@@ -1015,8 +1039,6 @@ function bool is_starting_equipment(Inventory eqpt, optional bool allow_subclass
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    local bool bFixGlitches;
-
     if(IsMeleeWeapon(item) && Carcass(item.Owner) != None && player.FindInventoryType(item.class) != None) {
         return true;
     } else if ( _is_banned( item_set, item.class) ) {
@@ -1320,7 +1342,7 @@ function SpawnItems()
     local Actor a;
     local class<Actor> aclass;
     local DXRReduceItems reducer;
-    local int i, j, chance, max;
+    local int i, j, chance;
 
     if(dxr.dxInfo.MissionNumber < 0) return;
 

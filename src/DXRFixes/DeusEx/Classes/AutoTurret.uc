@@ -786,7 +786,6 @@ auto state Active
     function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
     {
         if (DamageType == 'NanoVirus') {
-
             HandleScrambler(EventInstigator,Damage);
         }
 

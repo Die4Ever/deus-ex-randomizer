@@ -10,8 +10,6 @@ function Timer()
     local BumMale bum;
     local BlackHelicopter chopper;
     local Doctor doc;
-    local BarrelAmbrosia barrel;
-    local ScriptedPawn pawn;
     local DeusExCarcass carc2;
     local GuntherHermann Gunther;
     local Actor A;

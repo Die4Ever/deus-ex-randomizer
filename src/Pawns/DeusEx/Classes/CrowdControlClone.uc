@@ -99,7 +99,6 @@ function CloneInventory(#var(PlayerPawn) p)
     local Inventory pInv,newInv;
     local #var(DeusExPrefix)Ammo dxAmmo,newAmmo;
     local #var(DeusExPrefix)Weapon dxWeap,newWeap;
-    local DXRando dxr;
     local DXRActorsBase dxrab;
 
     dxrab = DXRActorsBase(class'DXRActorsBase'.static.Find());

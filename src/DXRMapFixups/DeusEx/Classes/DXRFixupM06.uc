@@ -107,10 +107,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MJ12Commando commando;
     local WaterCooler wc;
     local Rotator rot;
-    local Male1 male;
     local GordonQuick gordon;
-    local DXRReinforcementPoint reinforce;
-    local Dispatcher disp;
+    // local DXRReinforcementPoint reinforce;
+    // local Dispatcher disp;
     local #var(prefix)Trigger t;
     local #var(prefix)ControlPanel panel;
     local #var(prefix)HKHangingLantern lantern;
@@ -852,6 +851,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        FixVersalifeOfficeAlliances();
+
         //Verified in both vanilla and Revision
         class'FakeMirrorInfo'.static.Create(self,vectm(-1152,425,-15),vectm(-1024,430,80)); //Security Window
         class'FakeMirrorInfo'.static.Create(self,vectm(-1008,425,-15),vectm(-880,430,80)); //Security Window
@@ -936,7 +937,6 @@ function PreFirstEntryMapFixes()
         oot.Tag='Self_Destruct';
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
-
             //The lockdown door should only close once the UC has been destroyed,
             //so that there's always an exit available.
             foreach AllActors(class'#var(DeusExPrefix)Mover',m,'VirusUploaded'){
@@ -1121,7 +1121,6 @@ function FixMaggieMoveSpeed()
 function AnyEntryMapFixes()
 {
     local Actor a;
-    local ScriptedPawn p;
     local #var(DeusExPrefix)Mover m;
     local bool boolFlag;
     local bool recruitedFlag;
@@ -1665,6 +1664,86 @@ function FixLuckyMoneyDragonHeadWineConvos()
         sit.spawnClass=class'#var(prefix)WineBottle';
         sit.spawnLoc = vectm(-1230,-2250,-123);
         sit.spawnRot = GetRandomYaw(true); //The rotation doesn't matter, so leave it unseeded
+    }
+}
+
+function FixVersalifeOfficeAlliances()
+{
+    local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)AllianceTrigger at;
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp)
+    {
+        if(sp.Region.Zone.IsA('SkyZoneInfo')) continue; //Skip all the people in the skybox
+
+        switch(sp.Class){
+            case class'#var(prefix)Cop': //Normally the guards are MJ12 Alliance, which means they spawn MJ12-based clones
+                sp.SetAlliance('Cop'); //Change them to Cop so that they spawn cop-based clones instead
+                sp.Tag='SecurityGuard'; //Used to be MJ12Troop, change for clarity
+
+                //Alliances:
+                //Player: Neutral, not permanent
+                ChangeInitialAlliance(sp,'Player',0,false);
+                sp.ChangeAlly('Player',0.0,false,false);
+                //Worker: Neutral, not permanent (DXRando changes to permanent friendly, because the normal can result in goofy in-fighting)
+                ChangeInitialAlliance(sp,'Worker',1,true);
+                sp.ChangeAlly('Worker',1.0,true,false);
+                //MJ12: Friendly, Permanent
+                ChangeInitialAlliance(sp,'MJ12',1,true);
+                sp.ChangeAlly('MJ12',1.0,true,false);
+                //Cop: Friendly, Permanent
+                ChangeInitialAlliance(sp,'Cop',1,true); //Technically this is probably the only one that actually needs to be added (since the others already exist by default)
+                sp.ChangeAlly('Cop',1.0,true,false);
+                break;
+
+            case class'#var(prefix)MJ12Commando': //Normally the commandos have *NO* alliance set...
+#ifdef revision
+            case class'WIBBusiness': //Shows up in Revision NGP
+            case class'MIB': //Shows up in Revision NGP
+#endif
+                sp.SetAlliance('MJ12'); //Make them actually be MJ12
+
+                //Alliances:
+                //Player: Negative, not permanent
+                ChangeInitialAlliance(sp,'Player',-1,false);
+                sp.ChangeAlly('Player',-1.0,false,false);
+                //Worker: Friendly, not permanent (DXRando could change this, but I don't think the commandos would be too bothered about gunning down a few workers)
+                ChangeInitialAlliance(sp,'Worker',1,false);
+                sp.ChangeAlly('Worker',1.0,false,false);
+                //MJ12: Friendly, Permanent
+                ChangeInitialAlliance(sp,'MJ12',1,true);
+                sp.ChangeAlly('MJ12',1.0,true,false);
+                //Cop: Friendly, Permanent
+                ChangeInitialAlliance(sp,'Cop',1,true); //Technically this is probably the only one that actually needs to be added (since the others already exist by default)
+                sp.ChangeAlly('Cop',1.0,true,false);
+                break;
+
+            default:
+                sp.SetAlliance('Worker'); //Normally the workers have alliance "Workers", despite all the Alliances settings being for "Worker"
+
+                //Alliances:
+                //Player: Neutral, not permanent
+                ChangeInitialAlliance(sp,'Player',0,false);
+                sp.ChangeAlly('Player',0.0,false,false);
+                //Worker: Friendly, permanent
+                ChangeInitialAlliance(sp,'Worker',1,true);
+                sp.ChangeAlly('Worker',1.0,true,false);
+                //MJ12: Neutral, not permanent
+                ChangeInitialAlliance(sp,'MJ12',0,false);
+                sp.ChangeAlly('MJ12',0.0,false,false);
+                //Cop: Neutral, not permanent (DXRando changes to permanent friendly, because the normal can result in goofy in-fighting)
+                ChangeInitialAlliance(sp,'Cop',1,true); //Technically this is probably the only one that actually needs to be added (since the others already exist by default)
+                sp.ChangeAlly('Cop',1.0,true,false);
+                break;
+        }
+    }
+
+    //Change the AllianceTrigger (tag: 'VL_OnAlert') to hit SecurityGuard instead
+    //Change the AllianceTrigger in the security room to hit SecurityGuard instead of MJ12Troop
+    foreach AllActors(class'#var(prefix)AllianceTrigger',at){
+        if (at.Event=='MJ12Troop'){
+            at.Event='SecurityGuard';
+        }
     }
 }
 

@@ -87,7 +87,6 @@ function ImpartMomentum(Vector momentum, Pawn instigatedBy)
 function Explode(vector HitLocation)
 {
     local int i;
-    local Vector loc;
     local DeusExFragment s;
     local ExplosionLight light;
     local ExplosionSmall exp;

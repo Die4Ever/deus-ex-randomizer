@@ -45,7 +45,7 @@ function String BuildTimeStringSeconds(DeusExSaveInfo s)
 //#region Delete Autosaves
 function ProcessAction(String actionKey)
 {
-    local int t;
+    // local int t;
     if (actionKey == "DELETEAUTOSAVES")
     {
         //t = MB_DeleteAutosaves;

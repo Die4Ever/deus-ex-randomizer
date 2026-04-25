@@ -277,8 +277,6 @@ function PreFirstEntryMapFixes()
 function AddMissionGoals()
 {
     local #var(prefix)DataLinkTrigger dlt;
-    local Inventory item;
-    local DeusExGoal newGoal;
 
     if(dxr.localURL != "05_NYC_UNATCOMJ12LAB") return;
 

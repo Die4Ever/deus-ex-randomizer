@@ -89,9 +89,9 @@ function DrawSkillsScreen(GC gc)
 {
     local Skill askill;
     local float curx, cury, w, h;
-    local String str, costStr, word;
+    local String str, costStr;
     local int index, i;
-    local float barLen, costx, levelx, curvaluex, nextvaluex, val, defaultval;
+    local float barLen, costx, levelx, curvaluex, nextvaluex, val;
     local DXRSkills dxrs;
     local String levelValuesDisplay[4];
 
@@ -219,10 +219,10 @@ function DrawAugsScreen(GC gc)
 {
     local Augmentation anaug;
     local float curx, cury, w, h;
-    local String str, costStr;
+    local String str;
     local int index, i, numUpgrades;
     local int trueLevel,trueMax;
-    local float barLen, levelx, curvaluex, nextvaluex, val, defaultval;
+    local float barLen, levelx, curvaluex, nextvaluex, val;
     local DXRAugmentations dxra;
     local String levelValuesDisplay[5];
 
@@ -480,7 +480,6 @@ function bool AttemptUpgradeAug( DeusExPlayer thisPlayer, Augmentation anAug )
 
     if (anAug!=None)
     {
-
         class'DXRAugmentations'.static.GetTrueAugLevels(anAug,trueLevel,trueMax);
 
         if (trueLevel==trueMax){

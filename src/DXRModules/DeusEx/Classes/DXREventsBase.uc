@@ -335,7 +335,6 @@ simulated function InitPoolBalls()
 
 simulated function bool CheckForNanoKey(String keyID)
 {
-
     local name keyName;
 
     if (player()==None){
@@ -561,7 +560,6 @@ function Trigger(Actor Other, Pawn Instigator)
 function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
     local string j;
-    local int i;
     local class<Json> js;
     js = class'Json';
 
@@ -744,7 +742,6 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     local string classname;
     local #var(PlayerPawn) p;
     local bool dead, isRobot;
-    local int i;
 
     p = player();
     dead = !CanKnockUnconscious(victim, damageType);
@@ -1292,7 +1289,6 @@ function bool AddTestGoal(
     local int bingoIdx;
     local string desc;
     local bool do_not_scale, append_max;
-    local float f;
 
     if (event == "") return false;
     for (bingoIdx = 0; bingoIdx < ArrayCount(bingo_options); bingoIdx++)
@@ -1340,7 +1336,6 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions, real_duration;
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local bool bPossible, do_not_scale, append_max;
-    local float f;
 
     if(dxr.flags.gamemode == dxr.flags.OneGoal) {
         _CreateOneGoalBingoBoard(data);
@@ -1563,7 +1558,7 @@ simulated function int ScaleBingoGoalMax(int max, int bingoScale, float randMin,
 }
 
 simulated function int HandleMutualExclusion(MutualExclusion m, int options[ArrayCount(bingo_options)], int num_options) {
-    local int a, b, overwrite;
+    local int a, b;
 
     for(a=0; a<num_options; a++) {
         if( bingo_options[options[a]].event == m.e1 ) break;
