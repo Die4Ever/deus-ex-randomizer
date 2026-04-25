@@ -69,7 +69,6 @@ function FixJockExplosion()
 function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 {
     local DeusExMover d;
-    local ComputerSecurity c;
     local Keypad k;
     local #var(prefix)Button1 b;
     local Switch2 s2;
@@ -257,13 +256,13 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 function PreFirstEntryMapFixes_Final(bool isVanilla)
 {
     local DeusExMover d;
-    local Switch1 s;
-    local Switch2 s2;
+    local #var(prefix)Switch1 s;
+    local #var(prefix)Switch2 s2;
     local SpecialEvent se;
     local #var(prefix)DataLinkTrigger dlt;
-    local SkillAwardTrigger sat;
+    local #var(prefix)SkillAwardTrigger sat;
     local Dispatcher disp;
-    local FlagTrigger ft;
+    local #var(prefix)FlagTrigger ft;
     local OnceOnlyTrigger oot;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
@@ -277,7 +276,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     }
 
     // make the Tong ending flag trigger not based on collision
-    foreach AllActors(class'FlagTrigger', ft, 'FlagTrigger') {
+    foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'FlagTrigger') {
         if(ft.event != 'Generator_overload') continue;
         ft.Tag = 'Check_Generator_overload';
         ft.SetCollision(false,false,false);
@@ -360,7 +359,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         }
 
         //Fix the Tong Ending skip for real for real
-        foreach AllActors(class'Switch1',s){
+        foreach AllActors(class'#var(prefix)Switch1',s){
             if (s.Event=='destroy_generator'){
                 s.Tag='destroy_generator_switch';
                 class'DXRTriggerEnable'.static.Create(s,'Generator_overload','destroy_generator_switch');
@@ -368,7 +367,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         }
 
         //but like... for REAL
-        foreach AllActors(class'Switch2',s2){
+        foreach AllActors(class'#var(prefix)Switch2',s2){
             if (s2.Event=='button_1'){
                 s2.Event = 'button_1_once';
                 oot = Spawn(class'OnceOnlyTrigger',, 'button_1_once');
@@ -397,7 +396,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         dlt.SetCollisionSize(200,40);
         dlt.datalinkTag='DL_Final_Helios07';
 
-        foreach AllActors(class'SkillAwardTrigger',sat){
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat){
             if (sat.awardMessage=="Critical Loctaion Bonus"){
                 sat.awardMessage="Critical Location Bonus";
                 break;
@@ -452,6 +451,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     local ComputerSecurity c;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)Nanokey key;
+    local PatrolPoint pp;
 
     //Change break room security computer password so it isn't pre-known
     //This code isn't written anywhere, so you shouldn't have knowledge of it
@@ -514,6 +514,12 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
             key.Description = "Station 5 Hatch Key";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(key);
+        }
+
+        foreach AllActors(class'PatrolPoint',pp,'commando1_1'){
+            if (pp.NextPatrol!='commando1_1') continue;
+            pp.NextPatrol='commando1_0'; //Make it point back to the other end, instead of back onto itself
+            pp.PreBeginPlay();
         }
 
         Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters
@@ -583,7 +589,7 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
 {
     local ComputerSecurity c;
     local Keypad k;
-    local Switch1 s;
+    local #var(prefix)Switch1 s;
     local ComputerPersonal comp_per;
     local int i;
     local #var(prefix)DataLinkTrigger dlt;
@@ -685,7 +691,7 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
                 }
             }
         }
-        foreach AllActors(class'Switch1',s){
+        foreach AllActors(class'#var(prefix)Switch1',s){
             if (s.Name == 'Switch21'){
                 s.Event = 'door_page_overlook';
             } else if (s.Event=='kill_page'){

@@ -505,6 +505,9 @@ function SetWatchFlags() {
         WatchFlag('M02BillyDone');
         WatchFlag('AmbrosiaTagged');
         WatchFlag('MS_DL_Played', true);// this is the datalink played after dealing with the hostage situation, from Mission02.uc
+        WatchFlag('DXREvents_M02BumSong1');
+        WatchFlag('DXREvents_M02BumSong2');
+        WatchFlag('DXREvents_M02BumSong3');
 
         foreach AllActors(class'#var(prefix)ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
@@ -1351,26 +1354,35 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
         bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-993,-60,-80),40,20);
 
-        bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(0,0,0)); //Bilge Pumps
+        bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(-2888,-1208,-448)); //Bilge Pumps
 
         //Weld Points
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,100));
         bt.Tag='wall1';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,75));
         bt.Tag='wall2';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,50));
         bt.Tag='wall3';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,25));
         bt.Tag='wall4';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,0));
         bt.Tag='wall5';
         bt.bDestroyOthers=False;
 
-        break;
+        //Crawl under helipad
+        bt = class'BingoTrigger'.static.Create(self,'CrawlUnderHelipad',vectm(-3865,660,-550),60,20);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'CrawlUnderHelipad',vectm(-4500,660,-550),60,20);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'CrawlUnderHelipad',vectm(-5960,660,-550),60,20);
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'EngineeringBridge',vectm(-254,241,-432));
+        bt.Tag = 'Bridge';
 
         break;
     case "09_NYC_GRAVEYARD":
@@ -1399,6 +1411,9 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CATACOMBS":
         WatchFlag('IcarusCalls_Played');
+
+        //Don't mark AimeeLeMerchantLived here, since this is where you could kill them
+
         foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
             if(jf.BindName == "aimee")
                 jf.bImportant = true;
@@ -1417,6 +1432,7 @@ function SetWatchFlags() {
 
         break;
     case "10_PARIS_CATACOMBS_METRO":  //Revision-only map
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
         foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(2134,-1758,-580)){
             AddWatchedActor(bg,"InCaseOfEmergency");
             break;
@@ -1434,7 +1450,8 @@ function SetWatchFlags() {
                 wib.bImportant = true;
         }
         WatchFlag('SilhouetteHostagesAllRescued');
-        MarkBingo("AimeeLeMerchantLived", true);
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         //Regular forwards direction catacombs timing
         if (RevisionMaps){
@@ -1474,6 +1491,8 @@ function SetWatchFlags() {
         WatchFlag('MeetRenault_Played');
         WatchFlag('JoshuaInterrupted_Played');
         RewatchFlag('KnowsGuntherKillphrase');
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         foreach AllActors(class'#var(prefix)Mutt', starr) {
             starr.bImportant = true;// you're important to me
@@ -1524,6 +1543,9 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         if (RevisionMaps){
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2016,785,144),40,20);  //Actual Front Door
             bt.bDestroyOthers = false;
@@ -1561,6 +1583,8 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_beth_room');
         WatchFlag('WatchKeys_nico_room');
         WatchFlag('WatchKeys_duclare_chateau');
+
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         bt = class'BingoTrigger'.static.Create(self,'nico_fireplace',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'dumbwaiter',vectm(0,0,0));
@@ -1607,6 +1631,8 @@ function SetWatchFlags() {
         WatchFlag('M11WaltonHolo_Played');
         WatchFlag('templar_upload');
 
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         if (RevisionMaps){
             class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3811,-3200,-64),20,15,class'#var(prefix)ChefCarcass');
@@ -1641,6 +1667,8 @@ function SetWatchFlags() {
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
 
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         foreach AllActors(class'WaterZone',water){
             water.ZonePlayerEvent = 'EverettAquarium';
             break;
@@ -1667,6 +1695,8 @@ function SetWatchFlags() {
 
         break;
     case "11_PARIS_UNDERGROUND":
+        MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
+
         foreach AllActors(class'ZoneInfo',zone){
             if (zone.bPainZone && zone.DamageType=='Shocked'){
                 //zone.ZonePlayerEvent = 'TrainTracks';
@@ -2188,28 +2218,46 @@ simulated function AnyEntry()
     Super.AnyEntry();
 
     switch(dxr.localURL) {
-    case "10_PARIS_METRO":
-        // SoldRenaultZyme bingo goal issue #705
-        conv = GetConversation('RenaultPays');
-        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
-        ce = conv.GetEventFromLabel("SellRepeat");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
-        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
-        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
-        ce = conv.GetEventFromLabel("MoreMoney3");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
-        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
-        // remove the event with label Sell which checks for the RenaultPaid flag
-        RemoveConvEventByLabel(conv, "Sell");
 
-        // remove the flag checks for entering the bakery, since you can get zyme from other places
-        ce = conv.GetEventFromLabel("ActualChoice");
-        for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
-            DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
-        }
+    case "02_NYC_BATTERYPARK":
+        //Add flags for each part of the bums song
+        conv = GetConversation('ParkBum1Barks');
+
+        ce = conv.GetEventFromLabel("A1");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='DXREvents_M02BumSong1';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=3;
+
+        ce = conv.GetEventFromLabel("A2");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='DXREvents_M02BumSong2';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=3;
+
+        ce = conv.GetEventFromLabel("A3");
+        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='DXREvents_M02BumSong3';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=3;
+
         break;
+
+    case "05_NYC_UNATCOISLAND":
+        //Add a trigger event to hit the SavedMiguel bingo trigger
+        conv = GetConversation('MiguelHack');
+        ce = conv.GetEventFromLabel("Hop");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;
+        ConEventTrigger(ce).triggerTag = 'SavedMiguel';
+        break;
+
     case "06_HONGKONG_TONGBASE":
         //Add a SetFlag to "What are you doing here?" that we can watch
         conv = GetConversation('M06TongBarks2');
@@ -2238,14 +2286,6 @@ simulated function AnyEntry()
         ces.label = "";
 
         break;
-    case "05_NYC_UNATCOISLAND":
-        //Add a trigger event to hit the SavedMiguel bingo trigger
-        conv = GetConversation('MiguelHack');
-        ce = conv.GetEventFromLabel("Hop");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;
-        ConEventTrigger(ce).triggerTag = 'SavedMiguel';
-        break;
 
     case "08_NYC_SMUG":
         //Add a flag for explicitly not warning smuggler (for bingo failure, maybe to toot for being a dick?)
@@ -2258,6 +2298,30 @@ simulated function AnyEntry()
         cesf.flagRef.value=True;
         cesf.flagRef.expiration=9;
         break;
+
+    case "10_PARIS_METRO":
+        // SoldRenaultZyme bingo goal issue #705
+        conv = GetConversation('RenaultPays');
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
+        ce = conv.GetEventFromLabel("SellRepeat");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
+        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
+        ce = conv.GetEventFromLabel("MoreMoney3");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
+        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        // remove the event with label Sell which checks for the RenaultPaid flag
+        RemoveConvEventByLabel(conv, "Sell");
+
+        // remove the flag checks for entering the bakery, since you can get zyme from other places
+        ce = conv.GetEventFromLabel("ActualChoice");
+        for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
+            DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
+        }
+        break;
+
     }
 }
 
@@ -3378,6 +3442,10 @@ function string RemapBingoEvent(string eventname)
         case "M03MeetGunther_Played":
         case "GuntherShowdown_Played":
             return "PeacekeepingOccupation_Convo";
+        case "DXREvents_M02BumSong1":
+        case "DXREvents_M02BumSong2":
+        case "DXREvents_M02BumSong3":
+            return "M02BumSong_Convo";
 
         default:
             return eventname;
@@ -3574,6 +3642,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "DXRNPCs1_Takedown":
             failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
+            return num_failed;
+        case "ParkBum1_Takedown":
+            failed[num_failed++] = "M02BumSong_Convo";
             return num_failed;
     }
 
@@ -4446,6 +4517,9 @@ defaultproperties
     bingo_options(405)=(event="PetRobot_SecurityBotSmall",desc="Pet %s Commercial Grade Security Bots",desc_singular="Pet a Commercial Grade Security Bot",max=3,missions=#bit(1,2,3,4,8,11,15))
     bingo_options(406)=(event="PeacekeepingOccupation_Convo",desc="Peace Keeping Occupation",max=1,missions=#bit(2,3,4)) //Space between Peace and Keeping for better linebreaking in the bingo viewer
     bingo_options(407)=(event="MeetClinicMaleBum3_Played",desc="Who will help the widow's son?",max=1,missions=#bit(2))
+    bingo_options(408)=(event="CrawlUnderHelipad",desc="Crawl under the super freighter helipad",max=3,missions=#bit(9),do_not_scale=true)
+    bingo_options(409)=(event="EngineeringBridge",desc="Raise the bridge in engineering",max=1,missions=#bit(9))
+    bingo_options(410)=(event="M02BumSong_Convo",desc="Our Country 'Tis of Thee",max=3,missions=#bit(2),do_not_scale=true)
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion

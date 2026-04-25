@@ -479,7 +479,6 @@ function SpawnLeMerchant(vector loc, rotator rot)
     local DXRNPCs npcs;
     local DXREnemies dxre;
     local ScriptedPawn sp;
-    local Merchant m;
 
     if(dxr.flags.settings.swapitems > 0) {
         // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area

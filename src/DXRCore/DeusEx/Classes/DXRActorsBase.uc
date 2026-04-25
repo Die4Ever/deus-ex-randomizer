@@ -41,7 +41,7 @@ function CheckConfig()
 function SwapAll(string classname, float percent_chance)
 {
     local Actor temp[4096];
-    local Actor a, b;
+    local Actor a;
     local int num, i, slot;
     local class<Actor> c;
 
@@ -143,8 +143,6 @@ static function bool IsRelevantPawn(class<Actor> a)
 
 static function bool IsInitialEnemy(ScriptedPawn p)
 {
-    local int i;
-
     return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
 }
 
@@ -1517,7 +1515,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
 {
     local NavigationPoint temp[4096];
     local NavigationPoint p;
-    local int i, num, slot;
+    local int num, slot;
     local float dist;
 
     if( maxdist <= mindist )
@@ -1894,7 +1892,6 @@ function bool _NearestWall(out LocationNormal out, FMinMax distrange)
 
 function bool NearestWall(out LocationNormal out, FMinMax distrange, optional float away_from_wall)
 {
-
     if( _NearestWall(out, distrange) == false ) {
         return false;
     }
@@ -2038,7 +2035,6 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
 function RemoveMoverPrePivot(Mover m)
 {
     local vector pivot;
-    local rotator r;
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
 
     AbCollideActors = m.bCollideActors;
@@ -2113,7 +2109,6 @@ function DebugMarkKeyActor(Actor a, coerce string id)
 
 function DebugMarkKeyPosition(vector pos, coerce string id)
 {
-    local ActorDisplayWindow actorDisplay;
     local Actor a;
     if( ! #bool(locdebug)) {
         err("Don't call DebugMarkKeyPosition without locdebug mode! Add locdebug to the compiler_settings.default.json file");
@@ -2218,13 +2213,21 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
     local Vector loc;
     local LocationNormal ln;
     local FMinMax mm;
-    local Actor act;
     local Rotator forwardRot;
+    local Vector HitLocation, HitNormal;
+    local Actor hit;
 
     // pick a location for the spawned Actor in front of `who`
     forwardRot.Yaw = who.Rotation.Yaw;
     loc = vector(forwardRot) * distance;
     loc += who.Location;
+
+    //trace forward so it doesn't try to place it in a wall
+    hit = Trace(HitLocation, HitNormal, loc, who.Location, False);
+
+    if (LevelInfo(hit)!=None){
+        loc = HitLocation;
+    }
 
     // move it down to the floor
     ln.loc = loc;
@@ -2234,6 +2237,9 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
         loc.z = ln.loc.Z + (what.default.CollisionHeight / 2.0);
     }
 
+    l("Spawning "$what$" at "$loc$" (Dist: "$VSize(loc-who.Location)$")");
+
+    //Maybe this could use _AddActor instead of a plain Spawn?
     return Spawn(what,,, loc, spawnedRot);
 }
 

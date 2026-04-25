@@ -46,7 +46,6 @@ function Timer()
 
 static function vector GetLocation(#var(PlayerPawn) p)
 {
-
     local float spawnRange;
     local vector loc, PlayerHead, HitLocation, HitNormal,EndTrace;
     local Actor HitActor;

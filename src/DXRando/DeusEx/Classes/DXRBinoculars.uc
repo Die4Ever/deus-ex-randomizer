@@ -51,7 +51,7 @@ static function PeepTimer(#var(PlayerPawn) peeper, out int watchTime, out Actor 
     local Actor target;
     local bool newPeepee, newPeepTex, hitMirror;
     local name texName,texGroup;
-    local int flags, i, distRemaining;
+    local int flags, distRemaining;
 
     if(peeper == None) return;
     Level = peeper.Level;

@@ -245,7 +245,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     local #var(prefix)Augmentation aug;
     local #var(prefix)Skill sk;
     local string s, word, s_defaults, t;
-    local int i, len, mid, oldseed, removals;
+    local int i, len, oldseed, removals;
     local float val, defaultval;
     local float d_min, d_max, avg_diff;
     local float points[16];
@@ -426,8 +426,6 @@ static simulated function string DescriptionLevelShort(Actor act, int i, out flo
 
 static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
-    local float f;
-
     log("WARNING: DXRBase DescriptionLevel failed for " $ act);
     word = "Values";
     shortDisplay=string(val);
@@ -561,7 +559,6 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
 //id lets you provide an ID so you can identify where the response should go
 simulated function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode,
                            DXRBase module, int id, optional bool noPause) {
-
     local DXRMessageBoxWindow msgBox;
 
     l(module$" CreateMessageBox "$msgTitle$" - "$msgText);

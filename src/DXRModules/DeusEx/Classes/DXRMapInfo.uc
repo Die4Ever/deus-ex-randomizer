@@ -4,7 +4,6 @@ var config string maps[128];
 
 function CheckConfig()
 {
-    local int i;
     if( config_version < 4 ) {
         GetAllMaps(maps);
     }

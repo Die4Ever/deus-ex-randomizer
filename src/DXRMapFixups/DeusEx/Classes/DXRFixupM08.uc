@@ -218,7 +218,7 @@ function AddNoRoomToJordanSheaConvo(){
     //When you buy from Jordan in this mission, they got lazy and didn't have a failure path
     //for when you don't have room to accept the candy or booze you buy.  Luckily, there's a
     //line that's good enough that we can yoink from the conversation with Smuggler.
-    local ConEventSpeech ces, origNoRoom, newNoRoom, normalSpeech;
+    local ConEventSpeech origNoRoom, newNoRoom, normalSpeech;
     local Conversation c;
     local ConEvent ce;
     local ConEventTransferObject ceto;
@@ -290,7 +290,6 @@ function RearrangeJockExitDialog()
 {
     local Conversation c;
     local ConEvent ce,prev;
-    local ConEventSpeech ces;
     local ConEventAddSkillPoints ceasp;
     local ConEventAddGoal ceag,goalComplete;
 
@@ -630,6 +629,8 @@ function PreFirstEntryMapFixes()
                     break;
                 }
 
+                FixHotelPatrolPaths();
+
                 Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
                 Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
                 Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
@@ -770,6 +771,47 @@ function PreFirstEntryMapFixes()
     }
 }
 //#endregion
+
+function FixHotelPatrolPaths()
+{
+    local PatrolPoint pp;
+    local #var(prefix)ScriptedPawn sp;
+
+    //First, fix the tags on the patrol points (these tags align with the Transcended map fixes, so should be good regardless?)
+    //Near front desk
+    foreach RadiusActors(class'PatrolPoint',pp, 1, vectm(-379.099670,-1116.226318,-112.900032)){
+        pp.Tag='HotelPatrol2A';
+        pp.NextPatrol='HotelPatrol2B';
+        break;
+    }
+
+    //Near upstairs far door
+    foreach RadiusActors(class'PatrolPoint',pp, 1, vectm(670.092590,-859.416077,79.100044)){
+        pp.Tag='HotelPatrol2B';
+        pp.NextPatrol='HotelPatrol2C';
+        pp.PauseTime=3.0;
+        break;
+    }
+
+    //Near upstairs elevator
+    foreach RadiusActors(class'PatrolPoint',pp, 1, vectm(-420.243744,-1938.531494,79.100182)){
+        pp.Tag='HotelPatrol2C';
+        pp.NextPatrol='HotelPatrol2A';
+        pp.PauseTime=3.0;
+        break;
+    }
+
+    //Now reinitialize all the patrol points
+    foreach AllActors(class'PatrolPoint',pp){
+        pp.PreBeginPlay();
+    }
+
+    //Now kick off the NPCs onto the right paths
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+        if (sp.Orders!='Patrolling') continue;
+        sp.FollowOrders();
+    }
+}
 
 //#region Post First Entry
 function PostFirstEntryMapFixes()

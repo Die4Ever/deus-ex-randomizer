@@ -17,7 +17,7 @@ function CreateControls()
 function bool BuildAugList()
 {
 	local Augmentation TAug, AllAugs[32];
-    local int total, i, j, num;
+    local int total, i, num;
 
 	if (Player == None) return false;
 

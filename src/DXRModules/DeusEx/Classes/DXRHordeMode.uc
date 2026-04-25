@@ -350,7 +350,6 @@ function AnyEntry()
     local Teleporter t;
     local DeusExMover d;
     local DXREnemies dxre;
-    local Inventory item;
     local int i;
     local #var(prefix)SkillAwardTrigger sat;
     local bool new_game;
@@ -442,7 +441,6 @@ function AnyEntry()
 function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local DXRMapVariants mapvariants;
-    local string m;
 
     mapvariants = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
     if(mapvariants != None) {
@@ -758,7 +756,7 @@ function float GenerateEnemy(DXREnemies dxre)
     local class<ScriptedPawn> c;
     local ScriptedPawn p;
     local int i;
-    local float difficulty, dist, r;
+    local float difficulty, r;
     local vector loc;
 
     r = initchance();
@@ -909,7 +907,6 @@ function GenerateItem()
     local vector loc;
     local #var(prefix)AugmentationCannister aug;
     local Barrel1 barrel;
-    local DeusExMover d;
     local HordeModeCrate hmc;
     local float r;
     local bool success;

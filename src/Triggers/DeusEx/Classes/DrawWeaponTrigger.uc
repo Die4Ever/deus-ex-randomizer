@@ -25,7 +25,6 @@ function DrawWeapon()
     local name cloneevent;
 
     if (Event != '') {
-
         foreach AllActors(class '#var(prefix)ScriptedPawn', sp, Event) {
             sp.SetupWeapon(true,true);
             if (bKeepWeaponDrawn) sp.bKeepWeaponDrawn=true;

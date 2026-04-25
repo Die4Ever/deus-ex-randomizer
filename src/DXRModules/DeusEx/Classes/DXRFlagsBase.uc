@@ -702,7 +702,6 @@ simulated function string flagNameToHumanName(name flagname){
 
 simulated function string flagValToHumanVal(name flagname, int val){
     local DXRLoadouts loadout;
-    local string ret;
 
     switch(flagname){
         //Basic true/false
@@ -807,11 +806,13 @@ simulated function string flagValToHumanVal(name flagname, int val){
             if (val==0){
                 return "Disabled";
             } else if (val==1){
-                return "Enabled (With Names)";
+                return "Enabled (Streaming)";
             } else if (val==2){
                 return "Enabled (Anonymous)";
             } else if (val==3) {
                 return "Offline Simulated";
+            } else if (val==4) {
+                return "Streaming and Simulated";
             }
             break;
 

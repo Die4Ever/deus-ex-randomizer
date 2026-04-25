@@ -29,7 +29,6 @@ simulated function Timer()
 function SpawnDXRando(DeusExPlayer player)
 {
     local DeusExLevelInfo DeusExLevelInfo;
-    local PlayerStart ps;
 
     class'DeusExLevelInfo'.default.MapName = "ENDGAME4";
     class'DeusExLevelInfo'.default.missionNumber = 99;

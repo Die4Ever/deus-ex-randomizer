@@ -1107,7 +1107,6 @@ function DrawSpyDroneAugmentation(GC gc)
         //Balanced SpyDrone costs 10 energy to detonate.  Display a message if you don't have enough
         //See "DroneExplode" in DXRBalance/BalancePlayer.uc
         if (Player.Energy < 10 && class'MenuChoice_BalanceAugs'.static.IsEnabled()){
-
             //Find the useful coords of the drone window
             boxH = height/4;
             boxCX = width/8 + margin;

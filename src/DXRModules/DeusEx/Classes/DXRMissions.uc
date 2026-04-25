@@ -566,7 +566,7 @@ function MoveActorsIn(int goalsToLocations[32])
 
 function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
-    local int i, a, g, g1, g2, r, loc, _num_locs, _num_starts, _num_goal_locs;
+    local int i, a, g, g1, r, loc, _num_locs, _num_starts, _num_goal_locs;
     local int availLocs[64], goalsOrder[32], goalLocs[64];
 
     // build list of availLocs based on flags, also count _num_starts
@@ -1108,7 +1108,7 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
 //tests to ensure that there are more goal locations than movable actors for each map
 function RunTests()
 {
-    local int i, total;
+    local int i;
     Super.RunTests();
 
     i = NORMAL_GOAL | VANILLA_START;

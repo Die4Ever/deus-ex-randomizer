@@ -102,8 +102,6 @@ function FastForward()
 
 function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvokeActor, optional bool bForcePlay)
 {
-    local Actor tempActor;
-
     if ( Super(ConPlayBase).StartConversation(newPlayer, newInvokeActor, bForcePlay) == False )
         return False;
 

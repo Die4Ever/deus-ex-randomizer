@@ -1,21 +1,19 @@
 class DXRPaulDentonCarcass injects PaulDentonCarcass;
 
-function SetSkin(DeusExPlayer player)
+function PostPostBeginPlay()
 {
-    local int i;
     local DXRFashionManager fashion;
+    local #var(PlayerPawn) p;
 
-    Super.SetSkin(player);
+    Super.PostPostBeginPlay();
 
-    if( player == None ) {
-        return;
-    }
-
-    //FASHION!
-    fashion = class'DXRFashionManager'.static.GiveItem(#var(PlayerPawn)(player));
+    //Make sure he's dressed
+    foreach AllActors(class'#var(PlayerPawn)',p) break;
+    fashion = class'DXRFashionManager'.static.GiveItem(p);
     if (fashion!=None){
         fashion.GetDressed();
     }
+
 }
 
 // Make paul's lifeless body even more mortal so it can be picked up for the "PaulToTong" goal.

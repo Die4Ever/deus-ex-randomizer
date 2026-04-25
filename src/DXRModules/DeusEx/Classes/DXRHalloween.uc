@@ -127,7 +127,6 @@ function MapFixes()
     local #var(DeusExPrefix)Carcass carc;
     local class<#var(DeusExPrefix)Carcass> carcclass;
     local ScriptedPawn sp;
-    local float dist;
 
     if(bSafeStalkers()) {
         //Make people fearless so they don't get spooked by Mr. H
@@ -349,11 +348,10 @@ function SpawnSpiderweb(vector loc)
     local ZoneInfo zone;
     local class<Spiderweb> webClass;
     // Used for texture trace
-    local vector  EndTrace, StartTrace, HitLocation, HitNormal;
+    local vector  EndTrace, HitLocation, HitNormal;
     local actor   target;
     local int     texFlags;
     local name    texName, texGroup;
-    local bool    bInvisibleWall;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -400,7 +398,7 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot, float size)
     local bool found_ceiling, found_floor;
     local LocationNormal ceiling, floor, ceiling_or_floor, wall1, wall2;
     local vector norm;
-    local float dist, f;
+    local float f;
     local FMinMax distrange;
 
     ceiling.loc = loc;
