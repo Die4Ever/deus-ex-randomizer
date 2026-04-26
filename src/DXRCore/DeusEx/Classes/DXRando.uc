@@ -260,7 +260,6 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRCameraModes";
     modules_to_load[i++] = "DXRHalloween";
     modules_to_load[i++] = "DXRBingoCampaign";
-    modules_to_load[i++] = "DXRSavedSetup";
 }
 
 function hx_modules()
@@ -297,7 +296,6 @@ function hx_modules()
     modules_to_load[i++] = "DXRWeaponMods";
     modules_to_load[i++] = "DXRGrenades";
     modules_to_load[i++] = "DXRHalloween";
-    modules_to_load[i++] = "DXRSavedSetup";
 }
 
 function gmdx_modules()
@@ -339,7 +337,6 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRGrenades";
     modules_to_load[i++] = "DXRCameraModes";
     modules_to_load[i++] = "DXRHalloween";
-    modules_to_load[i++] = "DXRSavedSetup";
 }
 
 function revision_modules()
@@ -385,7 +382,6 @@ function vmd_modules()
     modules_to_load[i++] = "DXRGrenades";
     modules_to_load[i++] = "DXRCameraModes";
     modules_to_load[i++] = "DXRHalloween";
-    modules_to_load[i++] = "DXRSavedSetup";
 }
 
 function DXRFlags LoadFlagsModule()

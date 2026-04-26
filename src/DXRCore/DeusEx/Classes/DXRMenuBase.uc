@@ -104,13 +104,6 @@ function DXRFlags GetFlags()
     return flags;
 }
 
-function DXRSavedSetup GetSavedSetup()
-{
-    log(Self$".GetSavedSetup calling GetDxr");
-    GetDxr();
-    return DXRSavedSetup(dxr.LoadModule(class'DXRSavedSetup'));
-}
-
 function DXRando GetDxr()
 {
     if( dxr != None ) return dxr;
