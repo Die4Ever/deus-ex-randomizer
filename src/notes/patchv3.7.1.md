@@ -76,4 +76,5 @@
 - "Getting Colder..." infolink from Alex in Mission 1 UNATCO HQ actually works if you leave his office without talking to him.
 - Values in the Environmental Training skill description align better.
 - Smuggler's elevator button in the final New York mission no longer moves around.
+- Added buttons for Save Settings and Restore Settings on the Advanced New Game screen.
 </details>
