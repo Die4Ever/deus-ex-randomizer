@@ -677,6 +677,7 @@ function AnyEntryMapFixes()
     local string textAdd;
     local #var(prefix)SecurityCamera cam;
     local #var(prefix)AutoTurret turret;
+    local #var(prefix)NanoKey k;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -694,6 +695,15 @@ function AnyEntryMapFixes()
 
     case "03_NYC_AIRFIELD":
         CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
+
+        if (dxr.flagbase.GetBool('MeetLebedev_Played') || dxr.flagbase.GetBool('JuanLebedev_Dead')) {
+            foreach AllActors(class'#var(prefix)NanoKey', k) {
+                if (k.Owner != None && k.keyID == 'eastgate') {
+                    ThrowItem(k, 0.1);
+                }
+            }
+        }
+
         break;
     case "03_NYC_HANGAR":
         CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
@@ -732,6 +742,14 @@ function AnyEntryMapFixes()
             }
             foreach AllActors(class'#var(prefix)AutoTurret', turret) {
                 turret.UnTrigger(None, None);
+            }
+        }
+
+        if (dxr.flagbase.GetBool('MeetLebedev_Played') || dxr.flagbase.GetBool('JuanLebedev_Dead')) {
+            foreach AllActors(class'#var(prefix)NanoKey', k) {
+                if (k.Owner != None && k.keyID == 'Sewerdoor') {
+                    ThrowItem(k, 0.1);
+                }
             }
         }
 

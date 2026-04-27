@@ -807,6 +807,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
             MarkConvPlayed("DL_LebedevKill", bFemale);
+            GiveKey(player, 'eastgate', "East Gate key");
         case 36: // fallthrough
             GiveKey(player, 'Sewerdoor', "Sewer Door");
         case 35: // fallthrough
