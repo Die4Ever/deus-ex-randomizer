@@ -71,16 +71,16 @@ struct FlagsSettings {
     var int prison_pocket;// just for Heinki, keep your items when getting captured
     var int bingo_win; //Number of bingo lines to beat the game
     var int bingo_freespaces; //Number of bingo free spaces
-    var int spoilers; //0=Disallowed, 1=Available
-    var int menus_pause; // 0=no pause, 1=vanilla
-    var int starting_map; // one byte for each historical start
-    var int grenadeswap;
 
     // leave these at the end for the automated tests
     var int health, energy;// normally just 100
 };
 
 struct MoreFlagsSettings{
+    var int spoilers; //0=Disallowed, 1=Available
+    var int menus_pause; // 0=no pause, 1=vanilla
+    var int starting_map; // one byte for each historical start
+    var int grenadeswap;
     var int newgameplus_curve_scalar;
     var int empty_medbots;
     var int camera_mode;
@@ -439,13 +439,13 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_bingo_win', settings.bingo_win, mode, str);
     FlagInt('Rando_bingo_freespaces', settings.bingo_freespaces, mode, str);
 
-    FlagInt('Rando_spoilers', settings.spoilers, mode, str);
-    FlagInt('Rando_menus_pause', settings.menus_pause, mode, str);
+    FlagInt('Rando_spoilers', moresettings.spoilers, mode, str);
+    FlagInt('Rando_menus_pause', moresettings.menus_pause, mode, str);
     FlagInt('Rando_health', settings.health, mode, str);
     FlagInt('Rando_energy', settings.energy, mode, str);
 
-    FlagInt('Rando_starting_map', settings.starting_map, mode, str);
-    FlagInt('Rando_grenadeswap', settings.grenadeswap, mode, str);
+    FlagInt('Rando_starting_map', moresettings.starting_map, mode, str);
+    FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
     FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
     FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
@@ -1156,7 +1156,7 @@ simulated function LoadNoFlags()
 
             //Initialize the starting_map value based on the map selected when starting
             //the server.  This is mostly for the purposes of generating a bingo board.
-            settings.starting_map = class'DXRStartMap'.static.GetHXStartMapVal(dxr.LocalURL);
+            moresettings.starting_map = class'DXRStartMap'.static.GetHXStartMapVal(dxr.LocalURL);
         }
     }
 #endif

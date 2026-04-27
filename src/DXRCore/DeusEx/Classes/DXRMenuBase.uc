@@ -898,6 +898,36 @@ function string SetEnumValue(int e, string text)
     return s;
 }
 
+function string GetTextWindowText(int twId)
+{
+    local TextWindow tw;
+
+    tw = TextWindow(wnds[twId]);
+    if (tw == None) return "";
+    return tw.GetText();
+}
+
+function SetTextWindowText(int twId, string str)
+{
+    local TextWindow tw;
+
+    tw = TextWindow(wnds[twId]);
+    if (tw == None) return;
+    tw.SetText(str);
+}
+
+function int GetIdFromLabel(string label)
+{
+    local int i;
+
+    for (i = 0; i < ArrayCount(labels); i++) {
+        if (labels[i] == label) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 event StyleChanged()
 {
     local ColorTheme theme;

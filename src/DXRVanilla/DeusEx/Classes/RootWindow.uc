@@ -25,7 +25,7 @@ function bool GetNoPause(bool bNoPause) {
     local DXRFlags flags;
 
     foreach parentPawn.AllActors(class'DXRFlags', flags) {
-        if(!bNoPause && flags.settings.menus_pause == 0) {
+        if(!bNoPause && flags.moresettings.menus_pause == 0) {
             bNoPause = true;
             PartialHideHud();
         }

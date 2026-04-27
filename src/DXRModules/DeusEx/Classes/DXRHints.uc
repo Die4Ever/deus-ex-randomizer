@@ -117,11 +117,11 @@ simulated function InitHints()
         AddHint("Have you tried shooting the camera?", "Maybe you can get a better view!");
     }
 
-    if (dxr.flags.settings.spoilers>0) {
+    if (dxr.flags.moresettings.spoilers>0) {
         AddHint("Spoiler buttons are available on the Goals screen!", "Give them a shot if you get really stuck!");
     }
 
-    if (dxr.flags.settings.menus_pause==0) {
+    if (dxr.flags.moresettings.menus_pause==0) {
         AddHint("The game won't pause when you enter menus!", "Watch out!");
     }
 

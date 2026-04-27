@@ -1,7 +1,8 @@
 class DXRMenuSetupRando extends DXRMenuBase;
 
 var float combatDifficulty;
-var int starting_locations, goals_rando;
+var int gamemode_enum, starting_locations, goals_rando;
+var bool showMode, showLoadout, showAutosave, showCrowdControl, showOnlineFeatures, showMirroredMaps;
 
 var string SplitsBtnTitle, SplitsBtnMessage;
 
@@ -26,6 +27,8 @@ function BindControls(optional string action)
     local bool bMatched;
     f = GetFlags();
 
+    CreateBasicOptions(f);
+
     NewGroup("General");
 
     if( ! #defined(vmd) ) {
@@ -47,15 +50,15 @@ function BindControls(optional string action)
         if(i == 10) continue;// Liberty Island dupe
         s = class'DXRStartMap'.static.GetStartingMapName(i);
         if(s != "") {
-            bMatched = EnumOption(s, i, f.settings.starting_map) || bMatched;
+            bMatched = EnumOption(s, i, f.moresettings.starting_map) || bMatched;
         }
     }
-    if(f.settings.starting_map != 0 && !bMatched) {
-        if(writing) f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, -1); // reroll to make sure we respect the current seed which could've been changed in the input box above
-        EnumOption("Random", f.settings.starting_map, f.settings.starting_map);
+    if(f.moresettings.starting_map != 0 && !bMatched) {
+        if(writing) f.moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, -1); // reroll to make sure we respect the current seed which could've been changed in the input box above
+        EnumOption("Random", f.moresettings.starting_map, f.moresettings.starting_map);
     }
     else if(EnumOption("Random", -1)) {
-        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
+        f.moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
     }
 
     BreakLine();
@@ -91,12 +94,12 @@ function BindControls(optional string action)
     Slider(f.settings.dancingpercent, 0, 100);
 
     NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them).");
-    EnumOption("Available", 1, f.settings.spoilers,GetSpoilerButtonHelpText(1));
-    EnumOption("Disallowed", 0, f.settings.spoilers,GetSpoilerButtonHelpText(0));
+    EnumOption("Available", 1, f.moresettings.spoilers,GetSpoilerButtonHelpText(1));
+    EnumOption("Disallowed", 0, f.moresettings.spoilers,GetSpoilerButtonHelpText(0));
 
     NewMenuItem("Menus Pause Game", "Should the game keep playing while a menu is open?");
-    EnumOption("Pause", 1, f.settings.menus_pause);
-    EnumOption("Don't Pause", 0, f.settings.menus_pause);
+    EnumOption("Pause", 1, f.moresettings.menus_pause);
+    EnumOption("Don't Pause", 0, f.moresettings.menus_pause);
 
     NewMenuItem("Camera Mode", "What camera mode should be used");
     EnumOption("First Person", 0, f.moresettings.camera_mode,GetCameraModeHelpText(0));
@@ -353,7 +356,7 @@ function BindControls(optional string action)
     Slider(f.settings.swapcontainers, 0, 100, GetGenericHelpText("swapcontainers"));
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
-    Slider(f.settings.grenadeswap, 0, 100);
+    Slider(f.moresettings.grenadeswap, 0, 100);
 
     BreakLine();
     NewMenuItem("Min Weapon Damage %", "The minimum damage for weapons.");
@@ -403,8 +406,34 @@ function BindControls(optional string action)
     NewMenuItem("Weapons Removed", "Number of weapons removed per loop.");
     Slider(f.newgameplus_num_removed_weapons, 0, 18);
 
-    if( action == "NEXT" ) HandleNewGameButton();
-    if( action == "RANDOMIZE" ) RandomizeOptions();
+    switch(action) {
+        case "NEXT":
+            HandleNewGameButton();
+            break;
+        case "RANDOMIZE":
+            RandomizeOptions();
+            break;
+        case "RESTORE":
+            RestoreSetup();
+            break;
+        case "SAVE":
+            SaveSetup();
+            break;
+    }
+}
+
+function CreateBasicOptions(DXRFlags f)
+{
+    local int i, temp;
+
+    NewGroup("Basic");
+
+    if (showMode) gamemode_enum = class'DXRMenuSelectDifficulty'.static.CreateGameModeEnum(self, f);
+    if (showLoadout) class'DXRMenuSelectDifficulty'.static.CreateLoadoutEnum(self, f);
+    if (showAutosave) class'DXRMenuSelectDifficulty'.static.CreateAutosaveEnum(self, f);
+    if (showCrowdControl) class'DXRMenuSelectDifficulty'.static.CreateCrowdControlEnum(self, f);
+    if (showOnlineFeatures) class'DXRMenuSelectDifficulty'.static.CreateOnlineFeaturesEnum(self, f);
+    if (showMirroredMaps) class'DXRMenuSelectDifficulty'.static.CreateMirroredMapsSlider(self, f);
 }
 
 function CreateSeedInput(DXRFlags f)
@@ -444,6 +473,81 @@ function RandomizeOptions()
 
     //Scroll to same position again
     winScroll.vScale.SetTickPosition(scrollPos);
+}
+
+function SaveSetup()
+{
+    local DXRSavedSetup savedSetup;
+
+    GetDxr();
+    savedSetup = class'DXRSavedSetup'.static.GetObj(dxr);
+
+    savedSetup.seedStr = GetTextWindowText(GetIdFromLabel("Seed"));
+    savedSetup.startingMapStr = GetEnumValue(GetIdFromLabel("Starting Map"));
+
+    savedSetup.config_version = dxr.flags.config_version;
+    savedSetup.gamemode = dxr.flags.gamemode;
+    savedSetup.loadout = dxr.flags.loadout;
+    savedSetup.autosave = dxr.flags.autosave;
+    savedSetup.mirroredmaps = dxr.flags.mirroredmaps;
+    savedSetup.difficulty = dxr.flags.difficulty;
+
+    savedSetup.bingo_duration = dxr.flags.bingo_duration;
+    savedSetup.bingo_scale = dxr.flags.bingo_scale;
+    savedSetup.newgameplus_max_item_carryover = dxr.flags.newgameplus_max_item_carryover;
+    savedSetup.newgameplus_num_skill_downgrades = dxr.flags.newgameplus_num_skill_downgrades;
+    savedSetup.newgameplus_num_removed_augs = dxr.flags.newgameplus_num_removed_augs;
+    savedSetup.newgameplus_num_removed_weapons = dxr.flags.newgameplus_num_removed_weapons;
+    savedSetup.clothes_looting = dxr.flags.clothes_looting;
+    savedSetup.remove_paris_mj12 = dxr.flags.remove_paris_mj12;
+
+    savedSetup.settings = dxr.flags.settings;
+    savedSetup.moresettings = dxr.flags.moresettings;
+
+    savedSetup.bSaved = true;
+
+    savedSetup.SaveConfig();
+}
+
+function RestoreSetup()
+{
+    local DXRSavedSetup savedSetup;
+    local int scrollPos;
+
+    GetDxr();
+    savedSetup = class'DXRSavedSetup'.static.GetObj(dxr);
+    if (savedSetup.bSaved == false) return;
+
+    scrollPos = winScroll.vScale.GetTickPosition();
+    _BindControls(True);
+
+    dxr.flags.gamemode = savedSetup.gamemode;
+    dxr.flags.loadout = savedSetup.loadout;
+    dxr.flags.autosave = savedSetup.autosave;
+    dxr.flags.mirroredmaps = savedSetup.mirroredmaps;
+    dxr.flags.difficulty = savedSetup.difficulty;
+
+    dxr.flags.bingo_duration = savedSetup.bingo_duration;
+    dxr.flags.bingo_scale = savedSetup.bingo_scale;
+    dxr.flags.newgameplus_max_item_carryover = savedSetup.newgameplus_max_item_carryover;
+    dxr.flags.newgameplus_num_skill_downgrades = savedSetup.newgameplus_num_skill_downgrades;
+    dxr.flags.newgameplus_num_removed_augs = savedSetup.newgameplus_num_removed_augs;
+    dxr.flags.newgameplus_num_removed_weapons = savedSetup.newgameplus_num_removed_weapons;
+    dxr.flags.clothes_looting = savedSetup.clothes_looting;
+    dxr.flags.remove_paris_mj12 = savedSetup.remove_paris_mj12;
+
+    dxr.flags.settings = savedSetup.settings;
+    dxr.flags.moresettings = savedSetup.moresettings;
+
+    #ifndef hx
+        SetDifficulty(dxr.flags.settings.CombatDifficulty);
+    #endif
+
+    _BindControls(False);
+    winScroll.vScale.SetTickPosition(scrollPos); // Scroll to same position again
+
+    SetTextWindowText(GetIdFromLabel("Seed"), savedSetup.seedStr);
+    SetEnumValue(GetIdFromLabel("Starting Map"), savedSetup.startingMapStr);
 }
 
 function SetDifficulty(float newDifficulty)
@@ -496,6 +600,19 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     }
 
     return Super.BoxOptionSelected(button,buttonNumber);
+}
+
+function string SetEnumValue(int e, string text)
+{
+    local int modeId, i;
+    local DXRFlags f;
+
+    if (e == gamemode_enum) {
+        f = GetFlags();
+        f.SetGameMode(f.GameModeIdForName(text));
+    }
+
+    return Super.SetEnumValue(e, text);
 }
 
 //#region Help Text Fns
@@ -1071,6 +1188,14 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
+    actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Restore Settings",Key="RESTORE")
+    actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Save Settings",Key="SAVE")
     SplitsBtnTitle="Mismatched Splits!"
     SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
+    showMode=True
+    showLoadout=True
+    showAutosave=True
+    showCrowdControl=True
+    showOnlineFeatures=True
+    showMirroredMaps=True
 }

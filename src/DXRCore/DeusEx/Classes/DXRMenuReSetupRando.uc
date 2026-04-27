@@ -37,13 +37,6 @@ function BindControls(optional string action)
 
     f = GetFlags();
     CreateLabelRow("You may need to save/load or reach a new map for changes to take effect."$BR$"Be careful when changing these settings in the middle of a mission.");
-    NewGroup("Basic");
-
-    class'DXRMenuSelectDifficulty'.static.CreateLoadoutEnum(self, f);
-    class'DXRMenuSelectDifficulty'.static.CreateAutosaveEnum(self, f);
-    class'DXRMenuSelectDifficulty'.static.CreateCrowdControlEnum(self, f);
-    class'DXRMenuSelectDifficulty'.static.CreateOnlineFeaturesEnum(self, f);
-    class'DXRMenuSelectDifficulty'.static.CreateMirroredMapsSlider(self, f);
 
     combatDifficulty = player.combatDifficulty;
     Super.BindControls(action);
@@ -59,7 +52,6 @@ function BindControls(optional string action)
     }
     if( action != "" ) CancelScreen();
 }
-
 
 function EnumListAddButton(DXREnumList list, string title, string val, string help, string prev)
 {
@@ -97,4 +89,5 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back",Key="BACK")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Done",Key="DONE")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_None,Text="",Key="")
+    showMode=False
 }

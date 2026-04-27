@@ -7,7 +7,7 @@ function bool GetNoPause() {
     local DXRFlags flags;
 
     foreach Player.AllActors(class'DXRFlags', flags) {
-        if(flags.settings.menus_pause == 0)
+        if(flags.moresettings.menus_pause == 0)
             return true;
     }
 
