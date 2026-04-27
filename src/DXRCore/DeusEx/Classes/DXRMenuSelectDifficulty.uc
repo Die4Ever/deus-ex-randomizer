@@ -33,12 +33,27 @@ event InitWindow()
     Init(GetDxr());
 }
 
+function CheckCrowdControlConnection(DXRFlags f)
+{
+    local DXRandoCrowdControlLink ccLink;
+
+    if (f==None) return;
+
+    //Look to see if there's a connected Crowd Control link
+    foreach f.AllActors(class'DXRandoCrowdControlLink',ccLink){
+        if (ccLink.IsConnected()){
+            //Crowd Control is connected!
+            f.crowdcontrol=1; //Enabled (Streaming)
+        }
+    }
+}
+
 function BindControls(optional string action)
 {
     local float difficulty;
     local DXRFlags f;
     local string name, help;
-    local int temp, i;
+    local int i;
 
     f = GetFlags();
     if(writing) {
@@ -48,18 +63,12 @@ function BindControls(optional string action)
 
     if(BindPresets()) return;
 
+    CheckCrowdControlConnection(f); //Enable Crowd Control if there's a connected session
+
     NewGroup("Customize");
 
-    gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!"$BR$BR$"For first time Randomizer players we recommend Randomizer Lite, Normal Randomizer, or Mr. Page's Nice Bingo Machine.");
-    for(i=0; i<50; i++) {
-        temp = f.GameModeIdForSlot(i);
-        if(temp==999999) continue;
-        name = f.GameModeName(temp);
-        if(name == "") continue;
-        help = f.GameModeHelpText(temp);
-        EnumOption(name, temp, f.gamemode, help);
-    }
 
+    gamemode_enum = CreateGameModeEnum(self, f);
     loadout_enum = CreateLoadoutEnum(self, f);
 
     if( #defined(vmd) )
@@ -205,13 +214,13 @@ function bool BindPresets()
     }
     if(dxr.rando_beaten >= 1 && dxr.rando_beaten < 5 && PresetButton("Speedrun Training Mode", f.GameModeHelpText(f.SpeedrunMode))) {
         f.gamemode = f.SpeedrunTraining;
-        f.loadout = 2; // speed enhancement
+        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }
     if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
         f.gamemode = f.SpeedrunMode;
-        f.loadout = 2; // speed enhancement
+        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }
@@ -227,9 +236,7 @@ function bool BindPresets()
 function bool PresetButton(string label, optional string helpText)
 {
     local bool ret;
-    local int i;
     local DXRFlags f;
-    local string sseed, name, help;
     local bool mirrored_maps_files_found;
 
     ret = CollapsibleButtonOnClick(false, label, helpText);
@@ -238,6 +245,7 @@ function bool PresetButton(string label, optional string helpText)
         f = GetFlags();
         f.RollSeed();
         f.crowdcontrol = 0; // set some defaults for the preset
+        CheckCrowdControlConnection(f); //Automatically handle Crowd Control setting if connected
         f.loadout = 0; // All Items Allowed
         f.autosave = 2; // Autosave Every Entry
         #ifdef injections
@@ -284,6 +292,23 @@ function ResetToDefaults()
     CreateActionButtons();
 
     Super.ResetToDefaults();
+}
+
+static function int CreateGameModeEnum(DXRMenuBase slf, DXRFlags f)
+{
+    local int i, e, temp;
+    local string name, help;
+
+    e = slf.NewMenuItem("Game Mode", "Choose a game mode!"$Chr(10)$Chr(10)$ "For first time Randomizer players we recommend Randomizer Lite, Normal Randomizer, or Mr. Page's Nice Bingo Machine.");
+    for(i=0; i<50; i++) {
+        temp = f.GameModeIdForSlot(i);
+        if(temp==999999) continue;
+        name = f.GameModeName(temp);
+        if(name == "") continue;
+        help = f.GameModeHelpText(temp);
+        slf.EnumOption(name, temp, f.gamemode, help);
+    }
+    return e;
 }
 
 static function int CreateLoadoutEnum(DXRMenuBase slf, DXRFlags f)
@@ -422,7 +447,7 @@ function string GetHelpText(DXRMenuUIHelpButtonWindow helpButton)
 function string SetEnumValue(int e, string text)
 {
     local int i, temp;
-    local string old, s;
+    local string old;
     local DXRFlags f;
     local bool oldZeroRando;
 
@@ -447,13 +472,7 @@ function string SetEnumValue(int e, string text)
     if(e == gamemode_enum) {
         f = GetFlags();
         oldZeroRando = f.IsZeroRando();
-        for(i=0; i<50; i++) {
-            temp = f.GameModeIdForSlot(i);
-            if(temp==999999) continue;
-            if(f.GameModeName(temp) == text) {
-                f.gamemode = temp;
-            }
-        }
+        f.SetGameMode(f.GameModeIdForName(text));
         if(f.IsZeroRando() != oldZeroRando) {
             i = 0;
             if( f.VersionIsStable() && !#bool(hx)) {

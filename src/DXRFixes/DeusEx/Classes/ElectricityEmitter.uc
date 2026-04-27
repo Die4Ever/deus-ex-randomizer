@@ -3,7 +3,7 @@ class DXRElectricityEmitter injects #var(prefix)ElectricityEmitter;
 // make sure sprites don't block electricity (smoke, death markers), continue tracing through them
 function CalcTrace(float deltaTime)
 {
-    local vector StartTrace, EndTrace, HitLocation, HitNormal, loc;
+    local vector StartTrace, EndTrace, HitLocation, HitNormal;
     local Rotator rot;
     local actor target;
     local int texFlags;

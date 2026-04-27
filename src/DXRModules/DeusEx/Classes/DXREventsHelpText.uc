@@ -41,7 +41,6 @@ static simulated function bool IsPawnDeathSuffix(string suffix)
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string prefix,suffix,msg;
-    local int idx;
 
     //Get the prefix and suffix
     FindEventPrefixSuffix(event,prefix,suffix);
@@ -550,6 +549,8 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             return "Check in with Gunther Hermann after completing a mission objective.  As is standard protocol, he has been assigned the peacekeeping occupation of the area.";
         case "MeetClinicMaleBum3_Played":
             return "Meet the Freemason looking for help in the Free Clinic.";
+        case "M02BumSong_Convo":
+            return "Listen to the bum in Battery Park sing his whole rendition of My Country 'Tis of Thee.";
     }
 
     //Return nothing so the generic function can handle it
@@ -560,7 +561,6 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
 //#region Items Used
 static simulated function string GetBingoHelpTextItemsUsed(string event,int mission, bool FemJC)
 {
-    local string msg;
     local DXRando dxr;
     local bool RevisionMaps;
 
@@ -741,7 +741,6 @@ static simulated function string GetBingoHelpTextImages(string event,int mission
 //#region NanoKeys
 static simulated function string GetBingoHelpNanoKeys(string event,int mission, bool FemJC)
 {
-    local string msg;
     local DXRando dxr;
     local bool RevisionMaps;
 
@@ -1525,6 +1524,10 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Show your appreciation for those little guys and give enough of those cleaner bots a pet!";
         case "PetRobot_SecurityBotSmall":
             return "Commercial security bots might be dangerous, but they've got a little head just ready to be pet.  Give enough of those little treaded bots head pats!  Note that it is not possible to pet a disabled bot.";
+        case "CrawlUnderHelipad":
+            return "Crawl through the maintenance tunnel connecting the electrical room to the helipad in the lower decks of the superfreighter.";
+        case "EngineeringBridge":
+            return "Raise the bridge in the engine room of the superfreighter.  The keypad can be hacked, or the code can be found in a datacube on the upper decks of the ship.";
     }
 
     //Return nothing so the generic function can handle it

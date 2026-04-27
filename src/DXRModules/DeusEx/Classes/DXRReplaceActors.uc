@@ -172,8 +172,6 @@ function class<inventory> ReplaceClassName(class<inventory> inv)
 
 function ReplaceContainerContents(#var(prefix)Containers a)
 {
-    local int i;
-
     a.contents = ReplaceClassName(a.contents);
     a.content2 = ReplaceClassName(a.content2);
     a.content3 = ReplaceClassName(a.content3);
@@ -296,7 +294,6 @@ function ReplaceButton1(#var(prefix)Button1 a)
 function ReplaceFaucet(#var(prefix)Faucet a)
 {
     local DXRFaucet n;
-    local DeusExPlayer dxp;
     if(a.IsA('DXRFaucet'))
         return;
 
@@ -403,7 +400,6 @@ function ReplaceOrdersTrigger(#var(prefix)OrdersTrigger a)
 function ReplaceShakeTrigger(#var(prefix)ShakeTrigger a)
 {
     local DXRShakeTrigger n;
-    local int i;
     n = DXRShakeTrigger(SpawnReplacement(a, class'DXRShakeTrigger'));
     if(n == None)
         return;
@@ -647,7 +643,6 @@ function #var(DeusExPrefix)Pickup ReplacePickup(#var(DeusExPrefix)Pickup a, #var
 {
     local ScriptedPawn owner;
     local #var(PlayerPawn) player;
-    local bool bWasDrawn;
     owner = ScriptedPawn(a.Owner);
     player = #var(PlayerPawn)(a.Owner);
     a.Destroy();
@@ -811,7 +806,6 @@ function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
 function ReplaceComputerPersonal(#var(prefix)ComputerPersonal a)
 {
     local DXRComputerPersonal n;
-    local int i;
 
     n = DXRComputerPersonal(SpawnReplacement(a, class'DXRComputerPersonal'));
     if(n == None)

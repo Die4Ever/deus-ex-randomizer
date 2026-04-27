@@ -38,6 +38,31 @@ function SetHitColor(out BodyPart part, float deltaSeconds, bool bHide, int hitV
     }
 }
 
+function bool ShowAqualungIndicator()
+{
+    local #var(prefix)AugAqualung aqualung;
+
+    if (bUnderwater==false) return false; //Only show underwater (obviously)
+    if (player==None) return false; //Don't show if there's no player (obviously)
+    aqualung = #var(prefix)AugAqualung(player.AugmentationSystem.FindAugmentation(class'#var(prefix)AugAqualung'));
+    if (aqualung==None || aqualung.bHasIt==False) return false; //Don't show if the player doesn't have aqualung (obviously)
+
+    if (aqualung.bAlwaysActive==False){
+        return aqualung.bIsActive; //If not always active, show when actually active
+    }
+
+    return true; //Always show if always active
+}
+
+event DrawWindow(GC gc)
+{
+    _DrawWindow(gc);
+
+    if (ShowAqualungIndicator()){
+        gc.DrawText(61, 10, 8, 8, "AL");
+    }
+}
+
 function CreateBodyPart(out BodyPart part, texture tx, float newX, float newY,
                         float newWidth, float newHeight)
 {

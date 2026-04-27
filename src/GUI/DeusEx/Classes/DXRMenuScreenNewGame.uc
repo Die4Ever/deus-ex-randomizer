@@ -42,8 +42,6 @@ static function bool HasLDDPInstalled()
 
 event InitWindow()
 {
-    local int i;
-
     bFemaleEnabled = HasLDDPInstalled();
 
     Super(MenuUIScreenWindow).InitWindow();
@@ -242,7 +240,7 @@ function CreateSkillsListWindow()
 function ProcessAction(String actionKey)
 {
     local DeusExPlayer		localPlayer;
-    local String			localStartMap;
+    // local String			localStartMap;
     local String            playerName;
 
     localPlayer   = player;

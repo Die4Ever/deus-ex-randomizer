@@ -46,7 +46,6 @@ simulated event PostNetBeginPlay()
 
 simulated event Timer()
 {
-    local int i;
     if( bTickEnabled == true ) return;
 
     if( bLoginReady ) {
@@ -692,7 +691,6 @@ simulated final function int rngraw()
 // ============================================================================
 
 simulated final function CrcInit() {
-
     const CrcPolynomial = 0xedb88320;
 
     local int CrcValue;
@@ -721,7 +719,6 @@ simulated final function CrcInit() {
 // ============================================================================
 // TODO: next compatibility break, delete Crc in favor of MurmurHash3
 simulated final function int Crc(coerce string Text) {
-
     local int CrcValue;
     local int IndexChar;
 

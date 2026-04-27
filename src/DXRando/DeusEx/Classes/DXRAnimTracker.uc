@@ -41,7 +41,6 @@ static function DXRAnimTracker Create(Pawn owner, string part)
 
 function Init(string part)
 {
-    local rotator rot;
     local int a, i;
 
     if(#bool(debug)) SaveConfig();// create/update the config file

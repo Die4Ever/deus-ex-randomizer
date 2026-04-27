@@ -5,10 +5,7 @@ var transient DXRAnimTracker tracker;
 
 simulated function Tick(float deltaTime)
 {
-    local vector loc;
-    local rotator rot;
     local Pawn pawn;
-    local Vector offset, X, Y, Z;
 
     pawn = Pawn(Owner);
 
@@ -33,7 +30,6 @@ simulated function Tick(float deltaTime)
 simulated function PlaySelectiveFiring()
 {
     local Pawn aPawn;
-    local float rnd;
     local Name anim;
 
     anim = 'Attack';

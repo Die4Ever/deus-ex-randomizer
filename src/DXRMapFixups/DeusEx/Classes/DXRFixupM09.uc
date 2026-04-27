@@ -36,7 +36,7 @@ function PreFirstEntryMapFixes()
     local Rotator rot;
     local #var(prefix)LAM lam;
     local #var(prefix)GasGrenade gasgren;
-    local Switch1 s;
+    local #var(prefix)Switch1 s;
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)FlagTrigger ft;
@@ -106,7 +106,7 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            foreach AllActors(class'Switch1',s){
+            foreach AllActors(class'#var(prefix)Switch1',s){
                 if (s.Event=='Eledoor01'){
                     s.Event='Elevator01_bottom';
                     break;

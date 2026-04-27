@@ -9,7 +9,6 @@ var byte VolumeRadius;
 
 static function DXRStoredLightFog Init(Light l)
 {
-    local int i;
     local DXRStoredLightFog slf;
 
     //Only store information for lights that generate fog

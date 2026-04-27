@@ -133,12 +133,12 @@ static function string GetNextStartingMap(DXRando dxr)
     local string nextStartName;
     local DXRStartMap m;
 
-    if(dxr.flags.settings.starting_map == 0) return "";
+    if(dxr.flags.moresettings.starting_map == 0) return "";
 
     m = DXRStartMap(class'DXRStartMap'.static.Find());
     if(m == None) return "";
     dxr.seed++;
-    nextStartNum = m.ChooseRandomStartMap(m, dxr.flags.settings.starting_map);
+    nextStartNum = m.ChooseRandomStartMap(m, dxr.flags.moresettings.starting_map);
     dxr.seed--;
     nextStartName = m.GetStartingMapNameCredits(nextStartNum);
     return nextStartName;

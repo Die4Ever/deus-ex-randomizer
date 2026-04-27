@@ -38,7 +38,6 @@ function Untrigger(Actor Other, Pawn Instigator)
 
 function Touch(Actor Other)
 {
-
     if (TriggerType!=TT_Shoot && !bPeepable && !bCrouchCheck && IsRelevant(Other))
     {
         if (DoBingoThing()){
@@ -95,7 +94,7 @@ function int GetSelfTouchCount()
 
 function int GetTouchingCount()
 {
-    local Actor a;
+    // local Actor a;
     local BingoTrigger bt;
     local int count;
 
@@ -130,7 +129,6 @@ function bool DoBingoThing()
     }
 
     if (TriggerType==TT_ClassProximity && touchLimit>1){
-
         //Not enough items touching the bingo trigger
         if (GetTouchingCount() < touchLimit){
             return false;

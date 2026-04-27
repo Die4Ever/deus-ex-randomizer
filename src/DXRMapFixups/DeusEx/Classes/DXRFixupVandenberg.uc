@@ -53,7 +53,6 @@ function PreFirstEntryMapFixes()
     local JockHelicopter jockheli;
 #endif
     local DXRHoverHint hoverHint;
-    local ScriptedPawn pawn;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)Robot bot;
     local #var(prefix)TiffanySavage tiffany;

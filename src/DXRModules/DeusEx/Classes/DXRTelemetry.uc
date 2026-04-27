@@ -103,7 +103,6 @@ function CheckOfflineUpdates()
 function Timer()
 {
     local int numActors, numObjects;
-    local Actor a;
     local Object o, last;
     local name names[4096], fixed[16], n;
     local int counts[4096], slot, i;
@@ -203,7 +202,6 @@ function HTTPError(int Code)
 
 function ReceivedData(string data)
 {
-    local string status;
     local Json tjs;
 
     if(Len(data) > 500 && j==None) {
@@ -312,7 +310,7 @@ function MessageBoxClicked(int button, int callbackId){
 }
 
 function CheckDeaths(Json j, int oldCount) {
-    local string k, t;
+    local string k;
     local int i;
     local vector loc;
 

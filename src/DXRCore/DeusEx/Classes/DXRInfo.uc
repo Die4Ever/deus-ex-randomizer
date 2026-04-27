@@ -176,7 +176,7 @@ static function string ConstructTimeStr(float timeSecs)
 
 static function int _SystemTime(LevelInfo Level)
 {
-    local int time, m;
+    local int time;
     time = Level.Second + (Level.Minute*60) + (Level.Hour*3600) + (Level.Day*86400);
 
     switch(Level.Month) {
@@ -627,6 +627,28 @@ simulated static function int MurmurHash3(coerce string str, optional int seed)
     h1 = h1 ^ (h1 >>> 16);
 
     return h1;
+}
+
+static function Actor ActorLookedAt(Pawn looker, optional float maxRange)
+{
+    local Rotator viewRot;
+    local Vector eyeOrigin, traceEnd, pointlessVec;
+
+    if (looker == None)
+        return None;
+
+    if (maxRange <= 0.0)
+        maxRange = 8192.0;
+
+    if (#var(PlayerPawn)(looker) != None)
+        viewRot = #var(PlayerPawn)(looker).ViewRotation;
+    else
+        viewRot = looker.Rotation;
+
+    eyeOrigin = looker.Location + class'DXRBase'.static.MakeVector(0.0, 0.0, looker.BaseEyeHeight);
+    traceEnd = eyeOrigin + Vector(viewRot) * maxRange;
+
+    return looker.Trace(pointlessVec, pointlessVec, traceEnd, eyeOrigin, true);
 }
 
 /*

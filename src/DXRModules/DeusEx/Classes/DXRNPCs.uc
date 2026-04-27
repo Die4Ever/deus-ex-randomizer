@@ -142,7 +142,6 @@ function ItemPurchase SelectRandomPurchaseChoice(out ItemPurchase choices[75], o
 
 function RandomizeItems(out ItemPurchase items[8], optional int forced, optional int priceLimit)
 {
-    local float r;
     local int i, k, num, numChoices;
     local class<Inventory> iclass;
     local ItemPurchase choices[75];
@@ -523,9 +522,7 @@ function ConEventTrigger AddMerchantBingo(Conversation c, ConEvent prev, ItemPur
 {
     local ConEventTrigger e;
     local MerchantPurchaseBingoTrigger mpbt;
-    local string tagName, j;
-    local class<Json> js;
-    local int k;
+    local string tagName;
 
     if (i==MERCH_TELEM_NO_BUY || i==MERCH_TELEM_NO_ROOM || i==MERCH_TELEM_NO_MONEY){
         //Invalid item
@@ -631,9 +628,7 @@ function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
 {
     local ConEventTrigger e;
     local RepairConObjTransferTrigger rt;
-    local string tagName, j;
-    local class<Json> js;
-    local int k;
+    local string tagName;
 
     tagName="ConEventTransferObjectRepair"$c.conName; //Append the bindname to the end
 
