@@ -79,4 +79,5 @@
 - Smuggler's elevator button in the final New York mission no longer moves around.
 - Added buttons for Save Settings and Restore Settings on the Advanced New Game screen.
 - Stackable items marked as Junk will now get picked up if they're already in your inventory.
+- Goals that require you to create dead or unconscious bodies ("Bring the terrorist commander to a bar" and "Sewer Surfin'") are now banned with "Grenades Only" and "Explosives Only" loadouts.
 </details>

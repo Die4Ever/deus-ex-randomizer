@@ -2987,6 +2987,12 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                 )
             );
 
+    //Ban goals that require you to create specific corpses
+        case "LeoToTheBar":
+        case "SewerSurfin":
+            return loadout != None && loadout.IsLoadoutNoCorpses();
+        break;
+
 /////////////////////////////////////////////////////////////////////
     //Ban goals that aren't possible on Revision maps
         case "LibertyBenches":
