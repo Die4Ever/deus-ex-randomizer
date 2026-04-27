@@ -2974,7 +2974,8 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 
         case "BurnTrash":
             return (
-                real_duration == 1 //If the board only covers a single mission
+                starting_mission == 9 //No burning barrel in M09 to ignite the trash
+                && real_duration == 1 //If the board only covers a single mission
                 //No way to burn via weapons
                 && loadout != None
                 && loadout.is_banned(class'#var(prefix)WeaponFlamethrower') //Obviously this can burn
