@@ -10,7 +10,7 @@ function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
 
-    if (dxr.flags.settings.starting_map == 0) return;
+    if (dxr.flags.moresettings.starting_map == 0) return;
 
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
@@ -1702,7 +1702,7 @@ static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player, SkillAward
 {
     local int i, numAugs, numUpgrades;
 
-    if (dxr.flags.settings.starting_map !=0 ){
+    if (dxr.flags.moresettings.starting_map !=0 ){
         numAugs = GetStartMapAugBonus(dxr);
         class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
 

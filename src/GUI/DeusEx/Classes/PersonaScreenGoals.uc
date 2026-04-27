@@ -56,7 +56,7 @@ function CreateControls()
             btnGoalHints.SetSensitivity(true);
 
             //CreateShowSpoilersCheckbox();
-            if (dxr.flags.settings.spoilers==1){
+            if (dxr.flags.moresettings.spoilers==1){
                 CreateShowSpoilersButton(); //A button makes a confirmation window easier
             }
 
@@ -69,7 +69,7 @@ function CreateControls()
             btnEntranceLocs.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 220, 411);
             btnEntranceLocs.SetSensitivity(true);
 
-            if (dxr.flags.settings.spoilers==1){
+            if (dxr.flags.moresettings.spoilers==1){
                 btnEntranceSpoilers = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
                 btnEntranceSpoilers.SetButtonText("Entrance Spoilers");
                 btnEntranceSpoilers.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 300, 411);

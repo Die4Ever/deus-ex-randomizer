@@ -200,14 +200,14 @@ function NewGamePlus()
     newgameplus_loops++;
     bingoBoardRoll=0;
     p.saveCount=0;
-    randomStart = settings.starting_map;
+    randomStart = moresettings.starting_map;
 
     if(gamemode != DXRFlags(self).GroundhogDay) {
         NGPlusFlags(p);
     }
     SetGlobalSeed("NewGamePlus " $ dxr.seed);
     if (randomStart!=0 && gamemode != DXRFlags(self).GroundhogDay){
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
+        moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
 
     if (p.KeyRing != None)
@@ -307,7 +307,7 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         bingo_scale = old_bingo_scale;
         bingo_duration = old_bingo_duration;
         moresettings.newgameplus_curve_scalar = oldmoresettings.newgameplus_curve_scalar;
-        settings.menus_pause = oldsettings.menus_pause;
+        moresettings.menus_pause = oldmoresettings.menus_pause;
         moresettings.aug_loc_rando = oldmoresettings.aug_loc_rando;
         moresettings.splits_overlay = oldmoresettings.splits_overlay;
         clothes_looting = old_clothes_looting;

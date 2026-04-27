@@ -1229,7 +1229,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 
     start_amount = dxr.flags.settings.equipment;
 
-    if (dxr.flags.settings.starting_map != 0) {
+    if (dxr.flags.moresettings.starting_map != 0) {
         start_amount += 1 + dxr.flags.GetStartingMap() / 30;
     }
 
