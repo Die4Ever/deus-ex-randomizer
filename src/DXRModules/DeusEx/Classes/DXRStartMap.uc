@@ -807,11 +807,9 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
             MarkConvPlayed("DL_LebedevKill", bFemale);
+            GiveKey(player, 'eastgate', "East Gate key");
         case 36: // fallthrough
-            if (dxr.flags.moresettings.entrance_rando != 100) {
-                // outside of entrance rando, you usually have the key by this point
-                GiveKey(player, 'Sewerdoor', "Sewer Door");
-            }
+            GiveKey(player, 'Sewerdoor', "Sewer Door");
         case 35: // fallthrough
             GiveKey(player, 'MoleRestroomKey', "Molepeople Bathroom Key");
             MarkConvPlayed("M03MeetTerroristLeader", bFemale);
