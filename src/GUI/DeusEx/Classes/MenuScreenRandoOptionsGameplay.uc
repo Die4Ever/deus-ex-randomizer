@@ -42,6 +42,7 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_BalanceMaps');
         CreateChoice(class'MenuChoice_BalanceEtc');
     }
+    //CreateChoice(class'MenuChoice_MeleeSlot');
 }
 
 defaultproperties
