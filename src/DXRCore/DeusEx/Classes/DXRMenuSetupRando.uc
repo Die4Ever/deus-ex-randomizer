@@ -539,7 +539,9 @@ function RestoreSetup()
     dxr.flags.settings = savedSetup.settings;
     dxr.flags.moresettings = savedSetup.moresettings;
 
-    SetDifficulty(dxr.flags.settings.CombatDifficulty);
+    #ifndef hx
+        SetDifficulty(dxr.flags.settings.CombatDifficulty);
+    #endif
 
     _BindControls(False);
     winScroll.vScale.SetTickPosition(scrollPos); // Scroll to same position again
