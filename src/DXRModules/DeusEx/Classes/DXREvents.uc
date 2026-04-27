@@ -2871,12 +2871,16 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 ///////////////////////////////////////////////////
 
         case "IgnitedPawn":
-            if(loadout!=None) {
-                if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
-                    && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare'))
-                ) {
-                    return true;
-                }
+            if (
+                loadout != None
+                && loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
+                && (
+                    !#bool(injections)
+                    || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow')
+                    || loadout.is_banned(class'#var(prefix)AmmoDartFlare')
+                )
+            ) {
+                return true;
             }
             break; //Let this fall through to later checks
 
@@ -2925,32 +2929,19 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 /////////////////////////////////////////////////////////////////////
     //Ban goals that require the use of drugs or alcohol as appropriate
         case "DrinkAlcohol_Activated": //Only impossible if *all* alcohol is banned
-            if(loadout!=None) {
-                if(loadout.is_banned(class'#var(prefix)Liquor40oz') &&
-                   loadout.is_banned(class'#var(prefix)LiquorBottle') &&
-                   loadout.is_banned(class'#var(prefix)WineBottle')
-                   ) {
-                    return true;
-                }
-            }
-            return false;
+            return (
+                loadout != None
+                && loadout.is_banned(class'#var(prefix)Liquor40oz')
+                && loadout.is_banned(class'#var(prefix)LiquorBottle')
+                && loadout.is_banned(class'#var(prefix)WineBottle')
+            );
 
         case "JockSecondStory": //Jock only wants beers
-            if(loadout!=None) {
-                if(loadout.is_banned(class'#var(prefix)Liquor40oz')) {
-                    return true;
-                }
-            }
-            return false;
+            return loadout != None && loadout.is_banned(class'#var(prefix)Liquor40oz');
 
         case "GiveZyme_ConvoFlag": //Need zyme to give zyme
         case "SoldRenaultZyme":    //Need zyme to sell zyme
-            if(loadout!=None) {
-                if(loadout.is_banned(class'#var(prefix)VialCrack')) {
-                    return true;
-                }
-            }
-            return false;
+            return loadout != None && loadout.is_banned(class'#var(prefix)VialCrack');
 
 /////////////////////////////////////////////////////////////////////
     //Ban goals that require progress when you *don't* need to progress
@@ -2960,18 +2951,14 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 /////////////////////////////////////////////////////////////////////
     //Ban goals that require hacking (By the Book stuff)
         case "ComputerHacked":    //Need to be able to hack to hack computers
-            if(loadout!=None) {
-                if(loadout.is_skill_banned(class'SkillComputer')) {
-                    return true;
-                }
+            if (loadout != None && loadout.is_skill_banned(class'SkillComputer')) {
+                return true;
             }
             break;
 
         case "AlarmUnitHacked":    //Need to be able to use multitools to hack alarm panels
-            if(loadout!=None) {
-                if(loadout.is_banned(class'#var(prefix)Multitool')) {
-                    return true;
-                }
+            if (loadout != None && loadout.is_banned(class'#var(prefix)Multitool')) {
+                return true;
             }
             break;
 
@@ -2980,29 +2967,25 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "GibbedPawn":
         case "IgnitedPawn":
         case "AlliesKilled":
-            if (loadout!=None){
-                if (loadout.IsLoadoutPureNonLethal()){
-                    return true;
-                }
+            if (loadout != None && loadout.IsLoadoutPureNonLethal()) {
+                return true;
             }
             break;
 
         case "BurnTrash":
-            //If the board only covers a single mission
-            if (real_duration==1 && loadout!=None) {
+            return (
+                real_duration == 1 //If the board only covers a single mission
                 //No way to burn via weapons
-                if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower') //Obviously this can burn
-                   && loadout.is_banned(class'#var(prefix)WeaponPlasmaRifle') //Plasma can ignite
-                   && loadout.is_banned(class'#var(prefix)WeaponHideAGun') //Plasma can ignite
-                   && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare')) //Flare darts can set things on fire
-                ) {
-                    //No burning barrel in M09 to ignite the trash
-                    if (starting_mission==9){
-                        return true;
-                    }
-                }
-            }
-            return false;
+                && loadout != None
+                && loadout.is_banned(class'#var(prefix)WeaponFlamethrower') //Obviously this can burn
+                && loadout.is_banned(class'#var(prefix)WeaponHideAGun') //Plasma can ignite
+                && loadout.is_banned(class'#var(prefix)WeaponHideAGun') //Plasma can ignite
+                && ( //Flare darts can set things on fire
+                    !#bool(injections)
+                    || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow')
+                    || loadout.is_banned(class'#var(prefix)AmmoDartFlare')
+                )
+            );
 
 /////////////////////////////////////////////////////////////////////
     //Ban goals that aren't possible on Revision maps
