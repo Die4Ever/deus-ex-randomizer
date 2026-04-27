@@ -34,7 +34,7 @@ var config name dont_respawn[8];
 function PostFirstEntry()
 {
     local ScriptedPawn p;
-    local int i, a;
+    local int i;
     Super.PostFirstEntry();
 
     if( dxr.flags.settings.enemyrespawn <= 0 ) return;
@@ -115,7 +115,6 @@ function SaveRespawn(ScriptedPawn p, out int i)
 
 function AnyEntry()
 {
-    local int i;
     Super.AnyEntry();
 
     if( dxr.flags.IsHordeMode() ) return;
@@ -146,7 +145,6 @@ function Timer()
 function ScriptedPawn Respawn(out OriginalEnemy enemy)
 {
     local DXREnemies dxre;
-    local DXRNames dxrn;
     local ScriptedPawn p;
     local int i;
 

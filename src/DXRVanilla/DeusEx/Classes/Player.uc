@@ -251,6 +251,18 @@ exec function ShowMainMenu()
     Super.ShowMainMenu();
 }
 
+function DoFrob(Actor Frobber, Inventory frobWith)
+{
+    Super.DoFrob(Frobber,frobWith);
+
+    // set the base so the inventory follows us around correctly
+    if (FrobTarget!=None && FrobTarget.IsA('Inventory') && (FrobTarget.Owner == Self)){
+        FrobTarget.SetLocation(Frobber.Location); //Also put the item at the location of the frobber for convenience
+        FrobTarget.SetBase(Frobber); //This is vanilla DoFrob logic
+        FrobTarget.SetPhysics(PHYS_None); //Set the physics to None so it doesn't fall through the floor if it's still trying to become a pickup as well
+    }
+}
+
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 {
     local bool bCanPickup,banned;
@@ -818,7 +830,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	local Inventory previousItemInHand;
     local DeusExPickup existingStack; //DXRando added
 	local Vector X, Y, Z, dropVect;
-	local float size, mult;
+	local float mult;
 	local bool bDropped;
 	local bool bRemovedFromSlots;
 	local int  itemPosX, itemPosY;
@@ -1481,7 +1493,6 @@ exec function slowmo(float s)
 exec function animtrack()
 {// a single command to start work on DXRAnimTracker
     local DXRAnimTracker a;
-    local int i;
 
     slowmo(0.1);
     SetPause(true);
@@ -1770,7 +1781,6 @@ function Bool IsFiring()
 function bool IsThemeAdded(Class<ColorTheme> themeClass)
 {
     local ColorTheme curTheme;
-    local ColorTheme prevTheme;
     local Bool bDeleted;
 
     bDeleted    = False;
@@ -1798,7 +1808,6 @@ function AddColorTheme(Class<ColorTheme> themeClass)
 
 function CreateColorThemeManager()
 {
-    local ColorTheme theme;
     Super.CreateColorThemeManager();
 
     AddColorTheme(Class'ColorThemeHUD_HotDogStand');
@@ -2374,6 +2383,18 @@ exec function PlayerRot()
     ClientMessage("Player rotation: (" $ Rotation.pitch $ ", " $ Rotation.yaw $ ", " $ Rotation.roll $ ")");
 }
 
+// log the Location of the Actor looked at, so you don't have to type it manually
+exec function LookedLoc()
+{
+    local Actor act;
+
+    act = class'DXRInfo'.static.ActorLookedAt(self);
+    if (act == None)
+        ClientMessage("No Actor looked at.");
+    else
+        ClientMessage("Looking at " $ act $ " at Location (" $ act.Location.x $ ", " $ act.Location.y $ ", " $ act.Location.z $ ")");
+}
+
 exec function LootActions()
 {
     local string lootActions, msg;
@@ -2427,7 +2448,6 @@ function bool ConsumableWouldHelp(Inventory item) {
 function InvokeUIScreen(Class<DeusExBaseWindow> windowClass)
 {
     local DeusExRootWindow root;
-    local Window w;
     root = DeusExRootWindow(rootWindow);
     if (root != None)
     {

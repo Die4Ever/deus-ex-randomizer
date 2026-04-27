@@ -5,7 +5,7 @@ var bool WaltonAppeared;
 function int InitGoals(int mission, string map)
 {
     local int goal, loc;
-    local int front_gate_start;
+    // local int front_gate_start;
     local int howard_cherry, howard_meeting, howard_radio, howard_computer, howard_machine_shop;
     local int jock_vanilla, jock_cherry, jock_tower, jock_computer;
     local int computer_vanilla, computer_radio, computer_meeting, computer_machine_shop;

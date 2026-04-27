@@ -36,7 +36,6 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
 {
     local String text;
     local byte tag;
-    local int i;
 
     tag  = parser.GetTag();
 

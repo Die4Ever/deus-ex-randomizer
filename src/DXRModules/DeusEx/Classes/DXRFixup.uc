@@ -390,7 +390,6 @@ function float H2V(float hdeg, float asp)
 
 function float GetRatio()
 {
-	local int p;
 	local int resX;
 	local int resWidth, resHeight;
 	local string CurrentRes;
@@ -1618,7 +1617,6 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
     local DXRPasswords passwords;
     local #var(prefix)ComputerSecurity comp;
     local string notePassword,finalpassword;
-    local int i;
 
     if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() || class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() ) {
         foreach AllActors(class'#var(prefix)ComputerSecurity',comp){

@@ -159,7 +159,6 @@ function MoveCCPawn(DXRandoCrowdControlPawn ccp, vector Location)
 //#region Periodic Updates
 function PeriodicUpdates()
 {
-
     if (dxr.OnTitleScreen()){
         return;
     }
@@ -669,7 +668,6 @@ function InitOnEnter() {
 //Effects should revert to default before exiting a level
 //so that they can be cleanly re-applied next time you enter
 function CleanupOnExit() {
-
     if (dxr==None || dxr.OnTitleScreen()){
         return;
     }
@@ -1071,7 +1069,6 @@ function class<#var(DeusExPrefix)Weapon> getWeaponClass(string type) {
 //This can also return better status messages for crowd control
 function int GiveAug(Class<Augmentation> giveClass, string viewer) {
     local Augmentation anAug;
-    local bool wasActive;
 
     // Checks to see if the player already has it.  If so, we want to
     // increase the level
@@ -1762,7 +1759,6 @@ function doNudge(string viewer) {
 }
 
 function AskRandomQuestion(String viewer) {
-
     local string question;
     local string answers[3];
     local int numAnswers;
@@ -1785,7 +1781,6 @@ function startEarthquake(float time) {
 }
 
 function int Earthquake(String viewer, int duration) {
-
     startEarthquake(duration);
 
     PlayerMessage(viewer@"set off an earthquake!");
@@ -1957,7 +1952,6 @@ function int ClonePlayer(string viewer, bool friendly)
     local vector loc;
     local rotator rot;
     local int num;
-    local Inventory pInv,newInv;
     local #var(DeusExPrefix)Ammo dxAmmo,newAmmo;
     local #var(DeusExPrefix)Weapon dxWeap,newWeap;
     local ScriptedPawn o;
@@ -2040,8 +2034,6 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
     local float radius;
     local vector loc, loc_offset;
     local rotator rot;
-    local Inventory inv;
-    local NanoKey k1, k2;
 
     if( p == None ) {
         err("p == None?");
@@ -2992,7 +2984,6 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 //#region Handle Event
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
-    local ColorTheme theme;
 
     //Effects can't start on the title screen
     if (dxr.OnTitleScreen()){

@@ -34,6 +34,10 @@ function AnyEntry()
 
     Super.AnyEntry();
 
+    if(dxr.dxInfo.MissionNumber == 98) { // clear flags backup of datastorage timers when playing intro
+        ClearTimerFlags();
+    }
+
     for(i=1; i<ArrayCount(missions_times); i++) {
         missions_times[i] = GetCompleteMissionTime(i);
         missions_menu_times[i] = GetCompleteMissionMenuTime(i);
@@ -83,6 +87,22 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     }
 }
 
+function ClearTimerFlags()
+{
+    local string flagname;
+    local name flag;
+    local int mission;
+
+    for(mission=0; mission<=15; mission++) {
+        flagname = "DXRando_Mission"$mission$"_Complete_Timer";
+        flag = StringToName(flagname);
+        dxr.flagbase.DeleteFlag(flag, FLAG_Int);
+        flagname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
+        flag = StringToName(flagname);
+        dxr.flagbase.DeleteFlag(flag, FLAG_Int);
+    }
+}
+
 function IncMissionTimer(int mission)
 {
     local string flagname, dataname;
@@ -113,18 +133,22 @@ function IncMissionTimer(int mission)
     if (bInGame) {
         flagname = "DXRando_Mission"$mission$"_Timer";
         dataname = "DXRando_Mission"$mission$"_Complete_Timer";
+        time = missions_times[mission];
     } else {
         flagname = "DXRando_Mission"$mission$"Menu_Timer";
         dataname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
+        time = missions_menu_times[mission];
     }
 
     flag = StringToName(flagname);
-    ftime = dxr.flagbase.GetInt(flag);
-    dxr.flagbase.SetInt(flag,ftime+1,,999);
+    ftime = dxr.flagbase.GetInt(flag) + 1;
+    dxr.flagbase.SetInt(flag, ftime,, 999);
 
-    time = int(datastorage.GetConfigKey(dataname));
+    time += 1;
     time = Max(time, ftime);
-    datastorage.SetConfig(dataname, time+1, 3600*24*366);
+    datastorage.SetConfig(dataname, time, 3600*24*366);
+    flag = StringToName(dataname);
+    dxr.flagbase.SetInt(flag, time,, 999);
 
     if(mission >= 0 && mission < ArrayCount(missions_times)) {
         if(bInGame) {
@@ -139,7 +163,8 @@ function IncMissionTimer(int mission)
 function int GetCompleteMissionTime(int mission)
 {
     local string flagname;
-    local int time;
+    local name flag;
+    local int time, ftime;
     local DataStorage datastorage;
 
     if (mission < 1) {
@@ -150,6 +175,14 @@ function int GetCompleteMissionTime(int mission)
 
     flagname = "DXRando_Mission"$mission$"_Complete_Timer";
     time = int(datastorage.GetConfigKey(flagname));
+    flag = StringToName(flagname);
+    ftime = dxr.flagbase.GetInt(flag);
+    if(ftime > time) {
+        time = ftime;
+        datastorage.SetConfig(flagname, time, 3600*24*366);
+    } else if(time > ftime) {
+        dxr.flagbase.SetInt(flag, time,, 999);
+    }
 
     return time;
 }
@@ -174,7 +207,8 @@ function int GetMissionTime(int mission)
 function int GetCompleteMissionMenuTime(int mission)
 {
     local string flagname;
-    local int time;
+    local name flag;
+    local int time, ftime;
     local DataStorage datastorage;
 
     if (mission < 1) {
@@ -185,6 +219,14 @@ function int GetCompleteMissionMenuTime(int mission)
 
     flagname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
     time = int(datastorage.GetConfigKey(flagname));
+    flag = StringToName(flagname);
+    ftime = dxr.flagbase.GetInt(flag);
+    if(ftime > time) {
+        time = ftime;
+        datastorage.SetConfig(flagname, time, 3600*24*366);
+    } else if(time > ftime) {
+        dxr.flagbase.SetInt(flag, time,, 999);
+    }
 
     return time;
 }

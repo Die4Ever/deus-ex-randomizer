@@ -71,7 +71,7 @@ function BeginPlay()
     local ZoneInfo z;
     local BobbyPossessionEffect effect;
     local int i;
-    local LitData data;
+    // local LitData data;
     local ZoneData zdata;
 
     lastPossessionTime = Level.TimeSeconds;

@@ -97,7 +97,6 @@ function ReadConfig()
 {
     local int i, nums[32], nummelees[8], numsides[8], totalweaps, totalmelees, totalsides;
     local float total, f, c, totals[16];
-    local class<Actor> a;
     local DeusExWeapon w;
 
     // count existing in level

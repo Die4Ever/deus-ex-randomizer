@@ -20,15 +20,13 @@ function bool IsDuplicateATM(ATM a1, ATM a2)
 
 function bool IsATMEmpty(ATM a)
 {
-    local int i;
-
     return a.GetBalance(-1,1.0) <= 0;
 }
 
 
 function WithdrawCredits(#switch(gmdx: optional bool bWithdrawAll))
 {
-    local int balance,userIdx;
+    local int userIdx;
     local bool wasEmpty,emptyAfter;
     local ATM a;
 

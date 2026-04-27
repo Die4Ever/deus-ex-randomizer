@@ -316,8 +316,6 @@ function bool GetLazyCameraLocation(out vector loc, int max_range)
 function bool MoveCamera(#var(prefix)SecurityCamera c, vector loc)
 {
     local rotator rotation;
-    local int i;
-    local bool success;
 
     if( GetCameraLocation(loc, rotation) == false ) {
         warning("MoveCamera("$loc$") "$c$" failed to GetCameraLocation");
@@ -335,8 +333,6 @@ function #var(prefix)SecurityCamera SpawnCamera(vector loc)
 {
     local #var(prefix)SecurityCamera c;
     local rotator rotation;
-    local int i;
-    local bool success;
 
     if( GetCameraLocation(loc, rotation) == false ) {
         warning("SpawnCamera("$loc$") failed to GetCameraLocation");
@@ -366,7 +362,6 @@ function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, o
 {
     local #var(injectsprefix)ComputerSecurity c;
     local LocationNormal locnorm;
-    local int i;
     local FMinMax distrange;
     local DXRPasswords pass;
 

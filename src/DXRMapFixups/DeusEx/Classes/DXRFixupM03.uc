@@ -673,7 +673,6 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local ConEventChoice cec;
     local ConChoice      cc;
-    local ConEventSetFlag cesf;
     local bool RevisionMaps, knowPass, foundUnderground;
     local string textAdd;
     local #var(prefix)SecurityCamera cam;
@@ -861,7 +860,6 @@ function AddBatteryParkReturnJock()
 {
     local #var(prefix)BlackHelicopter jock;
     local #var(prefix)GoalCompleteTrigger gct;
-    local Dispatcher d;
     local DynamicMapExit exit;
     local InterpolateTrigger it;
 

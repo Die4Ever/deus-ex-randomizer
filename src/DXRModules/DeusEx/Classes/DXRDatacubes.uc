@@ -2049,7 +2049,6 @@ simulated function bool InfoDevsHasPass(#var(prefix)InformationDevices id, optio
 simulated function ProcessText(DeusExTextParser parser, out int hasPass[64], out int numHasPass)
 {
     local string text;
-    local int i;
     local byte tag;
 
     while(parser.ProcessText()) {
@@ -2122,7 +2121,6 @@ function bool InfoPositionGood(#var(prefix)InformationDevices id, vector newpos,
     local #var(prefix)Keypad k;
     local #var(injectsprefix)InformationDevices injectID;
     local String TextTag;
-    local String mapname;
     local int i;
 
     TextTag = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(id);
@@ -2164,7 +2162,6 @@ function bool InfoPositionGood(#var(prefix)InformationDevices id, vector newpos,
 //#region Human Text Tags
 static function string GetHumanTextTagName(string texttag, string textpackage)
 {
-
     local string prefix,fullTag,s1;
     local int i;
 

@@ -142,7 +142,6 @@ function ApplyEpilepsySafe(bool enabled)
 
 function IncreaseBrightness(int brightness)
 {
-    local ZoneInfo z;
     local DXRStoredZoneInfo szi;
 
     if (dxr.localURL == "ENDGAME4" || dxr.localURL == "ENDGAME4REV"){

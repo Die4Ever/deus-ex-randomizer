@@ -6,7 +6,7 @@ class DXRMissionsM08 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2, bar1, bar2;
+    local int goal, bar1, bar2;
     local bool bMemes;
 
     bMemes = (dxr.flags.settings.goals != 200);

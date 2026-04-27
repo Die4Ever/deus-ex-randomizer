@@ -10,7 +10,7 @@ function LogEventString( string EventString )
 //this won't actually trigger again (It's just adding to the stack count).
 function LogPickup(Inventory Item, Pawn Other)
 {
-    local DeusExPlayer dxp;
+    // local DeusExPlayer dxp;
 
     if ( (Other == None) || (Other.PlayerReplicationInfo == None) || (Item == None) )
         return;

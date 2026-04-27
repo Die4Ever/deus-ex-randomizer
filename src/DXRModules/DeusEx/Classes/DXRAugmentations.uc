@@ -123,10 +123,10 @@ simulated function RandoAugSlotsWeighted()
 
 simulated function RandoAugSlotsBalanced()
 {
-    local class<Augmentation> augClasses[50], augClass;
+    local class<Augmentation> augClasses[50];
     local int numAugClasses;
     local int augLocations[9], augLocIdx, numRemainingLocs;
-    local int i, j, k;
+    local int i, j;
     local Augmentation aug;
 
     SetGlobalSeedNew("RandoAugSlotsBalanced");
@@ -173,7 +173,7 @@ static function LogAugArray(/*const*/ out class<Augmentation> augs[50], int numA
 
     class'DXRando'.default.dxr.l("LogAugArray()");
     for (i = 0; i < numAugs; i++) {
-        class'DXRando'.default.dxr.l("  augs [" $ PadString(i $ "]: ", 5) $ augs[i].name);
+        class'DXRando'.default.dxr.l("  augs[" $ PadString(i $ "]: ", 5) $ augs[i].name);
     }
 }
 
@@ -428,7 +428,6 @@ function static UpgradeRandomAug(DXRando dxr, DeusExPlayer p)
     local class<Augmentation> augs[12];
     local int numAugs, i;
     local Augmentation anAug;
-    local bool wasActive;
 
     numAugs = 0;
     anAug = p.AugmentationSystem.FirstAug;
@@ -891,7 +890,7 @@ static simulated function FixAugHotkeys(PlayerPawn player, bool verbose)
 
 simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot, optional byte slotToRemove)
 {
-    local Augmentation a, b, augs[64];
+    local Augmentation a, augs[64];
     local AugmentationManager am;
     local DXRLoadouts loadouts;
     local int numAugs, slot;

@@ -35,8 +35,6 @@ event DestroyWindow()
 
 function CreateButtons()
 {
-    local PersonaButtonBarWindow winActionButtons;
-
     Super.CreateButtons();
 
     winGoalHintButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
@@ -201,7 +199,7 @@ function EnableButtons()
     //Check if image has hint information available from DXRMissions
     if (dxrMissions!=None && dxrMissions.dxr.flags.settings.goals > 0){
         if (dxrMissions.MapHasGoalMarkers(image.class)){
-            if (dxrMissions.dxr.flags.settings.spoilers==1){
+            if (dxrMissions.dxr.flags.moresettings.spoilers==1){
                 btnShowSpoilers.Show(True);
             }
             btnGoalLocations.Show(True);

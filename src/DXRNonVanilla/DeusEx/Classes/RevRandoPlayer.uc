@@ -73,7 +73,6 @@ function RandomizeAugStates()
     local DXRBase dxrb;
 
     for(aug = AugmentationSystem.FirstAug; aug!=None; aug = aug.next){
-
         //Skip synthetic heart since deactivating it turns off all your augs
         //(Maybe this could only skip it for deactivation?)
         if (aug.bHasIt && !aug.bAlwaysActive && (AugHeartLung(aug)==None)) {

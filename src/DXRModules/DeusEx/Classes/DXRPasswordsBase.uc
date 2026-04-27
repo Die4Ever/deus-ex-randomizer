@@ -135,7 +135,6 @@ function FirstEntry()
 function AnyEntry()
 {
     local DataStorage ds;
-    local ConSpeech c;
     Super.AnyEntry();
 
     LogAll();
@@ -148,7 +147,7 @@ function AnyEntry()
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local ConSpeech c;
-    local ConEventAddNote cn;
+    // local ConEventAddNote cn;
     Super.PlayerAnyEntry(p);
 
     if( p == player() )
