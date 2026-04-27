@@ -6,7 +6,6 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 {
     local DeusExProjectile p;
     local float skill, mult;
-    local int i;
 
     skill = GetWeaponSkill();
     mult = (-2.0 * skill) + 1.0;

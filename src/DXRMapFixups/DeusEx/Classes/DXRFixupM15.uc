@@ -69,7 +69,6 @@ function FixJockExplosion()
 function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 {
     local DeusExMover d;
-    local ComputerSecurity c;
     local Keypad k;
     local #var(prefix)Button1 b;
     local Switch2 s2;
@@ -452,6 +451,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     local ComputerSecurity c;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)Nanokey key;
+    local PatrolPoint pp;
 
     //Change break room security computer password so it isn't pre-known
     //This code isn't written anywhere, so you shouldn't have knowledge of it
@@ -514,6 +514,12 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
             key.Description = "Station 5 Hatch Key";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(key);
+        }
+
+        foreach AllActors(class'PatrolPoint',pp,'commando1_1'){
+            if (pp.NextPatrol!='commando1_1') continue;
+            pp.NextPatrol='commando1_0'; //Make it point back to the other end, instead of back onto itself
+            pp.PreBeginPlay();
         }
 
         Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters

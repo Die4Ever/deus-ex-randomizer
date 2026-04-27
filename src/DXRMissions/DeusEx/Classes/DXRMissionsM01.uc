@@ -46,7 +46,7 @@ function int InitGoals(int mission, string map)
     AddMutualExclusion(jail, hut);
     AddMutualExclusion(topofbase, top);
 
-    // Leo vs boat mutual exclusions
+    // Boat vs Leo/start mutual exclusions
     AddMutualExclusion(boat_pauldock, pauldock);
     AddMutualExclusion(boat_pauldock, unatco);
     AddMutualExclusion(boat_harleydock, harleydock);
@@ -125,7 +125,7 @@ function int InitGoalsRev(int mission, string map)
     AddMutualExclusion(jail, hut);
     AddMutualExclusion(topofbase, top);
 
-    // Leo vs boat mutual exclusions
+    // Boat vs Leo/start mutual exclusions
     AddMutualExclusion(boat_pauldock, pauldock);
     AddMutualExclusion(boat_pauldock, unatco);
     AddMutualExclusion(boat_harleydock, harleydock);

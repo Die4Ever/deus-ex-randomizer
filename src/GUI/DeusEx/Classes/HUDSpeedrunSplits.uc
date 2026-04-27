@@ -96,7 +96,7 @@ function string ReplaceVariables(string s)
     local DXRando dxr;
     local DXRFlags f;
     local DXRLoadouts loadouts;
-    local int i, id;
+    local int id;
 
     dxr = stats.dxr;
     f = dxr.flags;
@@ -294,7 +294,7 @@ function CompletedRun(int total)
 
 function UpdatePos()
 {
-    local float hudWidth, hudHeight, beltWidth, beltHeight;
+    local float beltHeight;
 
 #ifdef injections
     local DeusExHUD hud;
@@ -380,10 +380,7 @@ function DrawWindow(GC gc)
 
 function DrawHeader(GC gc)
 {
-    local int i, prev, prevprev, curTime, next, time, total, prevTotal;
-    local float f, delta;
-    local string msg, msg2;
-    local Color cmpColor;
+    local int total;
 
     total = TotalTime();
     if(left_col == 0) {
@@ -475,7 +472,6 @@ function DrawWaltonWare(GC gc)
 function DrawSplits(GC gc, int cur)
 {
     local int i, prev, prevprev, curTime, next, time, total, prevTotal;
-    local float f, delta;
     local string msg, msg2;
     local Color cmpColor;
     local bool bShuffle;
@@ -607,7 +603,7 @@ function string MissionName(int mission)
 
 function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, optional string extra, optional bool small)
 {
-    local float w, h, column;
+    local float w, h;
 
     x += x_pos;
     y += ty_pos;
@@ -686,7 +682,7 @@ function string fmtTimeDiff(int diff)
 
 function int BalancedSplit(int m)
 {
-    local int i, balanced_split_time;
+    local int balanced_split_time;
     local int total_goal;
     local int typical_split_time, typical_total_time;
     local int timesave, total_timesave;

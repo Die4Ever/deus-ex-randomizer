@@ -99,7 +99,6 @@ function HandleTickSound(DeusExPlayer Player)
     if (endDrain==0) return; //Don't tick if we aren't draining
 
     if(ticksRemaining-- <= 0){
-
         PlayTickSound(Player);
 
         if (Charge > (defaultCharge/2)){

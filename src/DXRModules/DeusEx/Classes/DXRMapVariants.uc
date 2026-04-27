@@ -141,9 +141,7 @@ static function string GetDirtyMapName(string map, vector v)
 
 static function bool IsRevisionMaps(#var(PlayerPawn) player, optional Bool init)
 {
-#ifndef revision
-    return False;
-#else
+#ifdef revision
     local RevMenuChoice_Maps mapMenu;
     local Bool rc;
     local DXRando dxr;
@@ -169,6 +167,10 @@ static function bool IsRevisionMaps(#var(PlayerPawn) player, optional Bool init)
         //player.ClientMessage("RevisionMapsCache: "$rc);
     }
     return rc;
+#elseif vmd2
+    return class'DeusEx.VMDStaticFunctions'.Static.GetIntendedMapStyle(player)==1;
+#else
+    return False;
 #endif
 }
 
@@ -176,6 +178,9 @@ static function bool IsVanillaMaps(#var(PlayerPawn) player)
 {
     if(#defined(vanillamaps)) return true;
     if(#defined(revision)) return !IsRevisionMaps(player);
+#ifdef vmd2
+    return class'DeusEx.VMDStaticFunctions'.Static.GetIntendedMapStyle(player)==0;
+#endif
     return false;
 }
 

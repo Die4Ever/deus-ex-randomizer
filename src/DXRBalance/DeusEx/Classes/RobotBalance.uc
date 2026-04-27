@@ -82,7 +82,7 @@ function Destroyed()
 function PetRobot(#var(PlayerPawn) petter)
 {
     local DXRCameraModes camera;
-    local float animTime,tweenTime;
+    local float animTime;
     local bool highPet;
 
     if (petter==None) return;
@@ -126,7 +126,6 @@ function Frob(Actor Frobber, Inventory frobWith)
 {
     local #var(PlayerPawn) p;
     local bool canPet;
-    local DXRando dxr;
 
     Super.Frob(Frobber,frobWith);
 

@@ -15,8 +15,7 @@ function InitStats(DXRStats newstats)
 event DrawWindow(GC gc)
 {
     local color c;
-    local float p;
-    local int i, yPos;
+    local int yPos;
 
     c.R = 255;
     c.G = 255;

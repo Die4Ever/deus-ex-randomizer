@@ -432,7 +432,6 @@ function InitStupidQuestions() {
 
 function getRandomQuestion(out string question, out int numAnswers,
                            out string ansOne, out string ansTwo, out string ansThree) {
-
     curStupidQuestion++;
     curStupidQuestion = curStupidQuestion % numStupidQuestions;
 

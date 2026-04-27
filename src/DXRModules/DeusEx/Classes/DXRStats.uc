@@ -34,6 +34,10 @@ function AnyEntry()
 
     Super.AnyEntry();
 
+    if(dxr.dxInfo.MissionNumber == 98) { // clear flags backup of datastorage timers when playing intro
+        ClearTimerFlags();
+    }
+
     for(i=1; i<ArrayCount(missions_times); i++) {
         missions_times[i] = GetCompleteMissionTime(i);
         missions_menu_times[i] = GetCompleteMissionMenuTime(i);
@@ -80,6 +84,22 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     }
     if(str != "") {
         info("PlayerAnyEntry " $ timestamp $ " skills/augs:" $ str);
+    }
+}
+
+function ClearTimerFlags()
+{
+    local string flagname;
+    local name flag;
+    local int mission;
+
+    for(mission=0; mission<=15; mission++) {
+        flagname = "DXRando_Mission"$mission$"_Complete_Timer";
+        flag = StringToName(flagname);
+        dxr.flagbase.DeleteFlag(flag, FLAG_Int);
+        flagname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
+        flag = StringToName(flagname);
+        dxr.flagbase.DeleteFlag(flag, FLAG_Int);
     }
 }
 

@@ -4,7 +4,7 @@ static function bool GetNoPause(NetworkTerminal terminal) {
     local DXRFlags flags;
 
     foreach terminal.Player.AllActors(class'DXRFlags', flags) {
-        if(flags.settings.menus_pause == 0)
+        if(flags.moresettings.menus_pause == 0)
             return true;
     }
 

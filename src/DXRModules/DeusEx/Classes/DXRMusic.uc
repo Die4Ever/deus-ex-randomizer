@@ -29,7 +29,7 @@ var int last_skipped_song;
 
 function CheckConfig()
 {
-    local int i, g;
+    local int i;
     local string gamesongs[100];
 
     if( ConfigOlderThan(3,2,5,1) ) {

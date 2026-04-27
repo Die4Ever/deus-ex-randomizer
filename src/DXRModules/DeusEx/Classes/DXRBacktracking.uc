@@ -336,7 +336,6 @@ function ParisMetroAnyEntry()
     local GuntherHermann gunther;
     local NicoletteDuClare nicolette;
     local FlagBase flags;
-    local MapExit exit;
     local Vehicles chopper;
 
     flags = dxr.flagbase;

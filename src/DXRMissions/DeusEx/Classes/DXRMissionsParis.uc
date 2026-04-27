@@ -3,7 +3,7 @@ class DXRMissionsParis extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc;
 
     switch(map) {
     case "10_PARIS_CATACOMBS_TUNNELS":
@@ -83,7 +83,7 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc;
 
     switch(map) {
     case "10_PARIS_CATACOMBS_TUNNELS":

@@ -28,10 +28,10 @@ function ConfigurationChanged()
     local float hitWidth, hitHeight;
     local float infoX, infoY, infoTop, infoBottom;
     local float infoWidth, infoHeight, maxInfoWidth, maxInfoHeight;
-    local float itemsWidth, itemsHeight;
+    local float itemsWidth;
     local float damageWidth, damageHeight;
     local float conHeight;
-    local float barkWidth, barkHeight;
+    local float barkHeight;
     local float recWidth, recHeight, recPosY;
 
     //DXRando:

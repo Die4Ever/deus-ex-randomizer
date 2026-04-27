@@ -34,7 +34,7 @@ function bool GetNoPause(bool bNoPause) {
     local DXRFlags flags;
 
     foreach parentPawn.AllActors(class'DXRFlags', flags) {
-        if(flags.settings.menus_pause == 0)
+        if(flags.moresettings.menus_pause == 0)
             bNoPause = true;
     }
 
@@ -235,7 +235,6 @@ function bool ProcessDataVaultSelection(EInputKey key)
 
 function bool IsKeyAssigned(EInputKey key, String function)
 {
-    local int pos;
     local string InputKeyName;
     local string AllAlias,Alias;
     local DeusExPlayer player;

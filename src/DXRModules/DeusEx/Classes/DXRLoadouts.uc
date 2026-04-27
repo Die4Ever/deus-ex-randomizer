@@ -910,7 +910,7 @@ function string GetName(int i)
 //#region AnyEntry
 function AnyEntry()
 {
-    local ConEventTransferObject c;
+    // local ConEventTransferObject c;
 
     Super.AnyEntry();
 
@@ -1039,8 +1039,6 @@ function bool is_starting_equipment(Inventory eqpt, optional bool allow_subclass
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    local bool bFixGlitches;
-
     if(IsMeleeWeapon(item) && Carcass(item.Owner) != None && player.FindInventoryType(item.class) != None) {
         return true;
     } else if ( _is_banned( item_set, item.class) ) {
@@ -1231,7 +1229,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 
     start_amount = dxr.flags.settings.equipment;
 
-    if (dxr.flags.settings.starting_map != 0) {
+    if (dxr.flags.moresettings.starting_map != 0) {
         start_amount += 1 + dxr.flags.GetStartingMap() / 30;
     }
 
@@ -1304,21 +1302,32 @@ function class<Inventory> _GetRandomUtilityItem()
 
 function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool bFrob)
 {
-    local int i;
+    local int i, slot;
     local Inventory item;
     local class<Inventory> iclass;
+    local HUDObjectBelt belt;
 
     if(dxre != None) {
+        belt = DeusExRootWindow(player.rootWindow).hud.belt;
+        slot = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
         for(i=0; i<100; i++) {
-            iclass = dxre.GiveRandomWeaponClass(player, true);
+            iclass = dxre.GiveRandomMeleeWeaponClass(player, false);
             if(iclass == None || is_banned(iclass)) continue;
+
             item = GiveItem(player, iclass);
             item = _GiveRandoStartingItem(player, item, bFrob);
-            if(item != None) break;
+            if(item == None) continue;
+
+            if(belt.IsValidPos(slot) && belt.GetObjectFromBelt(slot) == None) {
+                belt.RemoveObjectFromBelt(item);
+                belt.AddObjectToBelt(item, slot, false);
+            }
+
+            break;
         }
 
         for(i=0; i<100; i++) {
-            iclass = dxre.GiveRandomMeleeWeaponClass(player, false);
+            iclass = dxre.GiveRandomWeaponClass(player, true);
             if(iclass == None || is_banned(iclass)) continue;
             item = GiveItem(player, iclass);
             item = _GiveRandoStartingItem(player, item, bFrob);
@@ -1344,7 +1353,7 @@ function SpawnItems()
     local Actor a;
     local class<Actor> aclass;
     local DXRReduceItems reducer;
-    local int i, j, chance, max;
+    local int i, j, chance;
 
     if(dxr.dxInfo.MissionNumber < 0) return;
 

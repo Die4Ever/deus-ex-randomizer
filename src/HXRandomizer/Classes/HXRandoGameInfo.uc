@@ -63,9 +63,6 @@ event PostLogin(playerpawn NewPlayer)
 event AcceptInventory(pawn PlayerPawn)
 {
     local HXPlayerPawn Human;
-    local HXNanoKeyInfo aKey;
-    local int PointsSpent;
-    local class<HXMissionScript> HXScript;
     local Inventory Inv;
 
     // First remark all inventory spaces as occupied,
@@ -126,7 +123,6 @@ event AcceptInventory(pawn PlayerPawn)
 
 function ProcessServerTravel( string URL, bool bItems )
 {
-    local int i;
     local DeusExNote note;
     local DataStorage ds;
     log(Self$".ProcessServerTravel PreTravel dxr: "$dxr);

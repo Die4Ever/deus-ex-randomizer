@@ -10,7 +10,7 @@ function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
 
-    if (dxr.flags.settings.starting_map == 0) return;
+    if (dxr.flags.moresettings.starting_map == 0) return;
 
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
@@ -20,7 +20,6 @@ function PlayerLogin(#var(PlayerPawn) p)
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
 {
-    local string m;
     if(dxr.flags.IsHordeMode()) return;// let horde mode handle it, partly because we don't want to give skillpoints and augs
     p.strStartMap = GetStartMap(self, dxr.flags.GetStartingMap()); // this also calls DXRMapVariants.VaryURL()
 #ifdef vmd
@@ -808,6 +807,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
             MarkConvPlayed("DL_LebedevKill", bFemale);
+            GiveKey(player, 'eastgate', "East Gate key");
         case 36: // fallthrough
             GiveKey(player, 'Sewerdoor', "Sewer Door");
         case 35: // fallthrough
@@ -1703,7 +1703,7 @@ static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player, SkillAward
 {
     local int i, numAugs, numUpgrades;
 
-    if (dxr.flags.settings.starting_map !=0 ){
+    if (dxr.flags.moresettings.starting_map !=0 ){
         numAugs = GetStartMapAugBonus(dxr);
         class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
 

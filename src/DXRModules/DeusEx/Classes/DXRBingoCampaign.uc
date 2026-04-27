@@ -468,7 +468,7 @@ function HandleBingoGoal()
 function HandleBingoWin(int numBingos, int oldBingos)
 {
     local name blockerFlag1, blockerFlag2;
-    local int expiration, nextMission;
+    local int expiration;
 
     if (numBingos > oldBingos) {
         player().ClientMessage("You have enough bingo lines to proceed!");
@@ -483,7 +483,7 @@ function HandleBingoWin(int numBingos, int oldBingos)
  static function string GetBingoHoverHintText(DXRando dxr, string hintText)
  {
     local string bingoText;
-    local int bingosRemaining, spaces;
+    local int bingosRemaining;
 
     if (!dxr.flags.IsBingoCampaignMode() || !IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration)) {
          return hintText;

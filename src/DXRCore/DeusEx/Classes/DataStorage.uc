@@ -153,7 +153,6 @@ function bool HasPlaythroughId(int tplaythrough_id)
 simulated function static DataStorage GetObj(DXRando dxr)
 {
     local DataStorage d;
-    local DXRFlags f;
 
     if( dxr == None ) return None;
 
