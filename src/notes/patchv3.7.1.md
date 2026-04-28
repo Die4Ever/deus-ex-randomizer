@@ -83,4 +83,5 @@
 - Hidden grenades (Such as ones thrown in scripted locations in GMDX) will not get their type randomized.
 - Weapon Mods in GMDX can now be randomized into the Weapon Mod types added by GMDX (Damage, Rate of Fire, and Full Auto).  Weapon mod chances will also be based on the number of weapon mods in GMDX, rather than vanilla.
 - Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
+- MJ12 Commando machine guns now do 12 damage base instead of 15 (before randomization).
 </details>
