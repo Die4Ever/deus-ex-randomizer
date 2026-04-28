@@ -1,6 +1,8 @@
 class DXRFixupM06 extends DXRFixup;
 
 var bool raidStarted;
+var bool ceremonyHomeSet;
+var bool ceremonyHomeCleared;
 
 function CheckConfig()
 {
@@ -1751,6 +1753,8 @@ function FixVersalifeOfficeAlliances()
 function TimerMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)GordonQuick gordon;
+    local #var(prefix)MaxChen max;
 
     switch(dxr.localURL)
     {
@@ -1762,6 +1766,30 @@ function TimerMapFixes()
                 sp.ResetReactions();
             }
             raidStarted=True;
+        }
+        break;
+    case "06_HONGKONG_WANCHAI_MARKET":
+        //Make sure Gordon doesn't wander back to his HomeLocation once he's been moved to the temple
+        //This can happen in Zero Rando, when he isn't moved, or with Goal Rando and vanilla Gordon
+        //but we only set the home base in injection-supported mods
+        if (#defined(injections)){
+            if (dxr.flagbase.GetBool('CeremonyReadyToBegin') && !dxr.flagbase.GetBool('TriadCeremony_Played') && !ceremonyHomeSet){
+                foreach AllActors(class'#var(prefix)GordonQuick', gordon){
+                    gordon.SetHomeBase(gordon.Location,gordon.Rotation); //Make him wander back to his spot in the temple if he gets spooked or something
+                }
+                foreach AllActors(class'#var(prefix)MaxChen', max){
+                    max.SetHomeBase(max.Location,max.Rotation); //Make him wander back to his spot in the temple if he gets spooked or something
+                }
+                ceremonyHomeSet=true;
+            } else if (dxr.flagbase.GetBool('TriadCeremony_Played') && !ceremonyHomeCleared) {
+                foreach AllActors(class'#var(prefix)GordonQuick', gordon){
+                    gordon.ClearHomeBase(); //Set him free from his shackles
+                }
+                foreach AllActors(class'#var(prefix)MaxChen', max){
+                    max.ClearHomeBase(); //Set him free from his shackles
+                }
+                ceremonyHomeCleared=true;
+            }
         }
         break;
     }
