@@ -69,7 +69,8 @@ function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)T
                                                              Rotator rot,
                                                              name tag,
                                                              name event,
-                                                             Actor owner)
+                                                             Actor owner,
+                                                             bool hidden)
 {
     local #var(prefix)ThrownProjectile gren;
 
@@ -83,6 +84,7 @@ function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)T
     gren.bStuck = True;
     gren.event = event;
     gren.bHighlight = True; //HX makes thrown grenades not highlightable, and planted ones explicitly become highlighted
+    gren.bHidden=hidden;
 #ifdef hx
     gren.Time = gren.FuseLength;  //This prevents the beep when planted (only an issue in HX)
     gren.bPlayerPlaced = false;
@@ -100,6 +102,7 @@ function FirstEntry()
     local int i;
     local name oldTag,oldEvent;
     local Actor oldOwner;
+    local bool oldHidden;
 
     Super.FirstEntry();
     if(dxr.flags.moresettings.grenadeswap <= 0) return;
@@ -109,7 +112,10 @@ function FirstEntry()
     i=0;
     foreach AllActors(class'#var(prefix)ThrownProjectile',gren)
     {
-        if (gren.Owner==None && chance_single(dxr.flags.moresettings.grenadeswap)) {
+        //GMDX has hidden grenades that can be thrown places with ScriptedGrenadeTrigger's.  Just skip hidden ones for now.
+        //Was there a reason I didn't check for bStuck?  Hard to say without checking all the planted grenades, including
+        //other mods maps, in case someone messed up at some point.
+        if (gren.Owner==None && gren.bHidden==False && chance_single(dxr.flags.moresettings.grenadeswap)) {
             grens[i++]=gren;
         }
     }
@@ -120,10 +126,11 @@ function FirstEntry()
         oldTag = grens[i].tag;
         oldEvent=grens[i].event;
         oldOwner=grens[i].owner;
+        oldHidden=grens[i].bHidden; //Hidden grenades are skipped for now, but in case we do something about that at some point...
         grens[i].SetCollision(false,false,false);
         grens[i].Destroy();
 
-        gren = SpawnNewPlantedGrenade(PickRandomGrenade(),loc,rot,oldTag,oldEvent,oldOwner);
+        gren = SpawnNewPlantedGrenade(PickRandomGrenade(),loc,rot,oldTag,oldEvent,oldOwner,oldHidden);
 
         if (gren!=None){
             l("Spawned a new grenade "$gren.name);

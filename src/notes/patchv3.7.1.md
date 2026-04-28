@@ -80,4 +80,5 @@
 - Added buttons for Save Settings and Restore Settings on the Advanced New Game screen.
 - Stackable items marked as Junk will now get picked up if they're already in your inventory.
 - Gordon Quick and Max Chen will try to move back to the temple if they are lured away while waiting for you to start the ceremony (Mission 6).
+- Hidden grenades (Such as ones thrown in scripted locations in GMDX) will not get their type randomized.
 </details>
