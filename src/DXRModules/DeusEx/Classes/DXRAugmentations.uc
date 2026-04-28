@@ -86,6 +86,11 @@ simulated function RandoAllAugs()
         DerandoAugSlots();
     }
 
+    FixAugHotkeys(player(),false); //This is now necessary, since augs can sometimes be given to the player before RandoAllAugs runs (so before slots get randomized)
+    //Theoretically instead of this, we could move the RandoAugSlots logic above back into RandoAug, but calculate
+    //and cache the aug locations the first time an aug tries to randomize the slot.  I don't really think there's
+    //a big payoff for that though, so this is good enough.
+
     foreach AllActors(class'Augmentation', aug) {
         RandoAug(aug);
     }
