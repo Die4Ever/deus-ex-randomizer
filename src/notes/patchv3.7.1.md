@@ -85,4 +85,5 @@
 - Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
 - MJ12 Commando machine guns now do 12 damage base instead of 15 (before randomization).
 - Trash bags will no longer break when stepped on if Other Balance Changes are enabled (Such as in Zero Rando).
+- Map Exits can be triggered by things other than players when the "Fix Glitches" option is disabled (which allows you to shoot the Map Exit in Vandenberg again).
 </details>
