@@ -1,7 +1,7 @@
 class DXRWeaponMods extends DXRActorsBase transient;
 
 struct RandomModStruct { var class<#var(prefix)WeaponMod> type; var float chance; };
-var RandomModStruct randommods[8];
+var RandomModStruct randommods[11];
 
 var config float min_rate_adjust, max_rate_adjust;
 
@@ -15,6 +15,7 @@ function class<#var(prefix)WeaponMod> PickRandomMod()
 
     r = initchance();
     for (i=0;i<ArrayCount(randommods);i++){
+        if (randommods[i].type==None) break;
         if(chance(randommods[i].chance,r)) newmod = randommods[i].type;
     }
 
@@ -39,6 +40,51 @@ function AddRandomMod(class<#var(prefix)WeaponMod> mod, float c)
     }
 }
 
+function InitWeaponModChances()
+{
+    if (#defined(gmdx)){
+        //Are any of these weapon mods specific to different versions of GMDX?
+        #ifdef gmdx
+        //Based on the Mod loot table from GMDX:AE (https://github.com/tunbridgep/gmdx-vrsd-fork/blob/master/_Classes/DeusEx/Classes/LootTableModGeneral.uc)
+        //I assume this mod weighting is good enough for all GMDX variants
+        AddRandomMod(class'#var(prefix)WeaponModAccuracy',16);
+        AddRandomMod(class'#var(prefix)WeaponModClip',19);
+        AddRandomMod(class'#var(prefix)WeaponModRange',17);
+        AddRandomMod(class'#var(prefix)WeaponModRecoil',16);
+        AddRandomMod(class'#var(prefix)WeaponModReload',19);
+        AddRandomMod(class'#var(prefix)WeaponModScope',4);
+        AddRandomMod(class'#var(prefix)WeaponModSilencer',2);
+        AddRandomMod(class'#var(prefix)WeaponModLaser',7);
+        //GMDX specific mods below
+        AddRandomMod(class'#var(prefix)WeaponModDamage',19);
+        AddRandomMod(class'#var(prefix)WeaponModAuto',19);
+        AddRandomMod(class'#var(prefix)WeaponModFullAuto',1);
+        #endif
+    } else if(class'DXRMapVariants'.static.IsRevisionMaps(player())){
+        //The count of all weapon mods in the Revision maps (I think this is accurate, maybe I miscounted)
+        //Theoretically this means VMD2 could change weapon mod chances across missions (Going from Vanilla
+        //to Revision maps), but that's probably fine?
+        AddRandomMod(class'#var(prefix)WeaponModAccuracy',24);
+        AddRandomMod(class'#var(prefix)WeaponModClip',19);
+        AddRandomMod(class'#var(prefix)WeaponModRange',23);
+        AddRandomMod(class'#var(prefix)WeaponModRecoil',17);
+        AddRandomMod(class'#var(prefix)WeaponModReload',17);
+        AddRandomMod(class'#var(prefix)WeaponModScope',6);
+        AddRandomMod(class'#var(prefix)WeaponModSilencer',12);
+        AddRandomMod(class'#var(prefix)WeaponModLaser',11);
+    } else {
+        //This is the vanilla count of each mod through the game
+        AddRandomMod(class'#var(prefix)WeaponModAccuracy',14);
+        AddRandomMod(class'#var(prefix)WeaponModClip',10);
+        AddRandomMod(class'#var(prefix)WeaponModRange',7);
+        AddRandomMod(class'#var(prefix)WeaponModRecoil',10);
+        AddRandomMod(class'#var(prefix)WeaponModReload',8);
+        AddRandomMod(class'#var(prefix)WeaponModScope',3);
+        AddRandomMod(class'#var(prefix)WeaponModSilencer',5);
+        AddRandomMod(class'#var(prefix)WeaponModLaser',6);
+    }
+}
+
 function CheckConfig()
 {
     local float total;
@@ -46,15 +92,7 @@ function CheckConfig()
 
     Super.CheckConfig();
 
-    //This is the vanilla count of each mod through the game
-    AddRandomMod(class'#var(prefix)WeaponModAccuracy',14);
-    AddRandomMod(class'#var(prefix)WeaponModClip',10);
-    AddRandomMod(class'#var(prefix)WeaponModRange',7);
-    AddRandomMod(class'#var(prefix)WeaponModRecoil',10);
-    AddRandomMod(class'#var(prefix)WeaponModReload',8);
-    AddRandomMod(class'#var(prefix)WeaponModScope',3);
-    AddRandomMod(class'#var(prefix)WeaponModSilencer',5);
-    AddRandomMod(class'#var(prefix)WeaponModLaser',6);
+    InitWeaponModChances();
 
     //Scale to 100%
     total=0;

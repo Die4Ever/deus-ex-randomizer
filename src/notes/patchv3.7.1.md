@@ -81,4 +81,6 @@
 - Stackable items marked as Junk will now get picked up if they're already in your inventory.
 - Gordon Quick and Max Chen will try to move back to the temple if they are lured away while waiting for you to start the ceremony (Mission 6).
 - Hidden grenades (Such as ones thrown in scripted locations in GMDX) will not get their type randomized.
+- Weapon Mods in GMDX can now be randomized into the Weapon Mod types added by GMDX (Damage, Rate of Fire, and Full Auto).  Weapon mod chances will also be based on the number of weapon mods in GMDX, rather than vanilla.
+- Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
 </details>
