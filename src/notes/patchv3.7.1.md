@@ -88,4 +88,5 @@
 - Map Exits can be triggered by things other than players when the "Fix Glitches" option is disabled (which allows you to shoot the Map Exit in Vandenberg again).
 - Item duping is possible again when "Glitches for Speedruns" are set to "Not Fixed".
 - "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
+- Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
 </details>

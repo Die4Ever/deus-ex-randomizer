@@ -2229,6 +2229,39 @@ exec function QuickSave()
     }
 }
 
+exec function SlotSave(int slot)
+{
+    local DeusExLevelInfo info;
+    local string SaveName;
+
+    if( !class'DXRAutosave'.static.AllowManualSaves(self) ) return;
+
+    info = GetLevelInfo();
+
+    //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
+    if (((info != None) && (info.MissionNumber < 0)) ||
+        ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
+        (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
+    {
+        ClientMessage("Cannot save during infolink!",, true);
+    } else {
+        class'DXRAutosave'.static.UseSaveItem(self);
+        SaveName = "Save Slot "$slot;
+        if(info==None) SaveGame(slot, SaveName);
+        else SaveGame(slot, SaveName @ info.MissionLocation);
+        ClientMessage("Saved to slot "$slot,, true);
+    }
+}
+
+exec function LoadGame(int saveIndex)
+{
+    //Don't load if the level isn't ready
+    if (Level.LevelAction != LEVACT_None)
+        return;
+
+    Super.LoadGame(saveIndex);
+}
+
 function QuickLoadConfirmed()
 {
    if (Level.Netmode != NM_Standalone)
