@@ -686,10 +686,6 @@ function SetDifficulty(int new_difficulty)
             // realtime menus, not for training mode
             moresettings.menus_pause = 0;
         }
-        if(gamemode==SpeedShuffle) {
-            bingo_duration = 5;
-            settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would get rerolls all over the place back and forth
-        }
         // same doors rules as Normal difficulty
         settings.doorsdestructible = 100;
         settings.doorspickable = 100;
@@ -716,8 +712,16 @@ function SetDifficulty(int new_difficulty)
         // splits overlay
         moresettings.splits_overlay = 1;
         // disable NG+ by default
-        if(class'MenuChoice_NewGamePlus'.default.value != 2)
+        if(class'MenuChoice_NewGamePlus'.default.value != 2) {
             moresettings.newgameplus_curve_scalar = -1;
+        }
+
+        if(gamemode==SpeedShuffle) {
+            bingo_duration = 5;
+            settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would get rerolls all over the place back and forth
+            settings.minskill *= 0.8;
+            settings.maxskill *= 0.8;
+        }
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;
