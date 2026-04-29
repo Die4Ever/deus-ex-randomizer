@@ -996,6 +996,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
     local int credits, num, starting_map;
     local float desiredHealth; // how many medkits to give
 
+    //Try to spawn the crate on the ground in front of the player
     crate = SkillAwardCrate(SpawnInFrontOnFloor(
         player,
         crateClass,
@@ -1003,7 +1004,22 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
         MakeRotator(0, (2047 - rng(4095)), 0)
     ));
 
+    if (crate == None){
+        //Ok, that didn't work for some reason.  Try again, and put it in their hands?
+        crate = player.Spawn(crateClass);
+        if (crate!=None){
+            player.PutInHand(None);
+            player.CarriedDecoration = crate;
+            #ifdef vanilla
+            player.ForcePutCarriedDecorationInHand();
+            #else
+            player.PutCarriedDecorationInHand();
+            #endif
+        }
+    }
+
     if (crate == None) {
+        //shit's fucked
         return None;
     }
 
