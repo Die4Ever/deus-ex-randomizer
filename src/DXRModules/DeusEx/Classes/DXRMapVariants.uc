@@ -195,6 +195,7 @@ function int GetMirrorMapsSetting()
 function CheckConfig()
 {
     local int i, slot, tempi, len;
+    local float totalScore, minScore;
     local string temp;
 
     Super.CheckConfig();
@@ -221,8 +222,25 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    if(dxr.flags.bingo_duration > 0) len = Clamp(dxr.flags.bingo_duration, 1, len);
-    starts[len] = "99_ENDGAME4";
+    if(dxr.flags.bingo_duration > 0) {
+        minScore = FClamp(dxr.flags.bingo_duration, 1, len) - 0.5;
+        for(i=0; i<len; i++) {
+            if(totalScore >= minScore) {
+                len = i;
+                break;
+            }
+            switch(missions[i]) {
+                case 1: totalScore += 0.9; break;
+                case 6: totalScore += 1.8; break;
+                case 8: totalScore += 0.5; break;
+                case 9: totalScore += 1.3; break;
+                case 14: totalScore += 2; break;
+                case 15: totalScore += 2; break;
+                default: totalScore += 1; break;
+            }
+        }
+    }
+    starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
     missions[len] = 99;
     for(i=0; i<len; i++) {
         l("speedshuffle " $ i @ starts[i]);
