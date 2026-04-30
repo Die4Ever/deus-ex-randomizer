@@ -89,4 +89,5 @@
 - Item duping is possible again when "Glitches for Speedruns" are set to "Not Fixed".
 - "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
 - Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
+- If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene) with "Glitches for Speedruns" set to "Fixed", they will now be killed instantly.
 </details>
