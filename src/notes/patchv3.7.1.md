@@ -85,9 +85,13 @@
 - Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
 - MJ12 Commando machine guns now do 12 damage base instead of 15 (before randomization).
 - Trash bags will no longer break when stepped on if Other Balance Changes are enabled (Such as in Zero Rando).
-- Map Exits can be triggered by things other than players when the "Fix Glitches" option is disabled (which allows you to shoot the Map Exit in Vandenberg again).
-- Item duping is possible again when "Glitches for Speedruns" are set to "Not Fixed".
 - "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
-- Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
-- If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene) with "Glitches for Speedruns" set to "Fixed", they will now be killed instantly.
+- "Fixes" related to the "Glitches for Speedruns" option
+  - Map Exits can be triggered by things other than players when the "Fix Glitches" option is disabled (which allows you to shoot the Map Exit in Vandenberg again).
+  - Item duping is possible again when "Glitches for Speedruns" are set to "Not Fixed".
+  - Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
+  - If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene) with "Glitches for Speedruns" set to "Fixed", they will now be killed instantly.
+  - A downgraded pistol skill on the New Game screen reverts back up to Trained if "Glitches for Speedruns" is set to "Not Fixed".
+  - When "Glitches for Speedruns" is set to "Not Fixed", it is now possible to highlight objects through narrow gaps next to doors, like the switch to power the Antimatter Reactors to end the game in Area 51 (Mission 15).
+
 </details>

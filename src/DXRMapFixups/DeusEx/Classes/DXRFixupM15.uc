@@ -358,34 +358,36 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
             d.bFrobbable = true;
         }
 
-        //Fix the Tong Ending skip for real for real
-        foreach AllActors(class'#var(prefix)Switch1',s){
-            if (s.Event=='destroy_generator'){
-                s.Tag='destroy_generator_switch';
-                class'DXRTriggerEnable'.static.Create(s,'Generator_overload','destroy_generator_switch');
+        if (class'MenuChoice_FixGlitches'.default.enabled){
+            //Fix the Tong Ending skip for real for real
+            foreach AllActors(class'#var(prefix)Switch1',s){
+                if (s.Event=='destroy_generator'){
+                    s.Tag='destroy_generator_switch';
+                    class'DXRTriggerEnable'.static.Create(s,'Generator_overload','destroy_generator_switch');
+                }
             }
-        }
 
-        //but like... for REAL
-        foreach AllActors(class'#var(prefix)Switch2',s2){
-            if (s2.Event=='button_1'){
-                s2.Event = 'button_1_once';
-                oot = Spawn(class'OnceOnlyTrigger',, 'button_1_once');
-                oot.Event = 'button_1';
-                s2.Tag='button_1_switch';
-                class'DXRTriggerEnable'.static.Create(s2,'Generator_panel','button_1_switch');
-            } else if (s2.Event=='button_2'){
-                s2.Event = 'button_2_once';
-                oot = Spawn(class'OnceOnlyTrigger',, 'button_2_once');
-                oot.Event = 'button_2';
-                s2.Tag='button_2_switch';
-                class'DXRTriggerEnable'.static.Create(s2,'injector2','button_2_switch');
-            } else if (s2.Event=='button_3'){
-                s2.Event = 'button_3_once';
-                oot = Spawn(class'OnceOnlyTrigger',, 'button_3_once');
-                oot.Event = 'button_3';
-                s2.Tag='button_3_switch';
-                class'DXRTriggerEnable'.static.Create(s2,'injector3','button_3_switch');
+            //but like... for REAL
+            foreach AllActors(class'#var(prefix)Switch2',s2){
+                if (s2.Event=='button_1'){
+                    s2.Event = 'button_1_once';
+                    oot = Spawn(class'OnceOnlyTrigger',, 'button_1_once');
+                    oot.Event = 'button_1';
+                    s2.Tag='button_1_switch';
+                    class'DXRTriggerEnable'.static.Create(s2,'Generator_panel','button_1_switch');
+                } else if (s2.Event=='button_2'){
+                    s2.Event = 'button_2_once';
+                    oot = Spawn(class'OnceOnlyTrigger',, 'button_2_once');
+                    oot.Event = 'button_2';
+                    s2.Tag='button_2_switch';
+                    class'DXRTriggerEnable'.static.Create(s2,'injector2','button_2_switch');
+                } else if (s2.Event=='button_3'){
+                    s2.Event = 'button_3_once';
+                    oot = Spawn(class'OnceOnlyTrigger',, 'button_3_once');
+                    oot.Event = 'button_3';
+                    s2.Tag='button_3_switch';
+                    class'DXRTriggerEnable'.static.Create(s2,'injector3','button_3_switch');
+                }
             }
         }
 

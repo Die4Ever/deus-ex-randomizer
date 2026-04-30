@@ -35,6 +35,13 @@ class MenuChoice_FixGlitches extends DXRMenuUIChoiceBool;
         - While in the Phoenix Glitch state, heal yourself (but not above negative health, so small heals are best).  Once
           healed, enemies will no longer be able to see you and you won't trigger lasers.  You will be able to drop items,
           but not pick them up again.
+    - Extra Skill Points from Pistol skill
+        - On the new game screen (in vanilla or Zero Rando), the pistol skill starts at Trained, but can be downgraded, returning
+          some skill points.  Starting the game downgraded to Untrained will give you those skill points but bump the skill back
+          up to Trained for free.
+    - Pressing the final switch at Area 51
+        - Crouch in front of the button for the reactors and aim at the bottom edge of the cover to reach inside and
+          press the button, ending the game.
 
 
 
@@ -44,15 +51,6 @@ class MenuChoice_FixGlitches extends DXRMenuUIChoiceBool;
           Each time you leave the second layer of menu, the jump multiplier increases
         - Fixed by our new GetJumpZ function in the Player class, as well as an adjustment to RootWindow that catches
           the original aug reactivations.
-    - Pressing the final switch at Area 51
-        - Crouch in front of the button for the reactors and aim at the bottom edge of the cover to reach inside and
-          press the button, ending the game.
-        - Currently fixed in DXRFixupM15
-    - Extra Skill Points from Pistol skill
-        - On the new game screen (in vanilla or Zero Rando), the pistol skill starts at Trained, but can be downgraded, returning
-          some skill points.  Starting the game downgraded to Untrained will give you those skill points but bump the skill back
-          up to Trained for free.
-        - Currently fixed in NerfPistolSkill.uc (class DXRSkillWeaponPistol)
 
 
 
