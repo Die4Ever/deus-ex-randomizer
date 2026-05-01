@@ -111,6 +111,19 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Gunthers alliances will change when you give him a weapon.  Typically this alliance trigger gets hit when you walk through the door,
+        //but now it will be triggered by the conversation with him when he is given a weapon and tries to escape.
+        foreach AllActors(class'#var(prefix)AllianceTrigger', at,'GuntherFreed'){
+            //The alliance trigger has the tag GuntherFreed, but nothing actually hits that.  Switch it to GuntherAttacks, which
+            //gets hit at the end of his conversation.
+            at.Tag='GuntherAttacks';
+
+            //Remove collision so he *only* goes hostile after talking to him, in case there are swarms of guys and
+            //he goes nutso trying to fight them before talking to you.
+            at.SetCollision(False,False,False);
+        }
+
+
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //Leo will no longer directly be ordered to attack the player, he will just go hostile and face them
             //This prevents him from breaking stealth
