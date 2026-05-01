@@ -124,11 +124,12 @@ function string LoadoutInfo(int loadout, optional bool get_name)
 
     //#region Loadout Defs
 
+    if(!get_name) {
     //ALWAYS allow AmmoNone, it gets looted from Melee weapons and stuff
     AddInvAllow(class'#var(prefix)AmmoNone');
-
     //Loadouts start as neither purely lethal nor non-lethal
     SetLoadoutDefaultLethal();
+    }
 
     switch(loadout) {
 /////////////////////////////////////////////////////////////////
