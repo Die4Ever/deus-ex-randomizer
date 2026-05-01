@@ -93,6 +93,7 @@
   - Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
   - A downgraded pistol skill on the New Game screen reverts back up to Trained.
   - It is now possible to highlight objects through narrow gaps next to doors, like the switch to power the Antimatter Reactors to end the game in Area 51 (Mission 15).
+  - Superjump works again.
 - If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene), they will now be killed instantly. (Unless the "Glitches for Speedruns" option is set to "Allowed")
 
 </details>
