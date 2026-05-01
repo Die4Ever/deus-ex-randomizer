@@ -279,20 +279,31 @@ simulated function FirstEntry()
     if(isStartMap) { // for speedrun shuffle mode, do these things when entering these missions
         dxr.flagbase.DeleteFlag('MS_DL_Played', FLAG_Bool); //commonly used flag
         if(dxr.dxInfo.MissionNumber == 1 || dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
-            dxr.flagbase.DeleteFlag('JosephManderley_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('JosephManderley_Unconscious', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('PaulDenton_Unconscious', FLAG_Bool);
+            BackupFlag('JosephManderley_Dead', FLAG_Bool);
+            BackupFlag('JosephManderley_Unconscious', FLAG_Bool);
+            BackupFlag('PaulDenton_Dead', FLAG_Bool);
+            BackupFlag('PaulDenton_Unconscious', FLAG_Bool);
+        } else {
+            RestoreFlag('JosephManderley_Dead', FLAG_Bool);
+            RestoreFlag('JosephManderley_Unconscious', FLAG_Bool);
+            RestoreFlag('PaulDenton_Dead', FLAG_Bool);
+            RestoreFlag('PaulDenton_Unconscious', FLAG_Bool);
         }
         if(dxr.dxInfo.MissionNumber == 4) {
-            dxr.flagbase.DeleteFlag('GuntherHermann_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('GuntherHermann_Unconscious', FLAG_Bool);
+            BackupFlag('GuntherHermann_Dead', FLAG_Bool);
+            BackupFlag('GuntherHermann_Unconscious', FLAG_Bool);
+        } else {
+            RestoreFlag('GuntherHermann_Dead', FLAG_Bool);
+            RestoreFlag('GuntherHermann_Unconscious', FLAG_Bool);
         }
         if(dxr.dxInfo.MissionNumber == 3) {
-            dxr.flagbase.DeleteFlag('WaltonSimons_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('WaltonSimons_Unconscious', FLAG_Bool);
+            BackupFlag('WaltonSimons_Dead', FLAG_Bool);
+            BackupFlag('WaltonSimons_Unconscious', FLAG_Bool);
             dxr.flagbase.DeleteFlag('JuanLebedev_Dead', FLAG_Bool);
             dxr.flagbase.DeleteFlag('JuanLebedev_Unconscious', FLAG_Bool);
+        } else {
+            RestoreFlag('WaltonSimons_Dead', FLAG_Bool);
+            RestoreFlag('WaltonSimons_Unconscious', FLAG_Bool);
         }
         if(dxr.dxInfo.MissionNumber == 9 || dxr.dxInfo.MissionNumber == 14) {
             dxr.flagbase.DeleteFlag('MS_UnhideHelicopter', FLAG_Bool);
