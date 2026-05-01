@@ -8,12 +8,16 @@ function PostFirstEntryMapFixes()
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
-        AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
+        }
 
-        foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
-            m.bBreakable = false;
-            m.bPickable = false;
-            m.bIsDoor = false;// this prevents Lloyd from opening the door
+        if(class'MenuChoice_FixGlitches'.default.enabled && class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
+                m.bBreakable = false;
+                m.bPickable = false;
+                m.bIsDoor = false;// this prevents Lloyd from opening the door
+            }
         }
 
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
@@ -26,8 +30,8 @@ function PostFirstEntryMapFixes()
 
         SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
         SetAllLampsState(,, false, vect(3313.0954215, -1662.294768, -176.938141), 0.01);
-
         break;
+
     case "01_NYC_UNATCOHQ":
         FixUNATCORetinalScanner();
         PreventUNATCOZombieDanger();
@@ -106,6 +110,19 @@ function PreFirstEntryMapFixes()
                 ft.flagValue=False;
             }
         }
+
+        //Gunthers alliances will change when you give him a weapon.  Typically this alliance trigger gets hit when you walk through the door,
+        //but now it will be triggered by the conversation with him when he is given a weapon and tries to escape.
+        foreach AllActors(class'#var(prefix)AllianceTrigger', at,'GuntherFreed'){
+            //The alliance trigger has the tag GuntherFreed, but nothing actually hits that.  Switch it to GuntherAttacks, which
+            //gets hit at the end of his conversation.
+            at.Tag='GuntherAttacks';
+
+            //Remove collision so he *only* goes hostile after talking to him, in case there are swarms of guys and
+            //he goes nutso trying to fight them before talking to you.
+            at.SetCollision(False,False,False);
+        }
+
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //Leo will no longer directly be ordered to attack the player, he will just go hostile and face them

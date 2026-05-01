@@ -13,7 +13,7 @@ function Destroyed()
 
 function SupportActor(Actor standingActor)
 {
-	if (standingActor != None && standingActor.Mass>=35){
+	if (class'MenuChoice_BalanceEtc'.static.IsEnabled() && standingActor != None && standingActor.Mass>=35){
         bCanBeBase=False;
         TakeDamage(HitPoints,standingActor.Instigator, standingActor.Location, 0.2*standingActor.Velocity, 'stomped');
     }

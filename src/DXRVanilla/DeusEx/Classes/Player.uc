@@ -563,6 +563,9 @@ function float GetJumpZ()
         jumpAug.TickUse();
         f = jump;
     }
+    if(!class'MenuChoice_FixGlitches'.default.enabled) {
+        return FMax(JumpZ, default.JumpZ * f);
+    }
     return default.JumpZ * f;
 }
 
@@ -1148,7 +1151,9 @@ function HighlightCenterObjectMain()
     //
     // note that this means we don't wait for the full 100ms vanilla duration if the player is
     // rapidly changing frob target.
-    if (FrobTime < 0.1 && FrobTarget != None && target == None && !FrobTarget.bDeleteMe)
+    //
+    // If glitches aren't being fixed, don't stop highlighting items that are being deleted (for item duping)
+    if (FrobTime < 0.1 && FrobTarget != None && target == None && (!FrobTarget.bDeleteMe || !class'MenuChoice_FixGlitches'.default.enabled))
     {
         return;
     }
@@ -1222,11 +1227,14 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
             }
         }
         else if(LevelInfo(target) != None || Brush(target) != None) {
-            if(bFirstTarget && dm==None) {
-                smallestTargetDist = VSize(Location-HitLoc);
-                smallestTarget = Level;
+            if (class'MenuChoice_FixGlitches'.default.enabled){
+                //This helps prevent squeaking your highlight under the Reactor ending button
+                if(bFirstTarget && dm==None) {
+                    smallestTargetDist = VSize(Location-HitLoc);
+                    smallestTarget = Level;
+                }
+                minSize = -1; // don't allow any actors after this, but do allow Movers
             }
-            minSize = -1; // don't allow any actors after this, but do allow Movers
         }
     }
 
@@ -2225,6 +2233,39 @@ exec function QuickSave()
         else SaveGame(slot, QuickSaveGameTitle @ info.MissionLocation);
         ClientMessage("Quick Saved",, true);
     }
+}
+
+exec function SlotSave(int slot)
+{
+    local DeusExLevelInfo info;
+    local string SaveName;
+
+    if( !class'DXRAutosave'.static.AllowManualSaves(self) ) return;
+
+    info = GetLevelInfo();
+
+    //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
+    if (((info != None) && (info.MissionNumber < 0)) ||
+        ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
+        (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
+    {
+        ClientMessage("Cannot save during infolink!",, true);
+    } else {
+        class'DXRAutosave'.static.UseSaveItem(self);
+        SaveName = "Save Slot "$slot;
+        if(info==None) SaveGame(slot, SaveName);
+        else SaveGame(slot, SaveName @ info.MissionLocation);
+        ClientMessage("Saved to slot "$slot,, true);
+    }
+}
+
+exec function LoadGame(int saveIndex)
+{
+    //Don't load if the level isn't ready
+    if (Level.LevelAction != LEVACT_None)
+        return;
+
+    Super.LoadGame(saveIndex);
 }
 
 function QuickLoadConfirmed()

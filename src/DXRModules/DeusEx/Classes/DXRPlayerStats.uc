@@ -3,20 +3,39 @@ class DXRPlayerStats extends DXRBase transient;
 function PlayerLogin(#var(PlayerPawn) p)
 {
     local int i;
+    local bool importantHealthNegative;
+
     Super.PlayerLogin(p);
 
     SetMaxStats(p);
 
-    i = dxr.flags.settings.health;
-    i = Max(1, i);// need at least 1 health
+    importantHealthNegative = (p.HealthHead<=0 || p.HealthTorso<=0);
 
-    p.HealthHead = i;
-    p.HealthTorso = i;
-    p.HealthLegLeft = i;
-    p.HealthLegRight = i;
-    p.HealthArmLeft = i;
-    p.HealthArmRight = i;
-    p.Health = i;
+    if (importantHealthNegative && class'MenuChoice_FixGlitches'.default.enabled){
+        //Just die if you don't have health and you want to fix glitches
+        //as long as you aren't in an intro or outro
+        if (dxr.dxInfo.missionNumber != 98 && //Intro
+            dxr.dxInfo.missionNumber != 99){  //Outro
+            p.Died(None,'',vect(0,0,0)); //You're dead, buddy
+            return;
+        }
+    }
+
+    //Don't refill health if your health is below 0 and glitches aren't being fixed
+    //We still want this to run at the start of the game when glitches aren't being fixed
+    //so your health goes up to the max health that was selected
+    if(!importantHealthNegative || class'MenuChoice_FixGlitches'.default.enabled) {
+        i = dxr.flags.settings.health;
+        i = Max(1, i);// need at least 1 health
+
+        p.HealthHead = i;
+        p.HealthTorso = i;
+        p.HealthLegLeft = i;
+        p.HealthLegRight = i;
+        p.HealthArmLeft = i;
+        p.HealthArmRight = i;
+        p.Health = i;
+    }
 
     i = dxr.flags.settings.energy;
     i = Max(0, i);// need at least 0 for max energy
@@ -44,10 +63,16 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
     SetMaxStats(p);
 
     if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
-        //bFixGlitches = class'MenuChoice_FixGlitches'.default.enabled;
+        bFixGlitches = class'MenuChoice_FixGlitches'.default.enabled;
         // TODO: this one is a bit weird to fix because our code doesn't get run with the glitched load
+        // It still will with user.ini saves after you're dead and then reload (aka "phoenix")
         if(bFixGlitches) {
-            p.TakeDamage(10000, p, p.Location, vect(0,0,0), 'Radiation');
+            //Just die if you don't have health and you want to fix glitches
+            //as long as you aren't in an intro or outro
+            if (dxr.dxInfo.missionNumber != 98 && //Intro
+                dxr.dxInfo.missionNumber != 99){  //Outro
+                p.Died(None,'',vect(0,0,0)); //You're dead, buddy
+            }
         } else {
             class'DXRStats'.static.AddCheatOffense(p, 5);// worth more than other glitches
         }

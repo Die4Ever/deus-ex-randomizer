@@ -6,6 +6,18 @@ var transient float overallchances;
 var transient bool inited;
 var vector coords_mult;
 
+// from ExtensionObject
+enum EFlagType
+{
+	FLAG_Bool,
+	FLAG_Byte,
+	FLAG_Int,
+	FLAG_Float,
+	FLAG_Name,
+	FLAG_Vector,
+	FLAG_Rotator,
+};
+
 replication
 {
     reliable if( Role==ROLE_Authority )
@@ -669,3 +681,105 @@ function bool InGame() {
 simulated function AddDXRCredits(CreditsWindow cw)
 {
 }
+
+
+simulated function bool BackupFlag(name flagName, EFlagType flagType)
+{
+    local name backupName;
+    local FlagBase flagbase;
+    flagbase = dxr.flagbase;
+
+    backupName = StringToName("DXRando_backup_" $ flagName);
+    switch (flagType) {
+        case FLAG_Bool:
+            // make sure the flag exists
+            if (!flagbase.CheckFlag(flagName, FLAG_Bool)) return false;
+            // copy it to a backup name
+            flagbase.SetBool(backupName, flagbase.GetBool(flagName),, flagbase.GetExpiration(flagName, FLAG_Bool));
+            // delete the original
+            flagbase.DeleteFlag(flagName, FLAG_Bool);
+            return true;
+        case FLAG_Byte:
+            if (!flagbase.CheckFlag(flagName, FLAG_Byte)) return false;
+            flagbase.SetByte(backupName, flagbase.GetByte(flagName),, flagbase.GetExpiration(flagName, FLAG_Byte));
+            flagbase.DeleteFlag(flagName, FLAG_Byte);
+            return true;
+        case FLAG_Int:
+            if (!flagbase.CheckFlag(flagName, FLAG_Int)) return false;
+            flagbase.SetInt(backupName, flagbase.GetInt(flagName),, flagbase.GetExpiration(flagName, FLAG_Int));
+            flagbase.DeleteFlag(flagName, FLAG_Int);
+            return true;
+        case FLAG_Float:
+            if (!flagbase.CheckFlag(flagName, FLAG_Float)) return false;
+            flagbase.SetFloat(backupName, flagbase.GetFloat(flagName),, flagbase.GetExpiration(flagName, FLAG_Float));
+            flagbase.DeleteFlag(flagName, FLAG_Float);
+            return true;
+        case FLAG_Name:
+            if (!flagbase.CheckFlag(flagName, FLAG_Name)) return false;
+            flagbase.SetName(backupName, flagbase.GetName(flagName),, flagbase.GetExpiration(flagName, FLAG_Name));
+            flagbase.DeleteFlag(flagName, FLAG_Name);
+            return true;
+        case FLAG_Vector:
+            if (!flagbase.CheckFlag(flagName, FLAG_Vector)) return false;
+            flagbase.SetVector(backupName, flagbase.GetVector(flagName),, flagbase.GetExpiration(flagName, FLAG_Vector));
+            flagbase.DeleteFlag(flagName, FLAG_Vector);
+            return true;
+        case FLAG_Rotator:
+            if (!flagbase.CheckFlag(flagName, FLAG_Rotator)) return false;
+            flagbase.SetRotator(backupName, flagbase.GetRotator(flagName),, flagbase.GetExpiration(flagName, FLAG_Rotator));
+            flagbase.DeleteFlag(flagName, FLAG_Rotator);
+            return true;
+    }
+    return false;
+}
+
+simulated function bool RestoreFlag(name flagName, EFlagType flagType)
+{
+    local name backupName;
+    local FlagBase flagbase;
+    flagbase = dxr.flagbase;
+
+    backupName = StringToName("DXRando_backup_" $ flagName);
+    switch(flagType) {
+        case FLAG_Bool:
+            // make sure the backup flag exists and that the original hasn't been set again
+            if (!flagbase.CheckFlag(backupName, FLAG_Bool) || flagbase.CheckFlag(flagName, FLAG_Bool)) return false;
+            // copy the backup to the original name
+            flagbase.SetBool(flagName, flagbase.GetBool(backupName),, flagbase.GetExpiration(backupName, FLAG_Bool));
+            // delete the backup
+            flagbase.DeleteFlag(backupName, FLAG_Bool);
+            return true;
+        case FLAG_Byte:
+            if (!flagbase.CheckFlag(backupName, FLAG_Byte) || flagbase.CheckFlag(flagName, FLAG_Byte)) return false;
+            flagbase.SetByte(flagName, flagbase.GetByte(backupName),, flagbase.GetExpiration(backupName, FLAG_Byte));
+            flagbase.DeleteFlag(backupName, FLAG_Byte);
+            return true;
+        case FLAG_Int:
+            if (!flagbase.CheckFlag(backupName, FLAG_Int) || flagbase.CheckFlag(flagName, FLAG_Int)) return false;
+            flagbase.SetInt(flagName, flagbase.GetInt(backupName),, flagbase.GetExpiration(backupName, FLAG_Int));
+            flagbase.DeleteFlag(backupName, FLAG_Int);
+            return true;
+        case FLAG_Float:
+            if (!flagbase.CheckFlag(backupName, FLAG_Float) || flagbase.CheckFlag(flagName, FLAG_Float)) return false;
+            flagbase.SetFloat(flagName, flagbase.GetFloat(backupName),, flagbase.GetExpiration(backupName, FLAG_Float));
+            flagbase.DeleteFlag(backupName, FLAG_Float);
+            return true;
+        case FLAG_Name:
+            if (!flagbase.CheckFlag(backupName, FLAG_Name) || flagbase.CheckFlag(flagName, FLAG_Name)) return false;
+            flagbase.SetName(flagName, flagbase.GetName(backupName),, flagbase.GetExpiration(backupName, FLAG_Name));
+            flagbase.DeleteFlag(backupName, FLAG_Name);
+            return true;
+        case FLAG_Vector:
+            if (!flagbase.CheckFlag(backupName, FLAG_Vector) || flagbase.CheckFlag(flagName, FLAG_Vector)) return false;
+            flagbase.SetVector(flagName, flagbase.GetVector(backupName),, flagbase.GetExpiration(backupName, FLAG_Vector));
+            flagbase.DeleteFlag(backupName, FLAG_Vector);
+            return true;
+        case FLAG_Rotator:
+            if (!flagbase.CheckFlag(backupName, FLAG_Rotator) || flagbase.CheckFlag(flagName, FLAG_Rotator)) return false;
+            flagbase.SetRotator(flagName, flagbase.GetRotator(backupName),, flagbase.GetExpiration(backupName, FLAG_Rotator));
+            flagbase.DeleteFlag(backupName, FLAG_Rotator);
+            return true;
+    }
+    return false;
+}
+

@@ -79,4 +79,23 @@
 - Smuggler's elevator button in the final New York mission no longer moves around.
 - Added buttons for Save Settings and Restore Settings on the Advanced New Game screen.
 - Stackable items marked as Junk will now get picked up if they're already in your inventory.
+- Gordon Quick and Max Chen will try to move back to the temple if they are lured away while waiting for you to start the ceremony (Mission 6).
+- Hidden grenades (Such as ones thrown in scripted locations in GMDX) will not get their type randomized.
+- Weapon Mods in GMDX can now be randomized into the Weapon Mod types added by GMDX (Damage, Rate of Fire, and Full Auto).  Weapon mod chances will also be based on the number of weapon mods in GMDX, rather than vanilla.
+- Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
+- MJ12 Commando machine guns now do 12 damage base instead of 15 (before randomization).
+- Trash bags will no longer break when stepped on if Other Balance Changes are enabled (Such as in Zero Rando).
+- "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
+- Gunther now becomes hostile to the NSF as soon as you give him a weapon when rescued in Mission 1, instead of only when the player walks through a trigger near the jail cell door.
+- Goals that require you to create dead or unconscious bodies ("Bring the terrorist commander to a bar" and "Sewer Surfin'") are now banned with "Grenades Only" and "Explosives Only" loadouts.
+- When the "Glitches for Speedruns" option is set to "**Allowed**":
+  - Map Exits can be triggered by things other than players (which allows you to shoot the Map Exit in Vandenberg again).
+  - Item duping is possible again.
+  - Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
+  - A downgraded pistol skill on the New Game screen reverts back up to Trained.
+  - It is now possible to highlight objects through narrow gaps next to doors, like the switch to power the Antimatter Reactors to end the game in Area 51 (Mission 15).
+  - Superjump works again.
+  - Lloyd will open the UNATCO door when you throw the gas grenade like in the vanilla any% speedrun.
+- If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene), they will now be killed instantly. (Unless the "Glitches for Speedruns" option is set to "Allowed")
+
 </details>

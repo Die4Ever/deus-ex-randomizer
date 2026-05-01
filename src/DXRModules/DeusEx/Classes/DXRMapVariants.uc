@@ -195,6 +195,7 @@ function int GetMirrorMapsSetting()
 function CheckConfig()
 {
     local int i, slot, tempi, len;
+    local float totalScore, minScore;
     local string temp;
 
     Super.CheckConfig();
@@ -221,8 +222,25 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    if(dxr.flags.bingo_duration > 0) len = Clamp(dxr.flags.bingo_duration, 1, len);
-    starts[len] = "99_ENDGAME4";
+    if(dxr.flags.bingo_duration > 0) {
+        minScore = FClamp(dxr.flags.bingo_duration, 1, len) - 0.5;
+        for(i=0; i<len; i++) {
+            if(totalScore >= minScore) {
+                len = i;
+                break;
+            }
+            switch(missions[i]) {
+                case 1: totalScore += 0.9; break;
+                case 6: totalScore += 1.8; break;
+                case 8: totalScore += 0.5; break;
+                case 9: totalScore += 1.3; break;
+                case 14: totalScore += 2; break;
+                case 15: totalScore += 2; break;
+                default: totalScore += 1; break;
+            }
+        }
+    }
+    starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
     missions[len] = 99;
     for(i=0; i<len; i++) {
         l("speedshuffle " $ i @ starts[i]);
@@ -261,20 +279,31 @@ simulated function FirstEntry()
     if(isStartMap) { // for speedrun shuffle mode, do these things when entering these missions
         dxr.flagbase.DeleteFlag('MS_DL_Played', FLAG_Bool); //commonly used flag
         if(dxr.dxInfo.MissionNumber == 1 || dxr.dxInfo.MissionNumber == 3 || dxr.dxInfo.MissionNumber == 4) {
-            dxr.flagbase.DeleteFlag('JosephManderley_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('JosephManderley_Unconscious', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('PaulDenton_Unconscious', FLAG_Bool);
+            BackupFlag('JosephManderley_Dead', FLAG_Bool);
+            BackupFlag('JosephManderley_Unconscious', FLAG_Bool);
+            BackupFlag('PaulDenton_Dead', FLAG_Bool);
+            BackupFlag('PaulDenton_Unconscious', FLAG_Bool);
+        } else {
+            RestoreFlag('JosephManderley_Dead', FLAG_Bool);
+            RestoreFlag('JosephManderley_Unconscious', FLAG_Bool);
+            RestoreFlag('PaulDenton_Dead', FLAG_Bool);
+            RestoreFlag('PaulDenton_Unconscious', FLAG_Bool);
         }
         if(dxr.dxInfo.MissionNumber == 4) {
-            dxr.flagbase.DeleteFlag('GuntherHermann_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('GuntherHermann_Unconscious', FLAG_Bool);
+            BackupFlag('GuntherHermann_Dead', FLAG_Bool);
+            BackupFlag('GuntherHermann_Unconscious', FLAG_Bool);
+        } else {
+            RestoreFlag('GuntherHermann_Dead', FLAG_Bool);
+            RestoreFlag('GuntherHermann_Unconscious', FLAG_Bool);
         }
         if(dxr.dxInfo.MissionNumber == 3) {
-            dxr.flagbase.DeleteFlag('WaltonSimons_Dead', FLAG_Bool);
-            dxr.flagbase.DeleteFlag('WaltonSimons_Unconscious', FLAG_Bool);
+            BackupFlag('WaltonSimons_Dead', FLAG_Bool);
+            BackupFlag('WaltonSimons_Unconscious', FLAG_Bool);
             dxr.flagbase.DeleteFlag('JuanLebedev_Dead', FLAG_Bool);
             dxr.flagbase.DeleteFlag('JuanLebedev_Unconscious', FLAG_Bool);
+        } else {
+            RestoreFlag('WaltonSimons_Dead', FLAG_Bool);
+            RestoreFlag('WaltonSimons_Unconscious', FLAG_Bool);
         }
         if(dxr.dxInfo.MissionNumber == 9 || dxr.dxInfo.MissionNumber == 14) {
             dxr.flagbase.DeleteFlag('MS_UnhideHelicopter', FLAG_Bool);

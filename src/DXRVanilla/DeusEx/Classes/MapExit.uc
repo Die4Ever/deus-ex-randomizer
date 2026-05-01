@@ -22,7 +22,11 @@ function bool bUsed()
 function Touch(Actor Other)
 {
     log(self$".Touch("$Other$")");
-    if( DeusExPlayer(Other) == None )
+    if (Level.LevelAction == LEVACT_Loading){
+        log(self$".Touch("$Other$") during LevelAction "$Level.LevelAction$", ignoring");
+        return; //you aren't actually playing, maybe randomization is still happening?
+    }
+    if( class'MenuChoice_FixGlitches'.default.enabled && DeusExPlayer(Other) == None )
         return;// the player isn't the one touching us!
 
     Super.Touch(Other);

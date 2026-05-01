@@ -686,10 +686,6 @@ function SetDifficulty(int new_difficulty)
             // realtime menus, not for training mode
             moresettings.menus_pause = 0;
         }
-        if(gamemode==SpeedShuffle) {
-            bingo_duration = 5;
-            settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would get rerolls all over the place back and forth
-        }
         // same doors rules as Normal difficulty
         settings.doorsdestructible = 100;
         settings.doorspickable = 100;
@@ -716,8 +712,16 @@ function SetDifficulty(int new_difficulty)
         // splits overlay
         moresettings.splits_overlay = 1;
         // disable NG+ by default
-        if(class'MenuChoice_NewGamePlus'.default.value != 2)
+        if(class'MenuChoice_NewGamePlus'.default.value != 2) {
             moresettings.newgameplus_curve_scalar = -1;
+        }
+
+        if(gamemode==SpeedShuffle) {
+            bingo_duration = 5;
+            settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would get rerolls all over the place back and forth
+            settings.minskill *= 0.8;
+            settings.maxskill *= 0.8;
+        }
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;
@@ -1186,7 +1190,7 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
         s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
         s = s$"|n";
-        s = s$"Once a line on your board has been completed, you will taken to another randomly selected map and the difficulty will increase!|n";
+        s = s$"Once a line on your board has been completed, you will be taken to another randomly selected map and the difficulty will increase!|n";
         s = s$"|n";
         s = s$"How long can you last?";
         return s;
