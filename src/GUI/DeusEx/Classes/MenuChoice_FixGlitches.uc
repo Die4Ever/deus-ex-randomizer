@@ -42,10 +42,6 @@ class MenuChoice_FixGlitches extends DXRMenuUIChoiceBool;
     - Pressing the final switch at Area 51
         - Crouch in front of the button for the reactors and aim at the bottom edge of the cover to reach inside and
           press the button, ending the game.
-
-
-
-    To be supported:
     - Superjump
         - Enable speed aug, then go two layers deep in the menu and back out over and over (Settings > Game Options).
           Each time you leave the second layer of menu, the jump multiplier increases
@@ -84,6 +80,6 @@ defaultproperties
     defaultInfoPosX=203
     HelpText="Fix glitches used for speedruns."
     actionText="Glitches For Speedruns"
-    enumText(0)="Not Fixed"
+    enumText(0)="Allowed"
     enumText(1)="Fixed"
 }

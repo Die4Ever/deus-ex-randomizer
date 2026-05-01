@@ -563,6 +563,9 @@ function float GetJumpZ()
         jumpAug.TickUse();
         f = jump;
     }
+    if(!class'MenuChoice_FixGlitches'.default.enabled) {
+        return FMax(JumpZ, default.JumpZ * f);
+    }
     return default.JumpZ * f;
 }
 
