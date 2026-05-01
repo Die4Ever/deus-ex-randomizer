@@ -537,6 +537,11 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        // disable "Jesus, JC" if Anna is already dead
+        if (dxr.flagbase.GetBool('AnnaNavarre_Dead')) {
+            dxr.flagbase.SetBool('DL_AlexShocked_Played', true);
+        }
+
         PreventShufflingAmbrosia();
 
         Spawn(class'PlaceholderItem',,, vectm(1702,-359.8,373)); //Bathroom counter
@@ -690,6 +695,9 @@ function AnyEntryMapFixes()
         // 'AnnaThanks_Played' gets reset at the end of M02, but 'AnnaThanksChatDone' doesn't
         // restores an alternative line from Anna about about killing Lebedev based on what you did in M02
         FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+        // don't skip Lebedev's initial conversation if Anna is already dead
+        // without it, the only way to progress is by taking down Lebedev
+        GetConversation('LebedevAnnaDead').AddFlagRef('MeetLebedev_Played', true);
 
         break;
 
