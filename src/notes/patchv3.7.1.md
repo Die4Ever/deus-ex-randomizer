@@ -87,6 +87,7 @@
 - Trash bags will no longer break when stepped on if Other Balance Changes are enabled (Such as in Zero Rando).
 - "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
 - Gunther now becomes hostile to the NSF as soon as you give him a weapon when rescued in Mission 1, instead of only when the player walks through a trigger near the jail cell door.
+- Goals that require you to create dead or unconscious bodies ("Bring the terrorist commander to a bar" and "Sewer Surfin'") are now banned with "Grenades Only" and "Explosives Only" loadouts.
 - When the "Glitches for Speedruns" option is set to "**Allowed**":
   - Map Exits can be triggered by things other than players (which allows you to shoot the Map Exit in Vandenberg again).
   - Item duping is possible again.

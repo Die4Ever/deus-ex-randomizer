@@ -20,7 +20,8 @@ struct loadouts
 };
 
 const PURE_LETHAL     =  1; //No weapons to do knockouts
-const PURE_NONLETHAL  = -1; //No weapons to do kills
+const PURE_NONLETHAL  =  2; //No weapons to do kills
+const NO_CORPSES      =  4; //No corpses can be created
 const VAGUE_LETHALITY =  0; //Neither purely lethal nor non-lethal
 
 var loadouts item_set;
@@ -125,10 +126,10 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     //#region Loadout Defs
 
     if(!get_name) {
-    //ALWAYS allow AmmoNone, it gets looted from Melee weapons and stuff
-    AddInvAllow(class'#var(prefix)AmmoNone');
-    //Loadouts start as neither purely lethal nor non-lethal
-    SetLoadoutDefaultLethal();
+        //ALWAYS allow AmmoNone, it gets looted from Melee weapons and stuff
+        AddInvAllow(class'#var(prefix)AmmoNone');
+        //Loadouts start as neither purely lethal nor non-lethal
+        SetLoadoutDefaultLethal();
     }
 
     switch(loadout) {
@@ -325,6 +326,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(package).WeaponRubberBaton',10);
         AddStandardAugSet();
         SetLoadoutPureLethal();
+        SetLoadoutNoCorpses();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -425,6 +427,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)Ammo20mm',100);
         AddStandardAugSet();
         SetLoadoutPureLethal();
+        SetLoadoutNoCorpses();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -705,12 +708,17 @@ function AddLoadoutPlayerMsg(string msg)
 
 function SetLoadoutPureLethal()
 {
-    item_set.lethality = PURE_LETHAL;
+    item_set.lethality = item_set.lethality | PURE_LETHAL;
 }
 
 function SetLoadoutPureNonLethal()
 {
-    item_set.lethality = PURE_NONLETHAL;
+    item_set.lethality = item_set.lethality | PURE_NONLETHAL;
+}
+
+function SetLoadoutNoCorpses()
+{
+    item_set.lethality = item_set.lethality | NO_CORPSES;
 }
 
 function SetLoadoutDefaultLethal()
@@ -720,12 +728,17 @@ function SetLoadoutDefaultLethal()
 
 function bool IsLoadoutPureLethal()
 {
-    return item_set.lethality==PURE_LETHAL;
+    return bool(item_set.lethality & PURE_LETHAL);
 }
 
 function bool IsLoadoutPureNonLethal()
 {
-    return item_set.lethality==PURE_NONLETHAL;
+    return bool(item_set.lethality & PURE_NONLETHAL);
+}
+
+function bool IsLoadoutNoCorpses()
+{
+    return bool(item_set.lethality & NO_CORPSES);
 }
 
 function AddInvBan(class<Inventory> inv)
