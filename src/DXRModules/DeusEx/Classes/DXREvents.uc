@@ -2874,10 +2874,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             if (
                 loadout != None
                 && loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
-                && (
-                    !#bool(injections)
-                    || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow')
-                    || loadout.is_banned(class'#var(prefix)AmmoDartFlare')
+                && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare')
                 )
             ) {
                 return true;
