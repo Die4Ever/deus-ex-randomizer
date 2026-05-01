@@ -222,7 +222,7 @@ function InitStats(DXRStats newstats)
         return;
     }
 
-    if(curMission == 99 && !stats.dxr.flags.IsWaltonWare()) {
+    if(curMission == 99 && !stats.dxr.flags.IsWaltonWare() && !stats.dxr.flags.IsSpeedrunShuffle()) {
         CompletedRun(total);
     }
     if(curMission > 0 && stats.dxr.flags.newgameplus_loops == 0) {

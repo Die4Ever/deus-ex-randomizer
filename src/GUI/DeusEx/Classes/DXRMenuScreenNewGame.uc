@@ -170,7 +170,7 @@ function CopySkills()
         localSkills[i-1].next = localSkills[i];
 
         if(SkillWeaponPistol(localSkills[i]) != None && localSkills[i].CanAffordToUpgrade(player.SkillPointsAvail)
-            && flags != None && flags.IsZeroRando())
+            && PistolStartsAtTrained(flags))
         {
             localSkills[i].IncLevel(player);
         }
@@ -182,6 +182,41 @@ function CopySkills()
         dxrs.RandoSkills(localSkills[0]);
     }
     class'DXRFlags'.default.bZeroRandoPure = bOldZRP;
+}
+
+function ApplySkills()
+{
+    local Skill aSkill;
+
+    Super.ApplySkills();
+
+    //Don't bump the pistol skill back up if glitches are fixed
+    if(class'MenuChoice_FixGlitches'.default.enabled) return;
+
+    //Only bump the pistol skill back up if it's a game mode where the pistol skill *should* start at Trained
+    if (!PistolStartsAtTrained(flags)) return;
+
+    aSkill = player.SkillSystem.FirstSkill;
+    while(aSkill != None)
+    {
+        if (SkillWeaponPistol(aSkill)!=None)
+        {
+            //Revert the skill to trained if it's been downgraded
+            //It stays as-is if it is upgraded
+            if (aSkill.CurrentLevel<1) {
+                aSkill.CurrentLevel = 1;
+            }
+
+            break;
+        }
+        aSkill = aSkill.next;
+    }
+}
+
+//A single unified place to check if the Pistol skill is supposed to start at Trained
+function bool PistolStartsAtTrained(DXRFlags flags)
+{
+    return flags != None && flags.IsZeroRando();
 }
 
 function SaveSettings()

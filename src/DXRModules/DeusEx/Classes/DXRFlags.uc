@@ -1190,7 +1190,7 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
         s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
         s = s$"|n";
-        s = s$"Once a line on your board has been completed, you will taken to another randomly selected map and the difficulty will increase!|n";
+        s = s$"Once a line on your board has been completed, you will be taken to another randomly selected map and the difficulty will increase!|n";
         s = s$"|n";
         s = s$"How long can you last?";
         return s;

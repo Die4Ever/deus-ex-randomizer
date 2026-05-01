@@ -85,8 +85,15 @@
 - Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
 - MJ12 Commando machine guns now do 12 damage base instead of 15 (before randomization).
 - Trash bags will no longer break when stepped on if Other Balance Changes are enabled (Such as in Zero Rando).
-- Map Exits can be triggered by things other than players when the "Fix Glitches" option is disabled (which allows you to shoot the Map Exit in Vandenberg again).
-- Item duping is possible again when "Glitches for Speedruns" are set to "Not Fixed".
 - "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
-- Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
+- Gunther now becomes hostile to the NSF as soon as you give him a weapon when rescued in Mission 1, instead of only when the player walks through a trigger near the jail cell door.
+- When the "Glitches for Speedruns" option is set to "**Allowed**":
+  - Map Exits can be triggered by things other than players (which allows you to shoot the Map Exit in Vandenberg again).
+  - Item duping is possible again.
+  - Loading a game via a keybinding alias (Such as "LOADGAME 1") will no longer cause the game to get stuck with "LOADING" on screen.
+  - A downgraded pistol skill on the New Game screen reverts back up to Trained.
+  - It is now possible to highlight objects through narrow gaps next to doors, like the switch to power the Antimatter Reactors to end the game in Area 51 (Mission 15).
+  - Superjump works again.
+- If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene), they will now be killed instantly. (Unless the "Glitches for Speedruns" option is set to "Allowed")
+
 </details>

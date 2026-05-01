@@ -563,6 +563,9 @@ function float GetJumpZ()
         jumpAug.TickUse();
         f = jump;
     }
+    if(!class'MenuChoice_FixGlitches'.default.enabled) {
+        return FMax(JumpZ, default.JumpZ * f);
+    }
     return default.JumpZ * f;
 }
 
@@ -1224,11 +1227,14 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
             }
         }
         else if(LevelInfo(target) != None || Brush(target) != None) {
-            if(bFirstTarget && dm==None) {
-                smallestTargetDist = VSize(Location-HitLoc);
-                smallestTarget = Level;
+            if (class'MenuChoice_FixGlitches'.default.enabled){
+                //This helps prevent squeaking your highlight under the Reactor ending button
+                if(bFirstTarget && dm==None) {
+                    smallestTargetDist = VSize(Location-HitLoc);
+                    smallestTarget = Level;
+                }
+                minSize = -1; // don't allow any actors after this, but do allow Movers
             }
-            minSize = -1; // don't allow any actors after this, but do allow Movers
         }
     }
 
