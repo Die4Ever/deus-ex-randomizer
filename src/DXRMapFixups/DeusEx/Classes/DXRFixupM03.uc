@@ -686,7 +686,7 @@ function AnyEntryMapFixes()
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
-    if(dxr.flagbase.GetBool('MeetLebedev_Played2')) dxr.flagbase.SetBool('MeetLebedev_Played', true,, 999); // fix for Speedrun Shuffle when Anna is already dead
+    if(dxr.flagbase.GetBool('MeetLebedev2_Played')) dxr.flagbase.SetBool('MeetLebedev_Played', true,, 999); // fix for Speedrun Shuffle when Anna is already dead
 
     switch(dxr.localURL) {
     case "03_NYC_747":
@@ -695,10 +695,6 @@ function AnyEntryMapFixes()
         // 'AnnaThanks_Played' gets reset at the end of M02, but 'AnnaThanksChatDone' doesn't
         // restores an alternative line from Anna about about killing Lebedev based on what you did in M02
         FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
-        // don't skip Lebedev's initial conversation if Anna is already dead
-        // without it, the only way to progress is by taking down Lebedev
-        GetConversation('LebedevAnnaDead').AddFlagRef('MeetLebedev_Played', true);
-
         break;
 
     case "03_NYC_AIRFIELD":
