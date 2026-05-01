@@ -1270,6 +1270,13 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     for(i=0; i < start_amount; i++) {
         _RandoStartingEquipment(player, dxre, respawn);
     }
+
+    if(dxr.flags.IsSpeedrunShuffle()) {
+        if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)BioelectricCell'))
+            GiveItem(player, class'#var(prefix)BioelectricCell');
+        if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)Medkit'))
+            GiveItem(player, class'#var(prefix)Medkit');
+    }
 }
 
 function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory item, bool bFrob)

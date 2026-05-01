@@ -1706,6 +1706,10 @@ static function int GetStartMapCreditsBonus(DXRando dxr)
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
+    if(dxr.flags.IsSpeedrunShuffle() && dxr.flags.newgameplus_loops == 0) {
+        p.Credits = 1500 + dxr.rng(1000);
+        return;
+    }
     p.Credits *= 0.5;
     p.Credits += GetStartMapCreditsBonus(dxr);
 }
