@@ -97,5 +97,6 @@
   - Superjump works again.
   - Lloyd will open the UNATCO door when you throw the gas grenade like in the vanilla any% speedrun.
 - If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene), they will now be killed instantly. (Unless the "Glitches for Speedruns" option is set to "Allowed")
+- It is no longer possible to open menus (Such as the inventory or goals screens) during the intro and endgame cutscenes.
 
 </details>
