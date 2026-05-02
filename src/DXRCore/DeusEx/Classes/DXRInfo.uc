@@ -629,6 +629,18 @@ simulated static function int MurmurHash3(coerce string str, optional int seed)
     return h1;
 }
 
+// convenience function for creating a Vector with non-literal values
+final static function Vector MakeVector(float x, float y, float z)
+{
+    local Vector vec;
+
+    vec.x = x;
+    vec.y = y;
+    vec.z = z;
+
+    return vec;
+}
+
 static function Actor ActorLookedAt(Pawn looker, optional float maxRange)
 {
     local Rotator viewRot;
@@ -645,7 +657,7 @@ static function Actor ActorLookedAt(Pawn looker, optional float maxRange)
     else
         viewRot = looker.Rotation;
 
-    eyeOrigin = looker.Location + class'DXRBase'.static.MakeVector(0.0, 0.0, looker.BaseEyeHeight);
+    eyeOrigin = looker.Location + MakeVector(0.0, 0.0, looker.BaseEyeHeight);
     traceEnd = eyeOrigin + Vector(viewRot) * maxRange;
 
     return looker.Trace(pointlessVec, pointlessVec, traceEnd, eyeOrigin, true);

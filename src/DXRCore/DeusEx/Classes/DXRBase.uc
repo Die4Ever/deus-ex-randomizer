@@ -525,18 +525,6 @@ static simulated function rotator rotm_static(int p, int y, int roll, int offset
     return r;
 }
 
-// convenience function for creating a Vector with non-literal values
-final static function Vector MakeVector(float x, float y, float z)
-{
-    local Vector vec;
-
-    vec.x = x;
-    vec.y = y;
-    vec.z = z;
-
-    return vec;
-}
-
 // convenience function for creating a Rotator with non-literal values
 final static function Rotator MakeRotator(int pitch, int yaw, int roll)
 {

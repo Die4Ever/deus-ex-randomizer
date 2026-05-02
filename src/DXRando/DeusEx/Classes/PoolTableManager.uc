@@ -92,7 +92,7 @@ function AnalyzeTable()
     yWidth = yPos + yNeg;
 
     //Determine the centre of the table based on the measurements above
-    Centre = class'DXRBase'.static.MakeVector(CueLoc.X + ((xPos-xNeg)/2), CueLoc.Y + ((yPos-yNeg)/2),CueLoc.Z);
+    Centre = class'DXRInfo'.static.MakeVector(CueLoc.X + ((xPos-xNeg)/2), CueLoc.Y + ((yPos-yNeg)/2),CueLoc.Z);
 
     //Determine Table Rotation
     if (xWidth < yWidth){
@@ -106,8 +106,8 @@ function AnalyzeTable()
     //"Default" table orientation is assumed to be Narrow Direction on the X axis, Long Direction on the Y.
     //Cue ball is a quarter of the table length (Y) positive, racked balls a quarter of the table length (Y) negative
     //This is the orientation of the NYC Bar pool table in vanilla
-    CueLoc = Centre + (class'DXRBase'.static.MakeVector(0,(longDist/4),0) >> TableRot);
-    RackLoc = Centre + (class'DXRBase'.static.MakeVector(0,-(longDist/4),0) >> TableRot);
+    CueLoc = Centre + (class'DXRInfo'.static.MakeVector(0,(longDist/4),0) >> TableRot);
+    RackLoc = Centre + (class'DXRInfo'.static.MakeVector(0,-(longDist/4),0) >> TableRot);
 
     //Set the Cue Ball location to the calculated one
     balls[0].OrigLoc = CueLoc;

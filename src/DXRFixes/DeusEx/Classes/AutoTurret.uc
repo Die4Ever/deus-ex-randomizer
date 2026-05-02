@@ -69,7 +69,7 @@ function UpdateStatusLightColour()
 
     lightRot = gun.Rotation;
     statusLight.SetRotation(lightRot);
-    lightLoc = gun.Location + (class'DXRBase'.static.MakeVector(gun.CollisionRadius+0.5,0,0) >> lightRot);
+    lightLoc = gun.Location + (class'DXRInfo'.static.MakeVector(gun.CollisionRadius+0.5,0,0) >> lightRot);
     statusLight.SetLocation(lightLoc);
 
     switch(gun.MultiSkins[1])
@@ -141,7 +141,7 @@ function CalcBestOrigRot()
     {
         testRotDir.Yaw = yawIncrement * i;
 
-        EndTrace = gun.Location + (class'DXRBase'.static.MakeVector(maxRange,0,0) >> testRotDir);
+        EndTrace = gun.Location + (class'DXRInfo'.static.MakeVector(maxRange,0,0) >> testRotDir);
         HitActor = gun.Trace(HitLocation, HitNormal, EndTrace,gun.Location, false);
 
         if (HitActor==None){
@@ -164,7 +164,7 @@ function CalcBestOrigRot()
     }
 
     //Also calculate the distance in the actual original rotation
-    EndTrace = gun.Location + (class'DXRBase'.static.MakeVector(maxRange,0,0) >> origRot);
+    EndTrace = gun.Location + (class'DXRInfo'.static.MakeVector(maxRange,0,0) >> origRot);
     HitActor = gun.Trace(HitLocation, HitNormal, EndTrace,gun.Location, false);
 
     if (HitActor==None){
