@@ -84,7 +84,7 @@
 - Weapon Mods in GMDX can now be randomized into the Weapon Mod types added by GMDX (Damage, Rate of Fire, and Full Auto).  Weapon mod chances will also be based on the number of weapon mods in GMDX, rather than vanilla.
 - Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
 - MJ12 Commando machine guns now do 12 damage base instead of 15 (before randomization).
-- Trash bags will no longer break when stepped on if Other Balance Changes are enabled (Such as in Zero Rando).
+- Trash bags will no longer break when stepped on if Other Balance Changes are disabled (Such as in Zero Rando).
 - "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
 - Gunther now becomes hostile to the NSF as soon as you give him a weapon when rescued in Mission 1, instead of only when the player walks through a trigger near the jail cell door.
 - Goals that require you to create dead or unconscious bodies ("Bring the terrorist commander to a bar" and "Sewer Surfin'") are now banned with "Grenades Only" and "Explosives Only" loadouts.
