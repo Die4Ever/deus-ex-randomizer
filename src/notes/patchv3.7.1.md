@@ -98,5 +98,12 @@
   - Lloyd will open the UNATCO door when you throw the gas grenade like in the vanilla any% speedrun.
 - If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene), they will now be killed instantly. (Unless the "Glitches for Speedruns" option is set to "Allowed")
 - It is no longer possible to open menus (Such as the inventory or goals screens) during the intro and endgame cutscenes.
+- Several bingo goals will now be properly detected as failed when relevant characters despawn after running away:
+  - "Who will help the widow's son?"
+  - "Buy the full treatment plan in the clinic" (If both doctors are dead or ran away)
+  - "My Buddy Vinny"
+  - "Play the Detective"
+  - "Kill Joe Greene" (He'll only despawn in Mission 2, and this will only fail if the bingo duration does not extend to his next appearance)
+  - "Take down Sandra Renton"
 
 </details>

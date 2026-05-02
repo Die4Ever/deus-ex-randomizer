@@ -42,7 +42,7 @@ function SetWatchFlags();
 function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_mission, int end_mission, int real_duration);
 
 // for goals that can be detected as impossible by an event
-static function int GetBingoFailedEvents(string eventname, out string failed[7]);
+static function int GetBingoFailedEvents(string eventname, out string failed[10]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
 
@@ -58,6 +58,22 @@ function AddWatchedActor(Actor a,String eventName)
     actor_watch[num_watched_actors].a = a;
     actor_watch[num_watched_actors].BingoEvent=eventName;
     num_watched_actors++;
+}
+
+//Look for pawns that match the tag, then add them as watched actors with a unique eventName
+//Look by bindname, since that's what we use for dead/unconscious/takedown events as well
+function WatchLeavingPawn(string bindName)
+{
+    local #var(prefix)ScriptedPawn p;
+    local string leavingEvent;
+
+    leavingEvent = bindName $ "_LeavingPawn";
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn',p){
+        if (p.bLeaveAfterFleeing==False) continue; //Only track actors who leave with this function
+        if (p.BindName!=bindname) continue;
+        AddWatchedActor(p,leavingEvent);
+    }
 }
 
 function string GetWatchedActorBingoEvent(int idx)
@@ -148,6 +164,21 @@ function MarkBingoFailedGeneric()
     if (curMission == 98) return;
     data = class'PlayerDataItem'.static.GiveItem(player());
     data.CheckForExpiredBingoGoals(dxr, curMission);
+}
+
+static function bool IsBingoGoalAvailableLater(string bingoEvent)
+{
+    local DXRando dxr;
+    local PlayerDataItem data;
+    local int curMission;
+
+    dxr = class'DXRando'.default.dxr;
+    if (dxr.player==None) return false;
+
+    curMission = dxr.dxInfo.missionNumber;
+    if (curMission == 98) return false;
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    return data.IsBingoGoalAvailableLater(dxr, curMission, bingoEvent);
 }
 
 function InitStatLogShim()
@@ -1719,7 +1750,7 @@ static function MarkBingoAsFailed(coerce string eventname)
 
 static function MarkBingoFailedEvents(coerce string eventname)
 {
-    local string failed[7];
+    local string failed[10];
     local int i, num_failed;
 
     num_failed = GetBingoFailedEvents(eventname, failed);

@@ -557,6 +557,7 @@ function SetWatchFlags() {
         WatchFlag('WorkerGivesInfo_Played');
         WatchFlag('M02QuestionedGreen');
         WatchFlag('MeetJoeGreen2_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when questioning Greene
+        WatchLeavingPawn("JoeGreene");
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -567,10 +568,14 @@ function SetWatchFlags() {
         }
         break;
     case "02_NYC_FREECLINIC":
-        WatchFlag('BoughtClinicPlan');
-        WatchFlag('MeetClinicOlderBum_Played');
-        WatchFlag('MeetWindowBum_Played');
-        WatchFlag('MeetClinicMaleBum3_Played');
+        WatchFlag('BoughtClinicPlan'); //From Doctor1 or Doctor2, who are both bLeaveAfterFleeing
+        WatchFlag('MeetClinicOlderBum_Played'); //ClinicOlderBum does not leave
+        WatchFlag('MeetWindowBum_Played'); //From WindowBum, who does leave
+        WatchFlag('MeetClinicMaleBum3_Played'); //From ClinicMaleBum3, who does leave
+        WatchLeavingPawn("WindowBum");
+        WatchLeavingPawn("ClinicMaleBum3");
+        WatchLeavingPawn("Doctor1");
+        WatchLeavingPawn("Doctor2");
 
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
@@ -734,6 +739,7 @@ function SetWatchFlags() {
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
         WatchFlag('M04GreenAdvice_Played');
+        //WatchLeavingPawn("HarleyFilben"); //Currently no Harley-related goals here, I think?
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -971,6 +977,12 @@ function SetWatchFlags() {
         WatchFlag('Raid_Underway');
         WatchFlag('Have_Evidence');
 
+        //These people are bLeaveAfterFleeing, but currently don't have any related goals
+        //WatchLeavingPawn("DanceGirl"); //The four girls dancing together
+        //WatchLeavingPawn("DanceCarole"); //The "secretary" dancing with Lisa
+        //WatchLeavingPawn("DanceLisa"); //The "hooker" dancing with Carole
+        //WatchLeavingPawn("Table_Dancer"); //The girl dancing on the pool table with the sailors
+
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
                 h.bImportant = true;
@@ -1206,6 +1218,8 @@ function SetWatchFlags() {
         WatchFlag('SheaKnowsAboutDowd');
         WatchFlag('HelpSailor');
         WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
+        WatchLeavingPawn("SandraRenton");
+        WatchLeavingPawn("Sailor"); //Vinny
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -3451,7 +3465,15 @@ function string RemapBingoEvent(string eventname)
         case "DXREvents_M02BumSong2":
         case "DXREvents_M02BumSong3":
             return "M02BumSong_Convo";
-
+        case "Doctor1_LeavingPawn":
+        case "Doctor2_LeavingPawn":
+        case "Doctor1_Takedown":
+        case "Doctor2_Takedown":
+            //Check to see if both are gone
+            if (BothClinicDoctorsGone()){
+                _MarkBingo("CannotBuyClinicPlan");
+            }
+            return eventname;
         default:
             return eventname;
     }
@@ -3459,8 +3481,24 @@ function string RemapBingoEvent(string eventname)
 }
 //#endregion
 
+//Check to
+function bool BothClinicDoctorsGone()
+{
+    local #var(prefix)ScriptedPawn sp;
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+        if (sp.Health<=0) continue; //Ignore them if they're in the process of dying
+        switch(sp.BindName){
+            case "Doctor1":
+            case "Doctor2":
+                return false;
+        }
+    }
+    return true;
+}
+
 //#region Bingo Failure
-static function int GetBingoFailedEvents(string eventname, out string failed[7])
+static function int GetBingoFailedEvents(string eventname, out string failed[10])
 {
     local int num_failed;
     local DXRando dxr;
@@ -3523,6 +3561,15 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "FemaleHostage_Takedown":
         case "MaleHostage_Takedown":
             failed[num_failed++] = "HotelHostagesSaved";
+            return num_failed;
+        case "ClinicMaleBum3_LeavingPawn":
+            failed[num_failed++] = "MeetClinicMaleBum3_Played";
+            return num_failed;
+        case "WindowBum_LeavingPawn":
+            failed[num_failed++] = "MeetWindowBum_Played";
+            return num_failed;
+        case "CannotBuyClinicPlan":
+            failed[num_failed++] = "BoughtClinicPlan";
             return num_failed;
         case "GeneratorBlown":
             failed[num_failed++] = "JockSecondStory";
@@ -3597,6 +3644,8 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             failed[num_failed++] = "Supervisor_Paid";
             return num_failed;
         case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+        case "Sailor_LeavingPawn": //If Vinny leaves, you can't ask him to help
+        case "Sailor_Takedown": //If he's taken out, he can't help
             failed[num_failed++] = "HelpSailor_ConvoFlag";
             return num_failed;
         case "M08SmugglerNotWarned":
@@ -3642,8 +3691,25 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             failed[num_failed++] = "M02QuestionedGreen";
             failed[num_failed++] = "M04GreenAdvice_Played";
             return num_failed;
+        case "JoeGreene_LeavingPawn":
+            //Joe Greene is bLeaveAfterFleeing in M02, but not in M04 or M08
+            //His mission 2 conversation goal should fail immediately if he leaves,
+            //but him leaving should only fail the "kill" goal if the bingo duration is
+            //not long enough to get to his next appearance...
+            if (dxr.dxInfo.missionNumber==2){
+                failed[num_failed++] = "M02QuestionedGreen";
+            }
+            if (!class'DXREventsBase'.static.IsBingoGoalAvailableLater("JoeGreene_PlayerDead")){ //TODO: Only mark if this is the last time the goal is applicable
+                failed[num_failed++] = "JoeGreene_PlayerDead";
+            }
+            return num_failed;
         case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
             failed[num_failed++] = "M02QuestionedGreen";
+            return num_failed;
+        case "SandraRenton_LeavingPawn":
+            //Sandra is only bLeaveAfterFleeing in mission 8, but only appears here if she didn't leave for the M12 gas station
+            //If she "leaves" here, she's gone for good.
+            failed[num_failed++] = "SandraRenton_PlayerTakedown";
             return num_failed;
         case "DXRNPCs1_Takedown":
             failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
