@@ -2460,6 +2460,14 @@ simulated function int tweakBingoMax(string event, int max)
             if (RevisionMaps){
                 return 9; //Just a lot more flags in Revision
             }
+        case "SoldRenaultZyme":
+            if (dxr.flags.bingo_duration>0 && dxr.flags.bingo_duration<5){
+                //The normal max is 5, which doesn't scale great with the standard logic (It just gets reduced to 1)
+                //Reducing to 1 makes this a bit easier than I'd like, so let's bring it down to 2 instead when it's a shorter bingo duration
+                //Rando guarantees 2 stay in the oven in the bakery, so it's still possible to go there, but maybe you find 2 along the way
+                //through earlier Paris and this goal suddenly becomes a decent idea?
+                return 2;
+            }
 
         //Sodacan_Activated
         //DrinkAlcohol_Activated
@@ -4129,9 +4137,9 @@ function ExtendedTests()
     //Make sure all bingo goals have help text
     for (i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event!=""){
-            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,False);
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,bingo_options[i].max,False);
             test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have male JC help text!");
-            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,True);
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,bingo_options[i].max,True);
             test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have female JC help text!");
         }
     }

@@ -37,8 +37,22 @@ static simulated function bool IsPawnDeathSuffix(string suffix)
     return false;
 }
 
+//Pluralize me, captain
+//Generally, just slap an "s" on the end, but there are probably special cases,
+//you can add those into the switch statement as they pop up.
+static simulated function string plur(string word, int num)
+{
+    if (num>1){
+        switch(word){
+            default:
+                return word$"s";
+        }
+    }
+    return word;
+}
+
 //This function branches out to the more case-specific help text functions
-static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
+static simulated function string GetBingoGoalHelpText(string event, int mission, int max, bool FemJC)
 {
     local string prefix,suffix,msg;
 
@@ -94,7 +108,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
 
     //If we haven't found anything, just go into the generic case
     if (msg==""){
-        msg = GetBingoHelpTextGeneric(event,mission,FemJC);
+        msg = GetBingoHelpTextGeneric(event,mission,max,FemJC);
     }
     //#endregion
 
@@ -946,7 +960,7 @@ static simulated function string GetBingoHelpTextPeeping(string event,int missio
 //#endregion
 
 //#region Generic
-static simulated function string GetBingoHelpTextGeneric(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextGeneric(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -1404,7 +1418,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "roof_elevator":
             return "Use the roof elevator in Denfert-Rochereau right at the start.  There will be a book nearby with the code for the keypad.";
         case "SoldRenaultZyme":
-            return "Sell at least 5 vials of Zyme to Renault in the Paris hostel.";
+            return "Sell at least "$max$" "$plur("vial",max)$" of Zyme to Renault in the Paris hostel.";
         case "WarehouseSewerTunnel":
             return "Swim through the underwater tunnel in the Warehouse District.";
         case "PaulToTong":

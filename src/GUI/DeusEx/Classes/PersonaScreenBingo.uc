@@ -64,7 +64,7 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     t.SetSize(w-1, h-1);
     t.SetPos(x * w + bingoStartX, y * h + bingoStartY);
     t.SetProgress(progress, max, bActiveMission);
-    t.SetHelpText(event,player.GetLevelInfo().MissionNumber,femJC);
+    t.SetHelpText(event,player.GetLevelInfo().MissionNumber,max,femJC);
     t.SetMissions(missions);
     return t;
 }
