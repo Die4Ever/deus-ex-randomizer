@@ -108,5 +108,6 @@
 - "Sell Zyme to Renault" bingo goal now only requires selling 2 vials of zyme in games with short bingo durations (Such as WaltonWare), instead of the default 5 vials.
 - Pool balls bingo goals only require 3 balls in games with short bingo durations (Such as WaltonWare), instead of the default 5 balls.
 - Help text for bingo goals will now state the actual number of things you need to do instead of saying vague things like "enough".
+- When the game starts in Warehouse (Mission 2), bingo goals in UNATCO HQ (Mission 3) will be considered possible for short bingo duration games (like WaltonWare).
 
 </details>
