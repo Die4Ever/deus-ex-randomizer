@@ -18,6 +18,12 @@ event InitWindow()
     Super.InitWindow();
 }
 
+function CreateControls()
+{
+	Super.CreateControls();
+    if (class'DXRSavedSetup'.default.bSaved == false) EnableActionButton(AB_Other, false, "RESTORE");
+}
+
 //If changing ranges in this menu, make sure to update any clamped ranges in DXRFlags ScoreFlags function to match
 function BindControls(optional string action)
 {
@@ -478,35 +484,9 @@ function RandomizeOptions()
 function SaveSetup()
 {
     local DXRSavedSetup savedSetup;
-
-    GetDxr();
-    savedSetup = class'DXRSavedSetup'.static.GetObj(dxr);
-
-    savedSetup.seedStr = GetTextWindowText(GetIdFromLabel("Seed"));
-    savedSetup.startingMapStr = GetEnumValue(GetIdFromLabel("Starting Map"));
-
-    savedSetup.config_version = dxr.flags.config_version;
-    savedSetup.gamemode = dxr.flags.gamemode;
-    savedSetup.loadout = dxr.flags.loadout;
-    savedSetup.autosave = dxr.flags.autosave;
-    savedSetup.mirroredmaps = dxr.flags.mirroredmaps;
-    savedSetup.difficulty = dxr.flags.difficulty;
-
-    savedSetup.bingo_duration = dxr.flags.bingo_duration;
-    savedSetup.bingo_scale = dxr.flags.bingo_scale;
-    savedSetup.newgameplus_max_item_carryover = dxr.flags.newgameplus_max_item_carryover;
-    savedSetup.newgameplus_num_skill_downgrades = dxr.flags.newgameplus_num_skill_downgrades;
-    savedSetup.newgameplus_num_removed_augs = dxr.flags.newgameplus_num_removed_augs;
-    savedSetup.newgameplus_num_removed_weapons = dxr.flags.newgameplus_num_removed_weapons;
-    savedSetup.clothes_looting = dxr.flags.clothes_looting;
-    savedSetup.remove_paris_mj12 = dxr.flags.remove_paris_mj12;
-
-    savedSetup.settings = dxr.flags.settings;
-    savedSetup.moresettings = dxr.flags.moresettings;
-
-    savedSetup.bSaved = true;
-
-    savedSetup.SaveConfig();
+    savedSetup = class'DXRSavedSetup'.static.GetObj(GetDxr());
+    savedSetup.SaveSetup(GetFlags(), GetTextWindowText(GetIdFromLabel("Seed")), GetEnumValue(GetIdFromLabel("Starting Map")));
+    EnableActionButton(AB_Other, true, "RESTORE");
 }
 
 function RestoreSetup()
@@ -514,30 +494,12 @@ function RestoreSetup()
     local DXRSavedSetup savedSetup;
     local int scrollPos;
 
-    GetDxr();
-    savedSetup = class'DXRSavedSetup'.static.GetObj(dxr);
-    if (savedSetup.bSaved == false) return;
-
+    if (class'DXRSavedSetup'.default.bSaved == false) return;
     scrollPos = winScroll.vScale.GetTickPosition();
     _BindControls(True);
 
-    dxr.flags.gamemode = savedSetup.gamemode;
-    dxr.flags.loadout = savedSetup.loadout;
-    dxr.flags.autosave = savedSetup.autosave;
-    dxr.flags.mirroredmaps = savedSetup.mirroredmaps;
-    dxr.flags.difficulty = savedSetup.difficulty;
-
-    dxr.flags.bingo_duration = savedSetup.bingo_duration;
-    dxr.flags.bingo_scale = savedSetup.bingo_scale;
-    dxr.flags.newgameplus_max_item_carryover = savedSetup.newgameplus_max_item_carryover;
-    dxr.flags.newgameplus_num_skill_downgrades = savedSetup.newgameplus_num_skill_downgrades;
-    dxr.flags.newgameplus_num_removed_augs = savedSetup.newgameplus_num_removed_augs;
-    dxr.flags.newgameplus_num_removed_weapons = savedSetup.newgameplus_num_removed_weapons;
-    dxr.flags.clothes_looting = savedSetup.clothes_looting;
-    dxr.flags.remove_paris_mj12 = savedSetup.remove_paris_mj12;
-
-    dxr.flags.settings = savedSetup.settings;
-    dxr.flags.moresettings = savedSetup.moresettings;
+    savedSetup = class'DXRSavedSetup'.static.GetObj(GetDxr());
+    savedSetup.RestoreSetup(GetFlags());
 
     #ifndef hx
         SetDifficulty(dxr.flags.settings.CombatDifficulty);

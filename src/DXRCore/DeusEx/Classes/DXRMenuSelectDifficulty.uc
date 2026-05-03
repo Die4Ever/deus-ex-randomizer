@@ -113,6 +113,7 @@ function BindControls(optional string action)
 function bool BindPresets()
 {
     local DXRFlags f;
+    local DXRSavedSetup savedSetup;
     local string s;
     local int i;
     f = GetFlags();
@@ -128,6 +129,13 @@ function bool BindPresets()
     }
 
     //CreateLabelRow("some description text?");
+
+    if(class'DXRSavedSetup'.default.bSaved && PresetButton("Saved Settings", "Play whatever crazy settings you have saved from the Advanced screen.")) {
+        savedSetup = class'DXRSavedSetup'.static.GetObj(f);
+        savedSetup.RestoreSetup(f);
+        StartPreset(true);
+        return true;
+    }
 
     if(PresetButton("Normal Randomizer", f.GameModeHelpText(f.NormalRandomizer))) {
         f.gamemode = f.NormalRandomizer;
@@ -258,12 +266,14 @@ function bool PresetButton(string label, optional string helpText)
     return ret;
 }
 
-function StartPreset()
+function StartPreset(optional bool skipSetDifficulty)
 {
     local DXRFlags f;
     SaveConfig();
-    f = GetFlags();
-    f.SetDifficulty(f.difficulty); // just to make sure gamemode and loadout flags get set
+    if(!skipSetDifficulty) {
+        f = GetFlags();
+        f.SetDifficulty(f.difficulty); // just to make sure gamemode and loadout flags get set
+    }
     DoNewGameScreen();
 }
 
