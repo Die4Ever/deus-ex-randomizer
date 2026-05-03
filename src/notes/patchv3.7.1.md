@@ -109,5 +109,6 @@
 - Pool balls bingo goals only require 3 balls in games with short bingo durations (Such as WaltonWare), instead of the default 5 balls.
 - Help text for bingo goals will now state the actual number of things you need to do instead of saying vague things like "enough".
 - When the game starts in Warehouse (Mission 2), bingo goals in UNATCO HQ (Mission 3) will be considered possible for short bingo duration games (like WaltonWare).
+- Bingo help windows now scroll less per up/down press or scroll wheel notch.  This gives more control when trying to read through the help text.
 
 </details>
