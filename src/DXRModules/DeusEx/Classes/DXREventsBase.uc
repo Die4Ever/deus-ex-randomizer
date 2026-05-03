@@ -1335,7 +1335,7 @@ function bool AddTestGoal(
     do_not_scale = bingo_options[bingoIdx].do_not_scale;
     if (bingo_options[bingoIdx].max > 1 && do_not_scale==false) {
         if(max == 0)
-            max = ScaleBingoGoalMax(bingo_options[bingoIdx].max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
+            max = ScaleBingoGoalMax(event,bingo_options[bingoIdx].max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
 
         if (max == 1 && bingo_options[bingoIdx].desc_singular != "") {
             desc = bingo_options[bingoIdx].desc_singular;
@@ -1499,7 +1499,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && do_not_scale==false) {
-                max = ScaleBingoGoalMax(max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,end_mission_mask);
+                max = ScaleBingoGoalMax(event,max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,end_mission_mask);
 
                 if (max == 1 && bingo_options[i].desc_singular != "") {
                     desc = bingo_options[i].desc_singular;
@@ -1574,7 +1574,7 @@ simulated function _CreateOneGoalBingoBoard(PlayerDataItem data)
 }
 //#endregion
 
-simulated function int ScaleBingoGoalMax(int max, int bingoScale, float randMin, float randMax, int starting_mission, int missions, int end_mission_mask)
+simulated function int ScaleBingoGoalMax(string event, int max, int bingoScale, float randMin, float randMax, int starting_mission, int missions, int end_mission_mask)
 {
     local float f;
 
@@ -1897,22 +1897,22 @@ function RunTests()
 
     //bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",desc_singular="Burn 1 bag of trash",max=25,missions=57182)
     max = 100;
-    max = ScaleBingoGoalMax(max,100,1.0,1.0,3,57182,class'DXRStartMap'.static.GetEndMissionMask(3));
+    max = ScaleBingoGoalMax("",max,100,1.0,1.0,3,57182,class'DXRStartMap'.static.GetEndMissionMask(3));
     testint(max, 4, "MissionsMaskAvailability Single Mission End-to-End, 100% Scaling (With mission mask)");
 
     //bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
     max = 100;
-    max = ScaleBingoGoalMax(max,100,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(3));
+    max = ScaleBingoGoalMax("",max,100,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(3));
     testint(max, 4, "MissionsMaskAvailability Single Mission End-to-End, 100% Scaling (No mission mask)");
 
     //bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
     max = 100;
-    max = ScaleBingoGoalMax(max,50,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(6));
+    max = ScaleBingoGoalMax("",max,50,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(6));
     testint(max, 9, "MissionsMaskAvailability Four Mission End-to-End, 50% Scaling (No mission mask)");
 
     //bingo_options(266)=(event="SuspensionCrate",desc="Open %s Suspension Crates",desc_singular="Open 1 Suspension Crate",max=3,missions=3112)
     max = 100;
-    max = ScaleBingoGoalMax(max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
+    max = ScaleBingoGoalMax("",max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
     testint(max, 17, "MissionsMaskAvailability Three Mission End-to-End, 100% Scaling (Mission Mask with 4 possibilites, 1 in range)");
 
     //WatchFlag does not need to be used for _Dead and _Unconscious flags.

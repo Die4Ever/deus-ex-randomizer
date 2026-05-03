@@ -2460,19 +2460,39 @@ simulated function int tweakBingoMax(string event, int max)
             if (RevisionMaps){
                 return 9; //Just a lot more flags in Revision
             }
-        case "SoldRenaultZyme":
-            if (dxr.flags.bingo_duration>0 && dxr.flags.bingo_duration<5){
-                //The normal max is 5, which doesn't scale great with the standard logic (It just gets reduced to 1)
-                //Reducing to 1 makes this a bit easier than I'd like, so let's bring it down to 2 instead when it's a shorter bingo duration
-                //Rando guarantees 2 stay in the oven in the bakery, so it's still possible to go there, but maybe you find 2 along the way
-                //through earlier Paris and this goal suddenly becomes a decent idea?
-                return 2;
-            }
 
         //Sodacan_Activated
         //DrinkAlcohol_Activated
     }
     return max;
+}
+
+simulated function int ScaleBingoGoalMax(string event, int max, int bingoScale, float randMin, float randMax, int starting_mission, int missions, int end_mission_mask)
+{
+    local int min;
+    min = 1;
+
+    switch(event) {
+    case "SoldRenaultZyme":
+        //The normal max is 5, which doesn't scale great with the standard logic (It just gets reduced to 1)
+        //Reducing to 1 makes this a bit easier than I'd like, so let's bring it down to 2 instead when it's a shorter bingo duration
+        //Rando guarantees 2 stay in the oven in the bakery, so it's still possible to go there, but maybe you find 2 along the way
+        //through earlier Paris and this goal suddenly becomes a decent idea?
+        min = 2;
+        break;
+
+    case "PoolTableStripeBallSunk":
+    case "PoolTableSolidBallSunk":
+    case "PoolTableBallSunk":
+        // 1 pool ball is too easy to get in the break
+        if(bingoScale <30) return 3;
+        if(bingoScale < 60) return 4;
+        return 5;
+        break;
+    }
+
+    min--; // 0 index
+    return super.ScaleBingoGoalMax(event, max-min, bingoScale, randMin, randMax, starting_mission, missions, end_mission_mask) + min;
 }
 //#endregion
 
@@ -4558,9 +4578,9 @@ defaultproperties
     bingo_options(369)=(event="BrokenMirror",desc="Accumulate bad luck",max=4,missions=#bit(2,4,6,8,11))
     bingo_options(370)=(event="InCaseOfEmergency",desc="In case of emergency, break glass",max=1,missions=#bit(1,5,10,11))
     bingo_options(371)=(event="LootNewClothing",desc="Loot %s pieces of clothing",desc_singular="Loot a piece of clothing",max=50)
-    bingo_options(372)=(event="PoolTableStripeBallSunk",desc="Sink 5 striped pool balls",desc_singular="Sink 1 striped pool ball",max=5,missions=#bit(2,3,4,6,8,15),do_not_scale=true)
-    bingo_options(373)=(event="PoolTableSolidBallSunk",desc="Sink 5 solid pool balls",desc_singular="Sink 1 solid pool ball",max=5,missions=#bit(2,3,4,6,8,15),do_not_scale=true)
-    bingo_options(374)=(event="PoolTableBallSunk",desc="Sink 5 pool balls",desc_singular="Sink 1 pool ball",max=5,missions=#bit(2,3,4,6,8,15),do_not_scale=true)
+    bingo_options(372)=(event="PoolTableStripeBallSunk",desc="Sink %s striped pool balls",desc_singular="Sink 1 striped pool ball",max=5,missions=#bit(2,3,4,6,8,15))
+    bingo_options(373)=(event="PoolTableSolidBallSunk",desc="Sink %s solid pool balls",desc_singular="Sink 1 solid pool ball",max=5,missions=#bit(2,3,4,6,8,15))
+    bingo_options(374)=(event="PoolTableBallSunk",desc="Sink %s pool balls",desc_singular="Sink 1 pool ball",max=5,missions=#bit(2,3,4,6,8,15))
     bingo_options(375)=(event="GeneratorBlown",desc="Destroy the NSF generator",max=1,missions=#bit(2))
     bingo_options(376)=(event="NSFSignalSent",desc="Send the NSF signal",max=1,missions=#bit(4))
     bingo_options(377)=(event="PaulsDatavault_VariousPlayed",desc="Retrieve Paul's Datavault",max=1,missions=#bit(5))

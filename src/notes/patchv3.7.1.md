@@ -106,6 +106,7 @@
   - "Kill Joe Greene" (He'll only despawn in Mission 2, and this will only fail if the bingo duration does not extend to his next appearance)
   - "Take down Sandra Renton"
 - "Sell Zyme to Renault" bingo goal now only requires selling 2 vials of zyme in games with short bingo durations (Such as WaltonWare), instead of the default 5 vials.
+- Pool balls bingo goals only require 3 balls in games with short bingo durations (Such as WaltonWare), instead of the default 5 balls.
 - Help text for bingo goals will now state the actual number of things you need to do instead of saying vague things like "enough".
 
 </details>
