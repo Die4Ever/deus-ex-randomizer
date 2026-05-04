@@ -231,11 +231,11 @@ function CheckConfig()
             }
             switch(missions[i]) {
                 case 1: totalScore += 0.9; break;
-                case 6: totalScore += 1.8; break;
+                case 6: totalScore += 1.7; break;
                 case 8: totalScore += 0.5; break;
                 case 9: totalScore += 1.3; break;
                 case 14: totalScore += 2; break;
-                case 15: totalScore += 2; break;
+                case 15: totalScore += 1.7; break;
                 default: totalScore += 1; break;
             }
         }
