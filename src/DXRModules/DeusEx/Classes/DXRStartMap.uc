@@ -305,6 +305,9 @@ static simulated function int GetMaybeMissionMask(int start_map)
 {// TODO: maybe add some half-missions? like 35 could get some stuff from M04 unatco
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
+        case 25:
+            //startMap="02_NYC_Warehouse";
+            return 1 << 3; //Maybe mission 3, for UNATCO HQ stuff
         case 119:
             //startMap="11_Paris_Everett";
             return 1 << 11; //maybe Mission 11, for Everett's stuff
@@ -1258,6 +1261,26 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 2: // NSF Generator
         switch(bingo_event)
         {
+        case "JoshFed":
+        case "M02BillyDone":
+        case "FordSchickRescued":
+        case "FordSchick_PlayerDead":
+        case "CrackSafe":
+        case "SewerSurfin":
+        case "InterviewLocals_VariousPlayed":
+        case "M02QuestionedGreen":
+        case "M02BumSong_Convo":
+            return start_map >=25; //Don't give these goals on a warehouse start
+
+        case "MJ12Troop_ClassDead":
+        case "MJ12Troop_ClassUnconscious":
+        case "MJ12Troop_peeptime":
+            return start_map >=25 && end_mission <= 5; //There are no MJ12 after mission 2 until mission 5
+
+        case "StolenAmbrosia":
+        case "SickMan_PlayerDead":
+            return start_map >=25 && end_mission <= 3;
+
         case "SubwayHostagesSaved":
             return start_map > 20;
         }
@@ -1497,7 +1520,28 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
 {
     // TODO: any of the exceptions in GetStartingMissionMask, and will also need to add them to GetMaybeMissionMask
     switch(start_map) {
-    case 119:
+    case 25: //Warehouse start
+        switch(bingo_event) {
+        case "ReadText_KnowYourEnemy":
+        case "SimonsAssassination":
+        case "AlexCloset":
+        case "CommsPit":
+        case "BathroomFlags":
+        case "ImageOpened_ViewPortraits":
+        case "ReadText_ReadJCEmail":
+        case "Shannon_PlayerTakedown":
+        case "TrophyHunter_DestroyDeco":
+        case "WaltonConvos_VariousPlayed":
+        case "un_PrezMeadPic_peepedtex":
+        case "un_bboard_peepedtex":
+        case "ReadText_UNATCOHandbook":
+        case "ManderleyMail":
+        case "LetMeIn":
+        case "MeetInjuredTrooper2_Played":
+            return true;
+        }
+        break;
+    case 119: //Everett Start
         switch(bingo_event) {
         case "TobyAtanwe_PlayerTakedown":
         case "MeetAI4_Played":

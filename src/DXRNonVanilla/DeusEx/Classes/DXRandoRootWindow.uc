@@ -224,6 +224,10 @@ function bool CheckSingleDataVaultWindow(EInputKey key, string function, class<D
 function bool ProcessDataVaultSelection(EInputKey key)
 {
     local bool rc;
+    local DeusExPlayer Player;
+
+    Player = DeusExPlayer(parentPawn);
+    if (Player!=None && Player.RestrictInput()) return false; //Don't allow opening datavault windows if input is being restricted (like in ending cutscenes)
 
     rc = Super.ProcessDataVaultSelection(key);
 

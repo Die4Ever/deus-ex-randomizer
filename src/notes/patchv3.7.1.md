@@ -84,7 +84,7 @@
 - Weapon Mods in GMDX can now be randomized into the Weapon Mod types added by GMDX (Damage, Rate of Fire, and Full Auto).  Weapon mod chances will also be based on the number of weapon mods in GMDX, rather than vanilla.
 - Weapon Mods randomization chances in Revision (When using Revision maps) will now be based on the number of weapon mods in those maps.
 - MJ12 Commando machine guns now do 12 damage base instead of 15 (before randomization).
-- Trash bags will no longer break when stepped on if Other Balance Changes are enabled (Such as in Zero Rando).
+- Trash bags will no longer break when stepped on if Other Balance Changes are disabled (Such as in Zero Rando).
 - "Late Start" crates (Such as when starting the game later than Mission 1, or when starting a new loop in WaltonWare) will now be placed in your hands if it for some reason fails to spawn in front of the player.
 - Gunther now becomes hostile to the NSF as soon as you give him a weapon when rescued in Mission 1, instead of only when the player walks through a trigger near the jail cell door.
 - Goals that require you to create dead or unconscious bodies ("Bring the terrorist commander to a bar" and "Sewer Surfin'") are now banned with "Grenades Only" and "Explosives Only" loadouts.
@@ -97,5 +97,18 @@
   - Superjump works again.
   - Lloyd will open the UNATCO door when you throw the gas grenade like in the vanilla any% speedrun.
 - If the player has negative health when entering a map (For example, if killed just before entering Jock's helicopter into a cutscene), they will now be killed instantly. (Unless the "Glitches for Speedruns" option is set to "Allowed")
+- It is no longer possible to open menus (Such as the inventory or goals screens) during the intro and endgame cutscenes.
+- Several bingo goals will now be properly detected as failed when relevant characters despawn after running away:
+  - "Who will help the widow's son?"
+  - "Buy the full treatment plan in the clinic" (If both doctors are dead or ran away)
+  - "My Buddy Vinny"
+  - "Play the Detective"
+  - "Kill Joe Greene" (He'll only despawn in Mission 2, and this will only fail if the bingo duration does not extend to his next appearance)
+  - "Take down Sandra Renton"
+- "Sell Zyme to Renault" bingo goal now only requires selling 2 vials of zyme in games with short bingo durations (Such as WaltonWare), instead of the default 5 vials.
+- Pool balls bingo goals only require 3 balls in games with short bingo durations (Such as WaltonWare), instead of the default 5 balls.
+- Help text for bingo goals will now state the actual number of things you need to do instead of saying vague things like "enough".
+- When the game starts in Warehouse (Mission 2), bingo goals in UNATCO HQ (Mission 3) will be considered possible for short bingo duration games (like WaltonWare).
+- Bingo help windows now scroll less per up/down press or scroll wheel notch.  This gives more control when trying to read through the help text.
 
 </details>

@@ -113,6 +113,7 @@ function BindControls(optional string action)
 function bool BindPresets()
 {
     local DXRFlags f;
+    local DXRSavedSetup savedSetup;
     local string s;
     local int i;
     f = GetFlags();
@@ -127,7 +128,8 @@ function bool BindPresets()
         return false;
     }
 
-    //CreateLabelRow("some description text?");
+    CreateLabelRow("Choose a preset to begin, or scroll to the bottom and hit:|n    \"Customize Your Deus Ex Experience\"|nfor the traditional DXRando new game screen.");
+    CreateLabelRow("");
 
     if(PresetButton("Normal Randomizer", f.GameModeHelpText(f.NormalRandomizer))) {
         f.gamemode = f.NormalRandomizer;
@@ -149,7 +151,12 @@ function bool BindPresets()
         StartPreset();
         return true;
     }
-    if(dxr.rando_beaten >= 1 && PresetButton("WaltonWare", f.GameModeHelpText(f.WaltonWare))) {
+
+    if(dxr.rando_beaten > 0) { // > 0 means there's more than 1 bingo mode shown
+        CreateLabelRow("Bingo Modes:");
+    }
+
+    if(dxr.rando_beaten > 0 && PresetButton("WaltonWare", f.GameModeHelpText(f.WaltonWare))) {
         f.gamemode = f.WaltonWare;
         StartPreset();
         return true;
@@ -165,6 +172,8 @@ function bool BindPresets()
         StartPreset();
         return true;
     }
+
+    CreateLabelRow("Non-Randomized Modes:");
 
     if(PresetButton("Zero Rando", f.GameModeHelpText(f.ZeroRando))) {
         f.gamemode = f.ZeroRando;
@@ -185,10 +194,14 @@ function bool BindPresets()
         return true;
     }
 
+    if(dxr.rando_beaten >= 1 || dxr.IsOctober()) {
+        CreateLabelRow("Other:");
+    }
+
     s = f.GameModeHelpText(f.HalloweenMode);
     if(dxr.rando_beaten >= 5 && PresetButton("Full Halloween Mode", s)) {
         f.gamemode = f.HalloweenMode;
-        f.autosave = 7; // fixed limited saves
+        f.autosave = 7; // fixed limited saves FixedSaves
         StartPreset();
         return true;
     }
@@ -201,7 +214,13 @@ function bool BindPresets()
     }
     if(dxr.rando_beaten >= 3 && dxr.IsOctober() && PresetButton("WaltonWare Halloween", f.GameModeHelpText(f.WaltonWareHalloween))) {
         f.gamemode = f.WaltonWareHalloween;
-        f.autosave = 8; //UnlimitedFixedSaves
+        f.autosave = 8; // UnlimitedFixedSaves
+        StartPreset();
+        return true;
+    }
+    if(dxr.rando_beaten >= 3 && dxr.IsOctober() && PresetButton("Mr. Page's Horrifying Bingo Machine", f.GameModeHelpText(f.HalloweenMBM))) {
+        f.gamemode = f.HalloweenMBM;
+        f.autosave = 8; // UnlimitedFixedSaves
         StartPreset();
         return true;
     }
@@ -224,6 +243,16 @@ function bool BindPresets()
         StartPreset();
         return true;
     }
+
+    CreateLabelRow("Custom:");
+
+    if(class'DXRSavedSetup'.default.bSaved && PresetButton("Saved Settings", "Play whatever crazy settings you have saved from the Advanced screen.")) {
+        savedSetup = class'DXRSavedSetup'.static.GetObj(f);
+        savedSetup.RestoreSetup(f);
+        StartPreset(true);
+        return true;
+    }
+
     if(PresetButton("Customize Your Deus Ex Experience", "There are many options available for customization, but some of them can be spicy!")) {
         preset_custom_choice = true;
         ResetToDefaults();
@@ -258,12 +287,14 @@ function bool PresetButton(string label, optional string helpText)
     return ret;
 }
 
-function StartPreset()
+function StartPreset(optional bool skipSetDifficulty)
 {
     local DXRFlags f;
     SaveConfig();
-    f = GetFlags();
-    f.SetDifficulty(f.difficulty); // just to make sure gamemode and loadout flags get set
+    if(!skipSetDifficulty) {
+        f = GetFlags();
+        f.SetDifficulty(f.difficulty); // just to make sure gamemode and loadout flags get set
+    }
     DoNewGameScreen();
 }
 

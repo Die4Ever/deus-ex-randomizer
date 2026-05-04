@@ -37,8 +37,35 @@ static simulated function bool IsPawnDeathSuffix(string suffix)
     return false;
 }
 
+//Pluralize me, captain
+//Generally, just slap an "s" on the end, but there are probably special cases,
+//you can add those into the switch statement as they pop up.
+static simulated function string plur(string word, int num)
+{
+    if (num>1){
+        switch(word){
+            case "trophy":
+                return "trophies";
+            case "mailbox":
+                return word$"es";
+            case "person":
+                return "people";
+            default:
+                return word$"s";
+        }
+    }
+    return word;
+}
+
+//Just a short function to switch between a singular or multiple version of some phrasing based on an input number
+static simulated function string phr(int num, string single, string multi)
+{
+    if (num==1) return single;
+    return multi;
+}
+
 //This function branches out to the more case-specific help text functions
-static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
+static simulated function string GetBingoGoalHelpText(string event, int mission, int max, bool FemJC)
 {
     local string prefix,suffix,msg;
 
@@ -49,25 +76,25 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
     //Look for help text in a function based on suffix...
     if (msg=="" && suffix!=""){
         if (IsPawnDeathSuffix(suffix)){
-            msg = GetBingoHelpTextPawnDeaths(event,mission,FemJC);
+            msg = GetBingoHelpTextPawnDeaths(event,mission,max,FemJC);
         } else {
             switch (suffix){
                 case "Played":
                 case "Convo":
                 case "ConvoFlag":
                 case "VariousPlayed":
-                    msg = GetBingoHelpTextConversations(event,mission,FemJC);
+                    msg = GetBingoHelpTextConversations(event,mission,max,FemJC);
                     break;
                 case "Activated":
-                    msg = GetBingoHelpTextItemsUsed(event,mission,FemJC);
+                    msg = GetBingoHelpTextItemsUsed(event,mission,max,FemJC);
                     break;
                 case "peepedtex":
                 case "peeptime":
                 case "peeped":
-                    msg = GetBingoHelpTextPeeping(event,mission,FemJC);
+                    msg = GetBingoHelpTextPeeping(event,mission,max,FemJC);
                     break;
                 case "DestroyDeco":
-                    msg = GetBingoHelpTextDestroyDeco(event,mission,FemJC);
+                    msg = GetBingoHelpTextDestroyDeco(event,mission,max,FemJC);
                     break;
             }
         }
@@ -77,24 +104,24 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
     if (msg=="" && prefix!=""){
         switch(prefix){
             case "ImageOpened":
-                msg = GetBingoHelpTextImages(event,mission,FemJC);
+                msg = GetBingoHelpTextImages(event,mission,max,FemJC);
                 break;
             case "WatchKeys":
-                msg = GetBingoHelpNanoKeys(event,mission,FemJC);
+                msg = GetBingoHelpNanoKeys(event,mission,max,FemJC);
                 break;
             case "ReadText":
-                msg = GetBingoHelpReadText(event,mission,FemJC);
+                msg = GetBingoHelpReadText(event,mission,max,FemJC);
                 break;
             case "PawnState":
             case "PawnAnim":
-                msg = GetBingoHelpTextPeeping(event,mission,FemJC);
+                msg = GetBingoHelpTextPeeping(event,mission,max,FemJC);
                 break;
         }
     }
 
     //If we haven't found anything, just go into the generic case
     if (msg==""){
-        msg = GetBingoHelpTextGeneric(event,mission,FemJC);
+        msg = GetBingoHelpTextGeneric(event,mission,max,FemJC);
     }
     //#endregion
 
@@ -108,7 +135,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
 }
 
 //#region Pawn Deaths
-static simulated function string GetBingoHelpTextPawnDeaths(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextPawnDeaths(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -238,63 +265,63 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
         case "SickMan_PlayerDead":
             return "Kill the junkie in Battery Park who asks for someone to kill him.  He is typically found near the East Coast Memorial (the eagle statue and large plaques).  You must kill him yourself.";
         case "Greasel_ClassDead":
-            return "Kill enough greasels.  You must kill them yourself.";
+            return "Kill "$max$" "$plur("greasel",max)$".  You must kill them yourself.";
         case "UNATCOTroop_ClassDead":
-            return "Kill enough UNATCO Troopers.  You must kill them yourself.";
+            return "Kill "$max$" UNATCO "$plur("Trooper",max)$".  You must kill them yourself.";
         case "Terrorist_ClassDead":
-            return "Kill enough NSF Troops.  You must kill them yourself.";
+            return "Kill "$max$" NSF "$plur("Troop",max)$".  You must kill them yourself.";
         case "MJ12Troop_ClassDead":
-            return "Kill enough MJ12 Troopers.  You must kill them yourself.";
+            return "Kill "$max$" MJ12 "$plur("Trooper",max)$".  You must kill them yourself.";
         case "MJ12Commando_ClassDead":
-            return "Kill enough MJ12 Commandos.  You must kill them yourself.";
+            return "Kill "$max$" MJ12 "$plur("Commando",max)$".  You must kill them yourself.";
         case "Karkian_ClassDead":
-            return "Kill enough karkians.  You must kill them yourself.";
+            return "Kill "$max$" "$plur("karkian",max)$".  You must kill them yourself.";
         case "MilitaryBot_ClassDead": //old goal
-            return "Destroy enough military bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" military "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
         case "MilitaryBot_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough military bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" military "$plur("bot",max)$".  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough military bots.  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" military "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "SecurityBot2_ClassDead": //old goal
-            return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SecurityBot2_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough of the two legged walking security bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" of the two legged walking security bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "SecurityBotSmall_ClassDead": //old goal
-            return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SecurityBotSmall_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough of the smaller, treaded security bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" of the smaller, treaded security bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "SpiderBot_ClassDead": //old goal
-            return "Destroy enough spider bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" spider "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
         case "SpiderBot_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough spider bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" spider "$plur("bot",max)$".  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough spider bots.  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" spider "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "HumanStompDeath":
-            return "Jump on enough humans heads until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
+            return "Jump on "$max$" humans "$plur("head",max)$" until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
         case "Rat_ClassDead":
-            return "Kill enough rats.  You must kill them yourself.";
+            return "Kill "$max$" "$plur("rat",max)$".  You must kill them yourself.";
         case "UNATCOTroop_ClassUnconscious":
-            return "Knock out enough UNATCO Troopers.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
+            return "Knock out "$max$" UNATCO "$plur("Trooper",max)$".  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "Terrorist_ClassUnconscious":
-            return "Knock out enough NSF Troops.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
+            return "Knock out "$max$" NSF "$plur("Troop",max)$".  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "MJ12Troop_ClassUnconscious":
-            return "Knock out enough MJ12 Troopers.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
+            return "Knock out "$max$" MJ12 "$plur("Trooper",max)$".  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "MJ12Commando_ClassUnconscious":
-            return "Knock out enough MJ12 Commandos.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
+            return "Knock out "$max$" MJ12 "$plur("Commando",max)$".  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "Gray_ClassDead":
-            return "Kill enough Grays.  You must kill them yourself.";
+            return "Kill "$max$" "$plur("Gray",max)$".  You must kill them yourself.";
         case "JuanLebedev_Unconscious":
         case "JuanLebedev_PlayerUnconscious":
             return "Knock Lebedev out instead of killing him.  You must knock him out yourself.";
@@ -310,36 +337,36 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
         case "MaySung_PlayerTakedown":
             return "Take down May Sung, Maggie Chow's maid.  You must kill or knock her out yourself.";
         case "CleanerBot_ClassDead": //old goal
-            return "Destroy enough cleaner bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" cleaner "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
         case "CleanerBot_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough cleaner bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" cleaner "$plur("bot",max)$".  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough cleaner bots.  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" cleaner "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "MedicalBot_ClassDead": //old goal
-            return "Destroy enough medical bots or aug bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" medical "$plur("bot",max)$" or aug "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
         case "MedicalBot_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough medical bots or aug bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" medical "$plur("bot",max)$" or aug "$plur("bot",max)$".  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough medical bots or aug bots.  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" medical "$plur("bot",max)$" or aug "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "RepairBot_ClassDead": //old goal
-            return "Destroy enough repair bots.  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" repair "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
         case "RepairBot_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough repair bots.  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" repair "$plur("bot",max)$".  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough repair bots.  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" repair "$plur("bot",max)$".  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "UtilityBot_ClassDead": //old goal
-            return "Destroy enough utility bots (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy "$max$" utility "$plur("bot",max)$" (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
         case "UtilityBot_ClassTakedown":
             if(#defined(injections)){
-                return "Take down enough utility bots (medical bots, aug bots, or repair bots).  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
+                return "Take down "$max$" utility "$plur("bot",max)$" (medical bots, aug bots, or repair bots).  You must destroy or disable them yourself.  Destroying an already disabled bot does not count.";
             } else {
-                return "Destroy enough utility bots (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
+                return "Destroy "$max$" utility "$plur("bot",max)$" (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
             }
         case "DrugDealer_Dead":
         case "DrugDealer_PlayerDead":
@@ -353,9 +380,9 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
         case "FordSchick_PlayerDead":
             return "Kill Ford Schick.  Note that you can do this after rescuing him if you're fast.  You must kill him yourself.";
         case "Sailor_ClassDeadM6":
-            return "Kill enough of the sailors on the top floor of the Lucky Money club.  You must kill them yourself.";
+            return "Kill "$max$" of the sailors on the top floor of the Lucky Money club.  You must kill them yourself.";
         case "Sailor_ClassTakedownM6":
-            return "Take down enough of the sailors on the top floor of the Lucky Money club.  You must kill or knock them out yourself.";
+            return "Take down "$max$" of the sailors on the top floor of the Lucky Money club.  You must kill or knock them out yourself.";
         case "Shannon_Dead":
         case "Shannon_PlayerDead": //Old goals
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill her yourself.";
@@ -369,7 +396,7 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
         case "Chef_ClassDead":
             return "Do what needs to be done and kill a chef.  You must kill him yourself.";
         case "ScubaDiver_ClassDead":
-            return "Kill enough SCUBA divers in and around the Ocean Lab.  You must kill them yourself.";
+            return "Kill "$max$" SCUBA "$plur("diver",max)$" in and around the Ocean Lab.  You must kill them yourself.";
         case "WIB_ClassDeadM11":
             return "Kill Adept 34501, the Woman in Black living in the cathedral.  You must kill her yourself.";
         case "jughead_Dead":
@@ -386,11 +413,11 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
         case "HowardStrong_PlayerTakedown":
             return "Take down Howard Strong, the MJ12 engineer in charge of the operations at the missile silo.  You must kill or knock him out yourself.";
         case "PerformBurder_ClassDead":
-            return "Kill enough birds.  These can be either pigeons or seagulls.";
+            return "Kill "$max$" "$plur("bird",max)$".  These can be either pigeons or seagulls.";
         case "GoneFishing_ClassDead":
-            return "Kill enough fish.";
+            return "Kill "$max$" fish.";
         case "DestroyCapitalism_VariousDead":
-            msg = "Kill enough people willing to sell you goods in exchange for money.  You must kill them yourself.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
+            msg = "Kill "$max$" "$plur("person",max)$" willing to sell you goods in exchange for money.  You must kill them yourself.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
             if (mission<=1){
                 msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.  Shannon is also acting suspicious.";
             } else if (mission<=2){
@@ -423,9 +450,9 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
             msg = msg$"|n|n(It's a Simpsons reference)";
             return msg;
         case "ScienceIsForNerds_VariousDead":
-            return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill enough of those nerds in lab coats.";
+            return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill "$max$" of those nerds in lab coats.";
         case "Ex51_VariousDead":
-            return "Kill enough of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
+            return "Kill "$max$" of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
 
     }
 
@@ -435,7 +462,7 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
 //#endregion
 
 //#region Conversations
-static simulated function string GetBingoHelpTextConversations(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextConversations(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -504,7 +531,7 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
                 return "Talk to Camille the Paris cage dancer and get all the information you can.";
             }
         case "WaltonConvos_VariousPlayed":
-            msg="Have enough conversations with Walton Simons.  ";
+            msg="Have "$max$" "$plur("conversation",max)$" with Walton Simons.  ";
             if (mission<=3){
                 msg=msg$"He can be found in Manderley's office after destroying the generator.";
             } else if (mission<=4){
@@ -559,7 +586,7 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
 //#endregion
 
 //#region Items Used
-static simulated function string GetBingoHelpTextItemsUsed(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextItemsUsed(string event, int mission, int max, bool FemJC)
 {
     local DXRando dxr;
     local bool RevisionMaps;
@@ -569,27 +596,27 @@ static simulated function string GetBingoHelpTextItemsUsed(string event,int miss
 
     switch(event){
         case "Sodacan_Activated":
-            return "Chug enough cans of soda.";
+            return "Chug "$max$" "$plur("can",max)$" of soda.";
         case "BallisticArmor_Activated":
-            return "Equip enough ballistic armour.";
+            return "Equip "$max$" ballistic "$plur("armour",max)$".";
         case "Flare_Activated":
-            return "Light enough flares.";
+            return "Light "$max$" "$plur("flare",max)$".";
         case "VialAmbrosia_Activated":
             return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.|n|nThere is also a vial of ambrosia in a small box in the Ocean Lab.";
         case "Binoculars_Activated":
             return "Find and use a pair of binoculars.";
         case "HazMatSuit_Activated":
-            return "Use enough hazmat suits.";
+            return "Use "$max$" hazmat "$plur("suit",max)$".";
         case "AdaptiveArmor_Activated":
-            return "Wear enough thermoptic camo.";
+            return "Wear "$max$" thermoptic "$plur("camo",max)$".";
         case "TechGoggles_Activated":
-            return "Wear enough pairs of tech goggles.";
+            return "Wear "$max$" "$plur("pair",max)$" of tech goggles.";
         case "Rebreather_Activated":
-            return "Equip enough rebreathers.";
+            return "Equip "$max$" "$plur("rebreather",max)$".";
         case "FireExtinguisher_Activated":
-            return "Use enough fire extinguishers.";
+            return "Use "$max$" fire "$plur("extinguisher",max)$".";
         case "DrinkAlcohol_Activated":
-            return "Get absolutely tanked and drink enough alcohol.  This can be liquor, a forty, or wine.";
+            return "Get absolutely tanked and drink "$max$" "$plur("bottle",max)$" of alcohol.  This can be liquor, a forty, or wine.";
 
     }
 
@@ -599,7 +626,7 @@ static simulated function string GetBingoHelpTextItemsUsed(string event,int miss
 //#endregion
 
 //#region Destroy Deco's
-static simulated function string GetBingoHelpTextDestroyDeco(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextDestroyDeco(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -610,9 +637,9 @@ static simulated function string GetBingoHelpTextDestroyDeco(string event,int mi
 
     switch(event){
         case "LightVandalism_DestroyDeco":
-            return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps.";
+            return "Destroy "$max$" "$plur("lamp",max)$" throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps.";
         case "TrophyHunter_DestroyDeco":
-            msg = "Destroy enough trophies.  ";
+            msg = "Destroy "$max$" "$plur("trophy",max)$".  ";
             if (mission<=1){
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
             } else if (RevisionMaps && mission<=2){
@@ -634,7 +661,7 @@ static simulated function string GetBingoHelpTextDestroyDeco(string event,int mi
             }
             return msg;
         case "SlippingHazard_DestroyDeco":
-            msg = "Destroy enough 'Wet Floor' signs, leaving the area unmarked and dangerous.";
+            msg = "Destroy "$max$" 'Wet Floor' "$plur("sign",max)$", leaving the area unmarked and dangerous.";
             if (mission<=1){
                 msg = msg$"  There are signs in UNATCO HQ.";
             } else if (mission<=2){
@@ -656,21 +683,21 @@ static simulated function string GetBingoHelpTextDestroyDeco(string event,int mi
             }
             return msg;
         case "BeatTheMeat_DestroyDeco":
-            return "Destroy enough hanging slaughtered chickens or pigs.";
+            return "Destroy "$max$" hanging slaughtered "$plur("chicken",max)$" or "$plur("pig",max)$".";
         case "WhyContainIt_DestroyDeco":
             return "Destroy a barrel of the gray death virus.  Barrels can be found around the Vandenberg command building, in the Sub Base, and around the Universal Constructor under the Ocean Lab.";
         case "MailModels_DestroyDeco":
-            return "Destroy enough mailboxes.  They can be found in the streets of New York.";
+            return "Destroy "$max$" "$plur("mailbox",max)$".  They can be found in the streets of New York.";
         case "SmokingKills_DestroyDeco":
-            return "Destroy enough cigarette vending machines.  Smoking kills!";
+            return "Destroy "$max$" cigarette vending "$plur("machine",max)$".  Smoking kills!";
         case "BuoyOhBuoy_DestroyDeco":
-            return "Destroy enough buoys through the game.";
+            return "Destroy "$max$" "$plur("buoy",max)$" through the game.";
         case "ASingleFlask_DestroyDeco":
-            return "Destroy enough flasks through the game.";
+            return "Destroy "$max$" "$plur("flask",max)$" through the game.";
         case "PCLOADLETTER_DestroyDeco":  //Revision only (They added a printer)
             return "PC LOAD LETTER?  What the hell does that mean?  Show a network printer who's the boss and absolutely obliterate it.";
         case "FightSkeletons_DestroyDeco":
-            msg = "Destroy enough femurs or skulls.  Don't let the skeletons rise up!  ";
+            msg = "Destroy "$max$" "$plur("femur",max)$" or "$plur("skull",max)$".  Don't let the skeletons rise up!  ";
             if (RevisionMaps && mission<=2){
                 msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.";
             } else if (mission<=4){
@@ -692,7 +719,7 @@ static simulated function string GetBingoHelpTextDestroyDeco(string event,int mi
             }
             return msg;
         case "Dehydrated_DestroyDeco":
-            return "Destroy enough water coolers or water fountains.";
+            return "Destroy "$max$" water "$plur("cooler",max)$" or water "$plur("fountain",max)$".";
         case "Disloyal_DestroyDeco":
             return "Destroy all of the UNATCO flags in HQ after you lose your job.";
     }
@@ -703,7 +730,7 @@ static simulated function string GetBingoHelpTextDestroyDeco(string event,int mi
 //#endregion
 
 //#region Images
-static simulated function string GetBingoHelpTextImages(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextImages(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -714,11 +741,11 @@ static simulated function string GetBingoHelpTextImages(string event,int mission
 
     switch(event){
         case "ImageOpened_ViewPortraits":
-            return "Find and view enough portraits.  These include the picture of Leo Gold (the terrorist commander), the magazine cover showing Bob Page, the image of Joe Greene, and the image of Tiffany Savage.";
+            return "Find and view "$max$" "$plur("portrait",max)$".  These include the picture of Leo Gold (the terrorist commander), the magazine cover showing Bob Page, the image of Joe Greene, and the image of Tiffany Savage.";
         case "ImageOpened_ViewSchematics":
-            return "Find and view enough schematics.  These include the schematic of the Universal Contructor and the schematic of the blue fusion reactors.";
+            return "Find and view "$max$" "$plur("schematic",max)$".  These include the schematic of the Universal Contructor and the schematic of the blue fusion reactors.";
         case "ImageOpened_ViewMaps":
-            msg = "Find and view enough maps of different areas.";
+            msg = "Find and view "$max$" "$plur("map",max)$" of "$phr(max,"an area","different areas")$".";
 
             if (mission<=1){
                 msg = msg $ "|n|nPaul has a map of Liberty Island available for you before you find the terrorist commander.";
@@ -726,9 +753,9 @@ static simulated function string GetBingoHelpTextImages(string event,int mission
 
             return msg;
         case "ImageOpened_ViewDissection":
-            return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
+            return "Find and view "$max$" "$plur("image",max)$" of "$phr(max,"a dissection","dissections")$".  This includes the images of a greasel and a gray being dissected.";
         case "ImageOpened_ViewTouristPics":
-            return "Find and view enough tourist photos of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
+            return "Find and view "$max$" tourist "$plur("photo",max)$" of "$phr(max,"a place","places")$".  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
         case "ImageOpened_WaltonSimons":
             return "Find and look at the image displaying Walton Simons' augmentations.";
     }
@@ -739,7 +766,7 @@ static simulated function string GetBingoHelpTextImages(string event,int mission
 //#endregion
 
 //#region NanoKeys
-static simulated function string GetBingoHelpNanoKeys(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpNanoKeys(string event, int mission, int max, bool FemJC)
 {
     local DXRando dxr;
     local bool RevisionMaps;
@@ -749,7 +776,7 @@ static simulated function string GetBingoHelpNanoKeys(string event,int mission, 
 
     switch(event){
         case "WatchKeys_DuClareKeys":
-            return "Find enough different keys around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement.";
+            return "Find "$max$" "$phr(max,"key","different keys")$" around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement.";
         case "WatchKeys_ShipLockerKeys":
             return "Find keys to the lockers on the lower decks of the superfreighter.  The lockers are inside the building underneath the helipad.";
         case "WatchKeys_cabinet":
@@ -764,7 +791,7 @@ static simulated function string GetBingoHelpNanoKeys(string event,int mission, 
 //#endregion
 
 //#region Reading
-static simulated function string GetBingoHelpReadText(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpReadText(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -775,9 +802,9 @@ static simulated function string GetBingoHelpReadText(string event,int mission, 
 
     switch(event){
         case "ReadText_KnowYourEnemy":
-            return "Read enough \"Know Your Enemy\" bulletins on the public computer in the UNATCO break room.";
+            return "Read "$max$" \"Know Your Enemy\" "$plur("bulletin",max)$" on the public computer in the UNATCO break room.";
         case "ReadText_JacobsShadow":
-            msg="Read enough chapters of Jacob's Shadow.  ";
+            msg="Read "$max$" "$plur("chapter",max)$" of Jacob's Shadow.  ";
             if (class'MenuChoice_GoalTextures'.static.BookColoursShouldChange()){
                 msg = msg$"The books will have a purple cover.  ";
             }
@@ -800,7 +827,7 @@ static simulated function string GetBingoHelpReadText(string event,int mission, 
             }
             return msg;
         case "ReadText_ManWhoWasThursday":
-            msg="Read enough chapters of The Man Who Was Thursday.  ";
+            msg="Read "$max$" "$plur("chapter",max)$" of The Man Who Was Thursday.  ";
             if (class'MenuChoice_GoalTextures'.static.BookColoursShouldChange()){
                 msg = msg$"The books will have a red cover.  ";
             }
@@ -821,7 +848,7 @@ static simulated function string GetBingoHelpReadText(string event,int mission, 
             }
             return msg;
         case "ReadText_GreeneArticles":
-            msg="Read enough news articles written by Joe Greene of the Midnight Sun.  ";
+            msg="Read "$max$" news "$plur("article",max)$" written by Joe Greene of the Midnight Sun.  ";
             if (mission<=1){
                 msg=msg$"There's one on Liberty Island, and one in UNATCO HQ.";
             } else if (mission<=2){
@@ -845,9 +872,9 @@ static simulated function string GetBingoHelpReadText(string event,int mission, 
         case "ReadText_06_Datacube05":
             return "Find the datacube on Tonnochi Road from Louis Pan reminding Maggie that he will never forget her birthday again.";
         case "ReadText_CloneCubes":
-            return "Read enough datacubes regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
+            return "Read "$max$" "$plur("datacube",max)$" regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
         case "ReadText_UNATCOHandbook":
-            return "Find and read enough UNATCO Handbooks scattered around HQ.";
+            return "Find and read "$max$" UNATCO "$plur("Handbook",max)$" scattered around HQ.";
         case "ReadText_02_Book06":
             return "Read a guide to basic firearm safety.  Smuggler likes to keep a copy of this lying around somewhere.";
         case "ReadText_11_Book08":
@@ -857,7 +884,7 @@ static simulated function string GetBingoHelpReadText(string event,int mission, 
         case "ReadText_12_Email04":
             return "Read the email from Gary Savage with the subject line 'We Must Stand'.  This can be found on the computer in the reception area of the main Vandenberg building, as well as inside the computer area of Vandenberg.";
         case "ReadText_ReadJCEmail":
-            return "Check your email enough times.  This can be done either in UNATCO HQ or in Tracer Tong's hideout.";
+            return "Check your email "$max$" "$plur("time",max)$".  This can be done either in UNATCO HQ or in Tracer Tong's hideout.";
         case "ReadText_02_Email05":
             return "Read Paul's emails and find out what classic movies he has ordered.";
         case "ReadText_15_Email02":
@@ -878,7 +905,7 @@ static simulated function string GetBingoHelpReadText(string event,int mission, 
 //#endregion
 
 //#region Peeping
-static simulated function string GetBingoHelpTextPeeping(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextPeeping(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -907,31 +934,31 @@ static simulated function string GetBingoHelpTextPeeping(string event,int missio
         case "FC_EyeTest_peepedtex":
             return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
         case "Terrorist_peeptime":
-            return "Watch NSF Troops through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch NSF Troops through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "UNATCOTroop_peeptime":
-            return "Watch UNATCO Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch UNATCO Troopers through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Troop_peeptime":
-            return "Watch MJ12 Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch MJ12 Troopers through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Commando_peeptime":
-            return "Watch MJ12 Commandos through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch MJ12 Commandos through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "Cat_peeptime":
-            return "Watch cats through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch cats through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "Binoculars_peeptime":
-            return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch binoculars through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "NYEagleStatue_peeped":
             return "Look at the bronze eagle statue in Battery Park through a pair of binoculars or a scope.";
         case "BirdWatching_peeptime":
-            return "Watch birds through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch birds through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "ShipNamePlate_peeped":
             return "Use binoculars or a scope to check the name marked on the side of the superfreighter.";
         case "WatchDogs_peeptime":
-            return "Watch dogs through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch dogs through binoculars or a scope for "$max$" "$plur("second",max)$".  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "PawnAnim_Dance":
             return "Watch someone dance through a pair of binoculars or a scope.  There should be someone vibing in a bar or club.";
         case "Player_peeped":
             return "Observe yourself in a mirror through binoculars or a scope.";
         case "EmergencyExit_peeped":
-            msg = "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
+            msg = "Know your exit in case of an emergency!  Locate "$max$" emergency exit "$plur("sign",max)$" through the game by looking at them through binoculars or a scope.";
             if (mission==10 || mission==11){
                 msg = msg $"|n|nThe French word for 'Exit' is 'Sortie'.";
             }
@@ -946,7 +973,7 @@ static simulated function string GetBingoHelpTextPeeping(string event,int missio
 //#endregion
 
 //#region Generic
-static simulated function string GetBingoHelpTextGeneric(string event,int mission, bool FemJC)
+static simulated function string GetBingoHelpTextGeneric(string event, int mission, int max, bool FemJC)
 {
     local string msg;
     local DXRando dxr;
@@ -1025,9 +1052,9 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "M06BoughtVersaLife":
             return "Buy the maps of Versalife from the guy in the Old China Hand bar, by the canal.";
         case "FlushToilet":
-            return "Find and flush enough different toilets.  Note that toilets in places that you revisit (like UNATCO HQ) will count again on each visit.";
+            return "Find and flush "$max$" "$phr(max,"toilet","different toilets")$".  Note that toilets in places that you revisit (like UNATCO HQ) will count again on each visit.";
         case "FlushUrinal":
-            return "Find and flush enough different urinals.  Note that urinals in places that you revisit (like UNATCO HQ) will count again on each visit.";
+            return "Find and flush "$max$" "$phr(max,"urinal","different urinals")$".  Note that urinals in places that you revisit (like UNATCO HQ) will count again on each visit.";
         case "KnowsGuntherKillphrase":
             return "Learn Gunther's killphrase from Jaime in Paris.  Note that he will only meet you in Paris if you ask him to stay with UNATCO while you escape from the MJ12 base.";
         case "KnowsAnnasKillphrase":
@@ -1039,7 +1066,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "SunkenShip":
             return "Enter the ship that has sunk off the North Dock of Liberty Island (Near Harley Filben).";
         case "SpinShipsWheel":
-            msg="Spin enough ships wheels.  ";
+            msg="Spin "$max$" ships "$plur("wheel",max)$".  ";
             if (mission<=1){
                 msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
             }else if (RevisionMaps && mission<=4){ //Both M02 and M04
@@ -1065,7 +1092,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "BoatEngineRoom":
             return "Enter the small room at the back of the smuggler's boat in the Hong Kong canals and check the power levels on the equipment inside.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
         case "HumanStompDeath":
-            return "Jump on enough humans heads until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
+            return "Jump on "$max$" humans "$plur("head",max)$" until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
         case "purge":
             return "Use the keypad in the vents of the Hong Kong MJ12 Helibase to release poison gas into the barracks.";
         case "ChugWater":
@@ -1091,7 +1118,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "unbirth":
             return "Find the cloning tank in Sector 4 of Area 51 that does not have a lid and go swimming in it.";
         case "StolenAmbrosia":
-            msg="Find enough stolen barrels of ambrosia.  ";
+            msg="Find "$max$" stolen "$plur("barrel",max)$" of ambrosia.  ";
             if (mission<=2){
                 msg=msg$"There is a barrel of ambrosia somewhere in Battery Park.";
             } else if (mission<=3){
@@ -1109,19 +1136,19 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "SimonsAssassination":
             return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
         case "AlliesKilled":
-            return "Kill enough people who do not actively hate you.  (This should be most people who show as green on the crosshairs)";
+            return "Kill "$max$" "$plur("person",max)$" who do not actively hate you.  (This should be most people who show as green on the crosshairs)";
         case "botordertrigger":
             return "Set off the laser tripwires in Smuggler's hideout.";
         case "IgnitedPawn":
-            return "Set enough people on fire.";
+            return "Set "$max$" "$plur("person",max)$" on fire.";
         case "GibbedPawn":
-            return "Blow up enough people.  If they turn into chunks of meat, it counts.  They must be human and you must blow them up yourself.";
+            return "Blow up "$max$" "$plur("person",max)$".  If they turn into chunks of meat, it counts.  They must be human and you must blow them up yourself.";
         case "AlexCloset":
             return "Enter Alex Jacobson's storage closet in UNATCO HQ.  The code to the door can be found in his email during the first mission.";
         case "BackOfStatue":
             return "Climb out along the balcony ledges of the Statue of Liberty and go around to the side facing UNATCO HQ.";
         case "CommsPit":
-            return "Inspect the wiring in the pit outside of UNATCO HQ enough times.";
+            return "Inspect the wiring in the pit outside of UNATCO HQ "$max$" "$plur("time",max)$".";
         case "StatueHead":
             return "Walk up to where the head of the Statue of Liberty is being displayed.";
         case "CraneControls":
@@ -1139,7 +1166,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "TrainTracks":
             return "Jump onto the train tracks in Paris.";
         case "OceanLabCrewChamber":
-            return "Visit enough of the crew chambers in the Ocean Lab.";
+            return "Visit "$max$" of the crew chambers in the Ocean Lab.";
         case "HeliosControlArms":
             return "Jump down onto the arms sticking out of the wall below where you talk to Helios in Area 51.";
         case "TongTargets":
@@ -1159,7 +1186,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "TonnochiBillboard":
             return "Jump onto the 'Big Top Cigarettes' billboard hanging above the entrance in Tonnochi Road.  This sign has a big picture of a clown on it, and says 'NO JOKE' at the top.";
         case "AirfieldGuardTowers":
-            return "Enter the top floor of enough of the guard towers in the corners of the LaGuardia airfield.";
+            return "Enter the top floor of "$max$" of the guard towers in the corners of the LaGuardia airfield.";
         case "mirrordoor":
             return "Open (or destroy) the mirror acting as the door to the secret stash in Smuggler's hideout.";
         case "MolePeopleWater":
@@ -1167,7 +1194,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "botorders2":
             return "Use the security computer in the upper floor of the MJ12 Robot Maintenance facility to alter the AI of the security bots.";
         case "BathroomFlags":
-            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit.  I'm sure this is how you get to the secret ending!";
+            return "Place a flag in Manderley's bathroom "$max$" "$plur("time",max)$".  This can only be done once per visit.  I'm sure this is how you get to the secret ending!";
         case "SiloSlide":
             return "When entering the missile silo, open the vent in the floor and go down the slide that drops you into the water underneath the missile.";
         case "SiloWaterTower":
@@ -1195,7 +1222,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             }
             return msg;
         case "A51UCBlocked":
-            return "Close the doors to enough of the UCs in Sector 4 of Area 51.";
+            return "Close the doors to "$max$" of the UCs in Sector 4 of Area 51.";
         case "VandenbergReactorRoom":
             return "Enter the flooded reactor room in the tunnels underneath Vandenberg.";
         case "VandenbergServerRoom":
@@ -1211,21 +1238,21 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "ToxicShip":
             return "Find and enter the low, flat boat in the Hong Kong canals.  Note that the interior of the boat is filled with toxic gas.";
         case "ComputerHacked":
-            return "Use your computer skills to hack enough computers.";
+            return "Use your computer skills to hack "$max$" "$plur("computer",max)$".";
         case "ChateauInComputerRoom":
             return "Make your way down to Beth DuClare's computer station in the basement of the DuClare chateau.";
         case "DuClareBedrooms":
             return "Enter both Beth and Nicolette's bedrooms in the DuClare chateau.";
         case "PlayPool":
-            return "Sink all 16 balls on enough different pool tables.";
+            return "Sink all 16 balls on "$max$" "$phr(max,"pool table","different pool tables")$".";
         case "PianoSongPlayed":
-            return "Play enough different songs on a piano.";
+            return "Play "$max$" "$phr(max,"song","different songs")$" on a piano.";
         case "PianoSong0Played":
             return "Play the Deus Ex theme song on a piano.  The song needs to be played correctly and all the way through.";
         case "PianoSong7Played":
             return "Play 'The Game' from The 7th Guest on a piano.   The song needs to be played correctly and all the way through.";
         case "PinballWizard":
-            msg="Play enough different pinball machines.  ";
+            msg="Play "$max$" "$phr(max,"pinball machine","different pinball machines")$".  ";
             if (mission<=1){
                 msg=msg$"There is a machine in Alex's office as well as the break room.";
             } else if (mission<=2){
@@ -1251,7 +1278,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "FlowersForTheLab":
             return "Bring some flowers into either level of the Hong Kong MJ12 lab and set them down.";
         case "BurnTrash":
-            return "Set enough bags of trash on fire and let them burn until they are destroyed.";
+            return "Set "$max$" "$plur("bag",max)$" of trash on fire and let "$phr(max,"it","them")$" burn until "$phr(max,"it is","they are")$" destroyed.";
         case "BrokenPianoPlayed":
             return "Damage a piano enough that it will no longer work without fully breaking it, then try to play it.  It will make a sound to let you know when it is damaged enough.";
         case "Supervisor_Paid":
@@ -1271,11 +1298,11 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "CathedralLibrary":
             return "Enter the library in the Cathedral.";
         case "VendingMachineEmpty":
-            return "Empty enough vending machines of any type.";
+            return "Empty "$max$" vending "$plur("machine",max)$" of any type.";
         case "VendingMachineEmpty_Drink":
-            return "Empty enough soda vending machines.";
+            return "Empty "$max$" soda vending "$plur("machine",max)$".";
         case "VendingMachineDispense_Candy":
-            return "Dispense enough candy bars from vending machines.";
+            return "Dispense "$max$" candy "$plur("bar",max)$" from "$phr(max,"a ","")$"vending "$plur("machine",max)$".";
         case "M06JCHasDate":
             return "Rent a companion for the night from the Mamasan in the Lucky Money club.";
         case "PresentForManderley":
@@ -1283,11 +1310,11 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "OceanLabShed":
             return "Enter the small square storage building on shore, near the main pedestal leading up to the Ocean Lab sub base.";
         case "DockBlastDoors":
-            return "Open enough of the blast doors inside the ammunition storage warehouse in the dockyard.";
+            return "Open "$max$" of the blast doors inside the ammunition storage warehouse in the dockyard.";
         case "ShipsBridge":
             return "Enter the bridge on the top deck of the superfreighter.";
         case "CrackSafe":
-            msg="Open enough safes throughout the game.  ";
+            msg="Open "$max$" "$plur("safe",max)$" throughout the game.  ";
             if (mission<=2){
                 msg=msg$"There is a safe in the control room under Castle Clinton, and another one in the basement office of the NSF Warehouse.";
             } else if (mission<=9){
@@ -1305,7 +1332,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "KarkianDoorsBingo":
             return "Open the doors to the karkian cage near the surgery ward in the MJ12 base underneath UNATCO.";
         case "SuspensionCrate":
-            msg = "Open enough suspension crates.  These are the square containers with force fields sealing them.|n|n";
+            msg = "Open "$max$" suspension "$plur("crate",max)$".  These are the square containers with force fields sealing them.|n|n";
             if (mission<=3){
                 msg = msg $ "There is a suspension crate on Lebedev's plane.";
             } else if (mission<=5){
@@ -1316,20 +1343,18 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
                 msg = msg $ "There are two suspension crates in Everett's lab.";
             }
             return msg;
-        case "ScubaDiver_ClassDead":
-            return "Kill enough SCUBA divers in and around the Ocean Lab.  You must kill them yourself.";
         case "ShipRamp":
             return "Raise the ramp to get on board the superfreighter from the docks.  There is a keypad on a box next to the ramp that raises it.";
         case "SuperfreighterProp":
             return "Dive to the propeller at the back of the superfreighter.";
         case "ManderleyMail":
-            return "Check Manderley's holomail messages enough times on different visits.";
+            return "Check Manderley's holomail messages "$max$" "$plur("time",max)$" on different visits.";
         case "LetMeIn":
             return "Try to enter the door below the UNATCO Medical office without authorization.";
         case "SewerSurfin":
             return "Throw Joe Greene's body into the water in the New York sewers, like the rat he is.";
         case "PhoneCall":
-            msg = "Make phone calls on enough different phones (Either desk phones or pay phones).";
+            msg = "Make "$phr(max,"a phone call","phone calls")$" on "$max$" "$phr(max,"a phone","different phones")$" (Either desk phones or pay phones).";
             if (RevisionMaps && mission <=1) {
                 msg=msg$"|n|nThere several phones scattered around UNATCO HQ.";
             } else if (mission <=2){
@@ -1362,11 +1387,11 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "Area51ElevatorPower":
             return "Enter the main blast doors of the Area 51 bunker and turn on the power to the elevator.";
         case "Area51SleepingPod":
-            return "Open enough of the sleeping pods in the entrance to the Area 51 bunker.";
+            return "Open "$max$" of the sleeping pods in the entrance to the Area 51 bunker.";
         case "Area51SteamValve":
             return "Close the steam valves in the maintenance tunnels under the floors of the entrance to the Area 51 bunker.";
         case "DockyardLaser":
-            return "Deactivate enough of the laser grids in the sewers underneath the dockyards.";
+            return "Deactivate "$max$" of the laser grids in the sewers underneath the dockyards.";
         case "A51CommBuildingBasement":
             return "Go into the hatch in the Command 24 building in Area 51 and enter the basement.";
         case "FreighterHelipad":
@@ -1386,7 +1411,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "VandenbergHazLab":
             return "Enter the Hazard Lab in Vandenberg and disable the electricity that is making the water hazardous.";
         case "EnterUC":
-            return "Step into enough Universal Constructors throughout the game.  There are five available:|n - One in the computer section of Vandenberg|n - One in the bottom of the Ocean Lab|n - Three in the very bottom of Area 51";
+            return "Step into "$max$" Universal "$plur("Constructor",max)$" throughout the game.  There are five available:|n - One in the computer section of Vandenberg|n - One in the bottom of the Ocean Lab|n - Three in the very bottom of Area 51";
         case "VandenbergComputerElec":
             return "Disable both electrical panels in the computer room of Vandenberg.  There's very little risk!";
         case "VandenbergGasSwim":
@@ -1396,7 +1421,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "SubBaseSatellite":
             return "Shoot one of the satellite dishes on the tower on top of the sub base on shore in California.";
         case "UCVentilation":
-            return "Destroy enough ventilation fans near the Universal Contructor under the Ocean Lab.";
+            return "Destroy "$max$" ventilation "$plur("fan",max)$" near the Universal Contructor under the Ocean Lab.";
         case "OceanLabFloodedStoreRoom":
             return "Swim along the ocean floor to the locked and flooded storage room from in the Ocean Lab.";
         case "OceanLabMedBay":
@@ -1404,7 +1429,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "roof_elevator":
             return "Use the roof elevator in Denfert-Rochereau right at the start.  There will be a book nearby with the code for the keypad.";
         case "SoldRenaultZyme":
-            return "Sell at least 5 vials of Zyme to Renault in the Paris hostel.";
+            return "Sell at least "$max$" "$plur("vial",max)$" of Zyme to Renault in the Paris hostel.";
         case "WarehouseSewerTunnel":
             return "Swim through the underwater tunnel in the Warehouse District.";
         case "PaulToTong":
@@ -1420,25 +1445,25 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "MaggieLived":
             return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
         case "PetKarkians":
-            return "Hear me out - Karkians are basically just big puppies... Give enough of them the head rubs they deserve!  Make sure your hands are empty, or you won't be able to pet anything!";
+            return "Hear me out - Karkians are basically just big puppies... Give "$max$" of them the head rubs they deserve!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetDogs":
-            return "That's right, you can pet the dog!  Give enough dogs some petting time.  Make sure your hands are empty, or you won't be able to pet anything!";
+            return "That's right, you can pet the dog!  Give "$max$" "$plur("dog",max)$" some petting time.  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetFish":
             return "Trust me, fish like getting pet.  Max Chen has some fish in his office who would really appreciate it.  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetBirds":
-            return "Ok, maybe you shouldn't pet the birds, but can you help yourself?  Give enough birds a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
+            return "Ok, maybe you shouldn't pet the birds, but can you help yourself?  Give "$max$" "$plur("bird",max)$" a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetAnimal_Cat":
-            return "Ohhhh, that cat really wants to get pet!  Give enough cats a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
+            return "Ohhhh, that cat really wants to get pet!  Give "$max$" "$plur("cat",max)$" a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetAnimal_Greasel":
-            return "They might look a bit greasy and very mean, but they sure love head pats!  Give those greasels some pets!  Make sure your hands are empty, or you won't be able to pet anything!";
+            return "They might look a bit greasy and very mean, but they sure love head pats!  Give "$max$" "$plur("greasel",max)$" some pets!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetRats":
-            return "Get down there and pet enough rats!  Make sure your hands are empty, or you won't be able to pet anything!";
+            return "Get down there and pet "$max$" "$plur("rat",max)$"!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "NotABigFan":
-            return "Turn off enough ceiling fans through the game.";
+            return "Turn off "$max$" ceiling "$plur("fan",max)$" through the game.";
         case "TiffanyHeli":
             return "Rescue Tiffany Savage at the abandoned gas station.";
         case "AlarmUnitHacked":
-            return "Hack enough Alarm Sounder Panels.  These are the big red wall buttons that set off alarms.";
+            return "Hack "$max$" Alarm Sounder "$plur("Panel",max)$".  These are the big red wall buttons that set off alarms.";
         case "IOnceKnelt":
             return "Yeah, I can do that too, buddy.  Crouch inside the chapel at the Paris Cathedral.";
         case "GasCashRegister":
@@ -1457,11 +1482,11 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "JustAFleshWound":
             return "Reduce JC to just a torso and head by losing both arms and both legs.";
         case "LostLimbs":
-            return "Every night, I can feel my leg... and my arm... even my fingers.|n|nLose enough limbs through the game.";
+            return "Every night, I can feel my leg... and my arm... even my fingers.|n|nLose "$max$" "$plur("limb",max)$" through the game.";
         case "PoolTableStripes":
-            return "Sink all 7 solid-color balls (9-15) on enough different pool tables.";
+            return "Sink all 7 solid-color balls (9-15) on "$max$" "$phr(max,"pool table","different pool tables")$".";
         case "PoolTableSolids":
-            return "Sink all 7 striped balls (1-7) on enough different pool tables.";
+            return "Sink all 7 striped balls (1-7) on "$max$" "$phr(max,"pool table","different pool tables")$".";
         case "steampipe":
             return "Shut off the gas and stop a leak near the armory in the MJ12 Lab under UNATCO.";
         case "ArmoryVentEntrance":
@@ -1469,17 +1494,17 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "UNATCOMJ12LabGreaselCages":
             return "Enter all four greasel cages in the MJ12 Lab under UNATCO.";
         case "BrokenMirror":
-            return "They say that if you break a mirror, you'll have seven years of bad luck.  Accumulate bad luck for yourself by breaking enough mirrors.";
+            return "They say that if you break a mirror, you'll have seven years of bad luck.  Accumulate "$(max*7)$" "$plur("year",max*7)$" of bad luck for yourself by breaking "$max$" "$plur("mirror",max)$".";
         case "InCaseOfEmergency":
-            return "Break open enough fire extinguisher cases with glass fronts through the game.";
+            return "Break open "$max$" fire extinguisher "$plur("case",max)$" with glass fronts through the game.";
         case "LootNewClothing":
-            return "Loot enough new, unique, pieces of clothing.  Note that a single person may be wearing multiple pieces of clothing, such as pants, shirts, jackets, glasses, or helmets.  Some people may have overlapping pieces of clothing with others.";
+            return "Loot "$max$" new, "$phr(max,"piece","unique pieces")$" of clothing.  Note that a single person may be wearing multiple pieces of clothing, such as pants, shirts, jackets, glasses, or helmets.  Some people may have overlapping pieces of clothing with others.";
         case "PoolTableStripeBallSunk":
-            return "Sink enough unique striped pool balls (1-7) through the game.";
+            return "Sink "$max$phr(max,""," unique")$" striped pool "$plur("ball",max)$" (1-7) through the game.";
         case "PoolTableSolidBallSunk":
-            return "Sink enough unique solid pool balls (9-15) through the game.";
+            return "Sink "$max$phr(max,""," unique")$" solid pool "$plur("ball",max)$" (9-15) through the game.";
         case "PoolTableBallSunk":
-            return "Sink enough unique pool balls through the game.  The cue ball does not count, and the eight ball only counts if all of the stripes or solids have already been sunk.";
+            return "Sink "$max$phr(max,""," unique")$" pool "$plur("ball",max)$" through the game.  The cue ball does not count, and the eight ball only counts if all of the stripes or solids have already been sunk.";
         case "GeneratorBlown":
             return "Destroy the NSF Generator hidden in the warehouse district.  You can destroy the generator either by using explosives or by turning off the coolant.";
         case "NSFSignalSent":
@@ -1495,7 +1520,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "Pistons":
             return "Activate the bilge pumps in the lower decks of the superfreighter.";
         case "WeldPointDestroyed":
-            return "Destroy enough of the weld points in the lower decks of the superfreighter.";
+            return "Destroy "$max$" of the weld points in the lower decks of the superfreighter.";
         case "templar_upload":
             return "Find the computer in the Paris Cathedral and establish a system uplink for Everett.";
         case "HeliosBorn":
@@ -1505,7 +1530,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "missile_launched":
             return "Redirect the missile that is being aimed at Vandenberg.  It's going to be a sunny day at Area 51...";
         case "MerchantPurchaseBind_DXRNPCs1":
-            return "Make enough purchases from The Merchant through the game.|n|nNote that purchases from his French cousin, Le Merchant, do not count.  He is a different guy.";
+            return "Make "$max$" "$plur("purchase",max)$" from The Merchant through the game.|n|nNote that purchases from his French cousin, Le Merchant, do not count.  He is a different guy.";
         case "MerchantPurchaseBind_lemerchant":
             return "Make a purchase from Le Merchant, the French merchant hiding in the abandoned high-rise at Denfert-Rochereau.";
         case "MostWarehouseTroopsDead":
@@ -1513,7 +1538,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "M02QuestionedGreen":
             return "Question Joe Greene about the NSF or their secret power generator.";
         case "CivilForfeiture":
-            return "Claim the contents of enough ATM accounts as the proceeds of crime.  The accounts must be fully emptied.";
+            return "Claim the contents of "$max$" ATM "$plur("account",max)$" as the proceeds of crime.  The "$plur("account",max)$" must be fully emptied.";
         case "TakeABreather":
             return "Step into the atrium of the Free Clinic in Hell's Kitchen and sit down on one of the benches.  Take a moment to breathe and clear your mind.";
         case "MakeSoup":
@@ -1521,9 +1546,9 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "LibertyBenches":
             return "Take your time and enjoy taking a break on 3 different benches scattered around Liberty Island.  Make sure to crouch!";
         case "PetRobot_CleanerBot":
-            return "Show your appreciation for those little guys and give enough of those cleaner bots a pet!";
+            return "Show your appreciation for those little guys and give "$max$" of those cleaner bots a pet!";
         case "PetRobot_SecurityBotSmall":
-            return "Commercial security bots might be dangerous, but they've got a little head just ready to be pet.  Give enough of those little treaded bots head pats!  Note that it is not possible to pet a disabled bot.";
+            return "Commercial security bots might be dangerous, but they've got a little head just ready to be pet.  Give "$max$" of those little treaded bots head pats!  Note that it is not possible to pet a disabled bot.";
         case "CrawlUnderHelipad":
             return "Crawl through the maintenance tunnel connecting the electrical room to the helipad in the lower decks of the superfreighter.";
         case "EngineeringBridge":

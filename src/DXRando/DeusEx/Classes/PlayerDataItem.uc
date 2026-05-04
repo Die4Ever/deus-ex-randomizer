@@ -231,6 +231,43 @@ simulated function CheckForExpiredBingoGoals(DXRando dxr, int missionNum)
     }
 }
 
+simulated function bool IsBingoGoalAvailableLater(DXRando dxr, int missionNum, string bingoEvent)
+{
+    local int goalMask, goalMissions, i, j, startMission, startMap, endMission;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(Owner);
+
+    if (dxr.flags.IsBingoCampaignMode()) {
+        goalMask = class'DXRBingoCampaign'.static.GetBingoMask(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration);
+    } else {
+        startMap = dxr.flags.GetStartingMap();
+        startMission = class'DXRStartMap'.static.GetStartMapMission(startMap);
+        endMission = class'DXRStartMap'.static.GetEndMission(startMap, dxr.flags.bingo_duration);
+        goalMask = class'DXRStartMap'.static.GetStartingMissionMask(startMap) & class'DXRStartMap'.static.GetEndMissionMask(endMission);
+        p.ClientMessage("GoalMask="$goalMask);
+    }
+
+    for(i=0; i<ArrayCount(bingo); i++) {
+        if ((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) continue; //Skip some extra looping in MarkBingoAsFailed
+        if (bingo[i].event!=bingoEvent) continue; //We're looking for this specific goal
+
+        goalMissions = bingo_missions_masks[i];
+        p.ClientMessage("Initial MissionMask="$goalMissions);
+
+        //Mask out current and all prior missions.  Shift right by the mission number to clear those first missions, then shift back left
+        goalMissions = goalMissions >> (missionNum+1);
+        goalMissions = goalMissions << (missionNum+1);
+        p.ClientMessage("Clearing prior goals MissionMask="$goalMissions);
+
+        goalMissions = goalMissions & goalMask;
+        p.ClientMessage("After GoalMask MissionMask="$goalMissions);
+
+        return goalMissions > 0; //Is there anything left in the mask?
+    }
+    return false;
+}
+
 simulated function string GetBingoDescription(string event)
 {
     local int i;

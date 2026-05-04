@@ -12,6 +12,7 @@ function CreateTextWindow()
 
     winScroll.SetPos(12, 13);
     winScroll.SetSize(490,95);
+    winScroll.vScale.SetThumbStep(1); //Only scroll 1 line per scroll
 
     winText.SetTextAlignments(HALIGN_Left, VALIGN_Center);
     winText.SetFont(Font'DXRFontMenuHeaders_DS');
