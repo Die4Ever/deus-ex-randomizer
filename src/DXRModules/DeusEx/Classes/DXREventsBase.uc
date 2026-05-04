@@ -42,7 +42,7 @@ function SetWatchFlags();
 function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_mission, int end_mission, int real_duration);
 
 // for goals that can be detected as impossible by an event
-static function int GetBingoFailedEvents(string eventname, out string failed[7]);
+static function int GetBingoFailedEvents(string eventname, out string failed[10]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
 
@@ -58,6 +58,22 @@ function AddWatchedActor(Actor a,String eventName)
     actor_watch[num_watched_actors].a = a;
     actor_watch[num_watched_actors].BingoEvent=eventName;
     num_watched_actors++;
+}
+
+//Look for pawns that match the tag, then add them as watched actors with a unique eventName
+//Look by bindname, since that's what we use for dead/unconscious/takedown events as well
+function WatchLeavingPawn(string bindName)
+{
+    local #var(prefix)ScriptedPawn p;
+    local string leavingEvent;
+
+    leavingEvent = bindName $ "_LeavingPawn";
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn',p){
+        if (p.bLeaveAfterFleeing==False) continue; //Only track actors who leave with this function
+        if (p.BindName!=bindname) continue;
+        AddWatchedActor(p,leavingEvent);
+    }
 }
 
 function string GetWatchedActorBingoEvent(int idx)
@@ -148,6 +164,21 @@ function MarkBingoFailedGeneric()
     if (curMission == 98) return;
     data = class'PlayerDataItem'.static.GiveItem(player());
     data.CheckForExpiredBingoGoals(dxr, curMission);
+}
+
+static function bool IsBingoGoalAvailableLater(string bingoEvent)
+{
+    local DXRando dxr;
+    local PlayerDataItem data;
+    local int curMission;
+
+    dxr = class'DXRando'.default.dxr;
+    if (dxr.player==None) return false;
+
+    curMission = dxr.dxInfo.missionNumber;
+    if (curMission == 98) return false;
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    return data.IsBingoGoalAvailableLater(dxr, curMission, bingoEvent);
 }
 
 function InitStatLogShim()
@@ -1304,7 +1335,7 @@ function bool AddTestGoal(
     do_not_scale = bingo_options[bingoIdx].do_not_scale;
     if (bingo_options[bingoIdx].max > 1 && do_not_scale==false) {
         if(max == 0)
-            max = ScaleBingoGoalMax(bingo_options[bingoIdx].max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
+            max = ScaleBingoGoalMax(event,bingo_options[bingoIdx].max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
 
         if (max == 1 && bingo_options[bingoIdx].desc_singular != "") {
             desc = bingo_options[bingoIdx].desc_singular;
@@ -1468,7 +1499,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && do_not_scale==false) {
-                max = ScaleBingoGoalMax(max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,end_mission_mask);
+                max = ScaleBingoGoalMax(event,max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,end_mission_mask);
 
                 if (max == 1 && bingo_options[i].desc_singular != "") {
                     desc = bingo_options[i].desc_singular;
@@ -1543,7 +1574,7 @@ simulated function _CreateOneGoalBingoBoard(PlayerDataItem data)
 }
 //#endregion
 
-simulated function int ScaleBingoGoalMax(int max, int bingoScale, float randMin, float randMax, int starting_mission, int missions, int end_mission_mask)
+simulated function int ScaleBingoGoalMax(string event, int max, int bingoScale, float randMin, float randMax, int starting_mission, int missions, int end_mission_mask)
 {
     local float f;
 
@@ -1719,7 +1750,7 @@ static function MarkBingoAsFailed(coerce string eventname)
 
 static function MarkBingoFailedEvents(coerce string eventname)
 {
-    local string failed[7];
+    local string failed[10];
     local int i, num_failed;
 
     num_failed = GetBingoFailedEvents(eventname, failed);
@@ -1866,22 +1897,22 @@ function RunTests()
 
     //bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",desc_singular="Burn 1 bag of trash",max=25,missions=57182)
     max = 100;
-    max = ScaleBingoGoalMax(max,100,1.0,1.0,3,57182,class'DXRStartMap'.static.GetEndMissionMask(3));
+    max = ScaleBingoGoalMax("",max,100,1.0,1.0,3,57182,class'DXRStartMap'.static.GetEndMissionMask(3));
     testint(max, 4, "MissionsMaskAvailability Single Mission End-to-End, 100% Scaling (With mission mask)");
 
     //bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
     max = 100;
-    max = ScaleBingoGoalMax(max,100,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(3));
+    max = ScaleBingoGoalMax("",max,100,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(3));
     testint(max, 4, "MissionsMaskAvailability Single Mission End-to-End, 100% Scaling (No mission mask)");
 
     //bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
     max = 100;
-    max = ScaleBingoGoalMax(max,50,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(6));
+    max = ScaleBingoGoalMax("",max,50,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(6));
     testint(max, 9, "MissionsMaskAvailability Four Mission End-to-End, 50% Scaling (No mission mask)");
 
     //bingo_options(266)=(event="SuspensionCrate",desc="Open %s Suspension Crates",desc_singular="Open 1 Suspension Crate",max=3,missions=3112)
     max = 100;
-    max = ScaleBingoGoalMax(max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
+    max = ScaleBingoGoalMax("",max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
     testint(max, 17, "MissionsMaskAvailability Three Mission End-to-End, 100% Scaling (Mission Mask with 4 possibilites, 1 in range)");
 
     //WatchFlag does not need to be used for _Dead and _Unconscious flags.

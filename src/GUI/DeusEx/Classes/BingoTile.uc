@@ -81,10 +81,10 @@ event DrawWindow(GC gc)
     Super.DrawWindow(gc);
 }
 
-simulated function SetHelpText(string event, int mission, bool FemJC)
+simulated function SetHelpText(string event, int mission, int bmax, bool FemJC)
 {
     self.event = event;
-    helpText = class'DXREvents'.static.GetBingoGoalHelpText(event,mission,FemJC);
+    helpText = class'DXREvents'.static.GetBingoGoalHelpText(event,mission,bmax,FemJC);
 }
 
 simulated function string CreateMissionNameLine(int missionNum)

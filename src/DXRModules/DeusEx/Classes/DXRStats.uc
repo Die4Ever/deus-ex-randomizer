@@ -114,7 +114,7 @@ function IncMissionTimer(int mission)
 
     local DataStorage datastorage;
 
-    if (mission < 1) {
+    if (mission < 1 || mission >= ArrayCount(missions_times)) {
         return;
     }
     if(Level.LevelAction != LEVACT_None) {
