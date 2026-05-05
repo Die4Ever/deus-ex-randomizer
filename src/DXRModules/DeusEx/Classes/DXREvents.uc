@@ -4527,7 +4527,7 @@ defaultproperties
     bingo_options(327)=(event="GiveZyme_ConvoFlag",desc="Who needs Rock?",max=2,missions=#bit(3),do_not_scale=true) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
     // bingo_options()=(event="MarketKid_PlayerUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=#bit(6))
-    bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=#bit(10),do_not_scale=true)
+    bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=#bit(10))
 #ifdef vanilla
     bingo_options(330)=(event="PetKarkians",desc="Karkians are just big leather dogs",max=3,missions=#bit(5,6,14,15))
     bingo_options(331)=(event="PetDogs",desc="You can pet the dog",max=5,missions=#bit(2,5,6,10,12,14))
