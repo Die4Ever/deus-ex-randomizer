@@ -110,5 +110,6 @@
 - Help text for bingo goals will now state the actual number of things you need to do instead of saying vague things like "enough".
 - When the game starts in Warehouse (Mission 2), bingo goals in UNATCO HQ (Mission 3) will be considered possible for short bingo duration games (like WaltonWare).
 - Bingo help windows now scroll less per up/down press or scroll wheel notch.  This gives more control when trying to read through the help text.
+- Hover text for teleporters to and from "the bar" in Hell's Kitchen (Missions 2, 4, and 8) now refer to it as the "Underworld Tavern" instead of just as the "Bar".
 
 </details>
