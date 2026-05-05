@@ -2478,7 +2478,8 @@ simulated function int ScaleBingoGoalMax(string event, int max, int bingoScale, 
         //Reducing to 1 makes this a bit easier than I'd like, so let's bring it down to 2 instead when it's a shorter bingo duration
         //Rando guarantees 2 stay in the oven in the bakery, so it's still possible to go there, but maybe you find 2 along the way
         //through earlier Paris and this goal suddenly becomes a decent idea?
-        min = 2;
+        if(bingoScale <30) return 2;
+        min = 3;
         break;
 
     case "PoolTableStripeBallSunk":

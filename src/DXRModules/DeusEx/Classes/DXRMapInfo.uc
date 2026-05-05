@@ -910,7 +910,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
     destMissionNum = class'DXRMapVariants'.static.MissionNumFromMapName(mapname);
     if (destMissionNum!=99 && destMissionNum>0){
         dxr = class'DXRando'.default.dxr;
-        if (dxr!=None && dxr.flags!=None && dxr.flags.IsSpeedShuffleMode() && dxr.dxInfo!=None && dxr.dxInfo.MissionNumber!=destMissionNum){
+        if (dxr!=None && dxr.flags!=None && dxr.flags.moresettings.shuffle_missions > 0 && dxr.dxInfo!=None && dxr.dxInfo.MissionNumber!=destMissionNum){
             finalName = "Mission "$ destMissionNum $ class'DXRInfo'.Static.CR() $ finalName;
         }
     }
