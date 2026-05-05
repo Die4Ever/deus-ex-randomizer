@@ -128,6 +128,14 @@ function BindControls(optional string action)
     EnumOption("Enabled", 100, f.moresettings.entrance_rando, GetEntranceRandoHelpText(100));
 #endif
 
+    NewMenuItem("Mission Order Shuffling", "The order of missions is shuffled.  This is an alpha test feature and can break many things.  Time estimates assume you're an experienced speedrunner.");
+    EnumOption("Normal Mission Order", 0, f.moresettings.shuffle_missions);
+    EnumOption("About 15 Minutes", 15, f.moresettings.shuffle_missions);
+    EnumOption("About 30 Minutes", 30, f.moresettings.shuffle_missions);
+    EnumOption("About 45 Minutes", 45, f.moresettings.shuffle_missions);
+    EnumOption("About 60 Minutes", 60, f.moresettings.shuffle_missions);
+    EnumOption("Full Game Shuffle", 99999, f.moresettings.shuffle_missions);
+
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win (or progress in Mean Bingo Machine mode).");

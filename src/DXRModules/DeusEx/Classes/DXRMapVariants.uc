@@ -195,7 +195,7 @@ function int GetMirrorMapsSetting()
 function CheckConfig()
 {
     local int i, slot, tempi, len;
-    local float totalScore, minScore;
+    local float totalMinutes, minMinutes;
     local string temp;
 
     Super.CheckConfig();
@@ -222,28 +222,28 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    if(dxr.flags.bingo_duration > 0) {
-        minScore = FClamp(dxr.flags.bingo_duration, 1, len) - 0.5;
+    if(dxr.flags.moresettings.shuffle_missions > 0) {
+        minMinutes = dxr.flags.moresettings.shuffle_missions; // duration in minutes
         for(i=0; i<len; i++) {
-            if(totalScore >= minScore) {
+            if(totalMinutes >= minMinutes) {
                 len = i;
                 break;
             }
             switch(missions[i]) {
-                case 1: totalScore += 0.9; break;
-                case 6: totalScore += 1.7; break;
-                case 8: totalScore += 0.5; break;
-                case 9: totalScore += 1.3; break;
-                case 14: totalScore += 2; break;
-                case 15: totalScore += 1.7; break;
-                default: totalScore += 1; break;
+                case 1: totalMinutes += 9; break;
+                case 6: totalMinutes += 17; break;
+                case 8: totalMinutes += 5; break;
+                case 9: totalMinutes += 13; break;
+                case 14: totalMinutes += 20; break;
+                case 15: totalMinutes += 17; break;
+                default: totalMinutes += 10; break;
             }
         }
-    }
-    starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
-    missions[len] = 99;
-    for(i=0; i<len; i++) {
-        l("speedshuffle " $ i @ starts[i]);
+        starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
+        missions[len] = 99;
+        for(i=0; i<len; i++) {
+            l("speedshuffle " $ i @ starts[i]);
+        }
     }
 }
 
@@ -265,7 +265,7 @@ simulated function FirstEntry()
         me.DestMap = VaryURL(me.DestMap);
     }
 
-    if(dxr.flags.IsSpeedShuffleMode()) {
+    if(dxr.flags.moresettings.shuffle_missions > 0) {
         for(i=0; i<ArrayCount(starts); i++) {
             if(dxr.localURL ~= starts[i]) {
                 isStartMap = true; // only if we're in a starting map
@@ -370,7 +370,7 @@ function string VaryMap(string map, optional out int speedShuffled)
             return map;
     }
 
-    if(dxr.flags.IsSpeedShuffleMode()) {
+    if(dxr.flags.moresettings.shuffle_missions > 0) {
         for(i=0; i<ArrayCount(starts); i++) {
             if(missions[i] == dxr.dxInfo.MissionNumber) nextMap = starts[i+1];
             if(map ~= default.starts[i] && dxr.dxInfo.MissionNumber != default.missions[i]) isStartMap = true; // only if this teleporter is going to a starting map
