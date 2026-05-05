@@ -47,15 +47,17 @@ function PreFirstEntry()
             break;
 
         case "11_PARIS_CATHEDRAL":
-            dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vectm(-2268.337891, 3042.279297, -866.726196));
-            SetDestination(dt, "10_PARIS_CHATEAU", 'Light135');
-            dt.SetCollisionSize(160,dt.CollisionHeight);
-            foreach AllActors(class'BlockPlayer', bp) {
-                switch(bp.Name) {
-                    case 'BlockPlayer90':
-                    case 'BlockPlayer91':
-                    case 'BlockPlayer117':
-                        bp.bBlockPlayers=false;
+            if(bCrossMissionBacktracking()) {
+                dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vectm(-2268.337891, 3042.279297, -866.726196));
+                SetDestination(dt, "10_PARIS_CHATEAU", 'Light135');
+                dt.SetCollisionSize(160,dt.CollisionHeight);
+                foreach AllActors(class'BlockPlayer', bp) {
+                    switch(bp.Name) {
+                        case 'BlockPlayer90':
+                        case 'BlockPlayer91':
+                        case 'BlockPlayer117':
+                            bp.bBlockPlayers=false;
+                    }
                 }
             }
             break;
@@ -195,10 +197,12 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 function PostFirstEntry()
 {
     switch(dxr.localURL) {
-        case "11_PARIS_CATHEDRAL":
+    case "11_PARIS_CATHEDRAL":
+        if(bCrossMissionBacktracking()) {
             AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-2130.379639, 3345.327881, -1151.909180));
             AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(-2234.959473, 3227.824951, -1127.913330));
-            break;
+        }
+        break;
     }
 }
 
@@ -555,7 +559,7 @@ function VandSubAnyEntry()
     flags = dxr.flagbase;
 
     // backtracking to gas station
-    if(bSillyChoppers()) {
+    if(bSillyChoppers()) { // TODO: WaltonWare with shuffled missions? this might be broken
         flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
 
         foreach AllActors(class'DataLinkTrigger', dt, 'DataLinkTrigger') {
@@ -565,11 +569,12 @@ function VandSubAnyEntry()
             }
         }
 
-        foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger')
+        foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger') {
             if( t.Event == 'UN_BlackHeli' ) {
                 t.Event = '';
                 t.Destroy();
             }
+        }
 
         RemoveChoppers('UN_BlackHeli');
         RemoveChoppers('backtrack_chopper');
@@ -909,4 +914,10 @@ static function bool bSillyChoppers()
     if (dxr==None) return false;
 
     return dxr.flags.IsBingoMode() || dxr.flags.moresettings.entrance_rando > 0;
+}
+
+function bool bCrossMissionBacktracking()
+{// used for shuffled missions without entrance rando, also disabled in Zero Rando
+    // this really only affects M11->M10, and maybe M14->M12
+    return dxr.flags.moresettings.entrance_rando > 0 || (dxr.flags.moresettings.shuffle_missions <= 0 && !dxr.flags.IsZeroRando());
 }
