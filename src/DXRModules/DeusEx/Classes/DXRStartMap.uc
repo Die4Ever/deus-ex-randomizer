@@ -257,7 +257,7 @@ static function int GetStartMapMission(int start_map_val)
             mission=10; //Mission 9 graveyard, basically mission 10
             break;
         case 109:
-            mission=11; //Mission 10 Chateau, but basically mission 11
+            mission=10; //Mission 10 Chateau, but basically missions 10 and 11
             break;
         case 119:
             mission=12; //Mission 11 Everett, but basically mission 12
