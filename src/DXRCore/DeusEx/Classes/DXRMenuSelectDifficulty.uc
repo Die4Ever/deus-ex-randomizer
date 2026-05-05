@@ -55,6 +55,12 @@ function BindControls(optional string action)
     local string name, help;
     local int i;
 
+    if(action == "CUSTOMIZE") {
+        preset_custom_choice = true;
+        ResetToDefaults();
+        return;
+    }
+
     f = GetFlags();
     if(writing) {
         f.InitAdvancedDefaults();
@@ -128,8 +134,7 @@ function bool BindPresets()
         return false;
     }
 
-    CreateLabelRow("Choose a preset to begin, or scroll to the bottom and hit:|n    \"Customize Your Deus Ex Experience\"|nfor the traditional DXRando new game screen.");
-    CreateLabelRow("");
+    CreateLabelRow("Choose a preset to begin, or click Customize.");
 
     if(PresetButton("Normal Randomizer", f.GameModeHelpText(f.NormalRandomizer))) {
         f.gamemode = f.NormalRandomizer;
@@ -319,7 +324,9 @@ function ResetToDefaults()
             actionButtons[i] = blank;
             winButtonBar.actionButtons[i].btn = None;
         }
+        actionButtons[1] = default.actionButtons[4];
     }
+    actionButtons[4] = blank; // dummy Customize button
     CreateActionButtons();
 
     Super.ResetToDefaults();
@@ -782,6 +789,7 @@ defaultproperties
 {
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Advanced",Key="ADVANCED")
     actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Max Rando",Key="MAXRANDO")
+    actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="Customize",Key="CUSTOMIZE")
     Title="DX Rando Options"
     bUsesHelpWindow=False
     bEscapeSavesSettings=False

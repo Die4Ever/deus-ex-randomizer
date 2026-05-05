@@ -6,7 +6,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=3;
     minor=7;
     patch=1;
-    build=10;//build can't be higher than 99
+    build=11;//build can't be higher than 99
 }
 
 simulated static function bool VersionIsStable()

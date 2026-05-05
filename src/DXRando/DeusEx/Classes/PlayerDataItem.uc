@@ -245,7 +245,6 @@ simulated function bool IsBingoGoalAvailableLater(DXRando dxr, int missionNum, s
         startMission = class'DXRStartMap'.static.GetStartMapMission(startMap);
         endMission = class'DXRStartMap'.static.GetEndMission(startMap, dxr.flags.bingo_duration);
         goalMask = class'DXRStartMap'.static.GetStartingMissionMask(startMap) & class'DXRStartMap'.static.GetEndMissionMask(endMission);
-        p.ClientMessage("GoalMask="$goalMask);
     }
 
     for(i=0; i<ArrayCount(bingo); i++) {
@@ -253,15 +252,12 @@ simulated function bool IsBingoGoalAvailableLater(DXRando dxr, int missionNum, s
         if (bingo[i].event!=bingoEvent) continue; //We're looking for this specific goal
 
         goalMissions = bingo_missions_masks[i];
-        p.ClientMessage("Initial MissionMask="$goalMissions);
 
         //Mask out current and all prior missions.  Shift right by the mission number to clear those first missions, then shift back left
         goalMissions = goalMissions >> (missionNum+1);
         goalMissions = goalMissions << (missionNum+1);
-        p.ClientMessage("Clearing prior goals MissionMask="$goalMissions);
 
         goalMissions = goalMissions & goalMask;
-        p.ClientMessage("After GoalMask MissionMask="$goalMissions);
 
         return goalMissions > 0; //Is there anything left in the mask?
     }
