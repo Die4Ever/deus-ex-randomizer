@@ -222,7 +222,7 @@ function InitStats(DXRStats newstats)
         return;
     }
 
-    if(curMission == 99 && !stats.dxr.flags.IsWaltonWare() && !stats.dxr.flags.IsSpeedrunShuffle()) {
+    if(curMission == 99 && !stats.dxr.flags.IsWaltonWare() && stats.dxr.flags.moresettings.shuffle_missions <= 0) {
         CompletedRun(total);
     }
     if(curMission > 0 && stats.dxr.flags.newgameplus_loops == 0) {
@@ -245,7 +245,7 @@ static function bool CheckFlags(DXRFlags f)
     local int last;
 
     if(f.moresettings.splits_overlay <= 0) return true;
-    if(f.IsWaltonWare() || f.IsSpeedrunShuffle()) return true; // we don't read from or write to the splits file in WaltonWare or Speedrun Shuffle anyways
+    if(f.IsWaltonWare() || f.moresettings.shuffle_missions > 0) return true; // we don't read from or write to the splits file in WaltonWare or Speedrun Shuffle anyways
     last = class'HUDSpeedrunSplits'.default.last_flagshash;
     if(last == 0) return true;
     if(GetPB() == "00:00.0") return true; // if blank PB, then this doesn't matter
@@ -508,7 +508,7 @@ function DrawSplits(GC gc, int cur)
     //#region drawing text
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
-    bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.IsSpeedrunShuffle());
+    bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
 
     for(i=1; i<ArrayCount(Golds); i++) {
         // TODO: fix ordering when Speedrun Shuffle

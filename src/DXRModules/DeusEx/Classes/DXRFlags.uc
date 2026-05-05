@@ -717,10 +717,10 @@ function SetDifficulty(int new_difficulty)
         }
 
         if(gamemode==SpeedShuffle) {
-            bingo_duration = 5;
             settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would get rerolls all over the place back and forth
             settings.minskill *= 0.8;
             settings.maxskill *= 0.8;
+            moresettings.shuffle_missions = 45;
         }
     }
     else if(IsWaltonWare()) {
@@ -1279,11 +1279,6 @@ function bool IsReducedRando()
 function bool IsSeriousRando()
 {
     return gamemode == SeriousRando;
-}
-
-function bool IsSpeedrunShuffle()
-{
-    return gamemode == SpeedShuffle;
 }
 
 function bool IsSpeedrunMode()

@@ -1271,7 +1271,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
         _RandoStartingEquipment(player, dxre, respawn);
     }
 
-    if(dxr.flags.IsSpeedrunShuffle()) {
+    if(dxr.flags.moresettings.shuffle_missions > 0 && dxr.flags.moresettings.shuffle_missions < 1000) {
         if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)BioelectricCell'))
             GiveItem(player, class'#var(prefix)BioelectricCell');
         if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)Medkit'))

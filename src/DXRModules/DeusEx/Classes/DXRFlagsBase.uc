@@ -89,6 +89,7 @@ struct MoreFlagsSettings{
     var int reanimation;
     var int stalkers;
     var int entrance_rando;
+    var int shuffle_missions; // 0 is disabled, otherwise approximate game length in minutes
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -392,6 +393,7 @@ simulated function string BindFlags(int mode, optional string str)
     }
     FlagInt('Rando_stalkers', moresettings.stalkers, mode, str);
     FlagInt('Rando_entrance_rando', moresettings.entrance_rando, mode, str);
+    FlagInt('Rando_shuffle_missions', moresettings.shuffle_missions, mode, str);
     FlagInt('Rando_removeparismj12', remove_paris_mj12, mode, str);
 
     FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, mode, str);
@@ -564,6 +566,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Halloween Stalkers";
         case 'Rando_entrance_rando':
             return "Entrance Randomization";
+        case 'Rando_shuffle_missions':
+            return "Mission Order Shuffling";
         case 'Rando_skills_disable_downgrades':
             return "Disallow downgrades on New Game screen";
         case 'Rando_skills_reroll_missions':
@@ -844,6 +848,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
             }
             break;
 
+        case 'Rando_shuffle_missions':
+            if(val <= 0) return "Normal Mission Order";
+            if(val > 1000) return "Full Game Shuffle";
+            return "About " $ val $ " Minutes Shuffle";
 
         case 'Rando_stalkers': // TODO: show more info
         case 'Rando_maxrando':
