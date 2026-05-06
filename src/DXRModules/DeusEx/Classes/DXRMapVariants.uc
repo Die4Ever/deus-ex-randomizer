@@ -222,7 +222,10 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    if(dxr.flags.moresettings.shuffle_missions > 0) {
+    if(dxr.flags.moresettings.shuffle_missions < 13 && dxr.flags.moresettings.shuffle_missions > 0) {
+        len = dxr.flags.moresettings.shuffle_missions;
+    }
+    else if(dxr.flags.moresettings.shuffle_missions > 0) {
         minMinutes = dxr.flags.moresettings.shuffle_missions; // duration in minutes
         for(i=0; i<len; i++) {
             if(totalMinutes >= minMinutes) {

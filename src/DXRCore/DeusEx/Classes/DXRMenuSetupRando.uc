@@ -67,6 +67,17 @@ function BindControls(optional string action)
         f.moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
     }
 
+    NewMenuItem("Mission Order Shuffling", "The order of missions is shuffled.  This is an alpha test feature and can break many things.  Time estimates assume you're an experienced speedrunner.");
+    EnumOption("Normal Mission Order", 0, f.moresettings.shuffle_missions);
+    EnumOption("About 20 Minutes", 20, f.moresettings.shuffle_missions);
+    EnumOption("About 30 Minutes", 30, f.moresettings.shuffle_missions);
+    EnumOption("About 45 Minutes", 45, f.moresettings.shuffle_missions);
+    EnumOption("About 60 Minutes", 60, f.moresettings.shuffle_missions);
+    EnumOption("3 Missions", 3, f.moresettings.shuffle_missions);
+    EnumOption("5 Missions", 5, f.moresettings.shuffle_missions);
+    EnumOption("7 Missions", 7, f.moresettings.shuffle_missions);
+    EnumOption("Full Game Shuffle", 99999, f.moresettings.shuffle_missions);
+
     BreakLine();
 
     NewMenuItem("Player Health", "Max health for each body part of the player.");
@@ -127,14 +138,6 @@ function BindControls(optional string action)
     EnumOption("Disabled", 0, f.moresettings.entrance_rando, GetEntranceRandoHelpText(0));
     EnumOption("Enabled", 100, f.moresettings.entrance_rando, GetEntranceRandoHelpText(100));
 #endif
-
-    NewMenuItem("Mission Order Shuffling", "The order of missions is shuffled.  This is an alpha test feature and can break many things.  Time estimates assume you're an experienced speedrunner.");
-    EnumOption("Normal Mission Order", 0, f.moresettings.shuffle_missions);
-    EnumOption("About 15 Minutes", 15, f.moresettings.shuffle_missions);
-    EnumOption("About 30 Minutes", 30, f.moresettings.shuffle_missions);
-    EnumOption("About 45 Minutes", 45, f.moresettings.shuffle_missions);
-    EnumOption("About 60 Minutes", 60, f.moresettings.shuffle_missions);
-    EnumOption("Full Game Shuffle", 99999, f.moresettings.shuffle_missions);
 
     NewGroup("Bingo");
 

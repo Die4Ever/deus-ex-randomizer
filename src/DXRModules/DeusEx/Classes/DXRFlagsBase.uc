@@ -851,6 +851,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_shuffle_missions':
             if(val <= 0) return "Normal Mission Order";
             if(val > 1000) return "Full Game Shuffle";
+            if(val < 13) return val $ " Missions Shuffle";
             return "About " $ val $ " Minutes Shuffle";
 
         case 'Rando_stalkers': // TODO: show more info
