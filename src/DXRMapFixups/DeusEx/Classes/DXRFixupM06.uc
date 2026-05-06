@@ -108,6 +108,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)MJ12Commando commando;
     local WaterCooler wc;
+    local Vector loc;
     local Rotator rot;
     local GordonQuick gordon;
     // local DXRReinforcementPoint reinforce;
@@ -116,6 +117,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ControlPanel panel;
     local #var(prefix)HKHangingLantern lantern;
     local #var(prefix)ScientistFemale sf;
+    local MoverPropTrigger mpt;
+    local #var(prefix)AlarmLight al;
     local int i;
 
     local bool VanillaMaps;
@@ -938,16 +941,46 @@ function PreFirstEntryMapFixes()
         oot.Event='Self_Destruct_Once';
         oot.Tag='Self_Destruct';
 
+        mpt = Spawn(class'MoverPropTrigger');
+        mpt.Tag = 'VirusUploaded'; //Triggered when the virus is uploaded normally...
+        mpt.Event = 'VirusUploaded'; //Changes properties on the door that's triggered at the same time
+        mpt.SetHighlight(true);
+        mpt.SetFrobbable(true);
+        mpt.SetLocked(true);
+        mpt.SetPickable(false);
+
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //The lockdown door should only close once the UC has been destroyed,
             //so that there's always an exit available.
             foreach AllActors(class'#var(DeusExPrefix)Mover',m,'VirusUploaded'){
                 m.Tag='LockdownDoorClosing';
+
+                //This door is backwards, so it thinks it's closed when it's open and open when it's closed
+                //You can always close an open door though, so it's always free to open.  Make sure to switch
+                //the keyframes so it actually is locked when it's down (With frobbability handled by the
+                //MoverPropTrigger above)
+                m.KeyNum=1;
+                m.PrevKeyNum=0;
+
+                loc = m.KeyPos[0];
+                m.KeyPos[0]=m.KeyPos[1];
+                m.KeyPos[1]=loc;
+
                 break;
             }
+
+            //Make the alarm lights also turn on at the same time as the door closes (instead of when the virus is uploaded)
+            foreach AllActors(class'#var(prefix)AlarmLight',al,'VirusUploaded'){
+                al.Tag='LockdownDoorClosing';
+            }
+
             oot = Spawn(class'OnceOnlyTrigger');
             oot.Event='LockdownDoorClosing';
             oot.Tag='Self_Destruct';
+
+            //Make sure the mover properties are still updated at the right time
+            mpt.Tag = 'LockdownDoorClosing'; //Triggered when the UC is shutdown
+            mpt.Event = 'LockdownDoorClosing';
 
             //The sleeping bots are already hostile, but are sitting in Idle state.
             //The existing orders trigger can just change them to Wandering instead of Attacking
