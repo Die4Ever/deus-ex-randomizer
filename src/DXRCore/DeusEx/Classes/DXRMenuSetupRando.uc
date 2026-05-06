@@ -1149,9 +1149,9 @@ defaultproperties
     bEscapeSavesSettings=False
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
-    actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
-    actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Restore Settings",Key="RESTORE")
-    actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Save Settings",Key="SAVE")
+    actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="Randomize",Key="RANDOMIZE")
+    actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="Restore Settings",Key="RESTORE")
+    actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="Save Settings",Key="SAVE")
     SplitsBtnTitle="Mismatched Splits!"
     SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
     showMode=True
