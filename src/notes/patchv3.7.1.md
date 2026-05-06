@@ -112,5 +112,6 @@
 - Bingo help windows now scroll less per up/down press or scroll wheel notch.  This gives more control when trying to read through the help text.
 - Hover text for teleporters to and from "the bar" in Hell's Kitchen (Missions 2, 4, and 8) now refer to it as the "Underworld Tavern" instead of just as the "Bar".
 - The blast door that drops in front of the elevator in the Versalife Level 2 Labs (Mission 6) will now be properly interactable after the UC is destroyed, allowing the key to be used to open it back up.
+- Hotkeys for buttons will now work in certain menus (The "Advanced" settings menu when starting a new game, for example).
 
 </details>
