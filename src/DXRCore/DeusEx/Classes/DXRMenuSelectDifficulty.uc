@@ -203,17 +203,30 @@ function bool BindPresets()
         CreateLabelRow("Other:");
     }
 
-    s = f.GameModeHelpText(f.HalloweenMode);
-    if(dxr.rando_beaten >= 5 && PresetButton("Full Halloween Mode", s)) {
-        f.gamemode = f.HalloweenMode;
-        f.autosave = 7; // fixed limited saves FixedSaves
+    if(dxr.rando_beaten >= 1 && dxr.rando_beaten < 5 && PresetButton("Speedrun Training Mode", f.GameModeHelpText(f.SpeedrunMode))) {
+        f.gamemode = f.SpeedrunTraining;
+        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }
+    if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
+        f.gamemode = f.SpeedrunMode;
+        f.loadout = 16; // speed enhancement
+        StartPreset();
+        return true;
+    }
+
+    s = f.GameModeHelpText(f.HalloweenMode);
     i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves
     if(i>0) s = Left(s, i);
     if((dxr.rando_beaten >= 1 || dxr.IsOctober()) && PresetButton("Halloween Lite Mode", s)) {
         f.gamemode = f.HalloweenMode;
+        StartPreset();
+        return true;
+    }
+    if(dxr.rando_beaten >= 5 && PresetButton("Full Halloween Mode", f.GameModeHelpText(f.HalloweenMode))) {
+        f.gamemode = f.HalloweenMode;
+        f.autosave = 7; // fixed limited saves FixedSaves
         StartPreset();
         return true;
     }
@@ -233,18 +246,6 @@ function bool BindPresets()
     if(dxr.rando_beaten >= 3 && PresetButton("Stick With the Prod Plus", "The full Randomizer experience, but only non-lethal weapons are allowed. The baton is also banned and replaced with a rubber baton.")) {
         f.gamemode = f.FullRando;
         f.loadout = 2;
-        StartPreset();
-        return true;
-    }
-    if(dxr.rando_beaten >= 1 && dxr.rando_beaten < 5 && PresetButton("Speedrun Training Mode", f.GameModeHelpText(f.SpeedrunMode))) {
-        f.gamemode = f.SpeedrunTraining;
-        f.loadout = 16; // speed enhancement
-        StartPreset();
-        return true;
-    }
-    if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
-        f.gamemode = f.SpeedrunMode;
-        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }
