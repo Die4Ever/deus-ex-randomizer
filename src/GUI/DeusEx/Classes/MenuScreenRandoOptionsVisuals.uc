@@ -12,7 +12,11 @@ function CreateChoices()
     if(#defined(vanilla)) {
         CreateChoice(class'MenuChoice_EnergyDisplay');
         CreateChoice(class'MenuChoice_ShowKeys');
+    }
+    if(#defined(vanilla) || #defined(gmdx)) {
         CreateChoice(class'MenuChoice_Epilepsy');
+    }
+    if(#defined(vanilla)) {
         CreateChoice(class'MenuChoice_BarrelTextures');
         CreateChoice(class'MenuUIChoiceVisionTint');
         CreateChoice(class'MenuChoice_AugHotkeys');
