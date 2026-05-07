@@ -2131,6 +2131,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(7235,-8823,-5134),40,40);
         bt.bDestroyOthers=False;
 
+        bt = class'BingoTrigger'.static.Create(self,'fire_start',vectm(7699,-8800,-5969));
+
         break;
     //#endregion
     }
@@ -4619,6 +4621,7 @@ defaultproperties
     bingo_options(408)=(event="CrawlUnderHelipad",desc="Crawl under the super freighter helipad",max=3,missions=#bit(9),do_not_scale=true)
     bingo_options(409)=(event="EngineeringBridge",desc="Raise the bridge in engineering",max=1,missions=#bit(9))
     bingo_options(410)=(event="M02BumSong_Convo",desc="Our Country 'Tis of Thee",max=3,missions=#bit(2),do_not_scale=true)
+    bingo_options(411)=(event="fire_start",desc="Fire it up!",max=1,missions=#bit(15))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
