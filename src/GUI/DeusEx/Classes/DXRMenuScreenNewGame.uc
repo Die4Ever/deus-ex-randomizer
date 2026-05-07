@@ -92,6 +92,10 @@ function SetDxr(DXRando d)
     UpdateSkillPoints();
     EnableButtons();
     UpdatePortrait();
+
+    if(!flags.IsZeroRando()) {
+        SetTitle(default.Title $ " flags: " $ flags.ToHex(flags.FlagsHash()));
+    }
 }
 
 function UpdatePortrait()
