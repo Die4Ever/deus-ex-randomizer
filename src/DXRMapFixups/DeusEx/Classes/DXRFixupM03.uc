@@ -695,6 +695,8 @@ function AnyEntryMapFixes()
         // 'AnnaThanks_Played' gets reset at the end of M02, but 'AnnaThanksChatDone' doesn't
         // restores an alternative line from Anna about about killing Lebedev based on what you did in M02
         FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+        // don't play "I surrender!" if Anna's already dead
+        GetConversation('MeetLebedev').AddFlagRef('AnnaNavarre_Dead', false);
         break;
 
     case "03_NYC_AIRFIELD":
