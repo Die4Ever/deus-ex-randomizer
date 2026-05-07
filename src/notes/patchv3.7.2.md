@@ -7,4 +7,5 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
+- Enable "Flickering Lights" setting for GMDX
 </details>
