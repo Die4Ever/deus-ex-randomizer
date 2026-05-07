@@ -1,6 +1,5 @@
 ## Major Changes
 
-- New game mode: Speedrun Shuffle!  This is the same as Speedrun Mode, but you only play a few missions, in random order.
 - New game mode: Mr. Page's Nice Bingo Machine!  This is a combination of Normal Randomizer and the Mean Bingo Machine, making it a great starting point for people to learn bingo.
 - The new game screen now shows recommended presets.
 - Added buttons for Save Settings and Restore Settings on the Advanced New Game screen.
