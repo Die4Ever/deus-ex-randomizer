@@ -250,7 +250,7 @@ switch(mapname)
         case "02_NYC_BAR":
         case "04_NYC_BAR":
         case "08_NYC_BAR":
-            s = "Bar";
+            s = "Underworld Tavern";
             switch(teleportername)
             {
                 case "ToBarBackEntrance":
@@ -318,9 +318,9 @@ switch(mapname)
                 case "FromSmugFrontDoor":
                     return s$cr$"(Smuggler Front Door)";
                 case "FromBarBackEntrance":
-                    return s$cr$"(Bar Back Door)";
+                    return s$cr$"(Underworld Tavern Back Door)";
                 case "FromBarFrontEntrance":
-                    return s$cr$"(Bar Front Door)";
+                    return s$cr$"(Underworld Tavern Front Door)";
                 case "FromHotelFrontDoor":
                     return s$cr$"(Hotel Front Door)";
                 case "FromClinic":

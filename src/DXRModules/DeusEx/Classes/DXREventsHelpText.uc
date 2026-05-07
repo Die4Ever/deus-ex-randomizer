@@ -430,18 +430,18 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event, int mi
                 msg=msg$"Sven the mechanic and Shannon both deserve it.";
             } else if (mission<=6){
                 msg=msg$"Hong Kong is overflowing with capitalist pigs:|n";
-                msg=msg$" - The tea house waiter in the market needs to go.|n";
-                msg=msg$" - In the VersaLife offices, you can eliminate Mr. Hundley.|n";
-                msg=msg$" - In the canals, you must end the life of the Old China Hand bartender, the man selling maps there, and the smuggler on the boat.|n";
-                msg=msg$" - In the Lucky Money, you must eliminate the bartender, the bouncer, the mamasan selling escorts, and the doorgirl.";
+                msg=msg$" ~ The tea house waiter in the market needs to go.|n";
+                msg=msg$" ~ In the VersaLife offices, you can eliminate Mr. Hundley.|n";
+                msg=msg$" ~ In the canals, you must end the life of the Old China Hand bartender, the man selling maps there, and the smuggler on the boat.|n";
+                msg=msg$" ~ In the Lucky Money, you must eliminate the bartender, the bouncer, the mamasan selling escorts, and the doorgirl.";
             } else if (mission<=8){
                 msg=msg$"Jordan Shea needs to go.";
             } else if (mission<=10){
                 msg=msg$"Paris is filled with filthy capitalists:|n";
-                msg=msg$" - Before the catacombs, you must eliminate Le Merchant and Defoe the arms dealer.|n";
-                msg=msg$" - In the catacombs, the man in Vault 2 needs to go.|n";
-                msg=msg$" - In the Champs D'Elysees streets, you must end the hostel bartender, Renault the drug dealer, and Kristi in the cafe.|n";
-                msg=msg$" - In the club, you can annihilate Camille the dancer, Jean the male bartender, Michelle the female bartender, Antoine the biocell seller, Louis the doorman, Cassandra the woman offering to sell information, and Jocques the worker in the back room.  ";
+                msg=msg$" ~ Before the catacombs, you must eliminate Le Merchant and Defoe the arms dealer.|n";
+                msg=msg$" ~ In the catacombs, the man in Vault 2 needs to go.|n";
+                msg=msg$" ~ In the Champs D'Elysees streets, you must end the hostel bartender, Renault the drug dealer, and Kristi in the cafe.|n";
+                msg=msg$" ~ In the club, you can annihilate Camille the dancer, Jean the male bartender, Michelle the female bartender, Antoine the biocell seller, Louis the doorman, Cassandra the woman offering to sell information, and Jocques the worker in the back room.  ";
             } else if (mission<=11){
                 msg=msg$"The technician in the metro station needs to be stopped.";
             } else if (mission<=12){
@@ -452,7 +452,7 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event, int mi
         case "ScienceIsForNerds_VariousDead":
             return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill "$max$" of those nerds in lab coats.";
         case "Ex51_VariousDead":
-            return "Kill "$max$" of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
+            return "Kill "$max$" of the named X51 scientists in Vandenberg.|n|n ~ Carla Brown on the roof|n ~ Stacy Webber in front of the hazard lab|n ~ Tim Baker in the closet near the hazard lab|n"$" ~ Stephanie Maxwell near the command room doors|n ~ Tony Mares in the comms building|n ~ Ben Roper in the command room|n"$" ~ Latasha Taylor in the command room|n ~ Stacey Marshall in the command room (with LDDP installed)";
 
     }
 
@@ -1411,7 +1411,7 @@ static simulated function string GetBingoHelpTextGeneric(string event, int missi
         case "VandenbergHazLab":
             return "Enter the Hazard Lab in Vandenberg and disable the electricity that is making the water hazardous.";
         case "EnterUC":
-            return "Step into "$max$" Universal "$plur("Constructor",max)$" throughout the game.  There are five available:|n - One in the computer section of Vandenberg|n - One in the bottom of the Ocean Lab|n - Three in the very bottom of Area 51";
+            return "Step into "$max$" Universal "$plur("Constructor",max)$" throughout the game.  There are five available:|n ~ One in the computer section of Vandenberg|n ~ One in the bottom of the Ocean Lab|n ~ Three in the very bottom of Area 51";
         case "VandenbergComputerElec":
             return "Disable both electrical panels in the computer room of Vandenberg.  There's very little risk!";
         case "VandenbergGasSwim":
