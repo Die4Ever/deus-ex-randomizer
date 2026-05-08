@@ -47,6 +47,9 @@ class MenuChoice_FixGlitches extends DXRMenuUIChoiceBool;
           Each time you leave the second layer of menu, the jump multiplier increases
         - Fixed by our new GetJumpZ function in the Player class, as well as an adjustment to RootWindow that catches
           the original aug reactivations.
+    - Enter the hangar from outside the bridge
+        - The radius of the teleporter inside the bridge from M03 Airfield into the Hangar extends outside of the bridge between
+          the barracks and the hangar itself, so you could jump into it from the outside with a superjump
 
 
 

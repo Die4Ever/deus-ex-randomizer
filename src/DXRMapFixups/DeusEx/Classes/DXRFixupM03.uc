@@ -104,6 +104,7 @@ function PreFirstEntryMapFixes()
     local DXRSimpleTrigger st;
     local bool VanillaMaps;
     local #var(PlayerPawn) p;
+    local int height,rad;
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
@@ -321,7 +322,15 @@ function PreFirstEntryMapFixes()
         if(VanillaMaps) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {
-                    tele.SetCollisionSize(tele.CollisionRadius, tele.CollisionHeight + 10);
+                    height=tele.CollisionHeight;
+                    rad=tele.CollisionRadius;
+                    if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+                        height = height + 10; //Make the teleporter slightly taller so you can't crouch underneath it
+                    }
+                    if(class'MenuChoice_FixGlitches'.default.enabled) {
+                        rad = 48;  //Decrease the radius so the teleporter doesn't stick out the side of the tunnel
+                    }
+                    tele.SetCollisionSize(rad, height);
                 }
             }
 
