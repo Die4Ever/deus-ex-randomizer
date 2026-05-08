@@ -20,9 +20,8 @@ function Touch(Actor Other)
 			if (bSetFlag)
                 SetFlag(flagValue);
 
-			if (bTrigger)
-				if (player.flagBase.GetInt(flagName) == flagValue)
-					Super.Touch(Other);
+			if (bTrigger && player.flagBase.GetInt(flagName) == flagValue)
+                Super.Touch(Other);
 		}
 	}
 }
@@ -35,9 +34,8 @@ function UnTouch(Actor Other)
 		if (IsRelevant(Other)) {
 			player = #var(PlayerPawn)(GetPlayerPawn());
 			if (player != None) {
-				if (bTrigger)
-					if (player.flagBase.GetInt(flagName) == flagValue)
-						Super.UnTouch(Other);
+				if (bTrigger && player.flagBase.GetInt(flagName) == flagValue)
+                    Super.UnTouch(Other);
 
 				if (bSetFlag)
 					FlipValue();
@@ -56,14 +54,13 @@ function Trigger(Actor Other, Pawn Instigator)
 		if (bSetFlag)
             SetFlag(flagValue);
 
-		if (bTrigger)
-			if (player.flagBase.GetInt(flagName) == flagValue) {
-				if (Event != '')
-					foreach AllActors(class 'Actor', A, Event)
-						A.Trigger(player, Instigator);
+		if (bTrigger && player.flagBase.GetInt(flagName) == flagValue) {
+            if (Event != '')
+                foreach AllActors(class 'Actor', A, Event)
+                    A.Trigger(player, Instigator);
 
-				Super.Trigger(Other, Instigator);
-			}
+            Super.Trigger(Other, Instigator);
+        }
 	}
 }
 
@@ -75,14 +72,13 @@ function UnTrigger(Actor Other, Pawn Instigator)
 	if (bWhileStandingOnly) {
 		player = #var(PlayerPawn)(GetPlayerPawn());
 		if (player != None) {
-			if (bTrigger)
-				if (player.flagBase.GetInt(flagName) == flagValue) {
-					if (Event != '')
-						foreach AllActors(class 'Actor', A, Event)
-							A.UnTrigger(player, Instigator);
+			if (bTrigger && player.flagBase.GetInt(flagName) == flagValue) {
+                if (Event != '')
+                    foreach AllActors(class 'Actor', A, Event)
+                        A.UnTrigger(player, Instigator);
 
-					Super.UnTrigger(Other, Instigator);
-				}
+                Super.UnTrigger(Other, Instigator);
+            }
 
 			if (bSetFlag)
                 FlipValue(player);
