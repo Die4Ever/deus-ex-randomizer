@@ -627,7 +627,7 @@ Begin:
 
 function bool IsProjectileDangerous(DeusExProjectile projectile)
 {
-    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-13
         //If they're mostly immune, don't consider it a threat
         if (ShieldDamage(projectile.damageType)<0.25){
             return False;
