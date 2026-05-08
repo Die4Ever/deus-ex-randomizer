@@ -33,6 +33,25 @@ function PreFirstEntry()
     }
 }
 
+static function Upgrade(#var(PlayerPawn) player, int old_version)
+{
+    local DXRBrightness b;
+    local Light lght;
+
+    if (old_version < class'DXRVersion'.static.VersionToInt(3,7,2,1)) {
+        //3.7.2.1 Added DXRStoredLightType for LT_Blink lights, make sure they
+        //have stored info too now.
+        foreach player.AllActors(class'Light',lght){
+            if (lght.LightType!=LT_Blink) continue;
+            class'DXRStoredLightType'.static.Init(lght); //Create stored info for Blink lights
+        }
+        foreach player.AllActors(class'DXRBrightness',b){
+            b.ApplyEpilepsySafe(class'MenuChoice_Epilepsy'.default.enabled); //Apply the light settings...
+        }
+    }
+}
+
+
 function AnyEntry()
 {
     Super.AnyEntry();
