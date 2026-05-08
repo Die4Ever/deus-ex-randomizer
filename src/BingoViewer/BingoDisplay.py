@@ -604,7 +604,7 @@ class BingoDisplay:
 
     def getFontSizeByWindowSize(self):
         width = min(self.width, self.height)
-        return int(width / 37)
+        return round(width / 39.9)
 
     def resize(self,event):
         if event.widget == self.win:
