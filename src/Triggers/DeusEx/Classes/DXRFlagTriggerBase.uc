@@ -1,14 +1,21 @@
-// FlagTrigger, but for ints.
-class DXRFlagTriggerInt extends Trigger;
+// Base class for flag triggers with non-bool values. Based on the original FlagTrigger.
+class DXRFlagTriggerBase extends Trigger abstract;
 
 var() name flagName;
-var() int flagValue;
 var() bool bSetFlag;
 var() bool bTrigger;
 var() bool bWhileStandingOnly;
 var() int flagExpiration;
-var() int oldValue;
+var() int oldExpiration;
 var() bool hasOldValue;
+
+function bool SetFlagValue(optional #var(PlayerPawn) player);
+function SaveOldValue(optional #var(PlayerPawn) player);
+function bool RestoreOldValue(optional #var(PlayerPawn) player);
+function bool DeleteFlag(optional #var(PlayerPawn) player);
+
+function bool IsFlagValueCurrent(optional #var(PlayerPawn) player);
+function bool FlagExists(optional #var(PlayerPawn) player);
 
 function Touch(Actor Other)
 {
@@ -18,9 +25,9 @@ function Touch(Actor Other)
 		player = #var(PlayerPawn)(GetPlayerPawn());
 		if (player != None) {
 			if (bSetFlag)
-                SetFlag(flagValue);
+                SetFlagValue(player);
 
-			if (bTrigger && player.flagBase.GetInt(flagName) == flagValue)
+			if (bTrigger && IsFlagValueCurrent(player))
                 Super.Touch(Other);
 		}
 	}
@@ -34,7 +41,7 @@ function UnTouch(Actor Other)
 		if (IsRelevant(Other)) {
 			player = #var(PlayerPawn)(GetPlayerPawn());
 			if (player != None) {
-				if (bTrigger && player.flagBase.GetInt(flagName) == flagValue)
+				if (bTrigger && IsFlagValueCurrent(player))
                     Super.UnTouch(Other);
 
 				if (bSetFlag)
@@ -52,9 +59,9 @@ function Trigger(Actor Other, Pawn Instigator)
 	player = #var(PlayerPawn)(GetPlayerPawn());
 	if (player != None) {
 		if (bSetFlag)
-            SetFlag(flagValue);
+            SetFlagValue(player);
 
-		if (bTrigger && player.flagBase.GetInt(flagName) == flagValue) {
+		if (bTrigger && IsFlagValueCurrent(player)) {
             if (Event != '')
                 foreach AllActors(class 'Actor', A, Event)
                     A.Trigger(player, Instigator);
@@ -72,7 +79,7 @@ function UnTrigger(Actor Other, Pawn Instigator)
 	if (bWhileStandingOnly) {
 		player = #var(PlayerPawn)(GetPlayerPawn());
 		if (player != None) {
-			if (bTrigger && player.flagBase.GetInt(flagName) == flagValue) {
+			if (bTrigger && IsFlagValueCurrent(player)) {
                 if (Event != '')
                     foreach AllActors(class 'Actor', A, Event)
                         A.UnTrigger(player, Instigator);
@@ -94,26 +101,17 @@ function FlipValue(optional #var(PlayerPawn) player)
     local int currentValue;
 
     player = GetPlayer(player);
-    currentValue = player.flagBase.GetInt(flagName);
-    if (currentValue != flagValue) {
-        hasOldValue = player.flagbase.CheckFlag(flagName, FLAG_Int);
-        oldValue = currentValue; // just always set it here instead of branching; it doesn't change anything
-        SetFlag(flagValue);
+    if (IsFlagValueCurrent(player) == false) {
+        hasOldValue = FlagExists(player);
+        if (hasOldValue)
+            SaveOldValue(player);
+        SetFlagValue(player);
     } else {
         if (hasOldValue)
-            SetFlag(oldValue);
+            RestoreOldValue(player);
         else
-            player.flagbase.DeleteFlag(flagName, FLAG_Int);
+            DeleteFlag(player);
     }
-}
-
-function SetFlag(int value, optional #var(PlayerPawn) player)
-{
-    player = GetPlayer(player);
-    if (flagExpiration == -1)
-        player.flagBase.SetInt(flagName, value);
-    else
-        player.flagBase.SetInt(flagName, value,, flagExpiration);
 }
 
 function #var(PlayerPawn) GetPlayer(optional #var(PlayerPawn) player)

@@ -898,7 +898,7 @@ function CreateEndingFlagTrigger(name tag, int ending)
 
     fti = Spawn(class'DXRFlagTriggerInt',, tag);
     fti.SetCollision(false, false, false);
-    fti.flagName = 'DXRando_Ending';
+    fti.flagName = class'DXRMapVariants'.default.EndingFlag;
     fti.flagValue = ending;
     fti.flagExpiration = 999;
 }

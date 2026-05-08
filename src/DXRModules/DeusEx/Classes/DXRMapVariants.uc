@@ -1,5 +1,7 @@
 class DXRMapVariants extends DXRBase transient;
 
+/*const*/ var name EndingFlag;
+
 var int missions[13];
 var string starts[13];
 
@@ -194,7 +196,7 @@ function int GetMirrorMapsSetting()
 
 function string GetEnding()
 {
-    switch (dxr.flagbase.GetInt('DXRando_Ending')) {
+    switch (dxr.flagbase.GetInt(EndingFlag)) {
         case 1:
             return "99_ENDGAME1";
         case 2:
@@ -477,6 +479,8 @@ function ExtendedTests()
 
 defaultproperties
 {
+    EndingFlag=DXRando_Ending
+
     starts(0)="01_NYC_UNATCOIsland"
     starts(1)="02_NYC_BatteryPark"
     starts(2)="03_NYC_UNATCOIsland"
