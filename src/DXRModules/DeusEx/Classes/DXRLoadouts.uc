@@ -1062,7 +1062,7 @@ function bool ban(DeusExPlayer player, Inventory item)
         }
         return true;
     } else if(item.bDeleteMe) {
-        if(class'MenuChoice_FixGlitches'.default.enabled) {
+        if(class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-01
             return true;
         }
         else {

@@ -46,14 +46,14 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
 
     // check for super jumps
     f = DeusExPlayer(parentPawn).AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-    if(bFixGlitches && f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f) {
+    if(bFixGlitches && f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f) { //GLITCHFIX-10
         parentPawn.JumpZ = parentPawn.default.JumpZ * f;
     }
     else if(f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f*1.3) {
         class'DXRStats'.static.AddCheatOffense(DeusExPlayer(parentPawn));
     }
 
-    if(bFixGlitches && !bNoUnPause) {
+    if(bFixGlitches && !bNoUnPause) { //GLITCHFIX-14
         foreach parentPawn.AllActors(class'DeusExMover', m) {
             if(!m.bPicking) continue;
             m.LastTickTime = m.Level.TimeSeconds;
@@ -63,7 +63,7 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
             h.LastTickTime = h.Level.TimeSeconds;
         }
     }
-    else if(!bFixGlitches && !bNoUnPause) {
+    else if(!bFixGlitches && !bNoUnPause) { //GLITCHFIX-14
         // check for using tools during paused menus, the issue is in DeusExMover::Timer and HackableDevices::Timer
         foreach parentPawn.AllActors(class'SkilledTool', tool) {
             if(!tool.IsInState('UseIt')) continue;

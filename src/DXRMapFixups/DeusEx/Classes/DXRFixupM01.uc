@@ -12,7 +12,7 @@ function PostFirstEntryMapFixes()
             AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
         }
 
-        if(class'MenuChoice_FixGlitches'.default.enabled && class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+        if(class'MenuChoice_FixGlitches'.default.enabled && class'MenuChoice_BalanceMaps'.static.MinorEnabled()) { // GLITCHFIX-13
             foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
                 m.bBreakable = false;
                 m.bPickable = false;

@@ -802,7 +802,7 @@ function _PreTravel()
         PreTravelMapFixes();
     }
 
-    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && class'MenuChoice_FixGlitches'.default.enabled) {
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-14
         RemoveProjectilesInFlight();
     }
 }
@@ -1163,7 +1163,7 @@ simulated function bool FixInventory(#var(PlayerPawn) p)
         }
     }
 
-    if(!good && class'MenuChoice_FixGlitches'.default.enabled) {
+    if(!good && class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-03
         err("inventory overlap");
     }
 

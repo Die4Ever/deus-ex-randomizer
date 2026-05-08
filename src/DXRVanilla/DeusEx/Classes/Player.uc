@@ -563,7 +563,7 @@ function float GetJumpZ()
         jumpAug.TickUse();
         f = jump;
     }
-    if(!class'MenuChoice_FixGlitches'.default.enabled) {
+    if(!class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-10
         return FMax(JumpZ, default.JumpZ * f);
     }
     return default.JumpZ * f;
@@ -1132,7 +1132,7 @@ function HighlightCenterObjectMain()
 
     if(LevelInfo(target) != None) target = None;
 
-    if(target != None && Brush(target) == None && class'MenuChoice_FixGlitches'.default.enabled) {
+    if(target != None && Brush(target) == None && class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-15
         t = HighlightCenterObjectRay(vect(0,-0.2,1.5), dist2);
         fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
 
@@ -1153,7 +1153,7 @@ function HighlightCenterObjectMain()
     // rapidly changing frob target.
     //
     // If glitches aren't being fixed, don't stop highlighting items that are being deleted (for item duping)
-    if (FrobTime < 0.1 && FrobTarget != None && target == None && (!FrobTarget.bDeleteMe || !class'MenuChoice_FixGlitches'.default.enabled))
+    if (FrobTime < 0.1 && FrobTarget != None && target == None && (!FrobTarget.bDeleteMe || !class'MenuChoice_FixGlitches'.default.enabled)) //GLITCHFIX-01
     {
         return;
     }
@@ -1227,7 +1227,7 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
             }
         }
         else if(LevelInfo(target) != None || Brush(target) != None) {
-            if (class'MenuChoice_FixGlitches'.default.enabled){
+            if (class'MenuChoice_FixGlitches'.default.enabled){ //GLITCHFIX-09  /  GLITCHFIX-15
                 //This helps prevent squeaking your highlight under the Reactor ending button
                 if(bFirstTarget && dm==None) {
                     smallestTargetDist = VSize(Location-HitLoc);

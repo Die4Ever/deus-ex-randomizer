@@ -327,7 +327,7 @@ function PreFirstEntryMapFixes()
                     if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
                         height = height + 10; //Make the teleporter slightly taller so you can't crouch underneath it
                     }
-                    if(class'MenuChoice_FixGlitches'.default.enabled) {
+                    if(class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-11
                         rad = 48;  //Decrease the radius so the teleporter doesn't stick out the side of the tunnel
                     }
                     tele.SetCollisionSize(rad, height);
