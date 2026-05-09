@@ -631,6 +631,12 @@ function CalcBehindView(out vector CameraLocation, out rotator CameraRotation, f
 
     CameraRotation = ViewRotation;
     CameraLocation.Z+=BaseEyeHeight; //Adjust camera center to eye height
+    if (EyeHeight>BaseEyeHeight){
+        //Shake the camera (Allow the standard JoltView logic to apply here)
+        if ((Physics == PHYS_Walking) && (Bob != 0)){
+            CameraLocation.Z+=(EyeHeight-BaseEyeHeight) * 2;
+        }
+    }
     View = vect(1,-0.2,0) >> CameraRotation; //Slightly offset the view to the right (so it's over the shoulder)
     if( Trace( HitLocation, HitNormal, CameraLocation - (Dist + 30) * vector(CameraRotation), CameraLocation ) != None )
         ViewDist = FMin( (CameraLocation - HitLocation) Dot View, Dist );
