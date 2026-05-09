@@ -77,6 +77,10 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
 
         PlayerToHeal.ClientMessage(msg);
     }
+#elseif gmdx
+    uses = healMaxTimes;
+    healedPoints = Super.HealPlayer(PlayerToHeal);
+    healMaxTimes = uses-1; //GMDX bot use limiting is based on CombatDifficulty, so use our own logic instead
 #else
     healedPoints = Super.HealPlayer(PlayerToHeal);
     numUses++;
@@ -107,7 +111,13 @@ simulated function int GetRemainingUses()
     if (augsOnly)
         return 0;
     else
-        return (GetMaxUses() - numUses);
+        if (!#defined(gmdx)){
+            return (GetMaxUses() - numUses);
+        } else {
+            #ifdef gmdx
+            return healMaxTimes;
+            #endif
+        }
 }
 
 simulated function string GetRemainingUsesStr()
@@ -146,10 +156,6 @@ simulated function bool HealsRemaining()
 
 simulated function bool CanHeal()
 {
-#ifdef gmdx
-    return Super.CanHeal();
-#endif
-
 #ifdef injections
     if (_CanHeal())
 #else
@@ -198,6 +204,11 @@ function MakeAugsOnly()
     augsOnly = true;
     MultiSkins[0] = Texture'AugBotTex1';
     Mesh = Default.Mesh; //No-op unless Revision has already facelifted
+
+    #ifdef gmdx
+    Mesh=LodMesh'DeusExCharacters.MedicalBot'; //GMDX defaults to the HDTP mesh, so the trick above doesn't work...
+    healMaxTimes=0;
+    #endif
 }
 
 function Tick(float delta)
