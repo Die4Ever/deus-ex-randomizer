@@ -261,10 +261,17 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
 #ifdef gmdx
     else if( s.Class == class'SkillStealth' ) {
-        // TODO: improve description
-        word = "Values";
-        shortDisplay = string(val);
-        return shortDisplay;
+        //Should this be a table that shows walk *and* crouch speed?
+        //Crouch speed is     f = 1 + (val * 0.1)   in v9
+        //RSD makes you hide better in shadows
+        //AE doesn't do walk speed at all, changes footstep volume, but not using SkillLevelValue
+        word = "Walk Speed";
+        switch(i){
+            case 0: f = 1.0; break; //No change
+            default: f = 1 + (val * 0.15); break;
+        }
+        shortDisplay = string(int(f * 100.0));
+        return shortDisplay $ p;
     }
 #endif
     else {

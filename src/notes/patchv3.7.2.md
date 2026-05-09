@@ -13,4 +13,5 @@
 - Augbots in GMDX will now properly show with their blue skin and will glow red by default.
 - Medical Bots in GMDX will now properly count their number of uses.
 - The window for recharging at a Repair Bot in GMDX now properly updates the bio energy bar immediately.
+- GMDX now shows the value of the Stealth skill in a more interpretable format (based on your walk speed).
 </details>
