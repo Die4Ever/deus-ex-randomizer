@@ -813,6 +813,24 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
 #endif
 
+#ifdef vmd2
+    // TODO: actual descriptions
+    else if(
+        a.Class.Name == 'AugMechCloak'
+        || a.Class.Name == 'AugMechDermal'
+        || a.Class.Name == 'AugMechEMP'
+        || a.Class.Name == 'AugMechEnergy'
+        || a.Class.Name == 'AugMechEnviro'
+        || a.Class.Name == 'AugMechSpeed'
+        || a.Class.Name == 'AugMechTarget'
+        || a.Class.Name == 'AugMechVision'
+    ) {
+        word = "Values";
+        shortDisplay=string(val);
+        return shortDisplay;
+    }
+#endif
+
     else {
         return Super.DescriptionLevelExtended(act, i, word, val, defaultval, shortDisplay);
     }
