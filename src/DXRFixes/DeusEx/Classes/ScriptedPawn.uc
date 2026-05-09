@@ -710,7 +710,7 @@ function PlayFootStep()
             hd.bSwaying=True;
         }
         foreach RadiusActors(class'CCResidentEvilCam', cam, shakeRadius) {
-            cam.JoltView();// TODO: also make this work for 3rd person
+            cam.JoltView();
         }
     }
 }
