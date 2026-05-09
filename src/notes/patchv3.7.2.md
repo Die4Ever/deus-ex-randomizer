@@ -16,4 +16,5 @@
 - GMDX now shows the value of the Stealth skill in a more interpretable format (based on your walk speed).
 - GMDX now shows more useful descriptions of the randomized values of the "EMSP" (Dash) and "Energy Transference" augs.
 - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
+- Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
 </details>

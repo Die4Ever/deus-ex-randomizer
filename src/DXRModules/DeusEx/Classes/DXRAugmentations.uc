@@ -810,14 +810,34 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
 #endif
 
 #ifdef revision
-    // TODO: actual descriptions
+    else if( a.Class.Name == 'AugLeech' ) {
+        word = "Leech Amount";
+        shortDisplay=string(int(val));
+        return shortDisplay$" HP/s";
+    }
+    else if( a.Class.Name == 'AugRadiation' ) {
+        word = "Damage per Second";
+        shortDisplay=string(int(val));
+        return shortDisplay;
+    }
+    else if( a.Class.Name == 'AugAutoCounter' ) {
+        word = "Returned Damage";
+        shortDisplay=FloatToString(val * 100.0,1);
+        return shortDisplay $ "%";
+    }
+    else if( a.Class.Name == 'AugAimbot' ) {
+        word = "Aim Frequency";
+        if (val > 0.0){
+        shortDisplay=FloatToString(val,1);
+        return shortDisplay $ "s";
+        } else {
+            shortDisplay="Cont.";
+        }
+        return "Continuous";
+    }
     else if(
-        a.Class.Name == 'AugAimbot'
-        || a.Class.Name == 'AugLeech'
-        || a.Class.Name == 'AugRadiation'
-        || a.Class.Name == 'AugAutoCounter'
-        || a.Class.Name == 'AugDefenseNPC'
-        || a.Class.Name == 'AugDefenseHeli'
+        a.Class.Name == 'AugDefenseNPC' //ADS for Walt
+        || a.Class.Name == 'AugDefenseHeli' //ADS for Jock
     ) {
         word = "Values";
         shortDisplay=string(val);
