@@ -609,6 +609,11 @@ class BingoDisplay:
     def resize(self,event):
         if event.widget == self.win:
             widthScale,heightScale = GetBorderScale()
+            width = event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
+            height = event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
+            if self.width == width and self.height == height:
+                return # the window was just moved, not resized
+
             self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
             self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
 
@@ -621,7 +626,6 @@ class BingoDisplay:
                     self.tkBoard[x][y].config(
                         width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
                     )
-                    self.drawTile(x,y,self.main.GetBoardEntry(x,y))
 
     def SelectNewJsonPushDest(self):
         dest = self.main.GetJSONPushDest()
