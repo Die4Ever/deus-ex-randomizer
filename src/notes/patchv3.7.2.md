@@ -12,4 +12,5 @@
 - NPCs will now react to projectiles regardless of whether they're immune or not if "Glitches for Speedruns" is set to "Allowed"
 - Augbots in GMDX will now properly show with their blue skin and will glow red by default.
 - Medical Bots in GMDX will now properly count their number of uses.
+- The window for recharging at a Repair Bot in GMDX now properly updates the bio energy bar immediately.
 </details>
