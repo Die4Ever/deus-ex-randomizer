@@ -783,7 +783,19 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int( (1.0 - val) * 100.0 ) $ "%";
         return shortDisplay;
     }
-    else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' || a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
+    else if( a.Class == class'AugIcarus' ) {
+        word = "Charge Time";
+        f = 1.5 - val; //Starts dashing at 1.5-skill value, stops dashing at 2.0-skill value
+        shortDisplay=FloatToString(f,1);
+        return shortDisplay$" s";
+    }
+    else if( a.Class == class'AugEnergyTransfer' ) {
+        word = "Energy Transfer";
+        f = 3.0 * val;
+        shortDisplay=FloatToString(f,1);
+        return shortDisplay;
+    }
+    else if( a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
         // TODO: improve description
         word = "Values";
         shortDisplay=string(val);
