@@ -1210,9 +1210,9 @@ static simulated function string GetBingoHelpTextGeneric(string event, int missi
         case "coolant_switch":
             msg = "Flush the reactor coolant";
             if (dxr.flags.settings.goals>0){
-                msg = "Flush the reactor coolant somewhere in Sector 4 of Area 51.  To flush the coolant, you need to find a large orange button that is in a random location.";
+                msg = "Flush the reactor coolant somewhere in Area 51 Sector 4.  To flush the coolant, you need to find a large orange button that is in a random location.";
             } else {
-                msg = "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
+                msg = "Flush the reactor coolant in the coolant area on the bottom floor of Area 51 Sector 4.";
             }
             return msg;
         case "BlueFusionReactors":
@@ -1553,6 +1553,8 @@ static simulated function string GetBingoHelpTextGeneric(string event, int missi
             return "Crawl through the maintenance tunnel connecting the electrical room to the helipad in the lower decks of the superfreighter.";
         case "EngineeringBridge":
             return "Raise the bridge in the engine room of the superfreighter.  The keypad can be hacked, or the code can be found in a datacube on the upper decks of the ship.";
+        case "fire_start":
+            return "Use the flame trap button in the coolant area on the bottom floor of Area 51 Sector 4.";
     }
 
     //Return nothing so the generic function can handle it
