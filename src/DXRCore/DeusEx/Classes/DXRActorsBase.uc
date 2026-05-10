@@ -996,10 +996,38 @@ static function ConEvent FixConversationDeleteEvent(ConEvent del, ConEvent prev)
     return next;
 }
 
+static function InitConEventType(ConEvent ce)
+{
+    if (ce==None) return;
+
+    switch (ce.class){
+        case class'ConEventAddCredits':     ce.eventType=ET_AddCredits; break;
+        case class'ConEventAddGoal':        ce.eventType=ET_AddGoal; break;
+        case class'ConEventAddNote':        ce.eventType=ET_AddNote; break;
+        case class'ConEventAddSkillPoints': ce.eventType=ET_AddSkillPoints; break;
+        case class'ConEventAnimation':      ce.eventType=ET_Animation; break;
+        case class'ConEventCheckFlag':      ce.eventType=ET_CheckFlag; break;
+        case class'ConEventCheckObject':    ce.eventType=ET_CheckObject; break;
+        case class'ConEventCheckPersona':   ce.eventType=ET_CheckPersona; break;
+        case class'ConEventChoice':         ce.eventType=ET_Choice; break;
+        case class'ConEventComment':        ce.eventType=ET_Comment; break;
+        case class'ConEventEnd':            ce.eventType=ET_End; break;
+        case class'ConEventJump':           ce.eventType=ET_Jump; break;
+        case class'ConEventMoveCamera':     ce.eventType=ET_MoveCamera; break;
+        case class'ConEventRandomLabel':    ce.eventType=ET_Random; break;
+        case class'ConEventSetFlag':        ce.eventType=ET_SetFlag; break;
+        case class'ConEventSpeech':         ce.eventType=ET_Speech; break;
+        case class'ConEventTrade':          ce.eventType=ET_Trade; break;
+        case class'ConEventTransferObject': ce.eventType=ET_TransferObject; break;
+        case class'ConEventTrigger':        ce.eventType=ET_Trigger; break;
+    }
+}
+
 static function ConEvent NewConEvent(Conversation c, ConEvent prev, class<ConEvent> newclass)
 {
     local ConEvent e;
     e = new(c) newclass;
+    InitConEventType(e);
     AddConEvent(c, prev, e);
     return e;
 }

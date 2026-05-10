@@ -429,7 +429,6 @@ function AnyEntryMapFixes()
             //To fix Confix, we need to set PaulGaveWeapon in here somewhere so that the conversation doesn't replay.
             //Throw it in after the "before" line, so it's set around when it would have originally been set...
             cesf = ConEventSetFlag(NewConEvent(c,before,class'ConEventSetFlag'));
-            cesf.eventType=ET_SetFlag;
             cesf.flagRef = new(c) class'ConFlagRef';
             cesf.flagRef.flagName='PaulGaveWeapon';
             cesf.flagRef.value=True;
