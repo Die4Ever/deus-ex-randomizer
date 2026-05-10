@@ -2239,7 +2239,6 @@ simulated function AnyEntry()
 
         ce = conv.GetEventFromLabel("A1");
         cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.eventType=ET_SetFlag;
         cesf.flagRef = new(conv) class'ConFlagRef';
         cesf.flagRef.flagName='DXREvents_M02BumSong1';
         cesf.flagRef.value=True;
@@ -2247,7 +2246,6 @@ simulated function AnyEntry()
 
         ce = conv.GetEventFromLabel("A2");
         cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.eventType=ET_SetFlag;
         cesf.flagRef = new(conv) class'ConFlagRef';
         cesf.flagRef.flagName='DXREvents_M02BumSong2';
         cesf.flagRef.value=True;
@@ -2255,7 +2253,6 @@ simulated function AnyEntry()
 
         ce = conv.GetEventFromLabel("A3");
         cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.eventType=ET_SetFlag;
         cesf.flagRef = new(conv) class'ConFlagRef';
         cesf.flagRef.flagName='DXREvents_M02BumSong3';
         cesf.flagRef.value=True;
@@ -2268,7 +2265,6 @@ simulated function AnyEntry()
         conv = GetConversation('MiguelHack');
         ce = conv.GetEventFromLabel("Hop");
         ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;
         ConEventTrigger(ce).triggerTag = 'SavedMiguel';
         break;
 
@@ -2289,7 +2285,6 @@ simulated function AnyEntry()
 
         //Add the flag before the speech event so the flag is set immediately
         cesf = ConEventSetFlag(NewConEvent(conv,prev,class'ConEventSetFlag'));
-        cesf.eventType=ET_SetFlag;
         cesf.flagRef = new(conv) class'ConFlagRef';
         cesf.flagRef.flagName='WhatAreYouDoingHere';
         cesf.flagRef.value=True;
@@ -2306,7 +2301,6 @@ simulated function AnyEntry()
         conv = GetConversation('M08SmugglerConvos');
         ce = conv.GetEventFromLabel("NoWarning");
         cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.eventType=ET_SetFlag;
         cesf.flagRef = new(conv) class'ConFlagRef';
         cesf.flagRef.flagName='M08SmugglerNotWarned';
         cesf.flagRef.value=True;
@@ -2319,12 +2313,10 @@ simulated function AnyEntry()
         // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
         ce = conv.GetEventFromLabel("SellRepeat");
         ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
         ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
         // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
         ce = conv.GetEventFromLabel("MoreMoney3");
         ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
         ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
         // remove the event with label Sell which checks for the RenaultPaid flag
         RemoveConvEventByLabel(conv, "Sell");
@@ -2478,7 +2470,8 @@ simulated function int ScaleBingoGoalMax(string event, int max, int bingoScale, 
         //Reducing to 1 makes this a bit easier than I'd like, so let's bring it down to 2 instead when it's a shorter bingo duration
         //Rando guarantees 2 stay in the oven in the bakery, so it's still possible to go there, but maybe you find 2 along the way
         //through earlier Paris and this goal suddenly becomes a decent idea?
-        min = 2;
+        if(bingoScale <30) return 2;
+        min = 3;
         break;
 
     case "PoolTableStripeBallSunk":

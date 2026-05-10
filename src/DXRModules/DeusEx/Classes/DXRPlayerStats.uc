@@ -11,7 +11,7 @@ function PlayerLogin(#var(PlayerPawn) p)
 
     importantHealthNegative = (p.HealthHead<=0 || p.HealthTorso<=0);
 
-    if (importantHealthNegative && class'MenuChoice_FixGlitches'.default.enabled){
+    if (importantHealthNegative && class'MenuChoice_FixGlitches'.default.enabled){ //GLITCHFIX-06
         //Just die if you don't have health and you want to fix glitches
         //as long as you aren't in an intro or outro
         if (dxr.dxInfo.missionNumber != 98 && //Intro
@@ -24,7 +24,7 @@ function PlayerLogin(#var(PlayerPawn) p)
     //Don't refill health if your health is below 0 and glitches aren't being fixed
     //We still want this to run at the start of the game when glitches aren't being fixed
     //so your health goes up to the max health that was selected
-    if(!importantHealthNegative || class'MenuChoice_FixGlitches'.default.enabled) {
+    if(!importantHealthNegative || class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-06
         i = dxr.flags.settings.health;
         i = Max(1, i);// need at least 1 health
 
@@ -63,7 +63,7 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
     SetMaxStats(p);
 
     if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
-        bFixGlitches = class'MenuChoice_FixGlitches'.default.enabled;
+        bFixGlitches = class'MenuChoice_FixGlitches'.default.enabled; //GLITCHFIX-06
         // TODO: this one is a bit weird to fix because our code doesn't get run with the glitched load
         // It still will with user.ini saves after you're dead and then reload (aka "phoenix")
         if(bFixGlitches) {

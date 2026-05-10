@@ -962,7 +962,7 @@ state PlayerWalking
 
         GroundSpeed = FMax(newSpeed, 100);
         if(Level.LevelAction != LEVACT_None) GroundSpeed = 0;// DXRando: don't move during loading/randomization/autosave
-        else if(DeltaTime > 0.1 && class'MenuChoice_FixGlitches'.default.enabled) {// for quicksaves
+        else if(DeltaTime > 0.1 && class'MenuChoice_FixGlitches'.default.enabled) {// for quicksaves (GLITCHFIX-12)
             GroundSpeed *= FClamp(0.25 / DeltaTime, 0.5, 0.85);// DXRando: anyone running the game at 10fps?
         }
 

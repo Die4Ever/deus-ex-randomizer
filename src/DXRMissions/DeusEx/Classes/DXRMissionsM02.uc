@@ -103,7 +103,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 4, 'DataLinkTrigger15', PHYS_None);
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
-        AddGoalLocation("02_NYC_BATTERYPARK", "Behind the Castle", START_LOCATION, vect(2364.934326, -2026.725952, 363.899994), rot(0, 159109, 0)); //TODO: Check location
+        AddGoalLocation("02_NYC_BATTERYPARK", "Behind the Castle", START_LOCATION, vect(2364.934326, -2026.725952, 363.899994), rot(0, 159109, 0));
 
         AddGoalLocation("02_NYC_BATTERYPARK", "In the command room", NORMAL_GOAL | START_LOCATION, vect(650.060547, -989.234863, -160.095200), rot(0, 16718, 0));
 

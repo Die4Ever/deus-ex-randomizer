@@ -92,7 +92,7 @@ simulated function Vector ComputeProjectileStart(Vector X, Vector Y, Vector Z)
     Closest = Owner.Location;
     Closest.Z = ProjSpawn.Z;
 
-    if (!bInstantHit && class'MenuChoice_FixGlitches'.default.enabled){
+    if (!bInstantHit && class'MenuChoice_FixGlitches'.default.enabled){ //GLITCHFIX-02
         //Use a full trace (instead of FastTrace) so that we can get the HitLocation
         hit = Trace(HitLocation, HitNormal, ProjSpawn, Closest, False);
         //If you hit something between the owner and where the projectile should have spawned,

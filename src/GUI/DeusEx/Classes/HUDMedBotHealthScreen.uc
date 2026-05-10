@@ -18,7 +18,7 @@ function UpdateMedBotDisplay()
     dxrbot = DXRMedicalBot(medBot);
 #endif
 
-    if(#defined(gmdx) || #defined(vmd)) {
+    if(#defined(vmd)) {
         Super.UpdateMedBotDisplay();
         return;
     }

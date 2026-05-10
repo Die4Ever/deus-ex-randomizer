@@ -358,7 +358,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
             d.bFrobbable = true;
         }
 
-        if (class'MenuChoice_FixGlitches'.default.enabled){
+        if (class'MenuChoice_FixGlitches'.default.enabled){ //GLITCHFIX-09
             //Fix the Tong Ending skip for real for real
             foreach AllActors(class'#var(prefix)Switch1',s){
                 if (s.Event=='destroy_generator'){

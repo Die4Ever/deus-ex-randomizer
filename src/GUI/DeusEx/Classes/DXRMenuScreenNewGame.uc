@@ -92,6 +92,10 @@ function SetDxr(DXRando d)
     UpdateSkillPoints();
     EnableButtons();
     UpdatePortrait();
+
+    if(!flags.IsZeroRando()) {
+        SetTitle(default.Title $ " flags: " $ flags.ToHex(flags.FlagsHash()));
+    }
 }
 
 function UpdatePortrait()
@@ -191,7 +195,7 @@ function ApplySkills()
     Super.ApplySkills();
 
     //Don't bump the pistol skill back up if glitches are fixed
-    if(class'MenuChoice_FixGlitches'.default.enabled) return;
+    if(class'MenuChoice_FixGlitches'.default.enabled) return; //GLITCHFIX-08
 
     //Only bump the pistol skill back up if it's a game mode where the pistol skill *should* start at Trained
     if (!PistolStartsAtTrained(flags)) return;

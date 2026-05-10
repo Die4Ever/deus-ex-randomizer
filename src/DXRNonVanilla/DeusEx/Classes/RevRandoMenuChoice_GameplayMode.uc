@@ -50,4 +50,33 @@ function CycleNextValue()
         newValue = 0;
 
     SetValue(newValue);
+
+    UpdateHelpText();
+}
+
+function CyclePreviousValue()
+{
+    local int newValue;
+
+    // Cycle to the next value, but make sure we don't exceed the
+    // bounds of the enumText array.  If we do, start back at the
+    // bottom.  Also skip past Vanilla...
+
+    newValue = GetValue() - 1;
+
+    if (newValue < 0)
+    {
+        newValue = arrayCount(enumText) - 1;
+
+        while((enumText[newValue] == "") && (newValue > 0))
+            newValue--;
+    }
+
+    //Skip past vanilla
+    if (enumText[newValue] == "Vanilla")
+        newValue = newValue - 1;
+
+    SetValue(newValue);
+
+    UpdateHelpText();
 }
