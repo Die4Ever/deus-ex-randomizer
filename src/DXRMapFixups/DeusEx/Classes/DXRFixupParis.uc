@@ -534,15 +534,12 @@ function FixDrKitsInfiniteDarts()
 
     if (ceto!=None){
         //We want to make sure to mark M10BoughtDarts after the darts are transferred,
-        cesf = new(c) class'ConEventSetFlag';
-        cesf.eventType=ET_SetFlag;
+        cesf = ConEventSetFlag(NewConEvent(c,ceto,class'ConEventSetFlag'));
         cesf.label="M10BoughtDartsSet";
         cesf.flagRef = new(c) class'ConFlagRef';
         cesf.flagRef.flagName='M10BoughtDarts';
         cesf.flagRef.value=True;
         cesf.flagRef.expiration=0; //Never expire
-        cesf.nextEvent = ceto.nextEvent;
-        ceto.nextEvent = cesf;
     }
 }
 //#endregion
@@ -601,16 +598,13 @@ function AnyEntryMapFixes()
         cePrev=ce;
         while(ce!=None){
             if (ce.eventType==ET_Speech && ce.nextEvent.eventType==ET_End){
-                ceto = new(c) class'ConEventTransferObject';
-                ceto.eventType=ET_TransferObject;
+                ceto = ConEventTransferObject(NewConEvent(c,ce,class'ConEventTransferObject'));
                 ceto.label="TransferMetroMap";
                 ceto.objectName="Image10_Paris_Metro";
                 ceto.giveObject=class'Image10_Paris_Metro';
                 ceto.toName="JCDenton";
                 ceto.fromName="TracerTong";
                 ceto.transferCount=1;
-                ceto.nextEvent=ce.nextEvent;
-                ce.nextEvent=ceto;
             }
             ce=ce.nextEvent;
         }
@@ -625,11 +619,8 @@ function AnyEntryMapFixes()
 
         c = GetConversation('JockReady');
         if (c != None) {
-            cet = new(c) class'ConEventTrigger';
-            cet.eventType = ET_Trigger;
+            cet = ConEventTrigger(NewConEvent(c,None,class'ConEventTrigger'));
             cet.triggerTag = 'NicoLeaving';
-            cet.nextEvent = c.eventList;
-            c.eventList = cet;
         }
 
         break;
@@ -653,15 +644,12 @@ function AnyEntryMapFixes()
                     ces = ConEventSpeech(ce);
                     if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
                         //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
-                        cesf = new(c) class'ConEventSetFlag';
-                        cesf.eventType=ET_SetFlag;
+                        cesf = ConEventSetFlag(NewConEvent(c,ces,class'ConEventSetFlag'));
                         cesf.label="LetTobyTakeYou";
                         cesf.flagRef = new(c) class'ConFlagRef';
                         cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
                         cesf.flagRef.value=True;
                         cesf.flagRef.expiration=12;
-                        cesf.nextEvent = ces.nextEvent;
-                        ces.nextEvent = cesf;
                     }
                 } else if (ce.eventType==ET_AddSkillPoints){
                     ceasp = ConEventAddSkillPoints(ce);

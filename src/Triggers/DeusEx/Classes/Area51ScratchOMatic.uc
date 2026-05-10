@@ -132,11 +132,8 @@ function AddConEventJump(string jumpLabel)
             if (ce.eventType==ET_Trigger){
                 cet=ConEventTrigger(ce);
                 if (cet.triggerTag==Tag){
-                    cej = new(c) class'ConEventJump';
-                    cej.eventType = ET_Jump;
+                    cej = ConEventJump(class'DXRActorsBase'.static.NewConEvent(c,cet,class'ConEventJump'));
                     cej.jumpLabel = jumpLabel;
-                    cej.nextEvent = cet.nextEvent;
-                    cet.nextEvent = cej;
                     break;
                 }
             }

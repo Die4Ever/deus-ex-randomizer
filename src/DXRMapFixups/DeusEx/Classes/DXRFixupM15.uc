@@ -820,19 +820,13 @@ function AnyEntryMapFixes()
         if (VanillaMaps){
             c = GetConversation('DL_Elevator');
             if (c != None) {
-                cet = new(c) class'ConEventTrigger';
-                cet.eventType = ET_Trigger;
+                cet = ConEventTrigger(NewConEvent(c,None,class'ConEventTrigger'));
                 cet.triggerTag = 'Area51ScratchOMatic';
-                cet.nextEvent = c.eventList;
-                c.eventList = cet;
             }
             c = GetConversation('DL_Final_Page02');
             if (c != None) {
-                cet = new(c) class'ConEventTrigger';
-                cet.eventType = ET_Trigger;
+                cet = ConEventTrigger(NewConEvent(c,None,class'ConEventTrigger'));
                 cet.triggerTag = 'Area51ScratchOMatic';
-                cet.nextEvent = c.eventList;
-                c.eventList = cet;
             }
         }
         break;

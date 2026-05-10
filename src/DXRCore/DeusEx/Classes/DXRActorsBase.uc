@@ -1027,7 +1027,7 @@ static function ConEvent NewConEvent(Conversation c, ConEvent prev, class<ConEve
 {
     local ConEvent e;
     e = new(c) newclass;
-    InitConEventType(e);
+    InitConEventType(e); //Make sure the eventType is populated
     AddConEvent(c, prev, e);
     return e;
 }
@@ -1040,6 +1040,7 @@ static function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
         prev.nextEvent = e;
     }
     else {
+        e.nextEvent = c.eventList;
         c.eventList = e;
     }
 }
