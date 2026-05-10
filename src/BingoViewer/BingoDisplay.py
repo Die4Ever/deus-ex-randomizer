@@ -159,8 +159,8 @@ class BingoViewerMain:
         self.config["show_progress_bars"]=True
         self.config["always_on_top"]=False
         self.config["mp_value"]=0
-        self.config["win_width"]=DEFAULT_WINDOW_WIDTH
-        self.config["win_height"]=DEFAULT_WINDOW_HEIGHT
+        self.config["win_width"]=args.width
+        self.config["win_height"]=args.height
 
     def LoadConfig(self):
         conf = ""
@@ -333,20 +333,20 @@ class BingoViewerMain:
         self.config["win_height"]=int(height)
 
     def GetWindowDimensions(self):
-        width  = self.config.get("win_width",DEFAULT_WINDOW_WIDTH)
-        height = self.config.get("win_height",DEFAULT_WINDOW_HEIGHT)
+        width  = self.config.get("win_width",args.width)
+        height = self.config.get("win_height",args.height)
 
         #Window dimensions are complicated on Linux, due to the window border scale issue
         #For now, don't fetch the saved window dimensions, just return the defaults
         if os.name != 'nt':
-            width=DEFAULT_WINDOW_WIDTH
-            height=DEFAULT_WINDOW_HEIGHT
+            width=args.width
+            height=args.height
 
         #Just in case
         if (width<=0):
-            width=DEFAULT_WINDOW_WIDTH
+            width=args.width
         if (height<=0):
-            height=DEFAULT_WINDOW_HEIGHT
+            height=args.height
 
         return int(width),int(height)
 
@@ -529,8 +529,8 @@ class BingoDisplay:
         self.tkBoardImg = [[None]*5 for i in range(5)]
 
         self.width,self.height = self.main.GetWindowDimensions()
-        #self.width=DEFAULT_WINDOW_WIDTH
-        #self.height=DEFAULT_WINDOW_HEIGHT
+        #self.width=args.width
+        #self.height=args.height
         self.title = WINDOW_TITLE
         self.win=None
 
@@ -604,11 +604,16 @@ class BingoDisplay:
 
     def getFontSizeByWindowSize(self):
         width = min(self.width, self.height)
-        return int(width / 37)
+        return round(width / 39.9)
 
     def resize(self,event):
         if event.widget == self.win:
             widthScale,heightScale = GetBorderScale()
+            width = event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
+            height = event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
+            if self.width == width and self.height == height:
+                return # the window was just moved, not resized
+
             self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
             self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
 
@@ -621,7 +626,6 @@ class BingoDisplay:
                     self.tkBoard[x][y].config(
                         width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
                     )
-                    self.drawTile(x,y,self.main.GetBoardEntry(x,y))
 
     def SelectNewJsonPushDest(self):
         dest = self.main.GetJSONPushDest()
@@ -698,8 +702,8 @@ class BingoDisplay:
         self.main.BoardUpdate()
 
     def ResetWindowSize(self):
-        self.width=DEFAULT_WINDOW_WIDTH
-        self.height=DEFAULT_WINDOW_HEIGHT
+        self.width=args.width
+        self.height=args.height
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
 
     def ShowAboutWindow(self):
@@ -923,6 +927,8 @@ class BingoDisplay:
 
 parser = argparse.ArgumentParser(description='DXRando Bingo Viewer')
 parser.add_argument('--version', action="store_true", help='Output version')
+parser.add_argument('--width', '-x', type=int, default=DEFAULT_WINDOW_WIDTH, help='Window width')
+parser.add_argument('--height', '-y', type=int, default=DEFAULT_WINDOW_HEIGHT, help='Window height')
 args = parser.parse_args()
 
 def GetVersion():
