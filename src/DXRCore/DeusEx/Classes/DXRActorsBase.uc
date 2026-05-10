@@ -1032,6 +1032,18 @@ static function DeleteConversationFlag(Conversation c, name Name, bool Value)
     }
 }
 
+static function bool ConversationFlagExists(Conversation c, name Name, bool Value)
+{
+    local ConFlagRef f;
+    if( c == None ) return false;
+    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
+        if( f.flagName == Name && f.value == Value ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static function DeleteChoiceFlag(ConChoice c, name Name, bool Value)
 {
     local ConFlagRef f, prev;

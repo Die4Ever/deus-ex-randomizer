@@ -361,7 +361,9 @@ function AnyEntryMapFixes()
     local Conversation c;
     local ConEvent ce,before,after;
     local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
     local string afterTextLine;
+    local bool isConfix;
 
     // if you can talk to gunther then obviously he's been rescued
     DeleteConversationFlag(GetConversation('GuntherRescued'), 'GuntherFreed', true);
@@ -391,7 +393,10 @@ function AnyEntryMapFixes()
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
 
     c = GetConversation('MeetPaul');
-    //TODO: We could determine whether this is Confix or not by looking for the existence of the "PaulGaveWeapon=False" requirement on the conversation
+
+    //We can determine whether this is Confix or not by looking for the existence of the "PaulGaveWeapon=False" requirement on the conversation
+    isConfix=ConversationFlagExists(c,'PaulGaveWeapon',false);
+
     ce = c.eventList;
 
     SetSeed("MeetPaul");
@@ -410,7 +415,6 @@ function AnyEntryMapFixes()
             if (InStr(ces.conSpeech.speech,afterTextLine)!=-1){
                 after = ce;
             }
-            //TODO: If we wanted to fix Confix, we would need to set PaulGaveWeapon at the end of the conversation (To make sure it doesn't replay)
             if (before!=None && after!=None){
                 break;
             }
@@ -421,6 +425,19 @@ function AnyEntryMapFixes()
     //Just in case something went wrong
     if (before!=None && after!=None){
         before.nextEvent = after;
+        if (isConfix){
+            //To fix Confix, we need to set PaulGaveWeapon in here somewhere so that the conversation doesn't replay.
+            //Throw it in after the "before" line, so it's set around when it would have originally been set...
+            cesf = ConEventSetFlag(NewConEvent(c,before,class'ConEventSetFlag'));
+            cesf.eventType=ET_SetFlag;
+            cesf.flagRef = new(c) class'ConFlagRef';
+            cesf.flagRef.flagName='PaulGaveWeapon';
+            cesf.flagRef.value=True;
+            cesf.flagRef.expiration=2;
+        }
+
     }
+
+
 }
 //#endregion
