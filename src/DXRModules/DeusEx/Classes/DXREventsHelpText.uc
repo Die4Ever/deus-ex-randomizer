@@ -1554,7 +1554,7 @@ static simulated function string GetBingoHelpTextGeneric(string event, int missi
         case "EngineeringBridge":
             return "Raise the bridge in the engine room of the superfreighter.  The keypad can be hacked, or the code can be found in a datacube on the upper decks of the ship.";
         case "fire_start":
-            return "Use the pipe flame button in the coolant area on the bottom floor of Area 51 Sector 4.";
+            return "Use the flame trap button in the coolant area on the bottom floor of Area 51 Sector 4.";
     }
 
     //Return nothing so the generic function can handle it
