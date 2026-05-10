@@ -201,7 +201,7 @@ function CheckConfig()
     Super.CheckConfig();
 
     SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
-    len = ArrayCount(starts)-2;
+    len = ArrayCount(starts)-1;
     if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
         starts[9] = starts[10];
         starts[10] = starts[12];
@@ -211,7 +211,7 @@ function CheckConfig()
 
         len -= 2;
     }
-    for(i=len; i>=0; i--) {
+    for(i=len-1; i>0; i--) {
         slot = rng(i+1);
 
         temp = starts[i];
@@ -222,10 +222,7 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    if(dxr.flags.moresettings.shuffle_missions < 13 && dxr.flags.moresettings.shuffle_missions > 0) {
-        len = dxr.flags.moresettings.shuffle_missions;
-    }
-    else if(dxr.flags.moresettings.shuffle_missions > 0) {
+    if (dxr.flags.moresettings.shuffle_missions >= 13) {
         minMinutes = dxr.flags.moresettings.shuffle_missions; // duration in minutes
         for(i=0; i<len; i++) {
             if(totalMinutes >= minMinutes) {
@@ -242,9 +239,9 @@ function CheckConfig()
                 default: totalMinutes += 10; break;
             }
         }
-        starts[len+1] = "99_ENDGAME4"; // TODO: respect chosen ending
-        missions[len+1] = 99;
-        for(i=0; i<len+2; i++) {
+        starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
+        missions[len] = 99;
+        for(i=0; i<len+1; i++) {
             l("speedshuffle " $ i @ starts[i]);
         }
     }

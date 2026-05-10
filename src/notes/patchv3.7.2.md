@@ -20,3 +20,9 @@
 - When the "Camera Mode" is set to "Third Person", the camera will now shake when heavy enemies (such as Military Bots) walk near you.
 - GMDX no longer skips the first conversation with Paul (Mission 1).  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
 </details>
+
+<!--
+## Intra-Patch Changes
+
+- Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
+-->
