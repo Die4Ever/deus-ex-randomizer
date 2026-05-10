@@ -377,6 +377,11 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     return TryLootRegularItem(player, item);
 }
 
+function LootItemMessage(DeusExPlayer player, Inventory item)
+{
+    player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+}
+
 function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
 {
     local Ammo playerAmmo, newAmmo;
@@ -436,6 +441,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
                 //Weapons with normal ammo that exists, but the player has never gotten any yet
                 newAmmo = Spawn(item.AmmoName,,,Location,Rotation);
                 newAmmo.ammoAmount = item.PickupAmmoCount;
+                newAmmo.itemArticle = string(item.PickupAmmoCount);
                 TryLootAmmo(player, newAmmo, true);
         }
         else if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
@@ -455,6 +461,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
                 }
             }
             playerAmmo.AddAmmo(ammoAdded);
+            playerAmmo.itemArticle = string(ammoAdded);
             AddReceivedItem(player, playerAmmo, ammoAdded);
 
             // Update the ammo display on the object belt
@@ -462,9 +469,9 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
 
             // if this is an illegal ammo type, use the weapon name to print the message
             if (playerAmmo.PickupViewMesh == Mesh'TestBox')
-                player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+                LootItemMessage(player, item);
             else
-                player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+                LootItemMessage(player, playerAmmo);
 
             // Mark it as 0 to prevent it from being added twice
             item.AmmoType.AmmoAmount = 0;
@@ -539,9 +546,11 @@ function bool TryLootAmmo(DeusExPlayer player, Ammo item, optional bool bForce)
         AddReceivedItem(player, item, ammoAdded);
         player.UpdateAmmoBeltText(playerAmmo);
         if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
-            player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+            item.itemArticle = string(ammoAdded);
+            LootItemMessage(player, item);
         } else {
-            player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+            playerAmmo.itemArticle = string(ammoAdded);
+            LootItemMessage(player, playerAmmo);
         }
 
         DeleteInventory(item);

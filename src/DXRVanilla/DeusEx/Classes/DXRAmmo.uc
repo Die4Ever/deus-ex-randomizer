@@ -37,10 +37,8 @@ function bool HandlePickupQuery( inventory Item )
                 player.ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
                 return True;
             }
-        } else if (thisAmmo.MaxAmmo - thisAmmo.AmmoAmount < 0) {
-            item.itemArticle = string(thisAmmo.AmmoAmount - thisAmmo.MaxAmmo);
         } else {
-            thisAmmo.itemArticle = string(thisAmmo.AmmoAmount);
+            item.itemArticle = string(thisAmmo.AmmoAmount);
         }
     }
 
