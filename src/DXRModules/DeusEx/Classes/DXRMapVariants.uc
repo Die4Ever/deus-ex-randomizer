@@ -1,7 +1,7 @@
 class DXRMapVariants extends DXRBase transient;
 
-var int missions[13];
-var string starts[13];
+var int missions[14];
+var string starts[14];
 
 static function bool MirrorMapsAvailable()
 {
@@ -201,7 +201,7 @@ function CheckConfig()
     Super.CheckConfig();
 
     SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
-    len = ArrayCount(starts)-1;
+    len = ArrayCount(starts)-2;
     if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
         starts[9] = starts[10];
         starts[10] = starts[12];
@@ -242,9 +242,9 @@ function CheckConfig()
                 default: totalMinutes += 10; break;
             }
         }
-        starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
-        missions[len] = 99;
-        for(i=0; i<len; i++) {
+        starts[len+1] = "99_ENDGAME4"; // TODO: respect chosen ending
+        missions[len+1] = 99;
+        for(i=0; i<len+2; i++) {
             l("speedshuffle " $ i @ starts[i]);
         }
     }
