@@ -20,7 +20,7 @@ function bool HandlePickupQuery( inventory Item )
         return True;
     }
 
-    if (thisAmmo!=None && player!=None  && Item.Class == Class && thisAmmo.AmmoAmount > 0){
+    if (thisAmmo!=None && player!=None && Item.Class == Class && thisAmmo.AmmoAmount > 0){
         ownedAmmo = Ammo(player.FindInventoryType(thisAmmo.Class));
         if (ownedAmmo!=None){
             ammoToAdd = thisAmmo.AmmoAmount;
@@ -29,16 +29,20 @@ function bool HandlePickupQuery( inventory Item )
                 ammoRemaining = (ammoToAdd + ownedAmmo.AmmoAmount) - ownedAmmo.MaxAmmo;
                 ammoToAdd = ammoToAdd - ammoRemaining;
             }
+            thisAmmo.itemArticle = string(ammoToAdd);
 
             if (ammoRemaining>0){
                 thisAmmo.ammoAmount = ammoRemaining;
                 AddAmmo(ammoToAdd);
+                player.ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
                 return True;
             }
+        } else if (thisAmmo.MaxAmmo - thisAmmo.AmmoAmount < 0) {
+            item.itemArticle = string(thisAmmo.AmmoAmount - thisAmmo.MaxAmmo);
+        } else {
+            thisAmmo.itemArticle = string(thisAmmo.AmmoAmount);
         }
-
     }
 
     return Super.HandlePickupQuery(Item);
-
 }
