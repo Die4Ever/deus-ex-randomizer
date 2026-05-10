@@ -631,6 +631,12 @@ function CalcBehindView(out vector CameraLocation, out rotator CameraRotation, f
 
     CameraRotation = ViewRotation;
     CameraLocation.Z+=BaseEyeHeight; //Adjust camera center to eye height
+    if (EyeHeight>BaseEyeHeight){
+        //Shake the camera (Allow the standard JoltView logic to apply here)
+        if ((Physics == PHYS_Walking) && (Bob != 0)){
+            CameraLocation.Z+=(EyeHeight-BaseEyeHeight) * 2;
+        }
+    }
     View = vect(1,-0.2,0) >> CameraRotation; //Slightly offset the view to the right (so it's over the shoulder)
     if( Trace( HitLocation, HitNormal, CameraLocation - (Dist + 30) * vector(CameraRotation), CameraLocation ) != None )
         ViewDist = FMin( (CameraLocation - HitLocation) Dot View, Dist );
@@ -659,7 +665,7 @@ function HighlightCenterObjectMain()
 
     if(LevelInfo(target) != None) target = None;
 
-    if(target != None && Brush(target) == None && class'MenuChoice_FixGlitches'.default.enabled) {
+    if(target != None && Brush(target) == None && class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-15
         t = HighlightCenterObjectRay(vect(0,-0.2,1.5), dist2);
         fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
 
@@ -680,7 +686,7 @@ function HighlightCenterObjectMain()
     // rapidly changing frob target.
     //
     // If glitches aren't being fixed, don't stop highlighting items that are being deleted (for item duping)
-    if (FrobTime < 0.1 && FrobTarget != None && target == None && (!FrobTarget.bDeleteMe || !class'MenuChoice_FixGlitches'.default.enabled))
+    if (FrobTime < 0.1 && FrobTarget != None && target == None && (!FrobTarget.bDeleteMe || !class'MenuChoice_FixGlitches'.default.enabled)) //GLITCHFIX-01
     {
         return;
     }

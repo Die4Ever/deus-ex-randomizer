@@ -74,12 +74,12 @@ function CheckOfflineUpdates()
         num++;
         campaign = "halloween2026";
     }
-    if(DateAtLeast(2026, 6, 23)) {// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler?
-        newsdates[num] = "2026-06-22";
+    if(DateAtLeast(2027, 6, 23)) {// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler?
+        newsdates[num] = "2027-06-22";
         newsheaders[num] = "Anniversary Update!";
         newstexts[num] = "You have Online Features disabled or the server is down, so we can't know for sure, but there's a good chance that you are behind many updates!|n|nAlso happy anniversary to Deus Ex and Randomizer!";
         num++;
-        campaign = "anniversary2026";
+        campaign = "anniversary2027";
     }
     if(num==0) {
         return;
