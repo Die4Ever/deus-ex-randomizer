@@ -9,6 +9,11 @@ function FirstEntry()
     if(IsLateStart(dxr.dxInfo.missionNumber)) return;
 
     switch (dxr.localURL) {
+        case "01_NYC_UNATCOISLAND":
+            if (IsBingoEnd(1, dxr.flags.bingo_duration)) {
+                NewBingoBoard();
+            }
+            break;
         case "02_NYC_BATTERYPARK":
             if (IsBingoEnd(1, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
