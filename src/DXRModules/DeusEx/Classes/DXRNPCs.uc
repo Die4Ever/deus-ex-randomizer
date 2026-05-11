@@ -16,6 +16,11 @@ const MERCH_TELEM_NO_BUY = -1;
 const MERCH_TELEM_NO_ROOM = -2;
 const MERCH_TELEM_NO_MONEY = -3;
 
+const CAM_RAND_SIDE = 20;
+const CAM_RAND_SHOULDER = 21;
+const CAM_RAND_HEAD = 22;
+const CAM_RAND_BAD = 23;
+
 function AnyEntry()
 {
     Super.AnyEntry();
@@ -336,17 +341,17 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant>
     //Got some rare things on sale, stranger!
     //Welcome!
     e = AddTransferRepairTrigger(c,e);
-    e = AddSpeech(c, e, "Whaddaya buyin'?", false, "BuyCommon");
+    e = AddSpeech(c, e, "Whaddaya buyin'?", false, "BuyCommon", CAM_RAND_SIDE); //Random side angle
     e = AddPurchaseChoices(c, e, items);
-    e = AddSpeech(c, e, "Come back anytime.", false, "leave");
+    e = AddSpeech(c, e, "Come back anytime.", false, "leave", CAM_RAND_SIDE); //Random side angle
     e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_BUY);
     e = AddJump(c, e, "bye");
-    e = AddSpeech(c, e, "Hehehehe, thank you.", false, "bought");
+    e = AddSpeech(c, e, "Hehehehe, thank you.", false, "bought", CAM_RAND_SIDE); //Random side angle
     e = AddJump(c, e, "bye");
-    e = AddSpeech(c, e, "Hold on, I can't carry any more right now.", true, "noRoom");
+    e = AddSpeech(c, e, "Hold on, I can't carry any more right now.", true, "noRoom", CAM_RAND_SHOULDER); //Random shoulder shot
     e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_ROOM);
     e = AddJump(c, e, "leave");
-    e = AddSpeech(c, e, "Not enough cash, stranger.", false, "failBuy");
+    e = AddSpeech(c, e, "Not enough cash, stranger.", false, "failBuy", CAM_RAND_HEAD); //Random head shot
     e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_MONEY);
     e = AddEnd(c, e);
 
@@ -429,18 +434,17 @@ function Name UniqueFlagName(string baseFlag, coerce string itemName, string own
 }
 
 //#region Generate Convo
-function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, optional string label)
+function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, string label, int camPos)
 {
     local ConEventSpeech e;
     local ConEventMoveCamera cam;
 
-    cam = ConEventMoveCamera(NewConEvent(c,prev,class'ConEventMoveCamera'));
-    cam.cameraType = CT_Actor;
-    cam.cameraPosition = CP_SideMid;
-    cam.cameraTransition = TR_Jump;
-    cam.label = label;
+    if (camPos>=0){ //Negative camera position will leave the camera as-is
+        cam = NewConEventMoveCamera(c,prev,camPos);
+        cam.label = label;
 
-    prev = cam;
+        prev = cam;
+    }
 
     e = ConEventSpeech(NewConEvent(c,prev,class'ConEventSpeech'));
     e = NewConEventSpeech(c,prev,text);
@@ -491,7 +495,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
         if( items[i].item == None ) continue;
         // transfer object, if it fails then jump to noRoom
         BuildBuyItemText(items[i], true, text, label);
-        prev = AddSpeech(c, prev, text, true, label);
+        prev = AddSpeech(c, prev, text, true, label,CAM_RAND_SHOULDER); //Random shoulder shot
         prev = AddTransfer(c, prev, items[i].item);
 
         //set flag for bought item, give negative credits, jump to bought

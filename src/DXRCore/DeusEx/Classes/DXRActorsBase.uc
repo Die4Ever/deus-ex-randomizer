@@ -1059,6 +1059,70 @@ static function ConEventSetFlag NewConEventSetFlag(Conversation c, ConEvent prev
     return e;
 }
 
+static function ConEventMoveCamera NewConEventMoveCamera(Conversation c, ConEvent prev, byte camPos)
+{
+    local ConEventMoveCamera cam;
+
+    cam = ConEventMoveCamera(NewConEvent(c,prev,class'ConEventMoveCamera'));
+
+    cam.cameraType = CT_Predefined;
+    switch (camPos){
+        case 0:  cam.cameraPosition = CP_SideTight; break;
+        case 1:  cam.cameraPosition = CP_SideMid; break;
+        case 2:  cam.cameraPosition = CP_SideAbove; break;
+        case 3:  cam.cameraPosition = CP_SideAbove45; break;
+        case 4:  cam.cameraPosition = CP_ShoulderLeft; break;
+        case 5:  cam.cameraPosition = CP_ShoulderRight; break;
+        case 6:  cam.cameraPosition = CP_HeadShotTight; break;
+        case 7:  cam.cameraPosition = CP_HeadShotMid; break;
+        case 8:  cam.cameraPosition = CP_HeadShotLeft; break;
+        case 9:  cam.cameraPosition = CP_HeadShotRight; break;
+        case 10: cam.cameraPosition = CP_HeadShotSlightRight; break;
+        case 11: cam.cameraPosition = CP_HeadShotSlightLeft; break;
+        case 12: cam.cameraPosition = CP_StraightAboveLookingDown; break;
+        case 13: cam.cameraPosition = CP_StraightBelowLookingUp; break;
+        case 14: cam.cameraPosition = CP_BelowLookingUp; break;
+
+        //Randomized in groups
+        //For when you maybe want a bit of variation, but still want a somewhat consistent shot
+        //Note that these use unseeded RNG, so will change on level load
+        case 20: //Side shots
+            switch(Rand(4)){
+                case 0: cam.cameraPosition = CP_SideTight; break;
+                case 1: cam.cameraPosition = CP_SideMid; break;
+                case 2: cam.cameraPosition = CP_SideAbove; break;
+                case 3: cam.cameraPosition = CP_SideAbove45; break;
+            }
+            break;
+        case 21: //Shoulder shots
+            switch(Rand(2)){
+                case 0: cam.cameraPosition = CP_ShoulderLeft; break;
+                case 1: cam.cameraPosition = CP_ShoulderRight; break;
+            }
+            break;
+        case 22: //Head shots
+            switch(Rand(6)){
+                case 0: cam.cameraPosition = CP_HeadShotTight; break;
+                case 1: cam.cameraPosition = CP_HeadShotMid; break;
+                case 2: cam.cameraPosition = CP_HeadShotLeft; break;
+                case 3: cam.cameraPosition = CP_HeadShotRight; break;
+                case 4: cam.cameraPosition = CP_HeadShotSlightRight; break;
+                case 5: cam.cameraPosition = CP_HeadShotSlightLeft; break;
+            }
+            break;
+        case 23: //Bad ones, really don't
+            switch(Rand(3)){
+                case 0: cam.cameraPosition = CP_StraightAboveLookingDown; break;
+                case 1: cam.cameraPosition = CP_StraightBelowLookingUp; break;
+                case 2: cam.cameraPosition = CP_BelowLookingUp; break;
+            }
+            break;
+    }
+    cam.cameraTransition = TR_Jump;
+
+    return cam;
+}
+
 static function ConEventTrigger NewConEventTrigger(Conversation c, ConEvent prev, name triggerTag)
 {
     local ConEventTrigger e;
