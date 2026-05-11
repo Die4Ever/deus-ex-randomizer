@@ -1395,12 +1395,8 @@ function AnyEntryMapFixes()
                 ces = ConEventSpeech(ce);
                 if (InStr(ces.conSpeech.speech,"Don't try that again")!=-1){
                     //Spawn a ConEventSetFlag to set "PaidForLuckyMoney", insert it between this and it's next event
-                    cesf = ConEventSetFlag(NewConEvent(c,ces,class'ConEventSetFlag'));
+                    cesf = NewConEventSetFlag(c,ces,'PaidForLuckyMoney',True,7);
                     cesf.label="PaidForLuckyMoneyTrue";
-                    cesf.flagRef = new(c) class'ConFlagRef';
-                    cesf.flagRef.flagName='PaidForLuckyMoney';
-                    cesf.flagRef.value=True;
-                    cesf.flagRef.expiration=7;
                 }
                 if (InStr(ces.conSpeech.speech,"Your choice.")!=-1){
                     //Spawn a ConEventTrigger to hit an alliance trigger or something so he starts attacking, insert between this and next event
@@ -1504,14 +1500,11 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.cameraActorName = origMoveCam.cameraActorName;
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = ConEventSpeech(NewConEvent(c,cet,class'ConEventSpeech'));
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
 
@@ -1555,14 +1548,11 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.cameraActorName = origMoveCam.cameraActorName;
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = ConEventSpeech(NewConEvent(c,cet,class'ConEventSpeech'));
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
 

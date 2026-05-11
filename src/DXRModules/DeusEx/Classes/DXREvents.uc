@@ -2238,25 +2238,13 @@ simulated function AnyEntry()
         conv = GetConversation('ParkBum1Barks');
 
         ce = conv.GetEventFromLabel("A1");
-        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.flagRef = new(conv) class'ConFlagRef';
-        cesf.flagRef.flagName='DXREvents_M02BumSong1';
-        cesf.flagRef.value=True;
-        cesf.flagRef.expiration=3;
+        cesf = NewConEventSetFlag(conv,ce,'DXREvents_M02BumSong1',True,3);
 
         ce = conv.GetEventFromLabel("A2");
-        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.flagRef = new(conv) class'ConFlagRef';
-        cesf.flagRef.flagName='DXREvents_M02BumSong2';
-        cesf.flagRef.value=True;
-        cesf.flagRef.expiration=3;
+        cesf = NewConEventSetFlag(conv,ce,'DXREvents_M02BumSong2',True,3);
 
         ce = conv.GetEventFromLabel("A3");
-        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.flagRef = new(conv) class'ConFlagRef';
-        cesf.flagRef.flagName='DXREvents_M02BumSong3';
-        cesf.flagRef.value=True;
-        cesf.flagRef.expiration=3;
+        cesf = NewConEventSetFlag(conv,ce,'DXREvents_M02BumSong3',True,3);
 
         break;
 
@@ -2284,11 +2272,7 @@ simulated function AnyEntry()
         }
 
         //Add the flag before the speech event so the flag is set immediately
-        cesf = ConEventSetFlag(NewConEvent(conv,prev,class'ConEventSetFlag'));
-        cesf.flagRef = new(conv) class'ConFlagRef';
-        cesf.flagRef.flagName='WhatAreYouDoingHere';
-        cesf.flagRef.value=True;
-        cesf.flagRef.expiration=7;
+        cesf = NewConEventSetFlag(conv,prev,'WhatAreYouDoingHere',True,7);
 
         //Move the label so that it jumps to the SetFlag instead of the Speech first
         cesf.label = "A1";
@@ -2300,11 +2284,7 @@ simulated function AnyEntry()
         //Add a flag for explicitly not warning smuggler (for bingo failure, maybe to toot for being a dick?)
         conv = GetConversation('M08SmugglerConvos');
         ce = conv.GetEventFromLabel("NoWarning");
-        cesf = ConEventSetFlag(NewConEvent(conv,ce,class'ConEventSetFlag'));
-        cesf.flagRef = new(conv) class'ConFlagRef';
-        cesf.flagRef.flagName='M08SmugglerNotWarned';
-        cesf.flagRef.value=True;
-        cesf.flagRef.expiration=9;
+        cesf = NewConEventSetFlag(conv,ce,'M08SmugglerNotWarned',True,9);
         break;
 
     case "10_PARIS_METRO":

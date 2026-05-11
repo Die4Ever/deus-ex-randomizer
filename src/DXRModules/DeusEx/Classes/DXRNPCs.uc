@@ -443,6 +443,7 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
     prev = cam;
 
     e = ConEventSpeech(NewConEvent(c,prev,class'ConEventSpeech'));
+    e = NewConEventSpeech(c,prev,text);
     if( player_talking ) {
         e.speakerName = "JCDenton";
         e.speakingToName = c.conOwnerName;
@@ -451,8 +452,6 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
         e.speakerName = c.conOwnerName;
         e.speakingToName = "JCDenton";
     }
-    e.conSpeech = new(c) class'ConSpeech';
-    e.conSpeech.speech = text;
 
     return e;
 }
@@ -758,15 +757,9 @@ function ConEvent AddPersonaCheck(Conversation c, ConEvent prev, ItemPurchase it
 function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, coerce string flag_name, bool value)
 {
     local ConEventSetFlag ef;
-    local ConFlagRef f;
 
-    ef = ConEventSetFlag(NewConEvent(c,prev,class'ConEventSetFlag'));
+    ef = NewConEventSetFlag(c,prev,StringToName(flag_name),value,dxr.dxInfo.missionNumber + 1);
     ef.label = flag_name $ value;
-    f = new(c) class'ConFlagRef';
-    f.flagName = StringToName(flag_name);
-    f.value = value;
-    f.expiration = dxr.dxInfo.missionNumber + 1;
-    ef.flagRef = f;
 
     prev = ef;
 

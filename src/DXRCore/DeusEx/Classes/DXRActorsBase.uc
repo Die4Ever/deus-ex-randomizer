@@ -1032,6 +1032,33 @@ static function ConEvent NewConEvent(Conversation c, ConEvent prev, class<ConEve
     return e;
 }
 
+static function ConEventSpeech NewConEventSpeech(Conversation c, ConEvent prev, string speech, optional int soundID)
+{
+    local ConEventSpeech e;
+
+    e = ConEventSpeech(NewConEvent(c,prev,class'ConEventSpeech'));
+
+    e.conSpeech = new(c) class'ConSpeech';
+    e.conSpeech.speech = speech;
+    e.conSpeech.soundID = soundID;
+
+    return e;
+}
+
+static function ConEventSetFlag NewConEventSetFlag(Conversation c, ConEvent prev, name flagName, bool value, int expiry)
+{
+    local ConEventSetFlag e;
+
+    e = ConEventSetFlag(NewConEvent(c,prev,class'ConEventSetFlag'));
+
+    e.flagRef = new(c) class'ConFlagRef';
+    e.flagRef.flagName=flagName;
+    e.flagRef.value=value;
+    e.flagRef.expiration=expiry;
+
+    return e;
+}
+
 static function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
 {
     e.conversation = c;

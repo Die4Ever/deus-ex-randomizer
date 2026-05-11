@@ -1133,11 +1133,8 @@ function AnyEntryMapFixes()
         con = GetConversation('M12JockFinal2');
         for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
             if (ConEventCheckFlag(ce) != None && ConEventCheckFlag(ce).setLabel == "Dead") {
-                cet = new(con) class'ConEventTrigger';
-                cet.eventType = ET_Trigger;
+                cet = ConEventTrigger(NewConEvent(con,ce,class'ConEventTrigger'));
                 cet.triggerTag = 'TiffanyLeaving';
-                cet.nextEvent = ce.nextEvent;
-                ce.nextEvent = cet;
                 break;
             }
         }
