@@ -20,4 +20,5 @@
 - When the "Camera Mode" is set to "Third Person", the camera will now shake when heavy enemies (such as Military Bots) walk near you.
 - GMDX no longer skips the first conversation with Paul (Mission 1).  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
 - More interesting camera angles when talking to The Merchant (or Le Merchant).
+- Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
 </details>
