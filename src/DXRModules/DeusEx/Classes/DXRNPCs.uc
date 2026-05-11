@@ -434,18 +434,15 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
     local ConEventSpeech e;
     local ConEventMoveCamera cam;
 
-    cam = new(c) class'ConEventMoveCamera';
+    cam = ConEventMoveCamera(NewConEvent(c,prev,class'ConEventMoveCamera'));
     cam.cameraType = CT_Actor;
     cam.cameraPosition = CP_SideMid;
     cam.cameraTransition = TR_Jump;
-    cam.eventType = ET_MoveCamera;
     cam.label = label;
 
-    AddConEvent(c, prev, cam);
     prev = cam;
 
-    e = new(c) class'ConEventSpeech';
-    e.conversation = c;
+    e = ConEventSpeech(NewConEvent(c,prev,class'ConEventSpeech'));
     if( player_talking ) {
         e.speakerName = "JCDenton";
         e.speakingToName = c.conOwnerName;
@@ -457,20 +454,14 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
     e.conSpeech = new(c) class'ConSpeech';
     e.conSpeech.speech = text;
 
-    AddConEvent(c, prev, e);
-
     return e;
 }
 
 function ConEventEnd AddEnd(Conversation c, ConEvent prev)
 {
     local ConEventEnd e;
-    e = new(c) class'ConEventEnd';
-    e.conversation = c;
-    e.eventType = ET_End;
+    e = ConEventEnd(NewConEvent(c,prev,class'ConEventEnd'));
     e.label = "bye";
-
-    AddConEvent(c, prev, e);
 
     return e;
 }
@@ -484,9 +475,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
 
     prev = AddPersonaChecks(c, prev, "choices", items);
 
-    e = new(c) class'ConEventChoice';
-    e.conversation = c;
-    e.eventType = ET_Choice;
+    e = ConEventChoice(NewConEvent(c,prev,class'ConEventChoice'));
     e.label = "choices";
     e.bClearScreen = true;
 
@@ -497,7 +486,6 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
         choice = AddItemChoice(e, choice, items[i]);
     }
 
-    AddConEvent(c, prev, e);
     prev = e;
 
     for(i=0; i<ArrayCount(items); i++) {
@@ -536,10 +524,8 @@ function ConEventTrigger AddMerchantBingo(Conversation c, ConEvent prev, ItemPur
     }
     tagName=tagName$c.conName; //Append the bindname to the end
 
-    e = new(c) class'ConEventTrigger';
-    e.eventType=ET_Trigger;
+    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
     e.triggerTag = StringToName(tagName);
-    AddConEvent(c, prev, e);
 
     //Make sure the Purchase Triggers actually exist
     foreach AllActors(class'MerchantPurchaseBingoTrigger',mpbt,e.triggerTag){break;}
@@ -578,10 +564,8 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
     }
     tagName=tagName$c.conName; //Append the bindname to the end
 
-    e = new(c) class'ConEventTrigger';
-    e.eventType=ET_Trigger;
+    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
     e.triggerTag = StringToName(tagName);
-    AddConEvent(c, prev, e);
 
     //Make sure the Telemetry Triggers actually exist
     foreach AllActors(class'DXRMerchantTelemetryTrigger',tt,e.triggerTag){break;}
@@ -632,10 +616,8 @@ function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
 
     tagName="ConEventTransferObjectRepair"$c.conName; //Append the bindname to the end
 
-    e = new(c) class'ConEventTrigger';
-    e.eventType=ET_Trigger;
+    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
     e.triggerTag = StringToName(tagName);
-    AddConEvent(c, prev, e);
 
     //Make sure the Repair Triggers actually exist
     foreach AllActors(class'RepairConObjTransferTrigger',rt,e.triggerTag){break;}
@@ -652,25 +634,21 @@ function ConEventTransferObject AddTransfer(Conversation c, ConEvent prev, class
 {
     local ConEventTransferObject e;
 
-    e = new(c) class'ConEventTransferObject';
-    e.eventType = ET_TransferObject;
+    e = ConEventTransferObject(NewConEvent(c,prev,class'ConEventTransferObject'));
     e.objectName = string(item);  //Fully qualify the class name so it includes the package name (for safety)
     e.giveObject = item;
     e.transferCount = 1;
     e.fromName = c.conOwnerName;
     e.toName = "JCDenton";
     e.failLabel = "noRoom";
-    AddConEvent(c, prev, e);
     return e;
 }
 
 function ConEventAddCredits AddGiveCredits(Conversation c, ConEvent prev, int amount)
 {
     local ConEventAddCredits e;
-    e = new(c) class'ConEventAddCredits';
-    e.eventType = ET_AddCredits;
+    e= ConEventAddCredits(NewConEvent(c,prev,class'ConEventAddCredits'));
     e.creditsToAdd = amount;
-    AddConEvent(c, prev, e);
     return e;
 }
 
@@ -766,15 +744,13 @@ function ConEvent AddPersonaCheck(Conversation c, ConEvent prev, ItemPurchase it
 {
     local ConEventCheckPersona p;
 
-    p = new(c) class'ConEventCheckPersona';
-    p.eventType = ET_CheckPersona;
+    p = ConEventCheckPersona(NewConEvent(c,prev,class'ConEventCheckPersona'));
     p.personaType = EP_Credits;
     p.condition = EC_GreaterEqual;
     p.value = item.price;
     p.label = UniqueFlagString("checkBuy",item.item.name,c.conOwnerName);
     p.jumpLabel = UniqueFlagString("canBuy",item.item.name,c.conOwnerName) $ "true";
 
-    AddConEvent(c, prev, p);
     prev = p;
     return p;
 }
@@ -784,8 +760,7 @@ function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, 
     local ConEventSetFlag ef;
     local ConFlagRef f;
 
-    ef = new(c) class'ConEventSetFlag';
-    ef.eventType = ET_SetFlag;
+    ef = ConEventSetFlag(NewConEvent(c,prev,class'ConEventSetFlag'));
     ef.label = flag_name $ value;
     f = new(c) class'ConFlagRef';
     f.flagName = StringToName(flag_name);
@@ -793,7 +768,6 @@ function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, 
     f.expiration = dxr.dxInfo.missionNumber + 1;
     ef.flagRef = f;
 
-    AddConEvent(c, prev, ef);
     prev = ef;
 
     if( after_label != "" )
@@ -805,10 +779,8 @@ function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, 
 function ConEventJump AddJump(Conversation c, ConEvent prev, string after_label)
 {
     local ConEventJump j;
-    j = new(c) class'ConEventJump';
-    j.eventType = ET_Jump;
+    j = ConEventJump(NewConEvent(c,prev,class'ConEventJump'));
     j.jumpLabel = after_label;
-    AddConEvent(c, prev, j);
     return j;
 }
 //#endregion
