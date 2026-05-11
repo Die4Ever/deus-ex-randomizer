@@ -300,6 +300,10 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             ammoAddedAmount = newAmmoAmmout - playerAmmo.AmmoAmount;
             playerAmmo.AmmoAmount = newAmmoAmmout;
             weap.PickupAmmoCount -= ammoAddedAmount;
+            if (ammoAddedAmount > 0) {
+                playerAmmo.itemArticle = string(ammoAddedAmount);
+                LootItemMessage(player, playerAmmo);
+            }
         }
 
         TossItem(item);
