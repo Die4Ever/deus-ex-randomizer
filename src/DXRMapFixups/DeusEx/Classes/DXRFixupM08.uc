@@ -113,9 +113,8 @@ function FixFordSchickConvo()
         ceto.failLabel = "AugUpgradeTransferFailed";
 
         //Trigger a SpawnItemTrigger to spawn the upgrade can on the table
-        cet = ConEventTrigger(NewConEvent(c,cee,class'ConEventTrigger')); //Trigger goes after the regular end
+        cet = NewConEventTrigger(c,cee,'SpawnOverflowAugUpgrade'); //Trigger goes after the regular end
         cet.label = "AugUpgradeTransferFailed";
-        cet.triggerTag = 'SpawnOverflowAugUpgrade';
 
         //Stitch a "No room!" line onto the end of the conversation for more clarity
         ces = NewConEventSpeech(c,cet,noRoom.conSpeech.speech,noRoom.conSpeech.soundID);

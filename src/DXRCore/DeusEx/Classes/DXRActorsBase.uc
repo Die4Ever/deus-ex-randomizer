@@ -1059,6 +1059,16 @@ static function ConEventSetFlag NewConEventSetFlag(Conversation c, ConEvent prev
     return e;
 }
 
+static function ConEventTrigger NewConEventTrigger(Conversation c, ConEvent prev, name triggerTag)
+{
+    local ConEventTrigger e;
+
+    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
+    e.triggerTag = triggerTag;
+
+    return e;
+}
+
 static function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
 {
     e.conversation = c;

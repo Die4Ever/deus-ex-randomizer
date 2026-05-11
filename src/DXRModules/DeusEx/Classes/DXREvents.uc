@@ -2252,8 +2252,7 @@ simulated function AnyEntry()
         //Add a trigger event to hit the SavedMiguel bingo trigger
         conv = GetConversation('MiguelHack');
         ce = conv.GetEventFromLabel("Hop");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ConEventTrigger(ce).triggerTag = 'SavedMiguel';
+        ce = NewConEventTrigger(conv,ce,'SavedMiguel');
         break;
 
     case "06_HONGKONG_TONGBASE":
@@ -2292,12 +2291,10 @@ simulated function AnyEntry()
         conv = GetConversation('RenaultPays');
         // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
         ce = conv.GetEventFromLabel("SellRepeat");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        ce = NewConEventTrigger(conv,ce,'SoldRenaultZyme');
         // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
         ce = conv.GetEventFromLabel("MoreMoney3");
-        ce = NewConEvent(conv, ce, class'ConEventTrigger');
-        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        ce = NewConEventTrigger(conv,ce,'SoldRenaultZyme');
         // remove the event with label Sell which checks for the RenaultPaid flag
         RemoveConvEventByLabel(conv, "Sell");
 

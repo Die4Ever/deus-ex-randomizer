@@ -523,8 +523,7 @@ function ConEventTrigger AddMerchantBingo(Conversation c, ConEvent prev, ItemPur
     }
     tagName=tagName$c.conName; //Append the bindname to the end
 
-    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
-    e.triggerTag = StringToName(tagName);
+    e = NewConEventTrigger(c,prev,StringToName(tagName));
 
     //Make sure the Purchase Triggers actually exist
     foreach AllActors(class'MerchantPurchaseBingoTrigger',mpbt,e.triggerTag){break;}
@@ -563,8 +562,7 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
     }
     tagName=tagName$c.conName; //Append the bindname to the end
 
-    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
-    e.triggerTag = StringToName(tagName);
+    e = NewConEventTrigger(c,prev,StringToName(tagName));
 
     //Make sure the Telemetry Triggers actually exist
     foreach AllActors(class'DXRMerchantTelemetryTrigger',tt,e.triggerTag){break;}
@@ -615,8 +613,7 @@ function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
 
     tagName="ConEventTransferObjectRepair"$c.conName; //Append the bindname to the end
 
-    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
-    e.triggerTag = StringToName(tagName);
+    e = NewConEventTrigger(c,prev,StringToName(tagName));
 
     //Make sure the Repair Triggers actually exist
     foreach AllActors(class'RepairConObjTransferTrigger',rt,e.triggerTag){break;}

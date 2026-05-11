@@ -615,8 +615,7 @@ function AnyEntryMapFixes()
 
         c = GetConversation('JockReady');
         if (c != None) {
-            cet = ConEventTrigger(NewConEvent(c,None,class'ConEventTrigger'));
-            cet.triggerTag = 'NicoLeaving';
+            cet = NewConEventTrigger(c,None,'NicoLeaving');
         }
 
         break;
