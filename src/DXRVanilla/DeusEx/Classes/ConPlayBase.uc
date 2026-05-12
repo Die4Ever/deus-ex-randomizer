@@ -24,6 +24,12 @@ function EEventAction SetupEventTransferObject( ConEventTransferObject event, ou
 	local bool bSplitItem;
 	local int itemsTransferred;
 
+    local DeusExPlayer player;
+    local string ammoName;
+    local int ammoAmount;
+    local class<Ammo> ammoClass;
+    local Ammo ammoInv;
+
 /*
 log("SetupEventTransferObject()------------------------------------------");
 log("  event = " $ event);
@@ -31,6 +37,40 @@ log("  event.giveObject = " $ event.giveObject);
 log("  event.fromActor  = " $ event.fromActor );
 log("  event.toActor    = " $ event.toActor );
 */
+
+    // If transfering a weapon/ammo, show a message saying how much ammo was given
+    // We don't even try to weave this into the original logic
+    player = DeusExPlayer(event.ToActor);
+    if (player != None) {
+        ammoClass = class<Ammo>(event.giveObject);
+        if (ammoClass == None && class<Weapon>(event.giveObject) != None) {
+            ammoClass = class<Weapon>(event.giveObject).default.AmmoName;
+        }
+        if (ammoClass != None) {
+            if (Pawn(event.fromActor) != None) {
+                ammoInv = Ammo(Pawn(event.fromActor).FindInventoryType(ammoClass));
+            }
+            if (ammoInv != None) {
+                ammoName = ammoInv.itemName;
+                ammoAmount = ammoInv.AmmoAmount;
+            } else {
+                ammoName = ammoClass.default.itemName;
+                ammoAmount = ammoClass.default.AmmoAmount;
+            }
+
+            if (ammoName != class'Ammo'.default.itemName && ammoName != class'Ammo'.default.itemName) {
+                ammoInv = Ammo(player.FindInventoryType(ammoClass));
+                if (ammoInv != None) {
+                    ammoAmount = Min(ammoAmount, ammoInv.MaxAmmo - ammoInv.AmmoAmount);
+                }
+
+                if (ammoAmount > 0) {
+                    player.ClientMessage("You received" @ ammoAmount @ ammoName, 'Pickup');
+                }
+            }
+        }
+    }
+
 	itemsTransferred = 1;
 
 	if ( event.failLabel != "" )
