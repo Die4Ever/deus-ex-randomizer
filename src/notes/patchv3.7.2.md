@@ -21,4 +21,5 @@
 - GMDX no longer skips the first conversation with Paul (Mission 1).  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
 - More interesting camera angles when talking to The Merchant (or Le Merchant).
 - Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
+- The amount is now shown when picking up or receiving ammo.
 </details>
