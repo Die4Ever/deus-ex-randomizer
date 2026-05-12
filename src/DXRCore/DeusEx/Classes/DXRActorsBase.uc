@@ -996,6 +996,15 @@ static function ConEvent FixConversationDeleteEvent(ConEvent del, ConEvent prev)
     return next;
 }
 
+static function ConEvent FindPrevConEvent(ConEvent ce, optional Conversation con)
+{
+    local ConEvent prev;
+
+    if (con == None) con = ce.Conversation;
+    for (prev = ce.Conversation.eventList; prev != None && prev.nextEvent != ce; prev = prev.nextEvent);
+    return prev;
+}
+
 static function InitConEventType(ConEvent ce)
 {
     if (ce==None) return;
