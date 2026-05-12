@@ -661,6 +661,7 @@ function ConEventTransferObject AddTransfer(Conversation c, ConEvent prev, class
     e.toName = "JCDenton";
     e.failLabel = "noRoom";
     AddConEvent(c, prev, e);
+    class'DXRTransferObjectTrigger'.static.CreateForEvent(e, c, prev);
     return e;
 }
 

@@ -196,6 +196,7 @@ function CheckConfig()
     }
 }
 
+//#region PreFirstEntry
 function PreFirstEntry()
 {
     local #var(prefix)Lamp lmp;
@@ -233,13 +234,17 @@ function PreFirstEntry()
     if(#defined(mapfixes))
         PreFirstEntryMapFixes();
 }
+//#endregion
 
+//#region ReEntry
 function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     OverwriteDecorations(false);
 }
+//#endregion
 
+//#region PostFirstEntry
 function PostFirstEntry()
 {
     Super.PostFirstEntry();
@@ -256,11 +261,16 @@ function PostFirstEntry()
 
     FixStandingDancingBlockages();
 }
+//#endregion
 
+
+//#region AnyEntry
 function AnyEntry()
 {
     local #var(prefix)Vehicles v;
     local #var(prefix)Button1 b;
+    local Conversation con;
+    local ConEvent ce;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -301,7 +311,19 @@ function AnyEntry()
     } else {
         class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot.";
     }
+
+    foreach AllObjects(class'Conversation', con) {
+        if (ConEventTransferObject(con.eventList) != None) {
+            class'DXRTransferObjectTrigger'.static.CreateForEvent(ConEventTransferObject(con.eventList), con);
+        }
+        for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
+            if (ConEventTransferObject(ce.nextEvent) != None) {
+                class'DXRTransferObjectTrigger'.static.CreateForEvent(ConEventTransferObject(ce.nextEvent), con, ce);
+            }
+        }
+    }
 }
+//#endregion
 
 function TriggerDebug()
 {

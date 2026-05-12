@@ -381,7 +381,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     return TryLootRegularItem(player, item);
 }
 
-function LootItemMessage(DeusExPlayer player, Inventory item)
+static function LootItemMessage(DeusExPlayer player, Inventory item)
 {
     player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
 }
