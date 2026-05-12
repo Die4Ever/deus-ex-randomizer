@@ -34,7 +34,7 @@ function bool HandlePickupQuery( inventory Item )
             if (ammoRemaining>0){
                 thisAmmo.ammoAmount = ammoRemaining;
                 AddAmmo(ammoToAdd);
-                player.ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
+                player.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup');
                 return True;
             }
         } else {

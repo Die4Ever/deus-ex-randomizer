@@ -1395,17 +1395,12 @@ function AnyEntryMapFixes()
                 ces = ConEventSpeech(ce);
                 if (InStr(ces.conSpeech.speech,"Don't try that again")!=-1){
                     //Spawn a ConEventSetFlag to set "PaidForLuckyMoney", insert it between this and it's next event
-                    cesf = ConEventSetFlag(NewConEvent(c,ces,class'ConEventSetFlag'));
+                    cesf = NewConEventSetFlag(c,ces,'PaidForLuckyMoney',True,7);
                     cesf.label="PaidForLuckyMoneyTrue";
-                    cesf.flagRef = new(c) class'ConFlagRef';
-                    cesf.flagRef.flagName='PaidForLuckyMoney';
-                    cesf.flagRef.value=True;
-                    cesf.flagRef.expiration=7;
                 }
                 if (InStr(ces.conSpeech.speech,"Your choice.")!=-1){
                     //Spawn a ConEventTrigger to hit an alliance trigger or something so he starts attacking, insert between this and next event
-                    cet = ConEventTrigger(NewConEvent(c,ces,class'ConEventTrigger'));
-                    cet.triggerTag = 'BouncerStartAttacking';
+                    cet = NewConEventTrigger(c,ces,'BouncerStartAttacking');
                 }
             }
             ce = ce.nextEvent;
@@ -1486,9 +1481,9 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "DXRandoNoRoom";
 
     //Trigger a SpawnItemTrigger to spawn the wine on the bar
-    cet = ConEventTrigger(NewConEvent(c,cee,class'ConEventTrigger'));
+
+    cet = NewConEventTrigger(c,cee,'SpawnMaxWine1');
     cet.label = "DXRandoNoRoom";
-    cet.triggerTag = 'SpawnMaxWine1';
 
     //Move the camera - dupe all the properties from the original one
     cemc = ConEventMoveCamera(NewConEvent(c,cet,class'ConEventMoveCamera'));
@@ -1504,14 +1499,11 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.cameraActorName = origMoveCam.cameraActorName;
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = ConEventSpeech(NewConEvent(c,cet,class'ConEventSpeech'));
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
 
@@ -1537,9 +1529,8 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "DXRandoNoRoom";
 
     //Trigger a SpawnItemTrigger to spawn the wine on the bar
-    cet = ConEventTrigger(NewConEvent(c,cee,class'ConEventTrigger'));
+    cet = NewConEventTrigger(c,cee,'SpawnMaxWine2');
     cet.label = "DXRandoNoRoom";
-    cet.triggerTag = 'SpawnMaxWine2';
 
     //Move the camera - dupe all the properties from the original one
     cemc = ConEventMoveCamera(NewConEvent(c,cet,class'ConEventMoveCamera'));
@@ -1555,14 +1546,11 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.cameraActorName = origMoveCam.cameraActorName;
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = ConEventSpeech(NewConEvent(c,cet,class'ConEventSpeech'));
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
 
@@ -1593,9 +1581,8 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "GordonGive1Fail";
 
     //Create the Trigger event that will spawn wine on the bar
-    cet = ConEventTrigger(NewConEvent(c,cee,class'ConEventTrigger'));
+    cet = NewConEventTrigger(c,cee,'SpawnGordonWine1');
     cet.label = "GordonGive1Fail";
-    cet.triggerTag = 'SpawnGordonWine1';
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1619,9 +1606,8 @@ function FixLuckyMoneyDragonHeadWineConvos()
     }
 
     //Create the Trigger event that will spawn wine on the bar
-    cet = ConEventTrigger(NewConEvent(c,cee,class'ConEventTrigger'));
+    cet = NewConEventTrigger(c,cee,'SpawnGordonWine2');
     cet.label = "NoRoom";
-    cet.triggerTag = 'SpawnGordonWine2';
 
     //Remove the label on the jump to the other conversation
     cej.label="";

@@ -59,7 +59,7 @@ static function DXRTransferObjectTrigger CreateForEvent(ConEventTransferObject c
     }
 
     foreach dxr.AllActors(class'DXRTransferObjectTrigger', tot, triggerTag) break;
-    if (tot == None) tot = dxr.Spawn(class'DXRTransferObjectTrigger',, cet.triggerTag);
+    if (tot == None) tot = dxr.Spawn(class'DXRTransferObjectTrigger',, triggerTag);
     tot.ceto = ceto;
 
     return tot;

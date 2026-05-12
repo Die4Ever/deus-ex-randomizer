@@ -1607,17 +1607,10 @@ function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCom
             where--;
         }
 
-        ceag = new(con) class'ConEventAddGoal';
-        ceag.eventType = ET_AddGoal;
+        ceag = ConEventAddGoal(NewConEvent(con,cePrev,class'ConEventAddGoal'));
         ceag.goalName = goalName;
         ceag.bGoalCompleted = bGoalCompleted;
         ceag.goalText = goalText;
-        ceag.nextEvent = ce;
-        if (cePrev == None) {
-            con.eventList = ceag;
-        } else {
-            cePrev.nextEvent = ceag;
-        }
     }
 
     return ceag;

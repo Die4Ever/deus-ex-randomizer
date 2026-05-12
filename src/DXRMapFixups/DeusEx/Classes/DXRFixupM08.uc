@@ -113,19 +113,15 @@ function FixFordSchickConvo()
         ceto.failLabel = "AugUpgradeTransferFailed";
 
         //Trigger a SpawnItemTrigger to spawn the upgrade can on the table
-        cet = ConEventTrigger(NewConEvent(c,cee,class'ConEventTrigger')); //Trigger goes after the regular end
+        cet = NewConEventTrigger(c,cee,'SpawnOverflowAugUpgrade'); //Trigger goes after the regular end
         cet.label = "AugUpgradeTransferFailed";
-        cet.triggerTag = 'SpawnOverflowAugUpgrade';
 
         //Stitch a "No room!" line onto the end of the conversation for more clarity
-        ces = ConEventSpeech(NewConEvent(c,cet,class'ConEventSpeech')); //"No Room" goes after the trigger
+        ces = NewConEventSpeech(c,cet,noRoom.conSpeech.speech,noRoom.conSpeech.soundID);
         ces.speaker = normalSpeech.speaker;
         ces.speakerName = normalSpeech.speakerName;
         ces.speakingTo = normalSpeech.speakingTo;
         ces.speakingToName = normalSpeech.speakingToName;
-        ces.conSpeech = new(c) class'ConSpeech';
-        ces.conSpeech.speech = noRoom.conSpeech.speech;
-        ces.conSpeech.soundID = noRoom.conSpeech.soundID;
         ces.bBold = noRoom.bBold;
         ces.speechFont = noRoom.speechFont;
 
@@ -236,14 +232,11 @@ function AddNoRoomToJordanSheaConvo(){
     if (cee == None) return; //We're hosed if this doesn't exist.
     ceeNext = cee.nextEvent;
 
-    newNoRoom = ConEventSpeech(NewConEvent(c,cee,class'ConEventSpeech')); //New "No Room" speech goes after the old end
+    newNoRoom = NewConEventSpeech(c,cee,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     newNoRoom.speaker = normalSpeech.speaker;
     newNoRoom.speakerName = normalSpeech.speakerName;
     newNoRoom.speakingTo = normalSpeech.speakingTo;
     newNoRoom.speakingToName = normalSpeech.speakingToName;
-    newNoRoom.conSpeech = new(c) class'ConSpeech';
-    newNoRoom.conSpeech.speech = origNoRoom.conSpeech.speech;
-    newNoRoom.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     newNoRoom.bBold = origNoRoom.bBold;
     newNoRoom.speechFont = origNoRoom.speechFont;
     newNoRoom.label = "DXRandoNoRoom";

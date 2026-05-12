@@ -16,6 +16,11 @@ const MERCH_TELEM_NO_BUY = -1;
 const MERCH_TELEM_NO_ROOM = -2;
 const MERCH_TELEM_NO_MONEY = -3;
 
+const CAM_RAND_SIDE = 20;
+const CAM_RAND_SHOULDER = 21;
+const CAM_RAND_HEAD = 22;
+const CAM_RAND_BAD = 23;
+
 function AnyEntry()
 {
     Super.AnyEntry();
@@ -336,17 +341,17 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant>
     //Got some rare things on sale, stranger!
     //Welcome!
     e = AddTransferRepairTrigger(c,e);
-    e = AddSpeech(c, e, "Whaddaya buyin'?", false, "BuyCommon");
+    e = AddSpeech(c, e, "Whaddaya buyin'?", false, "BuyCommon", CAM_RAND_SIDE); //Random side angle
     e = AddPurchaseChoices(c, e, items);
-    e = AddSpeech(c, e, "Come back anytime.", false, "leave");
+    e = AddSpeech(c, e, "Come back anytime.", false, "leave", CAM_RAND_SIDE); //Random side angle
     e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_BUY);
     e = AddJump(c, e, "bye");
-    e = AddSpeech(c, e, "Hehehehe, thank you.", false, "bought");
+    e = AddSpeech(c, e, "Hehehehe, thank you.", false, "bought", CAM_RAND_SIDE); //Random side angle
     e = AddJump(c, e, "bye");
-    e = AddSpeech(c, e, "Hold on, I can't carry any more right now.", true, "noRoom");
+    e = AddSpeech(c, e, "Hold on, I can't carry any more right now.", true, "noRoom", CAM_RAND_SHOULDER); //Random shoulder shot
     e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_ROOM);
     e = AddJump(c, e, "leave");
-    e = AddSpeech(c, e, "Not enough cash, stranger.", false, "failBuy");
+    e = AddSpeech(c, e, "Not enough cash, stranger.", false, "failBuy", CAM_RAND_HEAD); //Random head shot
     e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_MONEY);
     e = AddEnd(c, e);
 
@@ -429,23 +434,20 @@ function Name UniqueFlagName(string baseFlag, coerce string itemName, string own
 }
 
 //#region Generate Convo
-function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, optional string label)
+function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, string label, int camPos)
 {
     local ConEventSpeech e;
     local ConEventMoveCamera cam;
 
-    cam = new(c) class'ConEventMoveCamera';
-    cam.cameraType = CT_Actor;
-    cam.cameraPosition = CP_SideMid;
-    cam.cameraTransition = TR_Jump;
-    cam.eventType = ET_MoveCamera;
-    cam.label = label;
+    if (camPos>=0){ //Negative camera position will leave the camera as-is
+        cam = NewConEventMoveCamera(c,prev,camPos);
+        cam.label = label;
 
-    AddConEvent(c, prev, cam);
-    prev = cam;
+        prev = cam;
+    }
 
-    e = new(c) class'ConEventSpeech';
-    e.conversation = c;
+    e = ConEventSpeech(NewConEvent(c,prev,class'ConEventSpeech'));
+    e = NewConEventSpeech(c,prev,text);
     if( player_talking ) {
         e.speakerName = "JCDenton";
         e.speakingToName = c.conOwnerName;
@@ -454,10 +456,6 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
         e.speakerName = c.conOwnerName;
         e.speakingToName = "JCDenton";
     }
-    e.conSpeech = new(c) class'ConSpeech';
-    e.conSpeech.speech = text;
-
-    AddConEvent(c, prev, e);
 
     return e;
 }
@@ -465,12 +463,8 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
 function ConEventEnd AddEnd(Conversation c, ConEvent prev)
 {
     local ConEventEnd e;
-    e = new(c) class'ConEventEnd';
-    e.conversation = c;
-    e.eventType = ET_End;
+    e = ConEventEnd(NewConEvent(c,prev,class'ConEventEnd'));
     e.label = "bye";
-
-    AddConEvent(c, prev, e);
 
     return e;
 }
@@ -484,9 +478,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
 
     prev = AddPersonaChecks(c, prev, "choices", items);
 
-    e = new(c) class'ConEventChoice';
-    e.conversation = c;
-    e.eventType = ET_Choice;
+    e = ConEventChoice(NewConEvent(c,prev,class'ConEventChoice'));
     e.label = "choices";
     e.bClearScreen = true;
 
@@ -497,14 +489,13 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
         choice = AddItemChoice(e, choice, items[i]);
     }
 
-    AddConEvent(c, prev, e);
     prev = e;
 
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
         // transfer object, if it fails then jump to noRoom
         BuildBuyItemText(items[i], true, text, label);
-        prev = AddSpeech(c, prev, text, true, label);
+        prev = AddSpeech(c, prev, text, true, label,CAM_RAND_SHOULDER); //Random shoulder shot
         prev = AddTransfer(c, prev, items[i].item);
 
         //set flag for bought item, give negative credits, jump to bought
@@ -536,10 +527,7 @@ function ConEventTrigger AddMerchantBingo(Conversation c, ConEvent prev, ItemPur
     }
     tagName=tagName$c.conName; //Append the bindname to the end
 
-    e = new(c) class'ConEventTrigger';
-    e.eventType=ET_Trigger;
-    e.triggerTag = StringToName(tagName);
-    AddConEvent(c, prev, e);
+    e = NewConEventTrigger(c,prev,StringToName(tagName));
 
     //Make sure the Purchase Triggers actually exist
     foreach AllActors(class'MerchantPurchaseBingoTrigger',mpbt,e.triggerTag){break;}
@@ -578,10 +566,7 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
     }
     tagName=tagName$c.conName; //Append the bindname to the end
 
-    e = new(c) class'ConEventTrigger';
-    e.eventType=ET_Trigger;
-    e.triggerTag = StringToName(tagName);
-    AddConEvent(c, prev, e);
+    e = NewConEventTrigger(c,prev,StringToName(tagName));
 
     //Make sure the Telemetry Triggers actually exist
     foreach AllActors(class'DXRMerchantTelemetryTrigger',tt,e.triggerTag){break;}
@@ -632,10 +617,7 @@ function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
 
     tagName="ConEventTransferObjectRepair"$c.conName; //Append the bindname to the end
 
-    e = new(c) class'ConEventTrigger';
-    e.eventType=ET_Trigger;
-    e.triggerTag = StringToName(tagName);
-    AddConEvent(c, prev, e);
+    e = NewConEventTrigger(c,prev,StringToName(tagName));
 
     //Make sure the Repair Triggers actually exist
     foreach AllActors(class'RepairConObjTransferTrigger',rt,e.triggerTag){break;}
@@ -652,15 +634,13 @@ function ConEventTransferObject AddTransfer(Conversation c, ConEvent prev, class
 {
     local ConEventTransferObject e;
 
-    e = new(c) class'ConEventTransferObject';
-    e.eventType = ET_TransferObject;
+    e = ConEventTransferObject(NewConEvent(c,prev,class'ConEventTransferObject'));
     e.objectName = string(item);  //Fully qualify the class name so it includes the package name (for safety)
     e.giveObject = item;
     e.transferCount = 1;
     e.fromName = c.conOwnerName;
     e.toName = "JCDenton";
     e.failLabel = "noRoom";
-    AddConEvent(c, prev, e);
     class'DXRTransferObjectTrigger'.static.CreateForEvent(e, c, prev);
     return e;
 }
@@ -668,10 +648,8 @@ function ConEventTransferObject AddTransfer(Conversation c, ConEvent prev, class
 function ConEventAddCredits AddGiveCredits(Conversation c, ConEvent prev, int amount)
 {
     local ConEventAddCredits e;
-    e = new(c) class'ConEventAddCredits';
-    e.eventType = ET_AddCredits;
+    e= ConEventAddCredits(NewConEvent(c,prev,class'ConEventAddCredits'));
     e.creditsToAdd = amount;
-    AddConEvent(c, prev, e);
     return e;
 }
 
@@ -767,15 +745,13 @@ function ConEvent AddPersonaCheck(Conversation c, ConEvent prev, ItemPurchase it
 {
     local ConEventCheckPersona p;
 
-    p = new(c) class'ConEventCheckPersona';
-    p.eventType = ET_CheckPersona;
+    p = ConEventCheckPersona(NewConEvent(c,prev,class'ConEventCheckPersona'));
     p.personaType = EP_Credits;
     p.condition = EC_GreaterEqual;
     p.value = item.price;
     p.label = UniqueFlagString("checkBuy",item.item.name,c.conOwnerName);
     p.jumpLabel = UniqueFlagString("canBuy",item.item.name,c.conOwnerName) $ "true";
 
-    AddConEvent(c, prev, p);
     prev = p;
     return p;
 }
@@ -783,18 +759,10 @@ function ConEvent AddPersonaCheck(Conversation c, ConEvent prev, ItemPurchase it
 function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, coerce string flag_name, bool value)
 {
     local ConEventSetFlag ef;
-    local ConFlagRef f;
 
-    ef = new(c) class'ConEventSetFlag';
-    ef.eventType = ET_SetFlag;
+    ef = NewConEventSetFlag(c,prev,StringToName(flag_name),value,dxr.dxInfo.missionNumber + 1);
     ef.label = flag_name $ value;
-    f = new(c) class'ConFlagRef';
-    f.flagName = StringToName(flag_name);
-    f.value = value;
-    f.expiration = dxr.dxInfo.missionNumber + 1;
-    ef.flagRef = f;
 
-    AddConEvent(c, prev, ef);
     prev = ef;
 
     if( after_label != "" )
@@ -806,10 +774,8 @@ function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, 
 function ConEventJump AddJump(Conversation c, ConEvent prev, string after_label)
 {
     local ConEventJump j;
-    j = new(c) class'ConEventJump';
-    j.eventType = ET_Jump;
+    j = ConEventJump(NewConEvent(c,prev,class'ConEventJump'));
     j.jumpLabel = after_label;
-    AddConEvent(c, prev, j);
     return j;
 }
 //#endregion

@@ -534,12 +534,8 @@ function FixDrKitsInfiniteDarts()
 
     if (ceto!=None){
         //We want to make sure to mark M10BoughtDarts after the darts are transferred,
-        cesf = ConEventSetFlag(NewConEvent(c,ceto,class'ConEventSetFlag'));
+        cesf = NewConEventSetFlag(c,ceto,'M10BoughtDarts',True,0);
         cesf.label="M10BoughtDartsSet";
-        cesf.flagRef = new(c) class'ConFlagRef';
-        cesf.flagRef.flagName='M10BoughtDarts';
-        cesf.flagRef.value=True;
-        cesf.flagRef.expiration=0; //Never expire
     }
 }
 //#endregion
@@ -619,8 +615,7 @@ function AnyEntryMapFixes()
 
         c = GetConversation('JockReady');
         if (c != None) {
-            cet = ConEventTrigger(NewConEvent(c,None,class'ConEventTrigger'));
-            cet.triggerTag = 'NicoLeaving';
+            cet = NewConEventTrigger(c,None,'NicoLeaving');
         }
 
         break;
@@ -644,12 +639,8 @@ function AnyEntryMapFixes()
                     ces = ConEventSpeech(ce);
                     if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
                         //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
-                        cesf = ConEventSetFlag(NewConEvent(c,ces,class'ConEventSetFlag'));
+                        cesf = NewConEventSetFlag(c,ces,'MS_LetTobyTakeYou_Rando',True,12);
                         cesf.label="LetTobyTakeYou";
-                        cesf.flagRef = new(c) class'ConFlagRef';
-                        cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
-                        cesf.flagRef.value=True;
-                        cesf.flagRef.expiration=12;
                     }
                 } else if (ce.eventType==ET_AddSkillPoints){
                     ceasp = ConEventAddSkillPoints(ce);
