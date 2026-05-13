@@ -259,6 +259,18 @@ function Frob(Actor Frobber, Inventory frobWith)
     }
 }
 
+static function LootItemMessage(DeusExPlayer player, Inventory item)
+{
+    player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+}
+
+static function LootAmmoMessage(DeusExPlayer player, Ammo item, int amount)
+{
+    if (amount > 0 && item.itemName != class'DeusExAmmo'.default.itemName) {
+        player.ClientMessage(item.PickupMessage @ amount @ item.itemName, 'Pickup');
+    }
+}
+
 function bool TryLootItem(DeusExPlayer player, Inventory item)
 {
     local DeusExPickup invItem;
@@ -300,6 +312,9 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             ammoAddedAmount = newAmmoAmmout - playerAmmo.AmmoAmount;
             playerAmmo.AmmoAmount = newAmmoAmmout;
             weap.PickupAmmoCount -= ammoAddedAmount;
+            if (ammoAddedAmount > 0) {
+                LootAmmoMessage(player, playerAmmo, ammoAddedAmount);
+            }
         }
 
         TossItem(item);
@@ -353,7 +368,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
                 itemCount = (invItem.MaxCopies - invItem.numCopies);
                 DeusExPickup(item).numCopies -= itemCount;
                 invItem.numCopies = invItem.MaxCopies;
-                player.ClientMessage(invItem.PickupMessage @ invItem.itemArticle @ invItem.itemName, 'Pickup');
+                LootItemMessage(player, invItem);
                 AddReceivedItem(player, invItem, itemCount);
             }
             else
@@ -368,7 +383,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             invItem.numCopies += itemCount;
             DeleteInventory(item);
 
-            player.ClientMessage(invItem.PickupMessage @ invItem.itemArticle @ invItem.itemName, 'Pickup');
+            LootItemMessage(player, invItem);
             AddReceivedItem(player, invItem, itemCount);
         }
         return true;
@@ -461,10 +476,12 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
             player.UpdateAmmoBeltText(playerAmmo);
 
             // if this is an illegal ammo type, use the weapon name to print the message
-            if (playerAmmo.PickupViewMesh == Mesh'TestBox')
-                player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
-            else
-                player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+            if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
+                LootItemMessage(player, item);
+            }
+            else {
+                LootAmmoMessage(player, playerAmmo, ammoAdded);
+            }
 
             // Mark it as 0 to prevent it from being added twice
             item.AmmoType.AmmoAmount = 0;
@@ -517,11 +534,16 @@ function bool TryLootAmmo(DeusExPlayer player, Ammo item, optional bool bForce)
 
     playerAmmo = Ammo(player.FindInventoryType(item.class));
 
-    if (playerAmmo == None) {
-        ammoPrevious = 0;
-    } else {
+    // if (playerAmmo == None) {
+    //     ammoPrevious = 0;
+    // } else {
+    //     ammoPrevious = playerAmmo.AmmoAmount;
+    // }
+    if (playerAmmo != None) {
         ammoPrevious = playerAmmo.AmmoAmount;
-    }
+    } /*else {
+        ammoPrevious = 0;
+    }*/
     ammoAdded = Min(item.AmmoAmount, item.MaxAmmo - ammoPrevious );
     ammoLeftover = item.AmmoAmount - ammoAdded;
 
@@ -539,9 +561,9 @@ function bool TryLootAmmo(DeusExPlayer player, Ammo item, optional bool bForce)
         AddReceivedItem(player, item, ammoAdded);
         player.UpdateAmmoBeltText(playerAmmo);
         if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
-            player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+            LootItemMessage(player, item);
         } else {
-            player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+            LootAmmoMessage(player, playerAmmo, ammoAdded);
         }
 
         DeleteInventory(item);
@@ -578,7 +600,7 @@ function bool TryLootRegularItem(DeusExPlayer player, Inventory item)
             // display a line in the Log
             AddReceivedItem(player, item, 1);
 
-            player.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.itemName, 'Pickup');
+            LootItemMessage(player, item);
             PlaySound(Item.PickupSound);
         } else {
             TossItem(item);

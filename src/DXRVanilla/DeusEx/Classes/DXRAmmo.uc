@@ -33,6 +33,7 @@ function bool HandlePickupQuery( inventory Item )
             if (ammoRemaining>0){
                 thisAmmo.ammoAmount = ammoRemaining;
                 AddAmmo(ammoToAdd);
+                player.ClientMessage(thisAmmo.PickupMessage @ string(ammoToAdd) @ thisAmmo.itemName, 'Pickup');
                 return True;
             }
         }
@@ -40,5 +41,17 @@ function bool HandlePickupQuery( inventory Item )
     }
 
     return Super.HandlePickupQuery(Item);
+}
 
+auto state Pickup
+{
+    function Frob(Actor Other, Inventory frobWith)
+	{
+        local string backup;
+
+        backup = ItemArticle;
+        ItemArticle = string(AmmoAmount);
+        Super.Frob(Other, frobWith);
+        ItemArticle = backup;
+	}
 }
