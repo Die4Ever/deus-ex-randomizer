@@ -91,6 +91,7 @@ static simulated function string GetBingoGoalHelpText(string event, int mission,
                 case "peepedtex":
                 case "peeptime":
                 case "peeped":
+                case "singlepeepedtex":
                     msg = GetBingoHelpTextPeeping(event,mission,max,FemJC);
                     break;
                 case "DestroyDeco":

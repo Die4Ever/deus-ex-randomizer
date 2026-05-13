@@ -33,6 +33,12 @@ struct ActorWatchItem {
 var ActorWatchItem actor_watch[150];
 var int num_watched_actors;
 
+struct PeepedTexItem {
+    var string texName;
+    var vector texLoc;
+};
+var PeepedTexItem peepedTexs[50]; //Track this on a per-level basis
+
 simulated function string tweakBingoDescription(string event, string desc);
 simulated function int tweakBingoMax(string event, int max);
 simulated function int tweakBingoMissions(string event, int missions);
@@ -40,6 +46,8 @@ function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
 function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_mission, int end_mission, int real_duration);
+function bool PeepableTexture(name texName);
+function float PeepTexDistance(name texName);
 
 // for goals that can be detected as impossible by an event
 static function int GetBingoFailedEvents(string eventname, out string failed[10]);
@@ -123,6 +131,48 @@ function ReplaceWatchedActor(Actor a, Actor n)
             actor_watch[i].a=n;
             return;
         }
+    }
+}
+//#endregion
+
+//#region PeepTex
+static function PeepTex(name texTag, vector texLoc)
+{
+    local DXREventsBase ev;
+
+    ev = DXREventsBase(class'DXREventsBase'.static.Find());
+
+    if (ev!=None){
+        ev._PeepTex(texTag, texLoc);
+    }
+}
+
+function _PeepTex(name texTag, vector texLoc)
+{
+    local int i;
+
+    if (texTag=='') return;
+
+    if (!PeepableTexture(texTag)) return;
+
+    //check to see if the texTag is already marked...
+    for(i=0;i<ArrayCount(peepedTexs);i++){
+        if ((peepedTexs[i].texName~=string(texTag)) &&
+            (VSize(peepedTexs[i].texLoc-texLoc) < PeepTexDistance(texTag))
+           ){
+            return;
+        }
+    }
+
+    //Mark the bingo
+    class'DXREvents'.static.MarkBingo(texTag$"_singlepeepedtex");
+
+    //Save the texture in the list
+    for (i=0;i<ArrayCount(peepedTexs);i++){
+        if (peepedTexs[i].texName!="") continue;
+        peepedTexs[i].texName=string(texTag);
+        peepedTexs[i].texLoc=texLoc;
+        break;
     }
 }
 //#endregion

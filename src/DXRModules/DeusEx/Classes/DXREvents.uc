@@ -2643,6 +2643,41 @@ simulated function int tweakBingoMissions(string event, int missions)
 }
 //#endregion
 
+//#region Peepable Texture
+function bool PeepableTexture(name texName)
+{
+    switch(texName){
+        case 'un_PrezMeadPic': //Anime President
+        case 'un_bboard':      //Bulletin Board
+        case 'UNATCOHQ_BulletinBoard_Cork': //Bulletin Board (Revision)
+        case 'DrtyPriceSign_A': //Gas prices
+        case 'GS_MedKit_01':    //Medical cabinet door (with Red Cross)
+        case 'DangUnstabCond':  //"Dangerous!" sign on Liberty island
+        case 'pa_TrainSign_D':  //Map of the Paris Metro lines
+        case 'FC_EyeTest':      //Eye Test
+        case 'poster01':        //Join the Navy! poster
+        case 'ShipNamePlate_B': //Ship Name, first character
+        case 'ShipNamePlate_C': //Ship Name, second character
+        case 'ShipNamePlate_D': //Ship Name, third character
+            return true; //We care about this texture
+        default:
+            return false; //We hates it
+    }
+
+}
+
+//Define the "exclusion radius" for each texture.  If a texture is tagged again
+//within this range, it will be ignored.  If the same texture is tagged *outside*
+//the radius, the new location will be added too, causing another exclusion zone.
+function float PeepTexDistance(name texName){
+    switch(texName){
+        case 'poster01': //Join the Navy! Poster
+            return 500.0; //The posters are relatively small, and not very close
+    }
+    return 9999999.999;
+}
+//#endregion
+
 //#region ReadText
 function ReadText(name textTag)
 {

@@ -182,7 +182,14 @@ static function PeepTimer(#var(PlayerPawn) peeper, out int watchTime, out Actor 
         }
     } else if (newPeepTex) {
         //peeper.ClientMessage("New peeped texture is "$lastWatchedTex);
+
+        //This will mark the bingo goal every time it is looked at (for backwards compatibility)
         class'DXREvents'.static.MarkBingo(lastWatchedTex$"_peepedtex");
+
+        //This will only mark a bingo goal for a specific texture when it's outside
+        //of some distance of another seen instance of it
+        //Textures need to be explicitly allowed in PeepableTexture in DXREvents
+        class'DXREvents'.static.PeepTex(lastWatchedTex, HitLocation);
     } else {
         watchTime++;
         if(watchTime>=4){
