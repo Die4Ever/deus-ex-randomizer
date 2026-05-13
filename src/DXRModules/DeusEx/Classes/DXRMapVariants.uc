@@ -1,5 +1,7 @@
 class DXRMapVariants extends DXRBase transient;
 
+/*const*/ var name EndingFlag;
+
 var int missions[13];
 var string starts[13];
 
@@ -192,6 +194,20 @@ function int GetMirrorMapsSetting()
     return dxr.flags.mirroredmaps;
 }
 
+function string GetEnding()
+{
+    switch (dxr.flagbase.GetInt(EndingFlag)) {
+        case 1:
+            return "99_ENDGAME1";
+        case 2:
+            return "99_ENDGAME2";
+        case 3:
+            return "99_ENDGAME3";
+        default:
+            return "99_ENDGAME4";
+    }
+}
+
 function CheckConfig()
 {
     local int i, slot, tempi, len;
@@ -200,7 +216,7 @@ function CheckConfig()
 
     Super.CheckConfig();
 
-    SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
+    SetGlobalSeed("SpeedrunShuffle maps");
     len = ArrayCount(starts)-1;
     if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
         starts[9] = starts[10];
@@ -242,7 +258,7 @@ function CheckConfig()
                 default: totalMinutes += 10; break;
             }
         }
-        starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
+        starts[len] = GetEnding();
         missions[len] = 99;
         for(i=0; i<len; i++) {
             l("speedshuffle " $ i @ starts[i]);
@@ -463,6 +479,8 @@ function ExtendedTests()
 
 defaultproperties
 {
+    EndingFlag=DXRando_Ending
+
     starts(0)="01_NYC_UNATCOIsland"
     starts(1)="02_NYC_BatteryPark"
     starts(2)="03_NYC_UNATCOIsland"
