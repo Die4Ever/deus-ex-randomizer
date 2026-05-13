@@ -23,3 +23,9 @@
 - Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
 - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
 </details>
+
+<!--
+## Intra-Patch Changes
+
+- Lebedev's surrender conversation doesn't play if Anna's already dead in Speedrun Shuffle.
+-->
