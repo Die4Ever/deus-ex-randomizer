@@ -2473,6 +2473,7 @@ simulated function int tweakBingoMissions(string event, int missions)
 {
     local DXRando dxr;
     local bool RevisionMaps;
+    local int newMissions;
 
     dxr = class'DXRando'.default.dxr;
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
@@ -2637,6 +2638,26 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Missing the ones in Paris Metro and Paris Underground (so just missing M11)
                 return #bit(1,5,10);
             }
+            break;
+        case "Rebreather_Activated":
+            newMissions = missions;
+
+            if (RevisionMaps){
+                //Revision has some in missions 1, 3, and 4, but not in mission 5
+                //Just make the mask from scratch instead of trying to adjust
+                newMissions = #bit(1,3,4,6,11,12,14,15);
+            } else if (#defined(gmdx)){
+                //Somehow Revision (v9, at least) only has rebreathers in Hong Kong???
+                //Tong's Base, Lucky Money, and Level 2 Labs
+                newMissions = #bit(6);
+            }
+
+            if (dxr.flags.moresettings.entrance_rando > 0) {
+                //Entrance Rando adds rebreathers in Battery Park, Helibase, Airfield
+                newMissions = newMissions | #bit(3);
+            }
+            return newMissions;
+            break;
     }
 
     return missions;
@@ -4384,7 +4405,7 @@ defaultproperties
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=#bit(6))
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack a computer",max=10)
     bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",desc_singular="Use tech goggles",max=3,missions=#bit(1,3,6,10,12,14,15))
-    bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use a rebreather",max=3,missions=#bit(3,5,6,11,12,14,15))
+    bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use a rebreather",max=3,missions=#bit(5,6,11,12,14,15))
     bingo_options(189)=(event="PerformBurder_ClassDead",desc="Hunt %s birds",desc_singular="Hunt a bird",max=10,missions=#bit(1,2,3,4,5,6,8,9,10,11,12,14))
     bingo_options(190)=(event="GoneFishing_ClassDead",desc="Kill %s fish",max=10,missions=#bit(1,2,3,6,11,14))
     bingo_options(191)=(event="FordSchick_PlayerDead",desc="Kill Ford Schick",max=1,missions=#bit(2,4,8))
