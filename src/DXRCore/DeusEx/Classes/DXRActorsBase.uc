@@ -1059,7 +1059,7 @@ static function ConEventSetFlag NewConEventSetFlag(Conversation c, ConEvent prev
     return e;
 }
 
-static function ConEventMoveCamera NewConEventMoveCamera(Conversation c, ConEvent prev, byte camPos)
+static function ConEventMoveCamera NewConEventMoveCamera(Conversation c, ConEvent prev, int camPos)
 {
     local ConEventMoveCamera cam;
 
@@ -2334,9 +2334,7 @@ static function MarkDataVaultImagesAsViewed(#var(PlayerPawn) p)
 
 static function bool IsUsingOggMusic(#var(PlayerPawn) player)
 {
-#ifndef revision
-    return False;
-#else
+#ifdef revision
     if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
         //Vanilla Maps in Revision only support the original tracker music
         return False;
@@ -2344,6 +2342,17 @@ static function bool IsUsingOggMusic(#var(PlayerPawn) player)
         //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
         return True;
     }
+    return False;
+#elseif vmd2
+    if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
+        //Vanilla Maps only support the original tracker music
+        return False;
+    }else if (class'VMDBufferPlayer'.Default.bUseRevisionSoundtrack){
+        //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
+        return True;
+    }
+    return False;
+#else
     return False;
 #endif
 }
