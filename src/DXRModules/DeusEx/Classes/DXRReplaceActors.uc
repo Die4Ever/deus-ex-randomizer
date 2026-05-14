@@ -921,6 +921,32 @@ function UpdateActorReferences(Actor a, Actor n)
         hoverhint.ReplaceActor(a,n);
     }
 
+    UpdateVMD2PathRebuildReferences(a,n);
+
     PopulateReplacedActors();
     replacements.AddReplacement(a,n); //Log the replacement
+}
+
+//VMD2 does some tomfoolery that removes collision, then adds it back in a later frame
+//In theory we can replace actors in between those two actions, leaving the replaced
+//actor with no collision, preventing highlighting
+function UpdateVMD2PathRebuildReferences(Actor a, Actor n)
+{
+#ifdef vmd2
+    local VMDLadderPointAdder lpa;
+    local int i;
+
+    foreach AllActors(class'VMDLadderPointAdder',lpa){
+        //Update any references to the old actor that might have already had collision changed
+
+        //I think we need a function in VMDLadderPointAdder that does something like the below
+        //TODO: VMD2!
+        /*
+        for (i=0;i<ArrayCount(lpa.CollisionHoes);i++){
+            if (lpa.CollisionHoes[i]!=a) continue;
+            lpa.CollisionHoes[i]=n;
+        }
+        */
+    }
+#endif
 }
