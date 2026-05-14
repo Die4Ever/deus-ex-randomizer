@@ -2428,6 +2428,8 @@ simulated function int tweakBingoMax(string event, int max)
         case "Disloyal_DestroyDeco":
             if (RevisionMaps){
                 return 9; //Just a lot more flags in Revision
+            } else if (#defined(gmdx)){
+                return 7; //A different number of more in GMDX
             }
 
         //Sodacan_Activated
@@ -2477,6 +2479,7 @@ simulated function int tweakBingoMissions(string event, int missions)
 
     dxr = class'DXRando'.default.dxr;
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    newMissions = missions;
 
     switch(event){
         case "PhoneCall":
@@ -2503,12 +2506,16 @@ simulated function int tweakBingoMissions(string event, int missions)
                 // - Everett, Underground (M11)
                 // - Sub Base (M14)
                 // - A51 Bunker, Entrance (M15)
-                return #bit(2,4,5,6,8,9,10,11,14,15);
+                newMissions = newMissions | #bit(5,10,11,14,15);
+            } else if (#defined(gmdx)){
+                //Extra in
+                // - 747 (M03)
+                newMissions = newMissions | #bit(3);
             } else { //Vanilla maps
                 if (dxr.flags.clothes_looting!=0){
                     //Clothes Looting adds clothes racks to missions:
                     // 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 15
-                    return #bit(1,2,3,4,5,6,8,9,10,11,12,15);
+                    newMissions = newMissions | #bit(1,2,3,4,5,6,8,9,10,11,12,15);
                 }
             }
             break;
@@ -2521,12 +2528,20 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Extras in
                 // - Paris Streets, Chateau (M10)
                 return #bit(6,10);
+            } else if (#defined(gmdx)){
+                //Extra in
+                // - Paris Streets (M10)
+                return #bit(6,10);
             }
             break;
         case "PinballWizard":
+        // Vanilla is #bit(1,2,3,4,5,6,8,12,15)
             if (RevisionMaps){
                 //Revision has an extra in the break room of ship lower decks
-                return #bit(1,2,3,4,5,6,8,9,12,15);
+                newMissions = newMissions | #bit(9);
+            } else if (#defined(gmdx)){
+                //GMDX has one in the lower decks as well
+                newMissions = newMissions | #bit(9);
             }
             break;
         case "NYEagleStatue_peeped":
@@ -2536,6 +2551,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             }
             break;
         case "FightSkeletons_DestroyDeco":
+        //Vanilla is #bit(4,6,10,11,14)
             if (RevisionMaps){
                 //Extras in:
                 // - NYC Bar, Free Clinic, Street (M02)
@@ -2545,9 +2561,18 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //NONE in:
                 // - Cathedral (M11)
                 return #bit(2,4,6,8,10,14);
+            } else if (#defined(gmdx)){
+                //Extras in:
+                // - Street, Sewers (M02)
+                // - Mole People (M03)
+                // - Streets, Sewers (M08)
+                // - Gas Station (M12)
+                // - Area 51 Surface (M15)
+                newMissions = newMissions | #bit(2,3,8,12,15);
             }
             break;
         case "TrophyHunter_DestroyDeco":
+        //Vanilla is #bit(1,3,4,5,6,10)
             if (RevisionMaps){
                 //Extras in:
                 // - NYC Bar (M02)
@@ -2558,19 +2583,35 @@ simulated function int tweakBingoMissions(string event, int missions)
                 // - NYC Bar (M08)
                 // - Paris Streets (M10)
                 // - Vandenberg Command (M12)
-                return #bit(1,2,3,4,5,6,8,10,12);
+                newMissions = newMissions | #bit(2,3,4,5,6,8,10,12);
+            } else if (#defined(gmdx)){
+                //Extras in
+                // - NYC Streets (M02)
+                // - Airfield Helibase (M03)
+                // - Ship Below (M09)
+                // - Cathedral (M11)
+                newMissions = newMissions | #bit(2,3,9,11);
             }
             break;
         case "SlippingHazard_DestroyDeco":
+        //Vanilla is #bit(1,2,3,4,5,6,8,9)
             if (RevisionMaps){
                 //Extra in Paris Club (M10)
-                return #bit(1,2,3,4,5,6,8,9,10);
+                newMissions = newMissions | #bit(10);
+            } else if (#defined(gmdx)){
+                //Extras in:
+                // - Command, Gas (M12)
+                // - Area 51 Surface (M15)
+                newMissions = newMissions | #bit(12,15);
             }
             break;
         case "un_PrezMeadPic_peepedtex":
             if (RevisionMaps){
                 //Extras in NYC Bar (M02/04/08)
-                return #bit(1,2,3,4,5,8);
+                newMissions = newMissions | #bit(2,4,8);
+            } else if (#defined(gmdx)){
+                //Extras in NYC Bar (M02/04/08)
+                newMissions = newMissions | #bit(2,4,8);
             }
             break;
         //case "GS_MedKit_01_peepedtex":
@@ -2582,10 +2623,15 @@ simulated function int tweakBingoMissions(string event, int missions)
         //    }
         //    break;
         case "Cat_peeptime":
+        //Vanilla is #bit(3,4,6,10,11,12)
             if (RevisionMaps){
                 //Extras in NYC Streets (M02)
                 //None in Battery Park (M04)
                 return #bit(2,3,6,10,11,12);
+            } else if (#defined(gmdx)){
+                //Extras in:
+                // - Smuggler (M08)
+                newMissions = newMissions | #bit(8);
             }
             break;
         case "WatchDogs_peeptime":
@@ -2628,9 +2674,13 @@ simulated function int tweakBingoMissions(string event, int missions)
             }
             break;
         case "FlushToilet":
+        // Vanilla is #bit(1,2,3,4,5,6,8,9,10,11,12);
             if (RevisionMaps){
                 //Extras in Area 51 Entrance (M15)
-                return #bit(1,2,3,4,5,6,8,9,10,11,12,15);
+                newMissions = newMissions | #bit(15);
+            } else if (#defined(gmdx)){
+                //GMDX adds a door into the (formerly) blocked off bathroom on the surface
+                newMissions = newMissions | #bit(15);
             }
             break;
         case "InCaseOfEmergency":
@@ -2640,8 +2690,6 @@ simulated function int tweakBingoMissions(string event, int missions)
             }
             break;
         case "Rebreather_Activated":
-            newMissions = missions;
-
             if (RevisionMaps){
                 //Revision has some in missions 1, 3, and 4, but not in mission 5
                 //Just make the mask from scratch instead of trying to adjust
@@ -2656,11 +2704,269 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Entrance Rando adds rebreathers in Battery Park, Helibase, Airfield
                 newMissions = newMissions | #bit(3);
             }
-            return newMissions;
             break;
+        case "VendingMachineDispense_Candy":
+            if (#defined(gmdx) || RevisionMaps){
+                //GMDX and Revision add some vending machines
+                newMissions = newMissions | #bit(8,12);
+            }
+            break;
+        case "VendingMachineEmpty_Drink":
+            if (RevisionMaps){
+                //Revision adds drink machines in the Paris Metro station map and OceanLab UC (lol)
+                newMissions = newMissions | #bit(11,14);
+            }
+            break;
+        case "CleanerBot_ClassTakedown":
+            if (RevisionMaps){
+                //Extras in:
+                // - UNATCO HQ, MJ12 Lab (M05)
+                // - Paris Streets (M10)
+                // - Paris Underground (Metro) M11
+                // - Command, Tunnels (M12)
+                // - Area 51 Page (M15)
+                newMissions = newMissions | #bit(5,10,11,12,15);
+            }else if (#defined(gmdx)){
+                //Revision removes the one from M08
+                newMissions = #bit(1,2,3,4);
+            }
+            break;
+        case "BallisticArmor_Activated":
+            //Vanilla is #bit(2,3,4,5,6,8,9,10,11,12,14,15)
+            //Revision matches Vanilla
+            if (#defined(gmdx)){
+                //GMDX adds one on Liberty Island
+                newMissions = newMissions | #bit(1);
+            }
+            break;
+        case "VialAmbrosia_Activated":
+            //Vanilla is #bit(9,14)
+            //Revision matches Vanilla
+            if (#defined(gmdx)){
+                //GMDX adds a bunch in Area 51 Entrance
+                newMissions = newMissions | #bit(15);
+            }
+            break;
+        case "HazMatSuit_Activated":
+            //Vanilla is #bit(1,4,6,9,10,12,14,15)
+            //Revision matches Vanilla
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Helibase, UNATCO HQ (M03)
+                // - Sewers (M08)
+                newMissions = newMissions | #bit(3,8);
+            }
+            break;
+        case "AdaptiveArmor_Activated":
+            //Vanilla is #bit(2,3,4,6,8,9,10,12,14,15)
+            //Revision matches Vanilla
+            if (#defined(gmdx)){
+                //Missing armour in M02, M04, M08, M12
+                newMissions = #bit(3,6,9,10,14,15);
+            }
+            break;
+        case "Flare_Activated":
+            //Vanilla is #bit(1,2,3,4,5,6,8,10,11,12,14,15)
+            //Revision matches Vanilla
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Ship, Ship Below, Fan (M09)
+                newMissions = newMissions | #bit(9);
+            }
+            break;
+        case "TechGoggles_Activated":
+            //Vanilla is #bit(1,3,6,10,12,14,15)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Everett, Metro Station (M11)
+                newMissions = newMissions | #bit(11);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - Smuggler, Warehouse (M02)
+                // - NSF HQ (M04)
+                // - UNATCO HQ (M05)
+                newMissions = newMissions | #bit(2,4,5);
+            }
+            break;
+        case "ASingleFlask_DestroyDeco":
+            //Vanilla is #bit(1,2,3,4,5,6,9,10,11,12,14)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Area 51 Entrance (M15)
+                newMissions = newMissions | #bit(15);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - Area 51 Page (M15)
+                newMissions = newMissions | #bit(15);
+            }
+            break;
+        case "WhyContainIt_DestroyDeco":
+            //Vanilla is #bit(12,14)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Area 51 Entrance (M15)
+                newMissions = newMissions | #bit(15);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - Area 51 Final (M15)
+                //Missing in:
+                // - Mission 12
+                newMissions = #bit(14,15);
+            }
+            break;
+        case "SmokingKills_DestroyDeco":
+            //Vanilla is #bit(2,3,4,6,8,10,11)
+            //GMDX matches Vanilla
+            if (RevisionMaps) {
+                //Extras in:
+                // - UNATCO HQ (M01)
+                // - UNATCO HQ (M03)
+                // - UNATCO HQ (M04)
+                // - UNATCO HQ (M05)
+                // - Ship Upper, Ship Below (M09)
+                // - Area 51 Entrance (M15)
+                newMissions = newMissions | #bit(1,3,4,5,9,15);
+            }
+            break;
+        case "NotABigFan":
+            //Vanilla is #bit(2,3,4,6,8,9,14)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - UNATCO HQ (M01)
+                // - UNATCO HQ (M05)
+                // - Club, Streets (M10)
+                // - Everett (M11)
+                // - Area 51 Entrance (M15)
+                newMissions = newMissions | #bit(1,5,10,11,15);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - UNATCO HQ (M01)
+                // - UNATCO HQ (M05)
+                // - Pre-Catacombs, Catacombs Metro Station, Club, Streets (M10)
+                // - Everett, Metro Station (M11)
+                // - Command, Gas Station, Computer (M12)
+                newMissions = #bit(1,5,10,11,12);
+            }
+            break;
+        case "ChugWater":
+        case "Dehydrated_DestroyDeco":
+            //Vanilla is #bit(1,2,3,4,5,6,8,9,10,11,12,15)
+            //Revision matches Vanilla
+            if (#defined(gmdx)){
+                //Extra in:
+                // - Ocean Lab (M14)
+                newMissions = newMissions | #bit(14);
+            }
+            break;
+        case "Chef_ClassDead":
+            //Vanilla is #bit(10,11)
+            //Revision matches Vanilla
+            if (#defined(gmdx)){
+                //Extra in:
+                // - Ship Upper (M09)
+                newMissions = newMissions | #bit(9);
+            }
+            break;
+        case "Karkian_ClassDead":
+            //Vanilla is #bit(5,6,14,15)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Paris Streets (M10)
+                // - Vandenberg Tunnels (M12)
+                newMissions = newMissions | #bit(10,12);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - Graveyard (M09), but I think they're all in the crypt, so ignore them
+            }
+            break;
+        case "Greasel_ClassDead":
+            //Vanilla is #bit(5,6,10,14,15)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Sewers (M08)
+                // - Gas Station, Tunnels (M12)
+                newMissions = newMissions | #bit(8,12);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - Graveyard (M09), but I think they're all in the crypt, so ignore them
+            }
+            break;
+        case "MilitaryBot_ClassTakedown":
+            //Vanilla is #bit(4,5,6,9,10,11,12,14)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Area 51 Surface (M15)
+                //Missing in:
+                // - M05
+                newMissions = #bit(4,6,9,10,11,12,14,15);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - Area 51 Surface, sometimes Entrance (M15)
+                newMissions = newMissions | #bit(15);
+            }
+            break;
+        case "WatchDogs_peeptime":
+            //Vanilla is #bit(2,5,6,10,12,14)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Liberty Island (M01)
+                // - Airfield, Mole People (M03)
+                newMissions = newMissions | #bit(1,3);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - Cathedral (M11)
+                newMissions = newMissions | #bit(11);
+            }
+            break;
+        case "SecurityBot2_ClassTakedown":
+            //Vanilla is #bit(1,4,5,6,8,9,10,11,12,14,15)
+            if (#defined(gmdx)){
+                //Missing in M14
+                newMissions = #bit(1,4,5,6,8,9,10,11,12,15);
+            }
+            break;
+        case "SecurityBotSmall_ClassTakedown":
+            //Vanilla is #bit(1,2,3,4,8,11,15)
+            if (#defined(gmdx)){
+                //Extras in:
+                // - MJ12 Lab (M05)
+                // - Ship Fan (M09)
+                // - Silo (M14)
+                newMissions = newMissions | #bit(5,9,14);
+            } else if (RevisionMaps) {
+                //Extras in:
+                // - MJ12 Lab (M05)
+                // - Ship Lower (M09)
+                // - Catacombs Tunnels (M10)
+                // - Command, Computer, Tunnels (M12)
+                newMissions = newMissions | #bit(5,9,10,12);
+            }
+            break;
+        case "BurnTrash":
+            //Vanilla is #bit(1,2,3,4,6,8,9,10,11,12,14,15)
+            //Revision matches vanilla
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Liberty Island (M05)
+                newMissions = newMissions | #bit(5);
+            }
+            break;
+        case "PhoneCall":
+            //Vanilla is #bit(2,3,4,5,6,8,9,10)
+            //Revision matches vanilla
+            if (#defined(gmdx)){
+                //Extras in:
+                // - Liberty Island, UNATCO HQ (M01)
+                // - Area 51 Surface (M15)
+                //Missing in:
+                // - M09
+                newMissions = #bit(1,2,3,4,5,6,8,10,15);
+            }
+            break;
+
     }
 
-    return missions;
+    return newMissions;
 }
 //#endregion
 
@@ -3082,6 +3388,10 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
         case "LibertyBenches":
             //Too lazy to mark the 22 extra benches on the Revision maps
             return RevisionMaps;
+
+    //Or only possible on Revision maps
+        case "PCLOADLETTER_DestroyDeco":
+            return !RevisionMaps;
     }
 
     //More broad loadout checks
@@ -4302,7 +4612,7 @@ defaultproperties
     bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out %s MJ12 Troopers",desc_singular="Knock out an MJ12 Trooper",max=25,missions=#bit(2,5,6,8,9,10,11,12,14,15))
     bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out %s MJ12 Commandos",desc_singular="Knock out an MJ12 Commando",max=2,missions=#bit(6,10,11,12,14,15))
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1,missions=#bit(6))
-    bingo_options(96)=(event="ChugWater",desc="Chug water %s times",desc_singular="Chug water",max=30,mission=40830)
+    bingo_options(96)=(event="ChugWater",desc="Chug water %s times",desc_singular="Chug water",max=30,mission=#bit(1,2,3,4,5,6,8,9,10,11,12,15))
 #ifndef vmd
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at %s different clothes racks",desc_singular="Change clothes at a clothes rack",max=3,missions=#bit(2,4,6,8,9))
 #endif
@@ -4638,8 +4948,10 @@ defaultproperties
     bingo_options(401)=(event="BuyFromKaplan_ConvoFlag",desc="Spoils of War",max=1,missions=#bit(1))
     bingo_options(402)=(event="KaplanHatesPlayer_ConvoFlag",desc="We're Cops",max=1,missions=#bit(1))
     bingo_options(403)=(event="LibertyBenches",desc="Bench Warmer",max=3,missions=#bit(1),do_not_scale=true)
+#ifdef vanilla
     bingo_options(404)=(event="PetRobot_CleanerBot",desc="Pet %s Cleaner Bots",desc_singular="Pet a Cleaner Bot",max=5,missions=#bit(1,2,3,4,8))
     bingo_options(405)=(event="PetRobot_SecurityBotSmall",desc="Pet %s Commercial Grade Security Bots",desc_singular="Pet a Commercial Grade Security Bot",max=3,missions=#bit(1,2,3,4,8,11,15))
+#endif
     bingo_options(406)=(event="PeacekeepingOccupation_Convo",desc="Peace Keeping Occupation",max=1,missions=#bit(2,3,4)) //Space between Peace and Keeping for better linebreaking in the bingo viewer
     bingo_options(407)=(event="MeetClinicMaleBum3_Played",desc="Who will help the widow's son?",max=1,missions=#bit(2))
     bingo_options(408)=(event="CrawlUnderHelipad",desc="Crawl under the super freighter helipad",max=3,missions=#bit(9),do_not_scale=true)

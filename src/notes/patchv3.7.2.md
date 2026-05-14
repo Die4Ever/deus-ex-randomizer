@@ -23,4 +23,5 @@
 - Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
 - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
 - "Use x Rebreathers" bingo goal will only be available in Mission 3 when Entrance Randomization is enabled.  The available missions for this goal have also been updated to match the number of rebreathers in Revision and GMDX.
+- A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
 </details>
