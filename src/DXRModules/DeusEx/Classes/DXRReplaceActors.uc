@@ -938,15 +938,7 @@ function UpdateVMD2PathRebuildReferences(Actor a, Actor n)
 
     foreach AllActors(class'VMDLadderPointAdder',lpa){
         //Update any references to the old actor that might have already had collision changed
-
-        //I think we need a function in VMDLadderPointAdder that does something like the below
-        //TODO: VMD2!
-        /*
-        for (i=0;i<ArrayCount(lpa.CollisionHoes);i++){
-            if (lpa.CollisionHoes[i]!=a) continue;
-            lpa.CollisionHoes[i]=n;
-        }
-        */
+        lpa.SwapCollisionReferences(a,n);
     }
 #endif
 }
