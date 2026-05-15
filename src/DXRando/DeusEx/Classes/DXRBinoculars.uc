@@ -28,6 +28,7 @@ state DeActivated
         if (#defined(hx)){
             SetTimer(0,False);
             lastWatched = None;
+            lastWatchedTex = '';
         }
     }
 }

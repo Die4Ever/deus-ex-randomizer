@@ -131,6 +131,7 @@ function DeactivateView()
         RemoveTimer(watchTimerId);
         watchTimerId=0;
         lastWatched = None;
+        lastWatchedTex = '';
     }
 }
 

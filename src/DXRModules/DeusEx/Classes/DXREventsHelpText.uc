@@ -966,6 +966,12 @@ static simulated function string GetBingoHelpTextPeeping(string event, int missi
             return msg;
         case "poster01_peepedtex":
             return "Have a look at a Navy recruitment poster through a pair of binoculars or a scope.  It really makes you want to sign up!";
+        case "AdvertisingWorks_singlepeepedtex":
+            return "Prove that physical advertising works by looking at "$max$" "$plur("advertisement",max)$" through the game by looking at them through binoculars or a scope.";
+        case "ChnaHandSign_A_singlepeepedtex":
+            return "Support a local business and look at "$max$" "$plur("sign",max)$" for the Old China Hand throughout Hong Kong through binoculars or a scope.";
+        case "CatchTheNews_singlepeepedtex":
+            return "Watch the news on a TV "$max$" "$plur("time",max)$" through binoculars or a scope.";
     }
 
     //Return nothing so the generic function can handle it

@@ -2453,6 +2453,11 @@ simulated function int ScaleBingoGoalMax(string event, int max, int bingoScale, 
         min = 3;
         break;
 
+    case "AdvertisingWorks_singlepeepedtex":
+        //Let's not let this be TOO easy
+        min=3;
+        break;
+
     case "PoolTableStripeBallSunk":
     case "PoolTableSolidBallSunk":
     case "PoolTableBallSunk":
@@ -2986,7 +2991,34 @@ function bool PeepableTexture(name texName)
         case 'ShipNamePlate_B': //Ship Name, first character
         case 'ShipNamePlate_C': //Ship Name, second character
         case 'ShipNamePlate_D': //Ship Name, third character
+        case 'submap':          //Map of the NY Subway system
+        case 'NYsubmap':        //Map of the NY Subway system
+        case 'ChnaHandSign_A':  //Old China Hand sign
+        case 'News_A01':        //White Woman News
+        case 'Stoc_A01':        //White Man News
+        case 'Stoc_B01':        //Chinese Woman News
             return true; //We care about this texture
+
+        //Advertisements
+        case 'bigtops':         //Big Top Cigarettes
+        case 'BigTopsCig_sign': //Big Top Cigarettes
+        case 'Super45B_BB':     //"Drink More Think Less"
+        case 'Super45a_sign':   //"Drink More Think Less"
+        case 'Super45b_sign':   //"Drink More Think Less"
+        case 'JadeDragonBB':    //Jade Dragon's House of Pain
+        case 'JadeDragon_sign': //Jade Dragon's House of Pain
+        case '2ndAveSub_sign':  //"No Joke" Big Top Cigarettes (Including sign over Tonnochi Road)
+        case 'NoJokeCig_sign':  //"No Joke" Big Top Cigarettes
+        case 'HolySmokesBB':    //Holy Smokes: They're savioriffic!
+        case 'S45cigs_sign':    //Super 45 Cigarettes: The only brand recommended by... the Surgeon General himself!
+        case 'ClenReddSign_U':  //Shing Hing General Contractors
+        case 'HK_Sign_Kiosk1':  //Some sort of beauty ad
+        case 'pa_kiosquead_a':  //Partynews Online
+        case 'pa_TrainSign_F':  //Woman and Bum Paris Metro Ad
+        case 'pa_TrainSign_G':  //Mathilde
+        case 'pa_kiosquead_b':  //Red and White Lines (I don't know what this is, kind of looks like a chess piece?)
+        case 'pa_TrainSign_C':  //"RATP"
+            return true;
         default:
             return false; //We hates it
     }
@@ -2998,8 +3030,32 @@ function bool PeepableTexture(name texName)
 //the radius, the new location will be added too, causing another exclusion zone.
 function float PeepTexDistance(name texName){
     switch(texName){
-        case 'poster01': //Join the Navy! Poster
+        case 'poster01':        //Join the Navy! Poster
+        case 'submap':          //Map of the NY Subway system
+        case 'NYsubmap':        //Map of the NY Subway system
+        case 'ChnaHandSign_A':  //Old China Hand sign
             return 500.0; //The posters are relatively small, and not very close
+
+        //Advertisements
+        case 'bigtops':         //Big Top Cigarettes
+        case 'BigTopsCig_sign': //Big Top Cigarettes
+        case 'Super45B_BB':     //"Drink More Think Less"
+        case 'Super45a_sign':   //"Drink More Think Less"
+        case 'Super45b_sign':   //"Drink More Think Less"
+        case 'JadeDragonBB':    //Jade Dragon's House of Pain
+        case 'JadeDragon_sign': //Jade Dragon's House of Pain
+        case '2ndAveSub_sign':  //"No Joke" Big Top Cigarettes (Including sign over Tonnochi Road)
+        case 'NoJokeCig_sign':  //"No Joke" Big Top Cigarettes
+        case 'HolySmokesBB':    //Holy Smokes: They're savioriffic!
+        case 'S45cigs_sign':    //Super 45 Cigarettes: The only brand recommended by... the Surgeon General himself!
+        case 'ClenReddSign_U':  //Shing Hing General Contractors
+        case 'HK_Sign_Kiosk1':  //Some sort of beauty ad
+        case 'pa_kiosquead_a':  //Partynews Online
+        case 'pa_TrainSign_F':  //Woman and Bum Paris Metro Ad
+        case 'pa_TrainSign_G':  //Mathilde
+        case 'pa_kiosquead_b':  //Red and White Lines (I don't know what this is, kind of looks like a chess piece?)
+        case 'pa_TrainSign_C':  //"RATP"
+            return 500.0; //Don't go too crazy on the distance checks
     }
     return 9999999.999;
 }
@@ -3700,6 +3756,10 @@ function string RemapBingoEvent(string eventname)
         case "ShipNamePlate_C_peepedtex":
         case "ShipNamePlate_D_peepedtex":
             return "ShipNamePlate_peeped";
+        case "ShipNamePlate_B_singlepeepedtex":
+        case "ShipNamePlate_C_singlepeepedtex":
+        case "ShipNamePlate_D_singlepeepedtex":
+            return "ShipNamePlate_singlepeepedtex";
         case "UNATCOHQ_BulletinBoard_Cork_peepedtex":
             return "un_bboard_peepedtex";
         case "SheaKnowsAboutDowd":
@@ -3838,6 +3898,34 @@ function string RemapBingoEvent(string eventname)
                 _MarkBingo("CannotBuyClinicPlan");
             }
             return eventname;
+        case "bigtops_singlepeepedtex":         //Big Top Cigarettes
+        case "BigTopsCig_sign_singlepeepedtex": //Big Top Cigarettes
+        case "Super45B_BB_singlepeepedtex":     //"Drink More Think Less"
+        case "Super45a_sign_singlepeepedtex":   //"Drink More Think Less"
+        case "Super45b_sign_singlepeepedtex":   //"Drink More Think Less"
+        case "JadeDragonBB_singlepeepedtex":    //Jade Dragon's House of Pain
+        case "JadeDragon_sign_singlepeepedtex": //Jade Dragon's House of Pain
+        case "2ndAveSub_sign_singlepeepedtex":  //"No Joke" Big Top Cigarettes (Including sign over Tonnochi Road)
+        case "NoJokeCig_sign_singlepeepedtex":  //"No Joke" Big Top Cigarettes
+        case "HolySmokesBB_singlepeepedtex":    //Holy Smokes: They're savioriffic!
+        case "S45cigs_sign_singlepeepedtex":    //Super 45 Cigarettes: The only brand recommended by... the Surgeon General himself!
+        case "ClenReddSign_U_singlepeepedtex":  //Shing Hing General Contractors
+        case "HK_Sign_Kiosk1_singlepeepedtex":  //Some sort of beauty ad
+        case "pa_kiosquead_a_singlepeepedtex":  //Partynews Online
+        case "pa_TrainSign_F_singlepeepedtex":  //Woman and Bum Paris Metro Ad
+        case "pa_TrainSign_G_singlepeepedtex":  //Mathilde
+        case "pa_kiosquead_b_singlepeepedtex":  //Red and White Lines (I don't know what this is, kind of looks like a chess piece?)
+        case "pa_TrainSign_C_singlepeepedtex":  //"RATP"
+            _MarkBingo("AdvertisingWorks_singlepeepedtex"); //Mark the general "advertising goal"
+            return eventname;
+
+        case "News_A01_singlepeepedtex":        //White Woman News
+        case "Stoc_A01_singlepeepedtex":        //White Man News
+        case "Stoc_B01_singlepeepedtex":        //Chinese Woman News
+            _MarkBingo("CatchTheNews_singlepeepedtex");
+            return eventname;
+
+
         default:
             return eventname;
     }
@@ -4957,6 +5045,9 @@ defaultproperties
     bingo_options(408)=(event="CrawlUnderHelipad",desc="Crawl under the super freighter helipad",max=3,missions=#bit(9),do_not_scale=true)
     bingo_options(409)=(event="EngineeringBridge",desc="Raise the bridge in engineering",max=1,missions=#bit(9))
     bingo_options(410)=(event="M02BumSong_Convo",desc="Our Country 'Tis of Thee",max=3,missions=#bit(2),do_not_scale=true)
+    bingo_options(411)=(event="AdvertisingWorks_singlepeepedtex",desc="Advertising Works!",max=30,missions=#bit(2,3,4,6,8,10,11))
+    bingo_options(412)=(event="ChnaHandSign_A_singlepeepedtex",desc="Support Local Business (3)",max=3,missions=#bit(6),do_not_scale=true)
+    bingo_options(413)=(event="CatchTheNews_singlepeepedtex",desc="Catch the News",max=5,missions=#bit(1,3,4,5,6,10,11))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
