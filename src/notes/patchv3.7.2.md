@@ -30,3 +30,9 @@
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
   - "Catch the News": Watch enough TV newscasts through the game with binoculars or a scope.
 </details>
+
+<!--
+## Intra-Patch Changes
+
+- Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
+-->
