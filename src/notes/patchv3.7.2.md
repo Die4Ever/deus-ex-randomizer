@@ -24,6 +24,7 @@
 - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
 - "Use x Rebreathers" bingo goal will only be available in Mission 3 when Entrance Randomization is enabled.  The available missions for this goal have also been updated to match the number of rebreathers in Revision and GMDX.
 - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
+- "Invert Mouse" Crowd Control effect will now properly restore your mouse controls if you load a save made during the effect after the effect ends.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
