@@ -2968,6 +2968,24 @@ simulated function int tweakBingoMissions(string event, int missions)
                 newMissions = #bit(1,2,3,4,5,6,8,10,15);
             }
             break;
+        case "CatchTheNews_singlepeepedtex":
+            //Vanilla is #bit(1,3,4,5,6,10,11)
+            if (#defined(gmdx)){
+                newMissions = newMissions | #bit(2,8,12);
+            } else if (RevisionMaps) {
+                //Every mission, apparently
+                newMissions = newMissions | #bit(2,8,9,12,14,15);
+            }
+            break;
+        case "AdvertisingWorks_singlepeepedtex":
+            //Vanilla is #bit(2,3,4,6,8,10,11)
+            //GMDX matches vanilla
+            if (RevisionMaps) {
+                //Extras in:
+                // - Gas Station (M12)
+                newMissions = newMissions | #bit(12);
+            }
+            break;
 
     }
 
