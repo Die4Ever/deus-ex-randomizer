@@ -25,8 +25,13 @@
 - "Use x Rebreathers" bingo goal will only be available in Mission 3 when Entrance Randomization is enabled.  The available missions for this goal have also been updated to match the number of rebreathers in Revision and GMDX.
 - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
 - "Invert Mouse" Crowd Control effect will now properly restore your mouse controls if you load a save made during the effect after the effect ends.
+- Teleporters between maps will now properly show whether the destination map is mirrored or not (The arrow in the icon will point left for mirrored maps, or right for normal maps).
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
   - "Catch the News": Watch enough TV newscasts through the game with binoculars or a scope.
 </details>
+
+## Intra-Patch Changes
+
+- In Speedrun Shuffle mode, highlight text now shows the next map you will be going to when looking at the game endings in Mission 15.

@@ -33,14 +33,10 @@ function string formatMapName(string mapName)
     return class'DXRMapInfo'.static.GetTeleporterName(mapNameOnly,teleName);
 }
 
-function String GetHintText()
+function String GetDestination()
 {
     local DynamicTeleporter dynTele;
-    local string teleDest, text;
-
-    if (target==None){
-        return Super.GetHintText();
-    }
+    local string teleDest;
 
     if (#var(prefix)Teleporter(target)!=None){
         teleDest = #var(prefix)Teleporter(target).URL;
@@ -61,7 +57,19 @@ function String GetHintText()
 #endif
     }
 
-    text = formatMapName(teleDest);
+    return teleDest;
+}
+
+function String GetHintText()
+{
+    local string text;
+
+    if (target==None){
+        return Super.GetHintText();
+    }
+
+    text = formatMapName(GetDestination());
+
     if (addBingoText) {
         return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, text);
     } else {
@@ -76,4 +84,12 @@ function bool ShouldDisplay(float dist)
     }
 
     return class'MenuChoice_ShowTeleporters'.static.ShowDescriptions();
+}
+
+function FakeTeleporterAppearance()
+{
+    Texture=class'DXRMapVariants'.static.GetTeleporterTexture(GetDestination()); //Fake it to show as a teleporter
+    DrawType=DT_Sprite;
+    bHidden=!class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
+    bNoSmooth=true; //This doesn't actually work on these for whatever reason, oh well
 }
