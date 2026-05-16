@@ -26,6 +26,7 @@
 - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
 - "Invert Mouse" Crowd Control effect will now properly restore your mouse controls if you load a save made during the effect after the effect ends.
 - Teleporters between maps will now properly show whether the destination map is mirrored or not (The arrow in the icon will point left for mirrored maps, or right for normal maps).
+- Beheaded corpses in GMDX that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
