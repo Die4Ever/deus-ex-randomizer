@@ -30,6 +30,8 @@
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
   - "Catch the News": Watch enough TV newscasts through the game with binoculars or a scope.
+  - "Signs of the End": Look at the signs marking the different endings in Area 51 Sector 4.
+  - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
 </details>
 
 ## Intra-Patch Changes

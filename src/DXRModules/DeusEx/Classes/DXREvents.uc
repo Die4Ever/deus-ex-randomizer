@@ -3015,6 +3015,10 @@ function bool PeepableTexture(name texName)
         case 'News_A01':        //White Woman News
         case 'Stoc_A01':        //White Man News
         case 'Stoc_B01':        //Chinese Woman News
+        case 'A51_Sign_40':     //Infusion Control sign (Page Ending)
+        case 'A51_Sign_28':     //Aquinas Router sign (Helios Ending)
+        case 'A51_Sign_25':     //Coolant B13 sign (Tong Ending)
+        case 'A51_Sign_41':     //UC Control room sign
             return true; //We care about this texture
 
         //Advertisements
@@ -3052,6 +3056,7 @@ function float PeepTexDistance(name texName){
         case 'submap':          //Map of the NY Subway system
         case 'NYsubmap':        //Map of the NY Subway system
         case 'ChnaHandSign_A':  //Old China Hand sign
+        case 'A51_Sign_41':     //UC Control room sign
             return 500.0; //The posters are relatively small, and not very close
 
         //Advertisements
@@ -3459,8 +3464,8 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 
 /////////////////////////////////////////////////////////////////////
     //Ban goals that aren't possible on Revision maps
-        case "LibertyBenches":
-            //Too lazy to mark the 22 extra benches on the Revision maps
+        case "LibertyBenches": //Too lazy to mark the 22 extra benches on the Revision maps
+        case "SignsOfTheEnd_singlepeepedtex": //Some of the signs in Sector 4 are different textures and non-solid now
             return RevisionMaps;
 
     //Or only possible on Revision maps
@@ -3941,6 +3946,12 @@ function string RemapBingoEvent(string eventname)
         case "Stoc_A01_singlepeepedtex":        //White Man News
         case "Stoc_B01_singlepeepedtex":        //Chinese Woman News
             _MarkBingo("CatchTheNews_singlepeepedtex");
+            return eventname;
+
+        case "A51_Sign_40_singlepeepedtex": //Infusion Control (Page Ending)
+        case "A51_Sign_28_singlepeepedtex": //Aquinas Router (Helios Ending)
+        case "A51_Sign_25_singlepeepedtex": //Coolant B13 (Tong Ending)
+            _MarkBingo("SignsOfTheEnd_singlepeepedtex");
             return eventname;
 
 
@@ -5066,6 +5077,8 @@ defaultproperties
     bingo_options(411)=(event="AdvertisingWorks_singlepeepedtex",desc="Advertising Works!",max=30,missions=#bit(2,3,4,6,8,10,11))
     bingo_options(412)=(event="ChnaHandSign_A_singlepeepedtex",desc="Support Local Business (3)",max=3,missions=#bit(6),do_not_scale=true)
     bingo_options(413)=(event="CatchTheNews_singlepeepedtex",desc="Catch the News",max=5,missions=#bit(1,3,4,5,6,10,11))
+    bingo_options(414)=(event="A51_Sign_41_singlepeepedtex",desc="Construction Inspector",max=3,missions=#bit(15),do_not_scale=true)
+    bingo_options(415)=(event="SignsOfTheEnd_singlepeepedtex",desc="Signs of the End",max=3,missions=#bit(15),do_not_scale=true)
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -5203,5 +5216,7 @@ defaultproperties
     mutually_exclusive(122)=(e1="PetRobot_CleanerBot",e2="CleanerBot_ClassTakedown")
     mutually_exclusive(123)=(e1="PetRobot_SecurityBotSmall",e2="SecurityBotSmall_ClassTakedown")
     mutually_exclusive(124)=(e1="MeetClinicMaleBum3_Played",e2="TakeABreather") //These are too close and easy to have both
+    mutually_exclusive(125)=(e1="A51_Sign_41_singlepeepedtex",e2="SignsOfTheEnd_singlepeepedtex")
+    mutually_exclusive(126)=(e1="A51_Sign_41_singlepeepedtex",e2="A51UCBlocked")
 //#endregion
 }
