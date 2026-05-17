@@ -23,7 +23,7 @@ function bool HandlePickupQuery( inventory Item )
         return True;
     }
 
-    if (thisAmmo!=None && player!=None  && Item.Class == Class && thisAmmo.AmmoAmount > 0){
+    if (thisAmmo!=None && player!=None && Item.Class == Class && thisAmmo.AmmoAmount > 0){
         ownedAmmo = #var(DeusExPrefix)Ammo(player.FindInventoryType(thisAmmo.Class));
         if (ownedAmmo!=None){
             ammoToAdd = thisAmmo.AmmoAmount;
@@ -36,7 +36,7 @@ function bool HandlePickupQuery( inventory Item )
             if (ammoRemaining>0){
                 thisAmmo.ammoAmount = ammoRemaining;
                 AddAmmo(ammoToAdd);
-                player.ClientMessage(thisAmmo.PickupString(ammoToAdd), 'Pickup');
+                thisAmmo.ShowPickupMessage(player, ammoToAdd);
                 return True;
             }
         }
@@ -46,16 +46,24 @@ function bool HandlePickupQuery( inventory Item )
     return Super.HandlePickupQuery(Item);
 }
 
-function string GetPickupName()
+static function bool HasPickupName()
 {
-    if (ItemPickupName == "")
-        return ItemName;
-    return ItemPickupName;
+    return default.ItemName != class'#var(DeusExPrefix)Ammo'.default.ItemName
+        || default.ItemPickupName != class'#var(DeusExPrefix)Ammo'.default.ItemPickupName;
 }
 
-function string PickupString(int amount)
+static function string GetPickupName()
 {
-    return PickupMessage @ amount @ GetPickupName();
+    if (default.ItemPickupName != class'#var(DeusExPrefix)Ammo'.default.ItemPickupName)
+        return default.ItemPickupName;
+    return default.ItemName;
+}
+
+static function string ShowPickupMessage(DeusExPlayer player, int amount)
+{
+    if (amount > 0 && HasPickupName()) {
+        player.ClientMessage(default.PickupMessage @ amount @ GetPickupName(), 'Pickup');
+    }
 }
 
 auto state Pickup
@@ -75,4 +83,9 @@ auto state Pickup
         ItemArticle = backupArticle;
         ItemName = backupName;
 	}
+}
+
+defaultproperties
+{
+    ItemPickupName="DEFAULT AMMO PICKUP NAME - REPORT THIS AS A DEUS EX RANDOMIZER RELATED BUG"
 }

@@ -51,10 +51,10 @@ log("  event.toActor    = " $ event.toActor );
                 ammoInv = #var(DeusExPrefix)Ammo(Pawn(event.fromActor).FindInventoryType(ammoClass));
             }
             if (ammoInv != None) {
-                ammoName = ammoInv.itemName;
+                ammoName = ammoInv.GetPickupName();
                 ammoAmount = ammoInv.AmmoAmount;
             } else {
-                ammoName = ammoClass.default.itemName;
+                ammoName = ammoClass.static.GetPickupName();
                 ammoAmount = ammoClass.default.AmmoAmount;
             }
 

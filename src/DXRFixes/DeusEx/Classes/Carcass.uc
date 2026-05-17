@@ -259,15 +259,18 @@ function Frob(Actor Frobber, Inventory frobWith)
     }
 }
 
-static function ShowPickupMessage(DeusExPlayer player, Inventory item, optional int amount)
+static function ShowPickupMessage(DeusExPlayer player, Inventory item)
 {
     if (#var(DeusExPrefix)Ammo(item) != None) {
-        if (amount > 0 && item.itemName != class'#var(DeusExPrefix)Ammo'.default.itemName) {
-            player.ClientMessage(#var(DeusExPrefix)Ammo(item).PickupString(amount), 'Pickup');
-        }
+        ShowAmmoPickupMessage(player, item, #var(DeusExPrefix)Ammo(item).AmmoAmount);
     } else {
         player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
     }
+}
+
+static function ShowAmmoPickupMessage(DeusExPlayer player, Inventory item, int amount)
+{
+    #var(DeusExPrefix)Ammo(item).ShowPickupMessage(player, amount);
 }
 
 function bool TryLootItem(DeusExPlayer player, Inventory item)
@@ -311,9 +314,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             ammoAddedAmount = newAmmoAmmout - playerAmmo.AmmoAmount;
             playerAmmo.AmmoAmount = newAmmoAmmout;
             weap.PickupAmmoCount -= ammoAddedAmount;
-            if (ammoAddedAmount > 0) {
-                ShowPickupMessage(player, playerAmmo, ammoAddedAmount);
-            }
+            ShowAmmoPickupMessage(player, playerAmmo, ammoAddedAmount);
         }
 
         TossItem(item);
@@ -479,7 +480,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
                 ShowPickupMessage(player, item);
             }
             else {
-                ShowPickupMessage(player, playerAmmo, ammoAdded);
+                ShowAmmoPickupMessage(player, playerAmmo, ammoAdded);
             }
 
             // Mark it as 0 to prevent it from being added twice
@@ -533,11 +534,6 @@ function bool TryLootAmmo(DeusExPlayer player, Ammo item, optional bool bForce)
 
     playerAmmo = Ammo(player.FindInventoryType(item.class));
 
-    // if (playerAmmo == None) {
-    //     ammoPrevious = 0;
-    // } else {
-    //     ammoPrevious = playerAmmo.AmmoAmount;
-    // }
     if (playerAmmo != None) {
         ammoPrevious = playerAmmo.AmmoAmount;
     } /*else {
@@ -562,7 +558,7 @@ function bool TryLootAmmo(DeusExPlayer player, Ammo item, optional bool bForce)
         if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
             ShowPickupMessage(player, item);
         } else {
-            ShowPickupMessage(player, playerAmmo, ammoAdded);
+            ShowAmmoPickupMessage(player, playerAmmo, ammoAdded);
         }
 
         DeleteInventory(item);
