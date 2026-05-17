@@ -7,30 +7,34 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-- Enable "Flickering Lights" setting for GMDX
+
 - The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Fixed".
 - NPCs will now react to projectiles regardless of whether they're immune or not if "Glitches for Speedruns" is set to "Allowed"
-- Augbots in GMDX will now properly show with their blue skin and will glow red by default.
-- Medical Bots in GMDX will now properly count their number of uses.
-- The window for recharging at a Repair Bot in GMDX now properly updates the bio energy bar immediately.
-- GMDX now shows the value of the Stealth skill in a more interpretable format (based on your walk speed).
-- GMDX now shows more useful descriptions of the randomized values of the "EMSP" (Dash) and "Energy Transference" augs.
-- Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
-- Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
 - When the "Camera Mode" is set to "Third Person", the camera will now shake when heavy enemies (such as Military Bots) walk near you.
-- GMDX no longer skips the first conversation with Paul (Mission 1).  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
 - More interesting camera angles when talking to The Merchant (or Le Merchant).
 - Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
-- When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
-- "Use x Rebreathers" bingo goal will only be available in Mission 3 when Entrance Randomization is enabled.  The available missions for this goal have also been updated to match the number of rebreathers in Revision and GMDX.
-- A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
+- "Use x Rebreathers" bingo goal will only be available in Mission 3 when Entrance Randomization is enabled.
 - "Invert Mouse" Crowd Control effect will now properly restore your mouse controls if you load a save made during the effect after the effect ends.
 - Teleporters between maps will now properly show whether the destination map is mirrored or not (The arrow in the icon will point left for mirrored maps, or right for normal maps).
-- Beheaded corpses in GMDX that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
-- Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
-- Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
-- In GMDX, the button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
 - The Crowd Control setting in the Randomizer Setup or Advanced Settings pages will now be automatically enabled if Crowd Control connects to the game while in those menus.
+- Non-Vanilla fixes and improvements:
+  - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
+  - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
+  - Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
+  - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
+- Revision fixes and improvements:
+  - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
+  - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
+- GMDX fixes and improvements:
+  - Enable "Flickering Lights" setting
+  - Augbotswill now properly show with their blue skin and will glow red by default.
+  - Medical Bots will now properly count their number of uses.
+  - The window for recharging at a Repair Bot now properly updates the bio energy bar immediately.
+  - The first conversation with Paul (Mission 1) is no longer skipped.  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
+  - The value of the Stealth skill is now shown in a more interpretable format (based on your walk speed).
+  - More useful descriptions of the randomized values of the "EMSP" (Dash) and "Energy Transference" augs are now shown.
+  - The button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
+  - Beheaded corpses that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
 - Vanilla? Madder! 2.0 fixes and improvements
   - The conversation in the intro will actually start playing.
   - Backing out of the New Game screen will no longer cause the game to crash.
