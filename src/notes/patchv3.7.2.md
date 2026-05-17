@@ -30,8 +30,10 @@
 - Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
 - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
 - In GMDX, the button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
-- In Vanilla? Madder! 2.0, the conversation in the intro will actually start playing.
-- In Vanilla? Madder! 2.0, backing out of the New Game screen will no longer cause the game to crash.
+- Vanilla? Madder! 2.0 fixes and improvements
+  - The conversation in the intro will actually start playing.
+  - Backing out of the New Game screen will no longer cause the game to crash.
+  - The "Character Setup" screen will now be considered a title screen, so Crowd Control effects will not function there, and Crowd Control will be able to connect while on that screen.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
