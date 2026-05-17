@@ -5,7 +5,7 @@ var int VersionNum; //To theoretically help with upgrades if more information is
 var ELightType origLightType;
 
 
-static function DXRStoredLightType Init(Light l)
+static function DXRStoredLightType Init(Actor l)
 {
     local DXRStoredLightType slf;
 

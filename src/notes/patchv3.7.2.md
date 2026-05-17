@@ -21,5 +21,25 @@
 - GMDX no longer skips the first conversation with Paul (Mission 1).  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
 - More interesting camera angles when talking to The Merchant (or Le Merchant).
 - Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
-- The amount is now shown when picking up or receiving ammo.
+- When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
+- "Use x Rebreathers" bingo goal will only be available in Mission 3 when Entrance Randomization is enabled.  The available missions for this goal have also been updated to match the number of rebreathers in Revision and GMDX.
+- A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
+- "Invert Mouse" Crowd Control effect will now properly restore your mouse controls if you load a save made during the effect after the effect ends.
+- Teleporters between maps will now properly show whether the destination map is mirrored or not (The arrow in the icon will point left for mirrored maps, or right for normal maps).
+- Beheaded corpses in GMDX that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
+- Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
+- Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
+- In GMDX, the button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
+- New Bingo Goals:
+  - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
+  - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
+  - "Catch the News": Watch enough TV newscasts through the game with binoculars or a scope.
+  - "Signs of the End": Look at the signs marking the different endings in Area 51 Sector 4.
+  - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
+  - The amount is now shown when picking up or receiving ammo.
 </details>
+
+## Intra-Patch Changes
+
+- In Speedrun Shuffle mode, highlight text now shows the next map you will be going to when looking at the game endings in Mission 15.
+- Some flickering lights that weren't being caught by the "Flickering Lights" setting in GMDX will now also be adjusted.

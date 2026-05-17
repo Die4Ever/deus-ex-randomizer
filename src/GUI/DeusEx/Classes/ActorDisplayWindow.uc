@@ -1,4 +1,4 @@
-class ActorDisplayWindow injects ActorDisplayWindow;
+class DXRActorDisplayWindow injects ActorDisplayWindow;
 // legend, for searching
 
 var Font textfont;
@@ -1167,7 +1167,7 @@ function string CalcWeaponScore(Actor item)
     local float        enemyRange;
     local float        minEnemy, accEnemy, maxEnemy;
     local ScriptedPawn enemyPawn;
-    local Robot        enemyRobot;
+    local #var(prefix)Robot enemyRobot;
     local DeusExPlayer enemyPlayer;
     local float        enemyRadius;
     local bool         bEnemySet;

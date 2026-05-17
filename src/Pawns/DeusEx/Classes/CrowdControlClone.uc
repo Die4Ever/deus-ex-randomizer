@@ -525,6 +525,9 @@ defaultproperties
      BindName="CrowdControlClone"
      FamiliarName="JC Denton Clone"
      UnfamiliarName="JC Denton Clone"
+#ifndef vmd
+     CarcassType=class'JCDentonMaleCarcass'
+#endif
      bReactAlarm=True
      bReactCarcass=True
      bReactDistress=True

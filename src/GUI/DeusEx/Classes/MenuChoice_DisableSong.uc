@@ -27,7 +27,7 @@ function bool ButtonActivated( Window buttonPressed )
     song = musicplayer.GetCurrentSongName();
     music.SetEnabledSong(song, false);
     if (useOgg){
-        #ifdef revision
+        #ifdef revision||vmd2
         musicplayer.PlayRandomOggSong(true);
         #endif
     } else {

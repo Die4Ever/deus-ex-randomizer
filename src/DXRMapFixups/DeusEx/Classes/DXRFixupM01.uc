@@ -380,6 +380,7 @@ function AnyEntryMapFixes()
     //Confix adds a requirement to have talked to Paul (to get the password) before you can talk to Harley Filben
     //Remove that requirement, because it can be annoying for Rando.  This should do nothing if Confix isn't present.
     DeleteConversationFlag(GetConversation('MeetFilben'), 'MeetPaul_Played', true);
+    DeleteConversationFlag(GetConversation('MeetFilbenAfterStatue'), 'MeetPaul_Played', true);
 
     //In addition to the above, Confix now adds a new conversation, FilbenStranger, that plays some barks if you get
     //to Filben without having talked to Paul.  Since we're removing the Paul requirement for the above conversation,
