@@ -27,8 +27,8 @@ function EEventAction SetupEventTransferObject( ConEventTransferObject event, ou
     local DeusExPlayer player;
     local string ammoName;
     local int ammoAmount;
-    local class<Ammo> ammoClass;
-    local Ammo ammoInv;
+    local class<#var(DeusExPrefix)Ammo> ammoClass;
+    local #var(DeusExPrefix)Ammo ammoInv;
 
 /*
 log("SetupEventTransferObject()------------------------------------------");
@@ -42,13 +42,13 @@ log("  event.toActor    = " $ event.toActor );
     // We don't even try to weave this into the original logic
     player = DeusExPlayer(event.ToActor);
     if (player != None) {
-        ammoClass = class<Ammo>(event.giveObject);
+        ammoClass = class<#var(DeusExPrefix)Ammo>(event.giveObject);
         if (ammoClass == None && class<Weapon>(event.giveObject) != None) {
-            ammoClass = class<Weapon>(event.giveObject).default.AmmoName;
+            ammoClass = class<#var(DeusExPrefix)Ammo>(class<Weapon>(event.giveObject).default.AmmoName);
         }
-        if (ammoClass != None) {
+        if (ammoClass != None && ammoClass.static.HasPickupName()) {
             if (Pawn(event.fromActor) != None) {
-                ammoInv = Ammo(Pawn(event.fromActor).FindInventoryType(ammoClass));
+                ammoInv = #var(DeusExPrefix)Ammo(Pawn(event.fromActor).FindInventoryType(ammoClass));
             }
             if (ammoInv != None) {
                 ammoName = ammoInv.itemName;
@@ -58,15 +58,13 @@ log("  event.toActor    = " $ event.toActor );
                 ammoAmount = ammoClass.default.AmmoAmount;
             }
 
-            if (ammoName != class'Ammo'.default.itemName && ammoName != class'Ammo'.default.itemName) {
-                ammoInv = Ammo(player.FindInventoryType(ammoClass));
-                if (ammoInv != None) {
-                    ammoAmount = Min(ammoAmount, ammoInv.MaxAmmo - ammoInv.AmmoAmount);
-                }
+            ammoInv = #var(DeusExPrefix)Ammo(player.FindInventoryType(ammoClass));
+            if (ammoInv != None) {
+                ammoAmount = Min(ammoAmount, ammoInv.MaxAmmo - ammoInv.AmmoAmount);
+            }
 
-                if (ammoAmount > 0) {
-                    player.ClientMessage("You received" @ ammoAmount @ ammoName, 'Pickup');
-                }
+            if (ammoAmount > 0) {
+                player.ClientMessage("You got" @ ammoAmount @ ammoName, 'Pickup');
             }
         }
     }
