@@ -835,6 +835,8 @@ function AnyEntryMapFixes()
     local #var(prefix)MapExit exit;
     local DXRTeleporterHoverHint teleHint;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)Fan1 fan;
+    local ZoneInfo zone;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -845,6 +847,17 @@ function AnyEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    case "15_AREA51_BUNKER":
+        //Sometimes you can save after destroying the fan, but before the pain zone is disabled
+        //These tags are valid across Vanilla, Revision, and GMDX
+        foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1') {break;}
+        foreach AllActors(class'ZoneInfo',zone,'fan') {break;}
+
+        if (fan==None && zone!=None && zone.bPainZone==true){
+            zone.bPainZone=false;
+            zone.DamagePerSec=0; //Just to make sure it doesn't get toggled back on with some pending event
+        }
+        break;
     case "15_AREA51_ENTRANCE":
         if (VanillaMaps){
             c = GetConversation('DL_Elevator');
