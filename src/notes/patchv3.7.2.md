@@ -30,6 +30,7 @@
 - Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
 - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
 - In GMDX, the button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
+- The Crowd Control setting in the Randomizer Setup or Advanced Settings pages will now be automatically enabled if Crowd Control connects to the game while in those menus.
 - Vanilla? Madder! 2.0 fixes and improvements
   - The conversation in the intro will actually start playing.
   - Backing out of the New Game screen will no longer cause the game to crash.
