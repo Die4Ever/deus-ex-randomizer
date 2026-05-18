@@ -30,6 +30,7 @@ function CheckConfig()
 
             db = class'DebugBox'.static.CreateDB(self,keys_rules[i].min_pos,keys_rules[i].max_pos,,'DXRKeys',item,s);
             db.SetBoxColour(0,255,0);
+            db.Tag = keys_rules[i].item_name;
         }
     }
 
@@ -271,6 +272,14 @@ function vanilla_keys_rules()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1694,-283,-677);
+        keys_rules[i].max_pos = vect(-1647,-384,-709);
+        keys_rules[i].allow = false;
+        i++;
+
+        //The lab area
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);
@@ -889,6 +898,14 @@ function revision_keys_rules()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1694,-283,-677);
+        keys_rules[i].max_pos = vect(-1647,-384,-709);
+        keys_rules[i].allow = false;
+        i++;
+
+        //The lab area
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);

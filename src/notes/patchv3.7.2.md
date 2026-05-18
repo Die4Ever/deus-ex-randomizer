@@ -19,6 +19,8 @@
 - The Crowd Control setting in the Randomizer Setup or Advanced Settings pages will now be automatically enabled if Crowd Control connects to the game while in those menus.
 - The instant death zone in the fan shaft on the surface of Area 51 (Mission 15) will always be gone after loading a game if the fan was destroyed.  This was a bug that popped up intermittently, related to specific save timing after destroying the fan.
 - Barrels will no longer play their push sound forever after being pushed once.
+- "Experimental Subject Cells" Key in the Versalife Level 1 Labs (Mission 6) will no longer randomize into the locked cabinet in the lab.
+- "UC Shutdown Code" datacube in the Versalife Level 1 Labs (Mission 6) will no longer randomize into any locked areas.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
