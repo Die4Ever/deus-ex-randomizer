@@ -38,6 +38,7 @@
   - The button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
   - Beheaded corpses that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
   - Scripted grenades that get thrown into vents will not be set off by Aggressive Defense System before being thrown.
+  - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
 - Vanilla? Madder! 2.0 fixes and improvements
   - The conversation in the intro will actually start playing.
   - Backing out of the New Game screen will no longer cause the game to crash.

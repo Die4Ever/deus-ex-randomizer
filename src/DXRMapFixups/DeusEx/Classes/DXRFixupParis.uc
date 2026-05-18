@@ -379,6 +379,16 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if (#defined(gmdx)){
+            //Mark some items in inaccessible areas as secret goals so things don't get randomized there
+
+            //A balcony near the bridge close to the start of the map
+            MassSetSecretGoalBox(class'Inventory', vectm(-6214,335,-150), vectm(-6102,831,-90), true);
+
+            //A rooftop over the bridge close to the start of the map
+            MassSetSecretGoalBox(class'Inventory', vectm(-5475,812,124), vectm(-5201,-376,20), true);
+        }
+
 
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)Teleporter',tele){
