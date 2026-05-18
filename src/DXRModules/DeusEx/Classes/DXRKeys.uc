@@ -5,14 +5,32 @@ var safe_rule keys_rules[16];
 function CheckConfig()
 {
     local int i;
+    local string s, item;
+    local DebugBox db;
+    local Vector min_ext,max_ext;
 
     if(class'DXRMapVariants'.static.IsRevisionMaps(player()))
         revision_keys_rules();
     else
         vanilla_keys_rules();
 
+    FindActorExtents(min_ext,max_ext);
     for(i=0;i<ArrayCount(keys_rules);i++) {
-        keys_rules[i] = FixSafeRule(keys_rules[i]);
+        keys_rules[i] = FixSafeRule(keys_rules[i],min_ext,max_ext);
+    }
+
+    if (#bool(debug)){
+        for(i=0;i<ArrayCount(keys_rules);i++) {
+            if (keys_rules[i].item_name=='') continue;
+
+            item = string(keys_rules[i].item_name);
+
+            s = CR()$"Allow: "$keys_rules[i].allow;
+            s = s $ CR()$"Rule: "$i;
+
+            db = class'DebugBox'.static.CreateDB(self,keys_rules[i].min_pos,keys_rules[i].max_pos,,'DXRKeys',item,s);
+            db.SetBoxColour(0,255,0);
+        }
     }
 
     Super.CheckConfig();
@@ -418,8 +436,8 @@ function vanilla_keys_rules()
         i++;
 
         keys_rules[i].item_name = 'cathedralgatekey';
-        keys_rules[i].min_pos = vect(-4907, 1802, -99999);
-        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].min_pos = vect(-4907, 1802, -2000);
+        keys_rules[i].max_pos = vect(-2000, 3000, 500);
         keys_rules[i].allow = true;
         i++;
         break;

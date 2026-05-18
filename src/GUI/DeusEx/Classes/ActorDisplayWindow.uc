@@ -332,7 +332,7 @@ function DrawWindow(GC gc)
     local Inventory item;
     local name filter;
     local int radius;
-    local FakeMirrorInfo fmi;
+    local DebugBox db;
     local class<Actor> classToShow;
     local bool bPointIsClose;
 
@@ -532,14 +532,10 @@ function DrawWindow(GC gc)
                 r=0;
                 g=0;
                 b=0;
-                if (FakeMirrorInfo(trackActor)!=None){
-                    r=255;
-                    g=255;
-                    b=255;
+                if (DebugBox(trackActor)!=None){
+                    db = DebugBox(trackActor);
 
-                    fmi = FakeMirrorInfo(trackActor);
-
-                    DrawCube(gc, fmi.min_pos, fmi.max_pos, r, g, b);
+                    DrawCube(gc, db.min_pos, db.max_pos, db.BoxColour.R, db.BoxColour.G, db.BoxColour.B);
 
                 } else {
                     if (trackActor.bCollideActors){
