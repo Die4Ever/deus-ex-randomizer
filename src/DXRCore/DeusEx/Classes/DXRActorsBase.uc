@@ -2142,13 +2142,13 @@ function FindActorExtents(out vector min_ext, out vector max_ext, optional bool 
             }
         }
 
+        //Expand the extents based on this actor
         if (actLoc.X > max_ext.X) max_ext.X = actLoc.X;
-        if (actLoc.X < min_ext.X) min_ext.X = actLoc.X;
-
         if (actLoc.Y > max_ext.Y) max_ext.Y = actLoc.Y;
-        if (actLoc.Y < min_ext.Y) min_ext.Y = actLoc.Y;
-
         if (actLoc.Z > max_ext.Z) max_ext.Z = actLoc.Z;
+
+        if (actLoc.X < min_ext.X) min_ext.X = actLoc.X;
+        if (actLoc.Y < min_ext.Y) min_ext.Y = actLoc.Y;
         if (actLoc.Z < min_ext.Z) min_ext.Z = actLoc.Z;
     }
 
@@ -2187,22 +2187,8 @@ function safe_rule FixSafeRule(safe_rule r, optional vector min_ext, optional ve
     r.max_pos.Z = b;
 
     if (use_extents){
-        if (r.min_pos.X < min_ext.X) r.min_pos.X = min_ext.X;
-        if (r.min_pos.Y < min_ext.Y) r.min_pos.Y = min_ext.Y;
-        if (r.min_pos.Z < min_ext.Z) r.min_pos.Z = min_ext.Z;
-
-        if (r.max_pos.X < min_ext.X) r.max_pos.X = min_ext.X;
-        if (r.max_pos.Y < min_ext.Y) r.max_pos.Y = min_ext.Y;
-        if (r.max_pos.Z < min_ext.Z) r.max_pos.Z = min_ext.Z;
-
-
-        if (r.min_pos.X > max_ext.X) r.min_pos.X = max_ext.X;
-        if (r.min_pos.Y > max_ext.Y) r.min_pos.Y = max_ext.Y;
-        if (r.min_pos.Z > max_ext.Z) r.min_pos.Z = max_ext.Z;
-
-        if (r.max_pos.X > max_ext.X) r.max_pos.X = max_ext.X;
-        if (r.max_pos.Y > max_ext.Y) r.max_pos.Y = max_ext.Y;
-        if (r.max_pos.Z > max_ext.Z) r.max_pos.Z = max_ext.Z;
+        r.min_pos = ApplyVectorExtents(r.min_pos,min_ext,max_ext);
+        r.max_pos = ApplyVectorExtents(r.max_pos,min_ext,max_ext);
     }
 
     return r;
@@ -2271,6 +2257,19 @@ function RemoveMoverPrePivot(Mover m)
 function Vector GetMoverCenter(Mover m)
 {
     return m.Location-(m.PrePivot >> m.Rotation);
+}
+
+static function Vector ApplyVectorExtents(vector in_vect, vector ext_min, vector ext_max)
+{
+    if (in_vect.X < ext_min.X) in_vect.X = ext_min.X;
+    if (in_vect.Y < ext_min.Y) in_vect.Y = ext_min.Y;
+    if (in_vect.Z < ext_min.Z) in_vect.Z = ext_min.Z;
+
+    if (in_vect.X > ext_max.X) in_vect.X = ext_max.X;
+    if (in_vect.Y > ext_max.Y) in_vect.Y = ext_max.Y;
+    if (in_vect.Z > ext_max.Z) in_vect.Z = ext_max.Z;
+
+    return in_vect;
 }
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)

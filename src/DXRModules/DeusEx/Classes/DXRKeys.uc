@@ -29,7 +29,11 @@ function CheckConfig()
             s = s $ CR()$"Rule: "$i;
 
             db = class'DebugBox'.static.CreateDB(self,keys_rules[i].min_pos,keys_rules[i].max_pos,,'DXRKeys',item,s);
-            db.SetBoxColour(0,255,0);
+            if (keys_rules[i].allow){
+                db.SetBoxColour(0,255,0);
+            } else {
+                db.SetBoxColour(255,0,0);
+            }
             db.Tag = keys_rules[i].item_name;
         }
     }
@@ -1413,6 +1417,8 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     SetActorScale(k, 1.3);
 #endif
 
+    MarkNaturalKeyOctantRule(k); //"debug" only
+
     num=0;
     foreach AllActors(class'Inventory', a)
     {
@@ -1477,6 +1483,92 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         if( Swap(temp[slot], k) ) break;
     }
 }
+
+function MarkNaturalKeyOctantRule(#var(prefix)NanoKey k)
+{
+    local #var(DeusExPrefix)Mover d;
+    local Vector oct_min,oct_max; //Extents of the octant the key is in, relative to a door
+    local Vector key_min, key_max; //Extents of the 5000 unit radius around the key
+    local Vector final_min, final_max; //The final accumulated extents where the key can go
+    local float spare;
+    local bool found_door;
+
+    local string item,s;
+    local DebugBox db;
+
+
+    if (#bool(debug)==False) return;
+
+    FindActorExtents(final_min,final_max);
+
+    foreach AllActors(class'#var(DeusExPrefix)Mover', d)
+    {
+        if( d.KeyIDNeeded == 'None' ) continue;
+        if( d.KeyIDNeeded != k.KeyID ) continue;
+
+        found_door=true;
+
+        //Define the box of the octant
+        oct_min = d.Location;
+
+        if (k.Location.X < d.Location.X) oct_max.X = d.Location.X - 999999;
+        if (k.Location.X > d.Location.X) oct_max.X = d.Location.X + 999999;
+
+        if (k.Location.Y < d.Location.Y) oct_max.Y = d.Location.Y - 999999;
+        if (k.Location.Y > d.Location.Y) oct_max.Y = d.Location.Y + 999999;
+
+        if (k.Location.Z < d.Location.Z) oct_max.Z = d.Location.Z - 999999;
+        if (k.Location.Z > d.Location.Z) oct_max.Z = d.Location.Z + 999999;
+
+        //Make sure oct_min and oct_max are organized correctly
+        if (oct_min.X>oct_max.X){
+            spare = oct_min.X;
+            oct_min.X = oct_max.X;
+            oct_max.X = spare;
+        }
+        if (oct_min.Y>oct_max.Y){
+            spare = oct_min.Y;
+            oct_min.Y = oct_max.Y;
+            oct_max.Y = spare;
+        }
+        if (oct_min.Z>oct_max.Z){
+            spare = oct_min.Z;
+            oct_min.Z = oct_max.Z;
+            oct_max.Z = spare;
+        }
+
+        //Define the box of 5000 distance around the key (rough)
+        key_min = k.Location - vect(5000,5000,5000);
+        key_max = k.Location + vect(5000,5000,5000);
+
+        //Apply the octant box as extents for the key box
+        key_min = ApplyVectorExtents(key_min,oct_min,oct_max);
+        key_max = ApplyVectorExtents(key_max,oct_min,oct_max);
+
+        //Apply this key box as an extent to the final box
+        final_min = ApplyVectorExtents(final_min,key_min,key_max);
+        final_max = ApplyVectorExtents(final_max,key_min,key_max);
+
+
+        //If any of the coordinates got inverted, there aren't any valid locations
+        if (final_min.X > final_max.X) return;
+        if (final_min.Y > final_max.Y) return;
+        if (final_min.Z > final_max.Z) return;
+    }
+
+    if(found_door){
+        item = string(k.KeyID);
+
+        s = CR()$"Allow: True";
+        s = s$CR()$"Rule: Natural";
+
+        db = class'DebugBox'.static.CreateDB(self,final_min,final_max,,'DXRKeys',item,s);
+        db.SetBoxColour(0,128,0);
+        db.Tag = k.KeyID;
+    }
+
+}
+
 
 function bool KeyPositionGood(#var(prefix)NanoKey k, vector newpos)
 {

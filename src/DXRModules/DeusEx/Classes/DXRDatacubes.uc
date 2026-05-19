@@ -35,7 +35,11 @@ function CheckConfig()
             s = CR()$"Allow: "$datacubes_rules[i].allow;
             s = s $ CR()$"Rule: "$i;
             db = class'DebugBox'.static.CreateDB(self,datacubes_rules[i].min_pos,datacubes_rules[i].max_pos,,'DXRDatacubes',item,s);
-            db.SetBoxColour(0,0,255);
+            if (datacubes_rules[i].allow){
+                db.SetBoxColour(0,255,0);
+            } else {
+                db.SetBoxColour(255,0,0);
+            }
             db.Tag = datacubes_rules[i].item_name;
         }
     }
