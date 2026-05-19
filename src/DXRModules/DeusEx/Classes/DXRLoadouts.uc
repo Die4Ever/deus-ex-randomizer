@@ -1233,7 +1233,8 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 {
     local Inventory item, nextItem;
     local DXREnemies dxre;
-    local int i, start_amount;
+    local HUDObjectBelt belt;
+    local int i, start_amount, pos;
 
     if( dxr.flags.settings.equipment == 0 ) return;
     if( dxr.dxInfo.missionNumber == 0 ) return;
@@ -1271,6 +1272,30 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
         _RandoStartingEquipment(player, dxre, respawn);
     }
 
+    belt = DeusExRootWindow(player.rootWindow).hud.belt;
+    pos = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
+    if (IsAssignableBeltPos(pos)) {
+        // move the first melee weapon to the starting melee slot
+        for (i = 1; i < ArrayCount(belt.objects); i++) {
+            if (IsMeleeWeapon(belt.GetObjectFromBelt(i))) {
+                PercolateBeltItem(i, pos);
+                break;
+            }
+        }
+    }
+
+    belt = DeusExRootWindow(player.rootWindow).hud.belt;
+    pos = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
+    if (IsAssignableBeltPos(pos)) {
+        // move the first melee weapon to the starting melee slot
+        for (i = 1; i < ArrayCount(belt.objects); i++) {
+            if (IsMeleeWeapon(belt.GetObjectFromBelt(i))) {
+                PercolateBeltItem(i, pos);
+                break;
+            }
+        }
+    }
+
     if(dxr.flags.moresettings.shuffle_missions > 0 && dxr.flags.moresettings.shuffle_missions < 1000) {
         if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)BioelectricCell'))
             GiveItem(player, class'#var(prefix)BioelectricCell');
@@ -1286,7 +1311,7 @@ function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory ite
     if(item == None) return None;
 
     if(is_banned(item.class)) {
-        info("_RandoStartingEquipment " $item$" is banned!");
+        info("_GiveRandoStartingItem " $item$" is banned!");
         item.Destroy();
         return None;
     }
@@ -1323,14 +1348,11 @@ function class<Inventory> _GetRandomUtilityItem()
 
 function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool bFrob)
 {
-    local int i, slot;
+    local int i;
     local Inventory item;
     local class<Inventory> iclass;
-    local HUDObjectBelt belt;
 
     if(dxre != None) {
-        belt = DeusExRootWindow(player.rootWindow).hud.belt;
-        slot = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
         for(i=0; i<100; i++) {
             iclass = dxre.GiveRandomMeleeWeaponClass(player, false);
             if(iclass == None || is_banned(iclass)) continue;
@@ -1338,11 +1360,6 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
             item = GiveItem(player, iclass);
             item = _GiveRandoStartingItem(player, item, bFrob);
             if(item == None) continue;
-
-            if(belt.IsValidPos(slot) && belt.GetObjectFromBelt(slot) == None) {
-                belt.RemoveObjectFromBelt(item);
-                belt.AddObjectToBelt(item, slot, false);
-            }
 
             break;
         }
