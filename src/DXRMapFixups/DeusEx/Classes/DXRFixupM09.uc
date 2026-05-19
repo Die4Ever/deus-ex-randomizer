@@ -668,6 +668,9 @@ function NYC_09_CountWeldPoints()
         }
 
         UpdateWeldPointGoal(newWeldCount);
+
+        //Mark DL_WeldPoint_Played so Tong isn't telling you about breaching weld points after you've already breached one
+        dxr.flagbase.SetBool('DL_WeldPoint_Played', True,, 10);
     }
 }
 //#endregion

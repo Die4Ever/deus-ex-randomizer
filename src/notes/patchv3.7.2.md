@@ -21,6 +21,7 @@
 - Barrels will no longer play their push sound forever after being pushed once.
 - "Experimental Subject Cells" Key in the Versalife Level 1 Labs (Mission 6) will no longer randomize into the locked cabinet in the lab.
 - "UC Shutdown Code" datacube in the Versalife Level 1 Labs (Mission 6) will no longer randomize into any locked areas.
+- Tong will no longer tell you that you've found one of the weld points if you've already destroyed one (Mission 9).
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
