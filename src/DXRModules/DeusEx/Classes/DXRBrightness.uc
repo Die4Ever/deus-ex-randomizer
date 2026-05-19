@@ -18,6 +18,9 @@ function PreFirstEntry()
 {
     local ZoneInfo Z;
     local Light lght;
+#ifdef gmdx
+    local Decoration d;
+#endif
 
     Super.PreFirstEntry();
 
@@ -31,7 +34,37 @@ function PreFirstEntry()
         class'DXRStoredLightFog'.static.Init(lght);
         class'DXRStoredLightType'.static.Init(lght);
     }
+
+#ifdef gmdx
+    //GMDX loves to use invisible decorations for things it shouldn't
+    //Like an invisible (Actually very small) CageLight in Brooklyn Bridge Station and Free Clinic
+    foreach AllActors(class'Decoration',d){
+        //class'DXRStoredLightFog'.static.Init(d); //I want to believe in my heart that they wouldn't do something like adding fog to non-Lights
+        if (d.LightType!=LT_None){ //Let's be a little bit picky here, at least
+            class'DXRStoredLightType'.static.Init(d);
+        }
+    }
+#endif
 }
+
+static function Upgrade(#var(PlayerPawn) player, int old_version)
+{
+    local DXRBrightness b;
+    local Light lght;
+
+    if (old_version < class'DXRVersion'.static.VersionToInt(3,7,2,1)) {
+        //3.7.2.1 Added DXRStoredLightType for LT_Blink lights, make sure they
+        //have stored info too now.
+        foreach player.AllActors(class'Light',lght){
+            if (lght.LightType!=LT_Blink) continue;
+            class'DXRStoredLightType'.static.Init(lght); //Create stored info for Blink lights
+        }
+        foreach player.AllActors(class'DXRBrightness',b){
+            b.ApplyEpilepsySafe(class'MenuChoice_Epilepsy'.default.enabled); //Apply the light settings...
+        }
+    }
+}
+
 
 function AnyEntry()
 {
@@ -126,10 +159,13 @@ function ApplyFog(bool enabled)
 function ApplyEpilepsySafe(bool enabled)
 {
     local DXRStoredLightType slt;
-    local Light lght;
+    local Actor lght;
+#ifdef gmdx
+    local LightCoronaFlicker lcf;
+#endif
 
     foreach AllActors(class'DXRStoredLightType',slt){
-        lght = Light(slt.Owner);
+        lght = slt.Owner;
         if (lght==None) continue;
 
         if (enabled){
@@ -138,6 +174,15 @@ function ApplyEpilepsySafe(bool enabled)
             lght.LightType = slt.origLightType;
         }
     }
+
+#ifdef gmdx
+    if (enabled){
+        foreach AllActors(class'LightCoronaFlicker',lcf){
+            //These things are the devil and I don't want to try to deal with them.
+            lcf.Destroy();
+        }
+    }
+#endif
 }
 
 function IncreaseBrightness(int brightness)

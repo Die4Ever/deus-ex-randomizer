@@ -16,7 +16,36 @@ var ERandoMessageBoxModes nextScreenNum;
 event InitWindow()
 {
     Super.InitWindow();
+    AddTimer(1.0,true,0,'PeriodicCrowdControlCheck');
 }
+
+function PeriodicCrowdControlCheck(int timerID, int invocations, int clientData)
+{
+    local DXRFlags f;
+    local int scrollPos;
+
+    f = GetFlags();
+
+    if (f.crowdcontrol==1){
+        //If it's been turned on, stop the timer
+        RemoveTimer(timerID);
+        _BindControls(false);
+        return;
+    }
+
+    scrollPos = winScroll.vScale.GetTickPosition();
+
+    if (class'DXRMenuSelectDifficulty'.static.IsCrowdControlConnected(f)){
+        _BindControls(true);
+        f.crowdcontrol=1; //Enabled (Streaming)
+        _BindControls(false);
+        RemoveTimer(timerID);
+
+        //Scroll to same position again
+        winScroll.vScale.SetTickPosition(scrollPos);
+    }
+}
+
 
 function CreateControls()
 {
@@ -32,6 +61,8 @@ function BindControls(optional string action)
     local int iDifficulty, i;
     local bool bMatched;
     f = GetFlags();
+
+    class'DXRMenuSelectDifficulty'.static.CheckCrowdControlConnection(f);
 
     CreateBasicOptions(f);
 
@@ -66,6 +97,17 @@ function BindControls(optional string action)
     else if(EnumOption("Random", -1)) {
         f.moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
     }
+
+    NewMenuItem("Mission Order Shuffling", "The order of missions is shuffled.  This is an alpha test feature and can break many things.  Time estimates assume you're an experienced speedrunner.");
+    EnumOption("Normal Mission Order", 0, f.moresettings.shuffle_missions);
+    EnumOption("About 20 Minutes", 20, f.moresettings.shuffle_missions);
+    EnumOption("About 30 Minutes", 30, f.moresettings.shuffle_missions);
+    EnumOption("About 45 Minutes", 45, f.moresettings.shuffle_missions);
+    EnumOption("About 60 Minutes", 60, f.moresettings.shuffle_missions);
+    EnumOption("3 Missions", 3, f.moresettings.shuffle_missions);
+    EnumOption("5 Missions", 5, f.moresettings.shuffle_missions);
+    EnumOption("7 Missions", 7, f.moresettings.shuffle_missions);
+    EnumOption("Full Game Shuffle", 99999, f.moresettings.shuffle_missions);
 
     BreakLine();
 
@@ -1149,9 +1191,9 @@ defaultproperties
     bEscapeSavesSettings=False
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
-    actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
-    actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Restore Settings",Key="RESTORE")
-    actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Save Settings",Key="SAVE")
+    actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="Randomize",Key="RANDOMIZE")
+    actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="Restore Settings",Key="RESTORE")
+    actionButtons(4)=(Align=HALIGN_Right,Action=AB_Other,Text="Save Settings",Key="SAVE")
     SplitsBtnTitle="Mismatched Splits!"
     SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
     showMode=True

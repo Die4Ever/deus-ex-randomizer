@@ -30,7 +30,7 @@ function Reset()
     if (!bIsActive) return;
 
     // reset without burning 1 energy
-    if(class'MenuChoice_FixGlitches'.default.enabled) {
+    if(class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-10
         Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
         Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
     } else {

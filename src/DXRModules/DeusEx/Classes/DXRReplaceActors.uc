@@ -146,6 +146,11 @@ function ReplaceActors()
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
         }
+        else if( ScriptedGrenadeTrigger(a) != None && !#defined(gmdxae)) {
+            //These are being replaced to fix ADS triggering the scripted grenades
+            //GMDX: AE already fixes this in a reasonable way, so no need to replace there
+            ReplaceScriptedGrenadeTrigger(ScriptedGrenadeTrigger(a));
+        }
 #endif
         //Leave this at the end of the list (or at least make sure there are no containers after it)
         else if( #var(prefix)Containers(a) != None ) {
@@ -363,6 +368,25 @@ function ReplaceGEPGun(WeaponGEPGUN a)
     a.Destroy();
 #endif
 }
+
+#ifdef gmdx
+function ReplaceScriptedGrenadeTrigger(ScriptedGrenadeTrigger a)
+{
+    local DXRScriptedGrenadeTrigger n;
+
+    n = DXRScriptedGrenadeTrigger(SpawnReplacement(a, class'DXRScriptedGrenadeTrigger'));
+    if(n == None)
+        return;
+
+    n.bNoMoverCheck = a.bNoMoverCheck;
+    n.CheckHumanRadius = a.CheckHumanRadius;
+    n.CheckMoverRadius = a.CheckMoverRadius;
+    n.CheckGasRadius = a.CheckGasRadius;
+
+    ReplaceTrigger(a, n);
+    a.Destroy();
+}
+#endif
 
 function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
 {
@@ -921,6 +945,24 @@ function UpdateActorReferences(Actor a, Actor n)
         hoverhint.ReplaceActor(a,n);
     }
 
+    UpdateVMD2PathRebuildReferences(a,n);
+
     PopulateReplacedActors();
     replacements.AddReplacement(a,n); //Log the replacement
+}
+
+//VMD2 does some tomfoolery that removes collision, then adds it back in a later frame
+//In theory we can replace actors in between those two actions, leaving the replaced
+//actor with no collision, preventing highlighting
+function UpdateVMD2PathRebuildReferences(Actor a, Actor n)
+{
+#ifdef vmd2
+    local VMDLadderPointAdder lpa;
+    local int i;
+
+    foreach AllActors(class'VMDLadderPointAdder',lpa){
+        //Update any references to the old actor that might have already had collision changed
+        lpa.SwapCollisionReferences(a,n);
+    }
+#endif
 }

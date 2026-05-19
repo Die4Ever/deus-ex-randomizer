@@ -5,12 +5,13 @@ var int VersionNum; //To theoretically help with upgrades if more information is
 var ELightType origLightType;
 
 
-static function DXRStoredLightType Init(Light l)
+static function DXRStoredLightType Init(Actor l)
 {
     local DXRStoredLightType slf;
 
     //Only store information for lights that have problematic light types
-    if (!(l.LightType==LT_Flicker || l.LightType==LT_Strobe)) return None;
+    //GMDX and Revision use LT_Blink in a few places, which seems basically the same as Flicker and Strobe
+    if (!(l.LightType==LT_Flicker || l.LightType==LT_Strobe || l.LightType==LT_Blink)) return None;
 
     slf = l.Spawn(class'DXRStoredLightType',,,l.Location);
 

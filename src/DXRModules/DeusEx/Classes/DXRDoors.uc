@@ -322,6 +322,14 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].tag = 'elevator_door';
         door_fixes[num_door_fixes].frag = sf(class'MetalFragment', BIT_VANILLA);
         num_door_fixes++;
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            door_fixes[num_door_fixes].tag = 'LockdownDoorClosing';
+        } else {
+            door_fixes[num_door_fixes].tag = 'VirusUploaded';
+        }
+        door_fixes[num_door_fixes].highlight = SB_False; //Make sure this door is not ever highlightable
+        num_door_fixes++;
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         door_fixes[num_door_fixes].tag = 'FreezerDoor';

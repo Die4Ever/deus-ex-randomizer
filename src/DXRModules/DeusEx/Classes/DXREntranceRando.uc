@@ -1222,7 +1222,7 @@ function RunTests()
     TestAllMissions(dxr.seed);
 
     expected = "01_NYC_UNATCOHQ (ToOcean) - Report me!";
-    if (dxr.flags.IsSpeedShuffleMode() && dxr.dxInfo.MissionNumber!=1){
+    if (dxr.flags.moresettings.shuffle_missions > 0 && dxr.dxInfo.MissionNumber!=1){
         expected = "Mission 1" $ class'DXRInfo'.Static.CR() $ expected;
     }
     teststring( class'DXRMapInfo'.static.GetTeleporterName("01_NYC_UNATCOHQ", "ToOcean"), expected, "GetTeleporterName" );

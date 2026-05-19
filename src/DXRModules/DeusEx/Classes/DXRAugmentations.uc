@@ -783,7 +783,19 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int( (1.0 - val) * 100.0 ) $ "%";
         return shortDisplay;
     }
-    else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' || a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
+    else if( a.Class == class'AugIcarus' ) {
+        word = "Charge Time";
+        f = 1.5 - val; //Starts dashing at 1.5-skill value, stops dashing at 2.0-skill value
+        shortDisplay=FloatToString(f,1);
+        return shortDisplay$" s";
+    }
+    else if( a.Class == class'AugEnergyTransfer' ) {
+        word = "Energy Transfer";
+        f = 3.0 * val;
+        shortDisplay=FloatToString(f,1);
+        return shortDisplay;
+    }
+    else if( a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
         // TODO: improve description
         word = "Values";
         shortDisplay=string(val);
@@ -798,14 +810,52 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
 #endif
 
 #ifdef revision
+    else if( a.Class.Name == 'AugLeech' ) {
+        word = "Leech Amount";
+        shortDisplay=string(int(val));
+        return shortDisplay$" HP/s";
+    }
+    else if( a.Class.Name == 'AugRadiation' ) {
+        word = "Damage per Second";
+        shortDisplay=string(int(val));
+        return shortDisplay;
+    }
+    else if( a.Class.Name == 'AugAutoCounter' ) {
+        word = "Returned Damage";
+        shortDisplay=FloatToString(val * 100.0,1);
+        return shortDisplay $ "%";
+    }
+    else if( a.Class.Name == 'AugAimbot' ) {
+        word = "Aim Frequency";
+        if (val > 0.0){
+        shortDisplay=FloatToString(val,1);
+        return shortDisplay $ "s";
+        } else {
+            shortDisplay="Cont.";
+        }
+        return "Continuous";
+    }
+    else if(
+        a.Class.Name == 'AugDefenseNPC' //ADS for Walt
+        || a.Class.Name == 'AugDefenseHeli' //ADS for Jock
+    ) {
+        word = "Values";
+        shortDisplay=string(val);
+        return shortDisplay;
+    }
+#endif
+
+#ifdef vmd2
     // TODO: actual descriptions
     else if(
-        a.Class.Name == 'AugAimbot'
-        || a.Class.Name == 'AugLeech'
-        || a.Class.Name == 'AugRadiation'
-        || a.Class.Name == 'AugAutoCounter'
-        || a.Class.Name == 'AugDefenseNPC'
-        || a.Class.Name == 'AugDefenseHeli'
+        a.Class.Name == 'AugMechCloak'
+        || a.Class.Name == 'AugMechDermal'
+        || a.Class.Name == 'AugMechEMP'
+        || a.Class.Name == 'AugMechEnergy'
+        || a.Class.Name == 'AugMechEnviro'
+        || a.Class.Name == 'AugMechSpeed'
+        || a.Class.Name == 'AugMechTarget'
+        || a.Class.Name == 'AugMechVision'
     ) {
         word = "Values";
         shortDisplay=string(val);

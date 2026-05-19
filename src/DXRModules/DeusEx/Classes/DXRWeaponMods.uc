@@ -187,6 +187,7 @@ simulated function AddDXRCredits(CreditsWindow cw)
 
     //Should this try to strip the "Weapon Modification (xyz)" name to just "xyz"?
     for (i=0;i<ArrayCount(randommods);i++){
+        if (randommods[i].type==None) continue;
         cw.PrintText( randommods[i].Type.default.ItemName $ " : " $ FloatToString(randommods[i].chance, 1) $ "%" );
     }
 

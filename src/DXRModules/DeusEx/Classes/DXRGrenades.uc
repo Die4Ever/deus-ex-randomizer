@@ -112,10 +112,11 @@ function FirstEntry()
     i=0;
     foreach AllActors(class'#var(prefix)ThrownProjectile',gren)
     {
-        //GMDX has hidden grenades that can be thrown places with ScriptedGrenadeTrigger's.  Just skip hidden ones for now.
+        //GMDX has hidden grenades that can be thrown places with ScriptedGrenadeTrigger's.  These are marked as bIsSecretGoal
+        //in FixGMDXObjects, so ignore those grenades (They're originally marked as bScriptedGrenade, but that becomes SecretGoal)
         //Was there a reason I didn't check for bStuck?  Hard to say without checking all the planted grenades, including
         //other mods maps, in case someone messed up at some point.
-        if (gren.Owner==None && gren.bHidden==False && chance_single(dxr.flags.moresettings.grenadeswap)) {
+        if (gren.Owner==None && gren.bIsSecretGoal==False && chance_single(dxr.flags.moresettings.grenadeswap)) {
             grens[i++]=gren;
         }
     }
@@ -126,7 +127,7 @@ function FirstEntry()
         oldTag = grens[i].tag;
         oldEvent=grens[i].event;
         oldOwner=grens[i].owner;
-        oldHidden=grens[i].bHidden; //Hidden grenades are skipped for now, but in case we do something about that at some point...
+        oldHidden=grens[i].bHidden;
         grens[i].SetCollision(false,false,false);
         grens[i].Destroy();
 

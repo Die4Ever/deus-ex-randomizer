@@ -26,7 +26,7 @@ function Touch(Actor Other)
         log(self$".Touch("$Other$") during LevelAction "$Level.LevelAction$", ignoring");
         return; //you aren't actually playing, maybe randomization is still happening?
     }
-    if( class'MenuChoice_FixGlitches'.default.enabled && DeusExPlayer(Other) == None )
+    if( class'MenuChoice_FixGlitches'.default.enabled && DeusExPlayer(Other) == None ) //GLITCHFIX-16
         return;// the player isn't the one touching us!
 
     Super.Touch(Other);

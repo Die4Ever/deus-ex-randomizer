@@ -1,0 +1,1583 @@
+class DXRActorDisplayWindow injects ActorDisplayWindow;
+// legend, for searching
+
+var Font textfont;
+var bool bShowHidden;
+var bool bUserFriendlyNames;
+
+var bool         bShowCustom;
+var string       customAttrib;
+var bool         bShowInventory;
+var string       nameFilter;
+var string       tagFilter;
+var string       eventFilter;
+var string       customFilterAttrib;
+var string       customFilterVal;
+var bool         bLimitRadius;
+var int          actorRadius;
+var bool         bShowTagEvent;
+var bool         bShowTagConnections;
+var bool         bShowEventConnections;
+var bool         bShowCollision;
+var bool         bShowTextTags;
+var bool         bShowAlliances;
+var bool         bShowWeaponScore;
+var bool         bShowReactions;
+var bool         bShowPatrolPaths;
+var bool         bShowTextures;
+var bool         bShowConvoInfo;
+
+var Color        patrolColours[14];
+
+function SetActorRadius(string newRadius)
+{
+    actorRadius = int(newRadius);
+}
+
+function int GetActorRadius(){
+    return actorRadius;
+}
+
+function LimitRadius(bool bLimit)
+{
+    bLimitRadius = bLimit;
+}
+
+function Bool IsRadiusLimited()
+{
+	return bLimitRadius;
+}
+
+function SetNameFilter(string newFilter)
+{
+    nameFilter = newFilter;
+}
+
+function String GetNameFilter(){
+    return nameFilter;
+}
+
+function SetTagFilter(string newFilter)
+{
+    tagFilter = newFilter;
+}
+
+function String GetTagFilter(){
+    return tagFilter;
+}
+
+function SetEventFilter(string newFilter)
+{
+    eventFilter = newFilter;
+}
+
+function String GetEventFilter(){
+    return eventFilter;
+}
+
+function String GetCustomFilterAttrib(){
+    return customFilterAttrib;
+}
+
+function SetCustomFilterAttrib(string newAttrib){
+    customFilterAttrib = newAttrib;
+}
+
+function String GetCustomFilterVal(){
+    return customFilterVal;
+}
+
+function SetCustomFilterVal(string newVal){
+    customFilterVal = newVal;
+}
+
+function SetViewClass(Class<Actor> newViewClass)
+{
+    Super.SetViewClass(newViewClass);
+    bShowHidden = true;
+    bUserFriendlyNames = false;
+}
+
+function ShowLOS(bool bShow)
+{
+    Super.ShowLOS(bShow);
+    bShowHidden = true;
+    bUserFriendlyNames = false;
+}
+
+function ShowCustom(bool bShow)
+{
+    bShowCustom = bShow;
+}
+
+function Bool IsCustomVisible()
+{
+	return bShowCustom;
+}
+
+function SetCustomAttrib(string newCustomAttrib)
+{
+    customAttrib = newCustomAttrib;
+}
+
+function String GetCustomAttrib(){
+    return customAttrib;
+}
+
+function bool IsInventoryVisible()
+{
+    return bShowInventory;
+}
+
+function ShowInventory(bool bShow)
+{
+    bShowInventory = bShow;
+}
+
+function bool IsTagEventVisible()
+{
+    return bShowTagEvent;
+}
+
+function ShowTagEvent(bool bShow)
+{
+    bShowTagEvent = bShow;
+}
+
+function bool IsTagConnsVisible()
+{
+    return bShowTagConnections;
+}
+
+function ShowTagConns(bool bShow)
+{
+    bShowTagConnections = bShow;
+}
+
+function bool IsEventConnsVisible()
+{
+    return bShowEventConnections;
+}
+
+function ShowEventConns(bool bShow)
+{
+    bShowEventConnections = bShow;
+}
+
+function bool IsCollisionVisible()
+{
+    return bShowCollision;
+}
+
+function ShowCollision(bool bShow)
+{
+    bShowCollision = bShow;
+}
+
+function bool AreTextTagsVisible()
+{
+    return bShowTextTags;
+}
+
+function ShowTextTags(bool bShow)
+{
+    bShowTextTags = bShow;
+}
+
+function bool AreAlliancesVisible()
+{
+    return bShowAlliances;
+}
+
+function ShowAlliances(bool bShow)
+{
+    bShowAlliances = bShow;
+}
+
+function bool AreWeaponScoresVisible()
+{
+    return bShowWeaponScore;
+}
+
+function ShowWeaponScores(bool bShow)
+{
+    bShowWeaponScore = bShow;
+}
+
+function bool AreReactionsVisible()
+{
+    return bShowReactions;
+}
+
+function ShowReactions(bool bShow)
+{
+    bShowReactions = bShow;
+}
+
+function bool ArePatrolPathsVisible()
+{
+    return bShowPatrolPaths;
+}
+
+function ShowPatrolPaths(bool bShow)
+{
+    bShowPatrolPaths = bShow;
+}
+
+function bool AreTexturesVisible()
+{
+    return bShowTextures;
+}
+
+function ShowTextures(bool bShow)
+{
+    bShowTextures = bShow;
+}
+
+function bool IsConvoInfoVisible()
+{
+    return bShowConvoInfo;
+}
+
+function ShowConvoInfo(bool bShow)
+{
+    bShowConvoInfo = bShow;
+}
+
+
+function string GetActorName(Actor a)
+{
+    local string str;
+
+    // DXRando: we want to show a nicer name for spoilers
+    if(DXRGoalMarker(a) != None || DXRLocationMarker(a) != None) {
+        str = a.BindName;
+    }
+    else if(bUserFriendlyNames) {
+        if(#var(prefix)Nanokey(a) != None) {
+            str = #var(prefix)Nanokey(a).Description;
+        }
+        else if(#var(prefix)InformationDevices(a) != None) {
+            str = class'#var(injectsprefix)InformationDevices'.static.GetHumanNameFromID(#var(prefix)InformationDevices(a));
+            if (str==""){
+                str = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(a));
+            }
+
+        }
+        else if(ScriptedPawn(a) != None) {
+            str = ScriptedPawn(a).FamiliarName;
+        }
+        else if(Inventory(a) != None) {
+            str = Inventory(a).ItemName;
+        }
+        else if(DeusExDecoration(a) != None) {
+            str = DeusExDecoration(a).ItemName;
+        }
+    }
+    if(str == "" || str == "None")
+        str = GetPlayerPawn().GetItemName(String(a));
+
+    return str;
+}
+
+function DrawColourLine(GC gc, vector point1, vector point2, int r, int g, int b)
+{
+    local float fromX, fromY;
+    local float toX, toY;
+
+    gc.SetStyle(DSTY_Normal);
+    if (ConvertVectorToCoordinates(point1, fromX, fromY) && ConvertVectorToCoordinates(point2, toX, toY))
+    {
+        gc.SetTileColorRGB(r, g, b);
+        DrawPoint(gc, fromX, fromY);
+        DrawPoint(gc, toX, toY);
+        gc.SetTileColorRGB(r, g, b);
+        Interpolate(gc, fromX, fromY, toX, toY, 8);
+    }
+}
+
+//#region DrawWindow
+//I just want to change the font :(
+function DrawWindow(GC gc)
+{
+    local float xPos, yPos;
+    local float centerX, centerY;
+    local float topY, bottomY;
+    local float leftX, rightX;
+    local int i, j, k, r, g, b;
+    local vector tVect;
+    local vector cVect;
+    local PlayerPawnExt player;
+    local Actor trackActor, otherActor;
+    local Dispatcher disp;
+    local LogicTrigger logic;
+    local ScriptedPawn trackPawn;
+    local bool bValid;
+    local bool bPointValid;
+    local float visibility;
+    local float dist;
+    local float speed;
+    local name stateName;
+    local float temp;
+    local string str,str2,str3;
+    local texture skins[9];
+    local color mainColor;
+    local byte zoneNum;
+    local float oldRenderTime;
+    local float barOffset;
+    local float barValue;
+    local float barWidth;
+    local DeusExMover dxMover;
+    local vector minpos, maxpos;
+    local Inventory item;
+    local name filter;
+    local int radius;
+    local DebugBox db;
+    local class<Actor> classToShow;
+    local bool bPointIsClose;
+
+    minpos = vect(999999, 999999, 999999);
+    maxpos = vect(-999999, -999999, -999999);
+
+    Super(Window).DrawWindow(gc);
+
+    if (viewClass != None)
+        classToShow = viewClass;
+    else if (nameFilter != "")
+        classToShow = class'Actor';
+    else
+        return;
+
+    player  = GetPlayerPawn();
+
+    if (bShowMesh)
+        gc.ClearZ();
+
+    if (nameFilter!="")
+        filter = StringToName(nameFilter);
+
+    radius = 999999;
+    if (bLimitRadius){
+        radius = actorRadius;
+    }
+
+    foreach player.RadiusActors(classToShow, trackActor, radius, player.Location)
+    {
+        if(!bShowHidden && trackActor.bHidden)
+            continue;// DXRando: for spoilers buttons
+
+        if (filter!='' && filter!=trackActor.Name)
+            continue;
+        if (tagFilter!="" && !(tagFilter~=string(trackActor.Tag)))
+            continue;
+        if (eventFilter!="" && !(eventFilter~=string(trackActor.Event)))
+            continue;
+        if (customFilterAttrib!="" && !(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib)))
+            continue;
+
+        dxMover = DeusExMover(trackActor);
+        cVect.X = trackActor.CollisionRadius;
+        cVect.Y = trackActor.CollisionRadius;
+        cVect.Z = trackActor.CollisionHeight;
+        tVect = trackActor.Location;
+        bPointIsClose = FALSE;
+        if (bShowEyes && (Pawn(trackActor) != None))
+            tVect.Z += Pawn(trackActor).BaseEyeHeight;
+        if (trackActor == player)
+        {
+            if (player.bBehindView)
+                bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
+            else {
+                //bPointValid = FALSE;
+                //RANDO: Still show the information if you're in first person (this was so stupid, why would they do this)
+                //       Just show the information in a static location on screen, closer to the left side of the screen
+                bPointIsClose = TRUE;
+            }
+        }
+        else if (dxMover != None)
+        {
+            if (!bShowLineOfSight || (player.AICanSee(trackActor, 1, false, true, bShowArea) > 0))  // need a better way to do this
+                bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
+            else
+                bPointValid = FALSE;
+        }
+        else
+        {
+            if (!bShowLineOfSight || (player.AICanSee(trackActor, 1, false, true, bShowArea) > 0)) {
+                if (trackActor.Owner == player && VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else {
+                    bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
+                }
+            } else {
+                if (VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else {
+                    bPointValid = FALSE;
+                }
+            }
+        }
+
+        if (bPointIsClose){
+            bPointValid = TRUE;
+            centerX = Width/5;
+            centerY = Height/3;
+        }
+
+        if (bPointValid)
+        {
+            bValid = FALSE;
+            if (bShowArea)
+            {
+                for (i=-1; i<=1; i+=2)
+                {
+                    for (j=-1; j<=1; j+=2)
+                    {
+                        for (k=-1; k<=1; k+=2)
+                        {
+                            tVect = cVect;
+                            tVect.X *= i;
+                            tVect.Y *= j;
+                            tVect.Z *= k;
+                            tVect.X += trackActor.Location.X;
+                            tVect.Y += trackActor.Location.Y;
+                            tVect.Z += trackActor.Location.Z;
+                            if (ConvertVectorToCoordinates(tVect, xPos, yPos))
+                            {
+                                if (!bValid)
+                                {
+                                    leftX = xPos;
+                                    rightX = xPos;
+                                    topY = yPos;
+                                    bottomY = yPos;
+                                    bValid = TRUE;
+                                }
+                                else
+                                {
+                                    Extend(xPos, leftX, rightX);
+                                    Extend(yPos, topY, bottomY);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!bValid)
+            {
+                leftX = centerX-10;
+                rightX = centerX+10;
+                topY = centerY-10;
+                bottomY = centerY+10;
+                bValid = TRUE;
+            }
+
+            gc.EnableDrawing(true);
+            gc.SetStyle(DSTY_Translucent);
+            if (bShowZone)
+            {
+                zoneNum = trackActor.Region.ZoneNumber;
+                if (zoneNum == 0)
+                {
+                    mainColor.R = 255;
+                    mainColor.G = 255;
+                    mainColor.B = 255;
+                }
+                else
+                {
+                    // The following color algorithm was copied from UnRender.cpp...
+                    mainColor.R = (zoneNum*67)&255;
+                    mainColor.G = (zoneNum*1371)&255;
+                    mainColor.B = (zoneNum*1991)&255;
+                }
+            }
+            else
+            {
+                mainColor.R = 0;
+                mainColor.G = 255;
+                mainColor.B = 0;
+            }
+            gc.SetTileColor(mainColor);
+            //#region Show Mesh
+            if (bShowMesh)
+            {
+                SetSkins(trackActor, skins);
+                oldRenderTime = trackActor.LastRenderTime;
+                gc.DrawActor(trackActor, false, false, true, 1.0, 1.0, None);
+                trackActor.LastRenderTime = oldRenderTime;
+                ResetSkins(trackActor, skins);
+            }
+            if (!bShowMesh || bShowArea)
+            {
+                gc.SetTileColorRGB(mainColor.R/4, mainColor.G/4, mainColor.B/4);
+                gc.DrawBox(leftX, topY, 1+rightX-leftX, 1+bottomY-topY, 0, 0, 1, Texture'Solid');
+                leftX += 1;
+                rightX -= 1;
+                topY += 1;
+                bottomY -= 1;
+                gc.SetTileColorRGB(mainColor.R*3/16, mainColor.G*3/16, mainColor.B*3/16);
+                gc.DrawBox(leftX, topY, 1+rightX-leftX, 1+bottomY-topY, 0, 0, 1, Texture'Solid');
+                leftX += 1;
+                rightX -= 1;
+                topY += 1;
+                bottomY -= 1;
+                gc.SetTileColorRGB(mainColor.R/8, mainColor.G/8, mainColor.B/8);
+                gc.DrawBox(leftX, topY, 1+rightX-leftX, 1+bottomY-topY, 0, 0, 1, Texture'Solid');
+            }
+            //#endregion
+
+            gc.SetStyle(DSTY_Normal);
+
+            if (bShowCylinder) {
+                r=0;
+                g=0;
+                b=0;
+                if (DebugBox(trackActor)!=None){
+                    db = DebugBox(trackActor);
+
+                    DrawCube(gc, db.min_pos, db.max_pos, db.BoxColour.R, db.BoxColour.G, db.BoxColour.B);
+
+                } else {
+                    if (trackActor.bCollideActors){
+                        g=255;
+                    } else {
+                        r=255;
+                    }
+                    DrawColourCylinder(gc, trackActor, r, g, b);
+                    //DrawCylinder(gc, trackActor);
+                }
+            }
+
+            if (trackActor.InStasis())
+            {
+                gc.SetTileColorRGB(0, 255, 0);
+                gc.DrawPattern(centerX, centerY-2, 1, 5, 0, 0, Texture'Solid');
+                gc.DrawPattern(centerX-2, centerY, 5, 1, 0, 0, Texture'Solid');
+            }
+            else
+            {
+                gc.SetTileColorRGB(255, 255, 255);
+                gc.DrawPattern(centerX, centerY-3, 1, 7, 0, 0, Texture'Solid');
+                gc.DrawPattern(centerX-3, centerY, 7, 1, 0, 0, Texture'Solid');
+            }
+
+            str = "";
+            //#region Show Tag and Event
+            if (bShowTagEvent || bShowData)
+            {
+                str = str $ "|cf50aff";
+                str = str $ "Tag: "$trackActor.Tag  $ CR();
+
+                disp = Dispatcher(trackActor);
+
+                str = str $ "Event: "$trackActor.Event  $ CR();
+                if (disp!=None){
+                    for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                        if (disp.OutEvents[i]!=''){
+                            str = str $ "OutDelays["$i$"]: "$disp.OutDelays[i] $ CR();
+                            str = str $ "OutEvents["$i$"]: "$disp.OutEvents[i] $ CR();
+                        }
+                    }
+                }
+
+                logic = LogicTrigger(trackActor);
+                if (logic!=None) {
+                    if(logic.Not) str = str $ "NOT ";
+                    str = str $ logic.inGroup1 @ logic.Op @ logic.inGroup2 $ CR();
+                    str = str $ logic.in1 @ logic.in2 $ CR();
+                }
+            }
+            //#endregion
+
+            //#region Show Event Conns
+            if (bShowEventConnections)
+            {
+                if (trackActor.Event!=''){
+                    foreach player.AllActors(class'Actor',otherActor,trackActor.Event){
+                        DrawColourLine(gc,trackActor.Location,otherActor.Location,255,0,0);
+                    }
+                }
+                disp = Dispatcher(trackActor);
+                if (disp!=None){
+                    for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                        if (disp.OutEvents[i]!=''){
+                            foreach player.AllActors(class'Actor',otherActor,disp.OutEvents[i]){
+                                DrawColourLine(gc,trackActor.Location,otherActor.Location,255,0,0);
+                            }
+                        }
+                    }
+                }
+            }
+            //#endregion
+
+            //#region Show Tag Conns
+            if (bShowTagConnections)
+            {
+                if (trackActor.Tag!=''){
+                    foreach player.AllActors(class'Actor',otherActor){
+                        if (otherActor.Event == trackActor.Tag){
+                            DrawColourLine(gc,trackActor.Location,otherActor.Location,0,255,0);
+                        }
+                        foreach player.AllActors(class'Dispatcher',disp){
+                            for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                                if (disp.OutEvents[i]==trackActor.Tag){
+                                    DrawColourLine(gc,trackActor.Location,disp.Location,0,255,0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //#endregion
+
+            //#region Show State
+            if (bShowState || bShowData)
+            {
+                stateName = trackActor.GetStateName();
+                str = str $ "|p1'" $ stateName $ "'" $ CR();
+                trackPawn = ScriptedPawn(trackActor);
+                if(trackPawn != None && trackPawn.Enemy != None) {
+                    str = str $ "Enemy: " $ trackPawn.Enemy.name $ CR();
+                }
+            }
+            //#endregion
+
+            //#region Show Physics
+            if (bShowPhysics || bShowData)
+            {
+                str = str $ "|c80ff80P=";
+                switch (trackActor.Physics)
+                {
+                    case PHYS_None:
+                        str = str $ "PHYS_None";
+                        break;
+                    case PHYS_Walking:
+                        str = str $ "PHYS_Walking";
+                        break;
+                    case PHYS_Falling:
+                        str = str $ "PHYS_Falling";
+                        break;
+                    case PHYS_Swimming:
+                        str = str $ "PHYS_Swimming";
+                        break;
+                    case PHYS_Flying:
+                        str = str $ "PHYS_Flying";
+                        break;
+                    case PHYS_Rotating:
+                        str = str $ "PHYS_Rotating";
+                        break;
+                    case PHYS_Projectile:
+                        str = str $ "PHYS_Projectile";
+                        break;
+                    case PHYS_Rolling:
+                        str = str $ "PHYS_Rolling";
+                        break;
+                    case PHYS_Interpolating:
+                        str = str $ "PHYS_Interpolating";
+                        break;
+                    case PHYS_MovingBrush:
+                        str = str $ "PHYS_MovingBrush";
+                        break;
+                    case PHYS_Spider:
+                        str = str $ "PHYS_Spider";
+                        break;
+                    case PHYS_Trailer:
+                        str = str $ "PHYS_Trailer";
+                        break;
+                    default:
+                        str = str $ "Unknown";
+                        break;
+                }
+                str = str $ CR();
+            }
+            //#endregion
+
+            //#region Show Mass
+            if (bShowMass || bShowData)
+            {
+                str = str $ "|cff80ffM=";
+                str = str $ trackActor.Mass $ CR();
+            }
+            //#endregion
+
+            //#region Show Enemy
+            if (bShowEnemy || bShowData)
+            {
+                str = str $ "|cff8000E=";
+                if (Pawn(trackActor) != None)
+                    str = str $ "'" $ Pawn(trackActor).Enemy $ "'" $ CR();
+                else
+                    str = str $ "n/a" $ CR();
+            }
+            //#endregion
+
+            //#region Show Instigator
+            if (bShowInstigator || bShowData)
+            {
+                str = str $ "|c0080ffI=";
+                str = str $ "'" $ trackActor.Instigator $ "'" $ CR();
+            }
+            //#endregion
+
+            //#region Show Owner
+            if (bShowOwner || bShowData)
+            {
+                str = str $ "|c80ffffO=";
+                str = str $ "'" $ trackActor.Owner $ "'" $ CR();
+            }
+            //#endregion
+
+            //#region Show Bind Name
+            if (bShowBindName || bShowData)
+            {
+                str = str $ "|c80b0b0N=";
+                str = str $ "'" $ trackActor.BindName $ "'" $ CR();
+            }
+            //#endregion
+
+            //#region Show Base
+            if (bShowBase || bShowData)
+            {
+                str = str $ "|c808080B=";
+                str = str $ "'" $ trackActor.Base $ "'" $ CR();
+            }
+            //#endregion
+
+            //#region Show Last Rendered
+            if (bShowLastRendered || bShowData)
+            {
+                str = str $ "|cffffffR=";
+                str = str $ "'" $ trackActor.LastRendered() $ "'" $ CR();
+            }
+            //#endregion
+
+            //#region Show Light Level
+            if (bShowLightLevel || bShowData)
+            {
+                visibility = trackActor.AIVisibility(false);
+                str = str $ "|p4L=" $ visibility*100 $ CR();
+            }
+            //#endregion
+
+            //#region Show Visibility
+            if (bShowVisibility || bShowData)
+            {
+                visibility = player.AICanSee(trackActor, 1.0, true, true, true);
+                str = str $ "|p7V=" $ visibility*100 $ CR();
+            }
+            //#endregion
+
+            //#region Show Distance
+            if (bShowDist || bShowData)
+            {
+                // It would be soooo much easier to call
+                // (trackActor.Location-player.Location).Size(), but noooooo...
+                // that's only supported in the Actor class!
+
+                temp = (trackActor.Location.X - player.Location.X);
+                dist = temp*temp;
+                temp = (trackActor.Location.Y - player.Location.Y);
+                dist += temp*temp;
+                temp = (trackActor.Location.Z - player.Location.Z);
+                dist += temp*temp;
+                dist = sqrt(dist);
+                str = str $ "|p3D=" $ dist $ CR();
+            }
+            //#endregion
+
+            //#region Show Position
+            if (bShowPos || bShowData)
+            {
+                str = str $ "|p2";
+                str = str $ "X=" $ trackActor.Location.X $ CR() $
+                            "Y=" $ trackActor.Location.Y $ CR() $
+                            "Z=" $ trackActor.Location.Z $ CR();
+            }
+            //#endregion
+
+            //#region Show Velocity
+            if (bShowVelocity || bShowData)
+            {
+                speed  = trackActor.Velocity.X*trackActor.Velocity.X;
+                speed += trackActor.Velocity.Y*trackActor.Velocity.Y;
+                speed += trackActor.Velocity.Z*trackActor.Velocity.Z;
+                speed  = sqrt(speed);
+
+                str = str $ "|c8080ff";
+                str = str $ "vS=" $ speed $ CR() $
+                            "vX=" $ trackActor.Velocity.X $ CR() $
+                            "vY=" $ trackActor.Velocity.Y $ CR() $
+                            "vZ=" $ trackActor.Velocity.Z $ CR();
+            }
+            //#endregion
+
+            //#region Show Acceleration
+            if (bShowAcceleration || bShowData)
+            {
+                speed  = trackActor.Acceleration.X*trackActor.Acceleration.X;
+                speed += trackActor.Acceleration.Y*trackActor.Acceleration.Y;
+                speed += trackActor.Acceleration.Z*trackActor.Acceleration.Z;
+                speed  = sqrt(speed);
+
+                str = str $ "|cff8080";
+                str = str $ "aS=" $ speed $ CR() $
+                            "aX=" $ trackActor.Acceleration.X $ CR() $
+                            "aY=" $ trackActor.Acceleration.Y $ CR() $
+                            "aZ=" $ trackActor.Acceleration.Z $ CR();
+            }
+            //#endregion
+
+            //#region Show Health
+            if (bShowHealth || bShowData)
+            {
+                str = str $ "|p6H=";
+                if (Pawn(trackActor) != None)
+                {
+                    str = str $ Pawn(trackActor).Health $ CR();
+                    str = str $ Pawn(trackActor).HealthHead $ CR();
+                    str = str $ Pawn(trackActor).HealthArmRight $ "-" $ Pawn(trackActor).HealthTorso $ "-" $ Pawn(trackActor).HealthArmLeft $ CR();
+                    str = str $ Pawn(trackActor).HealthLegRight $ "-" $ Pawn(trackActor).HealthLegLeft $ CR();
+
+                }
+                else if (DeusExDecoration(trackActor) != None)
+                    str = str $ DeusExDecoration(trackActor).HitPoints $ CR();
+                else
+                    str = str $ "n/a" $ CR();
+            }
+            //#endregion
+
+            barOffset = 0;
+            //#region Show Enemy Response
+            if (bShowEnemyResponse || bShowData)
+            {
+                trackPawn = ScriptedPawn(trackActor);
+                if (trackPawn != None)
+                {
+                    barOffset = 8;
+                    barWidth  = 50;
+                    barValue  = int(FClamp(trackPawn.EnemyReadiness*barWidth+0.5, 1, barWidth));
+                    if (trackPawn.EnemyReadiness <= 0)
+                        barValue = 0;
+                    gc.SetStyle(DSTY_Normal);
+                    gc.SetTileColorRGB(64, 64, 64);
+                    gc.DrawPattern((leftX+rightX-barWidth)/2, bottomY+5, barWidth, barOffset,
+                                   0, 0, Texture'Dithered');
+                    if (trackPawn.EnemyReadiness >= 1.0)
+                    {
+                        if (int(GetPlayerPawn().Level.TimeSeconds*4)%2 == 1)
+                            gc.SetTileColorRGB(255, 0, 0);
+                        else
+                            gc.SetTileColorRGB(255, 255, 255);
+                    }
+                    else
+                        gc.SetTileColor(class'MenuChoice_ColorVision'.static.GetVisionColorScaled(1-trackPawn.EnemyReadiness));
+                    gc.DrawPattern((leftX+rightX-barWidth)/2, bottomY+5, barValue, barOffset,
+                                   0, 0, Texture'Solid');
+                    barOffset += 5;
+                }
+            }
+            //#endregion
+
+            //#region Show Collision
+            if (bShowCollision || bShowData)
+            {
+                str = str $ "|c8080ff";
+                str = str $ "CollisionRadius=" $ trackActor.CollisionRadius $ CR() $
+                            "CollisionHeight=" $ trackActor.CollisionHeight $ CR() $
+                            "bCollideActors=" $ trackActor.bCollideActors $ CR() $
+                            "bCollideWorld=" $ trackActor.bCollideWorld $ CR() $
+                            "bBlockActors=" $ trackActor.bBlockActors $ CR() $
+                            "bBlockPlayers=" $ trackActor.bBlockPlayers $ CR();
+            }
+            //#endregion
+
+            //#region Show Custom Value
+            if(bShowCustom && customAttrib != "") {
+                str2 = customAttrib;
+                str3 = "";
+                while(str2!=""){
+                    str3 = class'DXRInfo'.static.UnpackString(str2);
+                    str = str $ str3 $ ": " $ trackActor.GetPropertyText(str3) $ CR();
+                }
+                //str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
+            }
+            //#endregion
+
+            //#region Show Text Tags
+            if(bShowTextTags || bShowData)
+            {
+                if (#var(prefix)InformationDevices(trackActor)!=None){
+                    str = str $ "|c34d8eb";
+                    str2 = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(trackActor));
+                    str = str $ "TextTag=" $ str2 $ CR();
+                    str = str $ "Human=" $ class'#var(injectsprefix)InformationDevices'.static.GetHumanNameFromID(#var(prefix)InformationDevices(trackActor)) $ CR();
+                }
+            }
+            //#endregion
+
+            //#region Show Inventory
+            if(bShowInventory){
+                item = None;
+                bValid=False;
+                if (Pawn(trackActor) != None) {
+                    item = Pawn(trackActor).Inventory;
+                    bValid=True;
+                } else if (DeusExCarcass(trackActor)!=None){
+                    item = DeusExCarcass(trackActor).Inventory;
+                    bValid=True;
+                }
+
+                if (bValid){
+                    str = str $ "Inventory:" $ CR();
+                    for(item = item; item != None; item = item.Inventory) {
+                        str = str $ GetActorName(item);
+                        if (Ammo(item)!=None){
+                            str = str $ " ("$Ammo(item).AmmoAmount$")";
+                        } else if (Weapon(item)!=None && ScriptedPawn(trackActor)!=None && bShowWeaponScore){
+                            str = str $ " (S: "$CalcWeaponScore(item)$")";
+                        }
+                        str = str $ CR();
+                    }
+                }
+            }
+            //#endregion
+
+            //#region Show Weapon Score
+            if (bShowWeaponScore) {
+                if (Weapon(trackActor)!=None && ScriptedPawn(trackActor.Owner)!=None){
+                    str = str $ "Score: "$ CalcWeaponScore(trackActor) $ CR();
+                }
+            }
+            //#endregion
+
+            //#region Show Reactions
+            if (bShowReactions) {
+                trackPawn = ScriptedPawn(trackActor);
+                if (trackPawn!=None){
+                    //Show React, Fear, Hate (in that order)
+                    str = str $ "|cDA00AA";
+                    str = str $ "Reactions:" $ CR();
+
+                    if (trackPawn.bReactAlarm || trackPawn.bFearAlarm){
+                        str = str $ "Alarm: ";
+                        if (trackPawn.bReactAlarm) str = str $ "R";
+                        if (trackPawn.bFearAlarm) str = str $ "F";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactCarcass || trackPawn.bFearCarcass || trackPawn.bHateCarcass){
+                        str = str $ "Carcass: ";
+                        if (trackPawn.bReactCarcass) str = str $ "R";
+                        if (trackPawn.bFearCarcass) str = str $ "F";
+                        if (trackPawn.bHateCarcass) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactDistress || trackPawn.bFearDistress || trackPawn.bHateDistress){
+                        str = str $ "Distress: ";
+                        if (trackPawn.bReactDistress) str = str $ "R";
+                        if (trackPawn.bFearDistress) str = str $ "F";
+                        if (trackPawn.bHateDistress) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearHacking || trackPawn.bHateHacking){
+                        str = str $ "Hacking: ";
+                        if (trackPawn.bFearHacking) str = str $ "F";
+                        if (trackPawn.bHateHacking) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearIndirectInjury || trackPawn.bHateIndirectInjury){
+                        str = str $ "IndirectInjury: ";
+                        if (trackPawn.bFearIndirectInjury) str = str $ "F";
+                        if (trackPawn.bHateIndirectInjury) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearInjury || trackPawn.bHateInjury){
+                        str = str $ "Injury: ";
+                        if (trackPawn.bFearInjury) str = str $ "F";
+                        if (trackPawn.bHateInjury) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactProjectiles || trackPawn.bFearProjectiles){
+                        str = str $ "Projectiles: ";
+                        if (trackPawn.bReactProjectiles) str = str $ "R";
+                        if (trackPawn.bFearProjectiles) str = str $ "F";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactShot || trackPawn.bFearShot || trackPawn.bHateShot){
+                        str = str $ "Shot: ";
+                        if (trackPawn.bReactShot) str = str $ "R";
+                        if (trackPawn.bFearShot) str = str $ "F";
+                        if (trackPawn.bHateShot) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearWeapon || trackPawn.bHateWeapon){
+                        str = str $ "Weapon: ";
+                        if (trackPawn.bFearWeapon) str = str $ "F";
+                        if (trackPawn.bHateWeapon) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactLoudNoise || trackPawn.bReactPresence || trackPawn.bReactFutz){
+                        str = str $ CR() $ "Other Reacts: " $ CR();
+                        if (trackPawn.bReactLoudNoise) str = str $ "LoudNoise" $ CR();
+                        if (trackPawn.bReactPresence) str = str $ "Presence " $ CR();
+                        if (trackPawn.bReactFutz) str = str $ "Futz " $ CR();
+                    }
+                }
+            }
+            //#endregion
+
+            //#region Show Alliances
+            if(bShowAlliances){
+                trackPawn = ScriptedPawn(trackActor);
+                if (trackPawn != None){
+                    str = str $ "|c5b4ce6";
+                    str = str $ "Alliance:" $ trackPawn.Alliance $ CR();
+                    str = str $ "Alliances:" $ CR();
+                    for(i=0;i<ArrayCount(trackPawn.InitialAlliances);i++) {
+                        if (trackPawn.InitialAlliances[i].AllianceName!=''){
+                            str = str $ trackPawn.InitialAlliances[i].AllianceName$": ";
+                            switch(trackPawn.GetAllianceType(trackPawn.InitialAlliances[i].AllianceName)){
+                                case ALLIANCE_Friendly:
+                                    str = str $ "Frnd";
+                                    break;
+                                case ALLIANCE_Neutral:
+                                    str = str $ "Neut";
+                                    break;
+                                case ALLIANCE_Hostile:
+                                    str = str $ "Host";
+                                    break;
+                            }
+                            str = str $ "  I: ";
+                            switch(trackPawn.InitialAlliances[i].AllianceLevel){
+                                case 1.0:
+                                    str = str $ "Frnd";
+                                    break;
+                                case 0.0:
+                                    str = str $ "Neut";
+                                    break;
+                                case -1.0:
+                                    str = str $ "Host";
+                                    break;
+                            }
+                            str = str $ CR();
+                        }
+                    }
+                }
+            }
+            //#endregion
+
+            //#region Show Patrols
+            if (bShowPatrolPaths){
+                trackPawn = ScriptedPawn(trackActor);
+                if (trackPawn != None){
+                    DrawSPPatrolPath(gc,trackPawn);
+                }
+            }
+            //#endregion
+
+            //#region Show Textures
+            if (bShowTextures){
+                str = str $ "|ce4a023"; // #e4a023
+                for(i=0;i<ArrayCount(trackActor.MultiSkins);i++){
+                    str = str $ "MultiSkins["$i$"]="$trackActor.MultiSkins[i]$CR();
+                }
+                str = str $ "Texture="$ trackActor.Texture $CR();
+                str = str $ "Mesh="$ trackActor.Mesh $CR();
+            }
+            //#endregion
+
+            //#region Show Convo Info
+            if (bShowConvoInfo){
+                str = str $ "|ce4a023"; // #e4a023
+                str = str $ "FamiliarName="$ trackActor.FamiliarName $CR();
+                str = str $ "UnfamiliarName="$ trackActor.UnfamiliarName $CR();
+                str = str $ "BindName="$ trackActor.BindName $CR();
+                str = str $ "BarkBindName="$ trackActor.BarkBindName $CR();
+            }
+            //#endregion
+
+            if (str != "")
+            {
+                gc.SetAlignments(HALIGN_Center, VALIGN_Top);
+                gc.SetFont(textfont);
+                //gc.SetTextColorRGB(visibility*255, visibility*255, visibility*255);
+                gc.SetTextColorRGB(0, 255, 0);
+                gc.DrawText(leftX-100, bottomY+barOffset+5, 200+rightX-leftX, 280, str);
+            }
+
+            gc.SetTextColor(mainColor);
+            gc.SetAlignments(HALIGN_Center, VALIGN_Bottom);
+            gc.SetFont(textfont);
+
+            gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, GetActorName(trackActor));
+
+            if(trackActor.Location.X < minpos.X)
+                minpos.X = trackActor.Location.X;
+            if(trackActor.Location.Y < minpos.Y)
+                minpos.Y = trackActor.Location.Y;
+            if(trackActor.Location.Z < minpos.Z)
+                minpos.Z = trackActor.Location.Z;
+
+            if(trackActor.Location.X > maxpos.X)
+                maxpos.X = trackActor.Location.X;
+            if(trackActor.Location.Y > maxpos.Y)
+                maxpos.Y = trackActor.Location.Y;
+            if(trackActor.Location.Z > maxpos.Z)
+                maxpos.Z = trackActor.Location.Z;
+        }
+    }
+
+    /*str = "minpos: ("$minpos$")";
+    gc.SetTextColor(mainColor);
+    gc.SetAlignments(HALIGN_Left, VALIGN_Bottom);
+    gc.SetFont(textfont);
+    gc.DrawText(5, 150, 500, 20, str);
+    str = "maxpos: ("$maxpos$")";
+    gc.DrawText(5, 170, 500, 20, str);*/
+}
+//#endregion
+
+//#region Calc Weapon Score
+//Duplicated from ScriptedPawn::SwitchToBestWeapon with some minor formatting differences
+function string CalcWeaponScore(Actor item)
+{
+    local #var(DeusExPrefix)Weapon dxw,cur;
+    local ScriptedPawn sp;
+
+    local float        score;
+    local int          fallbackLevel;
+    local int          curFallbackLevel;
+    local bool         bBlockSpecial;
+    local bool         bValid;
+    local float        minRange, accRange;
+    local float        range, centerRange;
+    local float        cutoffRange;
+    local float        enemyRange;
+    local float        minEnemy, accEnemy, maxEnemy;
+    local ScriptedPawn enemyPawn;
+    local #var(prefix)Robot enemyRobot;
+    local DeusExPlayer enemyPlayer;
+    local float        enemyRadius;
+    local bool         bEnemySet;
+    local float        FireTimer;
+
+    local string       finalScore;
+
+
+
+    if (item==None){
+        return "None";
+    }
+
+    dxw = #var(DeusExPrefix)Weapon(item);
+    sp = ScriptedPawn(item.Owner);
+
+    if (dxw==None){
+        return "Not Weapon";
+    }
+
+    if (sp==None){
+        return "Not Owned";
+    }
+
+//////////////////////////////////////////////////////////////////
+//  DUPLICATED LOGIC FROM ScriptedPawn::SwitchToBestWeapon
+
+    if (sp.ShouldDropWeapon())
+    {
+        return "Dropping";
+    }
+
+    bBlockSpecial = false;
+    cur = #var(DeusExPrefix)Weapon(sp.Weapon);
+    if (cur != None)
+    {
+        if (cur.AITimeLimit > 0)
+        {
+            if (sp.SpecialTimer <= 0)
+            {
+                bBlockSpecial = true;
+                FireTimer = cur.AIFireDelay;
+            }
+        }
+    }
+
+    fallbackLevel   = 0;
+
+    bEnemySet   = false;
+    minEnemy    = 0;
+    accEnemy    = 0;
+    enemyRange  = 400;  // default
+    enemyRadius = 0;
+    enemyPawn   = None;
+    enemyRobot  = None;
+    if (sp.Enemy != None)
+    {
+        bEnemySet   = true;
+        enemyRange  = VSize(sp.Enemy.Location - sp.Location);
+        enemyRadius = sp.Enemy.CollisionRadius;
+        if (#var(DeusExPrefix)Weapon(sp.Enemy.Weapon) != None)
+            #var(DeusExPrefix)Weapon(sp.Enemy.Weapon).GetWeaponRanges(minEnemy, accEnemy, maxEnemy);
+        enemyPawn   = #var(prefix)ScriptedPawn(sp.Enemy);
+        enemyRobot  = #var(prefix)Robot(sp.Enemy);
+        enemyPlayer = #var(PlayerPawn)(sp.Enemy);
+    }
+
+
+
+
+    bValid = true;
+    if (dxw.ReloadCount > 0)
+    {
+        if (dxw.AmmoType == None)
+            bValid = false;
+        else if (dxw.AmmoType.AmmoAmount < 1)
+            bValid = false;
+
+        if (!bValid && finalScore==""){
+            finalScore="No Ammo";
+        }
+    }
+
+
+    // Ensure we can actually use this weapon here
+    if (bValid)
+    {
+        // lifted from DeusExWeapon...
+        if ((dxw.EnviroEffective == ENVEFF_Air) || (dxw.EnviroEffective == ENVEFF_Vacuum) ||
+            (dxw.EnviroEffective == ENVEFF_AirVacuum))
+            if (dxw.Region.Zone.bWaterZone)
+                bValid = false;
+
+        if (!bValid && finalScore==""){
+            finalScore="Inv. Enviro";
+        }
+    }
+
+    if (bValid)
+    {
+        sp.GetWeaponBestRange(dxw, minRange, accRange);
+        cutoffRange = minRange+(sp.CollisionRadius+enemyRadius);
+        range = (accRange - minRange) * 0.5;
+        centerRange = minRange + range;
+        if (range < 50)
+            range = 50;
+        if (enemyRange < centerRange)
+            score = (centerRange - enemyRange)/range;
+        else
+            score = (enemyRange - centerRange)/range;
+        if ((minRange >= minEnemy) && (accRange <= accEnemy))
+            score += 0.5;  // arbitrary
+        if ((cutoffRange >= enemyRange-sp.CollisionRadius) && (cutoffRange >= 256)) // do not use long-range weapons on short-range targets
+            score += 10000;
+
+        curFallbackLevel = 3;
+        if (dxw.bFallbackWeapon && !sp.bUseFallbackWeapons)
+            curFallbackLevel = 2;
+        if (!bEnemySet && !dxw.bUseAsDrawnWeapon)
+            curFallbackLevel = 1;
+        if ((dxw.AIFireDelay > 0) && (sp.FireTimer > 0))
+            curFallbackLevel = 0;
+        if (bBlockSpecial && (dxw.AITimeLimit > 0) && (sp.SpecialTimer <= 0))
+            curFallbackLevel = 0;
+
+        // Adjust score based on opponent and damage type.
+        // All damage types are listed here, even the ones that aren't used by weapons... :)
+        // (hacky...)
+
+        switch (dxw.WeaponDamageType())
+        {
+            case 'Exploded':
+                // Massive explosions are always good
+                score -= 0.2;
+                break;
+
+            case 'Stunned':
+                if (enemyPawn != None)
+                {
+                    if (enemyPawn.bStunned)
+                        score += 1000;
+                    else
+                        score -= 1.5;
+                }
+                if (enemyPlayer != None)
+                    score += 10;
+                break;
+
+            case 'TearGas':
+                if (enemyPawn != None)
+                {
+                    if (enemyPawn.bStunned){
+                        //score += 1000;
+                        bValid = false;
+                        if (finalScore==""){
+                            finalScore="Already Stunned";
+                        }
+                    } else
+                        score -= 5.0;
+                }
+                if (enemyRobot != None) {
+                    //score += 10000;
+                    bValid = false;
+                    if (finalScore==""){
+                        finalScore="Target Robot";
+                    }
+                }
+                break;
+
+            case 'HalonGas':
+                if (enemyPawn != None)
+                {
+                    if (enemyPawn.bStunned){
+                        //score += 1000;
+                        bValid = false;
+                        if (finalScore==""){
+                            finalScore="Already Stunned";
+                        }
+                    } else if (enemyPawn.bOnFire){
+                        //score += 10000;
+                        bValid = false;
+                        if (finalScore==""){
+                            finalScore="Already Burning";
+                        }
+                    } else
+                        score -= 3.0;
+                }
+                if (enemyRobot != None)
+                    //score += 10000;
+                    bValid = false;
+                break;
+
+            case 'PoisonGas':
+            case 'Poison':
+            case 'PoisonEffect':
+            case 'Radiation':
+                if (enemyRobot != None){
+                    //score += 10000;
+                    bValid = false;
+                    if (finalScore==""){
+                        finalScore="Target Robot";
+                    }
+                }
+                break;
+
+            case 'Burned':
+            case 'Flamed':
+            case 'Shot':
+                if (enemyRobot != None)
+                    score += 0.5;
+                break;
+
+            case 'Sabot':
+                if (enemyRobot != None)
+                    score -= 0.5;
+                break;
+
+            case 'EMP':
+            case 'NanoVirus':
+                if (enemyRobot != None)
+                    score -= 5.0;
+                else if (enemyPlayer != None)
+                    score += 5.0;
+                else {
+                    //score += 10000;
+                    bValid = false;
+                    if (finalScore==""){
+                        finalScore="Target Non-Player/Robot";
+                    }
+                }
+                break;
+
+            case 'Drowned':
+            default:
+                break;
+        }
+
+        // Special case for current weapon
+        if ((dxw == sp.Weapon) && (sp.WeaponTimer < 10.0))
+        {
+            // If we last changed weapons less than five seconds ago,
+            // keep this weapon
+            if (sp.WeaponTimer < 5.0)
+                score = -10;
+
+            // If between five and ten seconds, use a sliding scale
+            else
+                score -= (10.0 - sp.WeaponTimer)/5.0;
+        }
+
+        // Throw a little randomness into the computation...
+        else
+        {
+            //This RNG won't match the real calculation, don't do this for Rando display purposes
+            //0.5 result would result in 0 change
+            //score += FRand()*0.1 - 0.05;
+            if (score < 0)
+                score = 0;
+        }
+
+    }
+
+//////////////////////////////////////////////////////////////////
+
+    if (bValid && finalScore==""){
+        finalScore = ""$score;
+    }
+
+    return finalScore;
+}
+//#endregion
+
+//#region Draw Shapes
+//DrawCylinder, but now it uses colour lines instead of forced white ones
+function DrawColourCylinder(GC gc, actor trackActor, int r, int g, int b)
+{
+    local int         i;
+    local vector      topCircle[8];
+    local vector      bottomCircle[8];
+    local float       topSide, bottomSide;
+    local int         numPoints;
+    local DeusExMover dxMover;
+    local vector      center, area;
+
+    dxMover = DeusExMover(trackActor);
+    if (dxMover == None)
+    {
+        topSide = trackActor.Location.Z + trackActor.CollisionHeight;
+        bottomSide = trackActor.Location.Z - trackActor.CollisionHeight;
+        for (i=0; i<maxPoints; i++)
+        {
+            topCircle[i] = trackActor.Location;
+            topCircle[i].Z = topSide;
+            topCircle[i].X += sinTable[i]*trackActor.CollisionRadius;
+            topCircle[i].Y += sinTable[i+maxPoints/4]*trackActor.CollisionRadius;
+            bottomCircle[i] = topCircle[i];
+            bottomCircle[i].Z = bottomSide;
+        }
+        numPoints = maxPoints;
+    }
+    else
+    {
+        dxMover.ComputeMovementArea(center, area);
+        topCircle[0] = center+area*vect(1,1,1);
+        topCircle[1] = center+area*vect(1,-1,1);
+        topCircle[2] = center+area*vect(-1,-1,1);
+        topCircle[3] = center+area*vect(-1,1,1);
+        bottomCircle[0] = center+area*vect(1,1,-1);
+        bottomCircle[1] = center+area*vect(1,-1,-1);
+        bottomCircle[2] = center+area*vect(-1,-1,-1);
+        bottomCircle[3] = center+area*vect(-1,1,-1);
+        numPoints = 4;
+    }
+
+    for (i=0; i<numPoints; i++)
+        DrawColourLine(gc, topCircle[i], bottomCircle[i],r,g,b);
+    for (i=0; i<numPoints-1; i++)
+    {
+        DrawColourLine(gc, topCircle[i], topCircle[i+1],r,g,b);
+        DrawColourLine(gc, bottomCircle[i], bottomCircle[i+1],r,g,b);
+    }
+    DrawColourLine(gc, topCircle[i], topCircle[0],r,g,b);
+    DrawColourLine(gc, bottomCircle[i], bottomCircle[0],r,g,b);
+}
+
+function vector CreateCubeCorner(float x, float y, float z)
+{
+    local vector v;
+
+    v.X = x;
+    v.Y = y;
+    v.Z = z;
+
+    return v;
+}
+
+function DrawCube(GC gc, vector c1, vector c2, int r, int g, int b)
+{
+    local vector corners[8];
+
+    corners[0]=CreateCubeCorner(c1.X,c1.Y,c1.Z); //c1
+    corners[1]=CreateCubeCorner(c2.X,c1.Y,c1.Z);
+    corners[2]=CreateCubeCorner(c2.X,c2.Y,c1.Z);
+    corners[3]=CreateCubeCorner(c1.X,c2.Y,c1.Z);
+    corners[4]=CreateCubeCorner(c1.X,c1.Y,c2.Z);
+    corners[5]=CreateCubeCorner(c2.X,c1.Y,c2.Z);
+    corners[6]=CreateCubeCorner(c2.X,c2.Y,c2.Z); //c2
+    corners[7]=CreateCubeCorner(c1.X,c2.Y,c2.Z);
+
+    DrawColourLine(gc,corners[0],corners[1],r,g,b); //Top square
+    DrawColourLine(gc,corners[1],corners[2],r,g,b); //Top square
+    DrawColourLine(gc,corners[2],corners[3],r,g,b); //Top square
+    DrawColourLine(gc,corners[3],corners[0],r,g,b); //Top square
+    DrawColourLine(gc,corners[0],corners[4],r,g,b); //Verticals
+    DrawColourLine(gc,corners[1],corners[5],r,g,b); //Verticals
+    DrawColourLine(gc,corners[2],corners[6],r,g,b); //Verticals
+    DrawColourLine(gc,corners[3],corners[7],r,g,b); //Verticals
+    DrawColourLine(gc,corners[4],corners[5],r,g,b); //Bottom Square
+    DrawColourLine(gc,corners[5],corners[6],r,g,b); //Bottom Square
+    DrawColourLine(gc,corners[6],corners[7],r,g,b); //Bottom Square
+    DrawColourLine(gc,corners[7],corners[4],r,g,b); //Bottom Square
+
+}
+//#endregion
+
+//#region Draw Patrol Path
+function DrawSPPatrolPath(GC gc, ScriptedPawn sp)
+{
+    local PatrolPoint pp,startPP;
+    local int colourNum;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.Default.dxr;
+
+    if (sp.Orders!='Patrolling') return;
+
+    startPP = PatrolPoint(sp.FindTaggedActor(sp.OrderTag,,class'PatrolPoint'));
+    if (startPP==None) return;
+
+    if (sp.bInWorld && sp.destPoint!=None){
+        DrawColourLine(gc,sp.Location,sp.destPoint.Location,0,255,0);
+    }
+
+    pp = startPP;
+    colourNum = class'DXRInfo'.static.MurmurHash3(sp.OrderTag) % ArrayCount(patrolColours);
+    while (pp.NextPatrolPoint!=None){
+        DrawColourLine(gc,pp.Location,pp.NextPatrolPoint.Location,
+                       Default.patrolColours[colourNum].R,
+                       Default.patrolColours[colourNum].G,
+                       Default.patrolColours[colourNum].B);
+        pp = pp.NextPatrolPoint;
+        if (pp==startPP) break;
+    }
+
+}
+//#endregion
+
+defaultproperties
+{
+    textfont=Font'DXRFontFixedWidthSmall'
+    bShowHidden=true
+    bShowLineOfSight=false
+    patrolColours(0)=(R=255,G=0,B=0,A=0)     //Red rgb(255,0,0)
+    patrolColours(1)=(R=156,G=39,B=176,A=0)  //Purple rgb(156,39,176)
+    patrolColours(2)=(R=0,G=0,B=255,A=0)     //Blue rgb(0,0,255)
+    patrolColours(3)=(R=255,G=111,B=0,A=0)   //Orange rgb(255,111,0)
+    patrolColours(4)=(R=239,G=154,B=154,A=0) //Pink rgb(239,154,154)
+    patrolColours(5)=(R=121,G=85,B=72,A=0)   //Brown rgb(121,85,72)
+    patrolColours(6)=(R=179,G=229,B=252,A=0) //Sky Blue rgb(179,229,252)
+    patrolColours(7)=(R=255,G=255,B=0,A=0)   //Yellow rgb(255,255,0)
+    patrolColours(8)=(R=158,G=157,B=36,A=0)  //Olive Green rgb(158,157,36)
+    patrolColours(9)=(R=97,G=97,B=97,A=0)    //Gray rgb(97,97,97)
+    patrolColours(10)=(R=146,G=74,B=98,A=0)    //Grayish pink rgb(146, 74, 98)
+    patrolColours(11)=(R=72,G=230,B=156,A=0)    //Mint Green rgb(72, 230, 156)
+    patrolColours(12)=(R=45,G=95,B=4,A=0)    //Dark Green rgb(45, 95, 4)
+    patrolColours(13)=(R=206,G=60,B=219,A=0)    //Bright pink rgb(206, 60, 219)
+}

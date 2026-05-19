@@ -31,21 +31,55 @@ event InitWindow()
         preset_custom_choice = true; // HACK: people coming from the Zero Rando installer probably want to see the difficulty choices
     }
     Init(GetDxr());
+    AddTimer(1.0,true,0,'PeriodicCrowdControlCheck');
 }
 
-function CheckCrowdControlConnection(DXRFlags f)
+function PeriodicCrowdControlCheck(int timerID, int invocations, int clientData)
+{
+    local DXRFlags f;
+    f = GetFlags();
+    if (f.crowdcontrol==1){
+        //If it's been turned on, stop the timer
+        _BindControls(false);
+        RemoveTimer(timerID);
+        return;
+    }
+
+    if (class'DXRMenuSelectDifficulty'.static.IsCrowdControlConnected(f)){
+        //_BindControls(true);
+        f.crowdcontrol=1; //Enabled (Streaming)
+        _BindControls(false);
+        RemoveTimer(timerID);
+    }
+}
+
+static function bool IsCrowdControlConnected(Actor a)
+{
+    local DXRandoCrowdControlLink ccLink;
+
+    if (a==None) return false;
+
+    //Look to see if there's a connected Crowd Control link
+    foreach a.AllActors(class'DXRandoCrowdControlLink',ccLink){
+        if (ccLink.IsConnected()){
+            //Crowd Control is connected!
+            return true;
+        }
+    }
+    return false;
+}
+
+static function CheckCrowdControlConnection(DXRFlags f)
 {
     local DXRandoCrowdControlLink ccLink;
 
     if (f==None) return;
 
-    //Look to see if there's a connected Crowd Control link
-    foreach f.AllActors(class'DXRandoCrowdControlLink',ccLink){
-        if (ccLink.IsConnected()){
-            //Crowd Control is connected!
-            f.crowdcontrol=1; //Enabled (Streaming)
-        }
+    if (IsCrowdControlConnected(f)){
+        //Crowd Control is connected!
+        f.crowdcontrol=1; //Enabled (Streaming)
     }
+
 }
 
 function BindControls(optional string action)
@@ -203,17 +237,30 @@ function bool BindPresets()
         CreateLabelRow("Other:");
     }
 
-    s = f.GameModeHelpText(f.HalloweenMode);
-    if(dxr.rando_beaten >= 5 && PresetButton("Full Halloween Mode", s)) {
-        f.gamemode = f.HalloweenMode;
-        f.autosave = 7; // fixed limited saves FixedSaves
+    if(dxr.rando_beaten >= 1 && dxr.rando_beaten < 5 && PresetButton("Speedrun Training Mode", f.GameModeHelpText(f.SpeedrunMode))) {
+        f.gamemode = f.SpeedrunTraining;
+        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }
+    if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
+        f.gamemode = f.SpeedrunMode;
+        f.loadout = 16; // speed enhancement
+        StartPreset();
+        return true;
+    }
+
+    s = f.GameModeHelpText(f.HalloweenMode);
     i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves
     if(i>0) s = Left(s, i);
     if((dxr.rando_beaten >= 1 || dxr.IsOctober()) && PresetButton("Halloween Lite Mode", s)) {
         f.gamemode = f.HalloweenMode;
+        StartPreset();
+        return true;
+    }
+    if(dxr.rando_beaten >= 5 && PresetButton("Full Halloween Mode", f.GameModeHelpText(f.HalloweenMode))) {
+        f.gamemode = f.HalloweenMode;
+        f.autosave = 7; // fixed limited saves FixedSaves
         StartPreset();
         return true;
     }
@@ -233,18 +280,6 @@ function bool BindPresets()
     if(dxr.rando_beaten >= 3 && PresetButton("Stick With the Prod Plus", "The full Randomizer experience, but only non-lethal weapons are allowed. The baton is also banned and replaced with a rubber baton.")) {
         f.gamemode = f.FullRando;
         f.loadout = 2;
-        StartPreset();
-        return true;
-    }
-    if(dxr.rando_beaten >= 1 && dxr.rando_beaten < 5 && PresetButton("Speedrun Training Mode", f.GameModeHelpText(f.SpeedrunMode))) {
-        f.gamemode = f.SpeedrunTraining;
-        f.loadout = 16; // speed enhancement
-        StartPreset();
-        return true;
-    }
-    if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Mode", f.GameModeHelpText(f.SpeedrunMode))) {
-        f.gamemode = f.SpeedrunMode;
-        f.loadout = 16; // speed enhancement
         StartPreset();
         return true;
     }

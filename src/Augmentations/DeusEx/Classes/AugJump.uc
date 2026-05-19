@@ -31,7 +31,7 @@ function Reset()
     if (!bIsActive) return;
 
     // reset without burning 1 energy
-    if(class'MenuChoice_FixGlitches'.default.enabled) {
+    if(class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-10
         Player.JumpZ = Player.default.JumpZ * PreviewAugLevelValue();
     } else {
         Player.JumpZ *= PreviewAugLevelValue();

@@ -257,7 +257,7 @@ static function int GetStartMapMission(int start_map_val)
             mission=10; //Mission 9 graveyard, basically mission 10
             break;
         case 109:
-            mission=11; //Mission 10 Chateau, but basically mission 11
+            mission=10; //Mission 10 Chateau, but basically missions 10 and 11
             break;
         case 119:
             mission=12; //Mission 11 Everett, but basically mission 12
@@ -1418,6 +1418,11 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 15: // Area 51
         switch(bingo_event)
         {
+            case "A51_Sign_41_singlepeepedtex":
+            case "SignsOfTheEnd_singlepeepedtex":
+                //These are in sector 4, don't give these goals if you start in early Area 51
+                //Allowed on Sector 3 or Sector 4 starts?
+                return start_map >= 150 && start_map < 153;
         }
         break;
     }
@@ -1750,7 +1755,7 @@ static function int GetStartMapCreditsBonus(DXRando dxr)
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
-    if(dxr.flags.IsSpeedrunShuffle() && dxr.flags.newgameplus_loops == 0) {
+    if(dxr.flags.moresettings.shuffle_missions > 0 && dxr.flags.moresettings.shuffle_missions < 1000 && dxr.flags.newgameplus_loops == 0) {
         p.Credits = 1500 + dxr.rng(1000);
         return;
     }

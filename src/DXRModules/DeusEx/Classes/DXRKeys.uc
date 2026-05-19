@@ -5,14 +5,33 @@ var safe_rule keys_rules[16];
 function CheckConfig()
 {
     local int i;
+    local string s, item;
+    local DebugBox db;
+    local Vector min_ext,max_ext;
 
     if(class'DXRMapVariants'.static.IsRevisionMaps(player()))
         revision_keys_rules();
     else
         vanilla_keys_rules();
 
+    FindActorExtents(min_ext,max_ext);
     for(i=0;i<ArrayCount(keys_rules);i++) {
-        keys_rules[i] = FixSafeRule(keys_rules[i]);
+        keys_rules[i] = FixSafeRule(keys_rules[i],min_ext,max_ext);
+    }
+
+    if (#bool(debug)){
+        for(i=0;i<ArrayCount(keys_rules);i++) {
+            if (keys_rules[i].item_name=='') continue;
+
+            item = string(keys_rules[i].item_name);
+
+            s = CR()$"Allow: "$keys_rules[i].allow;
+            s = s $ CR()$"Rule: "$i;
+
+            db = class'DebugBox'.static.CreateDB(self,keys_rules[i].min_pos,keys_rules[i].max_pos,,'DXRKeys',item,s);
+            db.SetBoxColour(0,255,0);
+            db.Tag = keys_rules[i].item_name;
+        }
     }
 
     Super.CheckConfig();
@@ -23,6 +42,7 @@ function vanilla_keys_rules()
     local int i;
 
     switch(dxr.localURL) {
+    // #region Vanilla M01
     case "01_NYC_UNATCOISLAND":
         keys_rules[i].item_name = 'UNhatchdoor';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
@@ -45,7 +65,9 @@ function vanilla_keys_rules()
         i++;
 
         break;
+    // #endregion
 
+    // #region Vanilla M02
     case "02_NYC_BATTERYPARK":
         //Anywhere above ground
         keys_rules[i].item_name = 'KioskDoors';
@@ -76,6 +98,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
+
+    // #region Vanilla M03
     case "03_NYC_UNATCOHQ":
         keys_rules[i].item_name = 'JaimeClosetKey';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
@@ -147,7 +172,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M04
     case "04_NYC_NSFHQ":
         // don't allow the basement door key to be in the vanilla transmit signal room or the basement
         keys_rules[i].item_name = 'BasementDoor';
@@ -181,6 +208,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
+
+    // #region Vanilla M05
     case "05_NYC_UNATCOHQ":
         keys_rules[i].item_name = 'UNOfficeDoorKey';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
@@ -193,7 +223,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M06
     case "06_HONGKONG_HELIBASE":
         // Allowed on the rooftop
         keys_rules[i].item_name = 'control_door01'; //Flight Deck key
@@ -240,6 +272,14 @@ function vanilla_keys_rules()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1694,-283,-677);
+        keys_rules[i].max_pos = vect(-1647,-384,-709);
+        keys_rules[i].allow = false;
+        i++;
+
+        //The lab area
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);
@@ -248,13 +288,29 @@ function vanilla_keys_rules()
         break;
 
     case "06_HONGKONG_STORAGE":
+        //Don't allow in the locked cabinet (near computer)
+        keys_rules[i].item_name = 'NanoContainmentDoor';
+        keys_rules[i].min_pos = vect(-222.5,-513.8,620.2);
+        keys_rules[i].max_pos = vect(-319.6,-561.3,546.4);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Don't allow in the glass containers in that hanging UC room
+        keys_rules[i].item_name = 'NanoContainmentDoor';
+        keys_rules[i].min_pos = vect(173.7,-174.4,14.0);
+        keys_rules[i].max_pos = vect(-174.2,174.1,-126.6);
+        keys_rules[i].allow = false;
+        i++;
+
         keys_rules[i].item_name = 'NanoContainmentDoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M08
     case "08_NYC_HOTEL":
         keys_rules[i].item_name = 'Apartment';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -267,7 +323,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M09
     case "09_NYC_DOCKYARD":
         keys_rules[i].item_name = 'WeaponWarehouse';
         keys_rules[i].min_pos = vect(-99999,-99999,-99999);
@@ -289,7 +347,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M10
     case "10_Paris_Catacombs":
         keys_rules[i].item_name = 'cata_officedoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -374,7 +434,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M11
     case "11_Paris_Cathedral":
         keys_rules[i].item_name = 'cath_maindoors';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -383,12 +445,14 @@ function vanilla_keys_rules()
         i++;
 
         keys_rules[i].item_name = 'cathedralgatekey';
-        keys_rules[i].min_pos = vect(-4907, 1802, -99999);
-        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].min_pos = vect(-4907, 1802, -2000);
+        keys_rules[i].max_pos = vect(-2000, 3000, 500);
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M12
     case "12_Vandenberg_Tunnels":
         //disallow this weird locked room under water
         keys_rules[i].item_name = 'control_room';
@@ -451,7 +515,9 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
         break;
+    // #endregion
 
+    // #region Vanilla M14
     case "14_VANDENBERG_SUB":
         //This key is also on the guy who patrols outside the mushroom stump on shore,
         //so this one, normally in the shed, can go anywhere?
@@ -552,7 +618,9 @@ function vanilla_keys_rules()
         // 1888.000000, 544.000000, -1536.000000 == glabs door, X > -414.152771 && X < 1888 && Y < 1930.014771 == before greasel labs
         // 4856.000000, 3515.999512, -1816.000000 == crew quarters door
         break;
+    // #endregion
 
+    // #region Vanilla M15
     case "15_area51_entrance":
         // key to sector 3, disallow in the vents area and lower
         keys_rules[i].item_name = 'Factory';
@@ -610,6 +678,7 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    //#endregion
     }
 }
 
@@ -618,6 +687,7 @@ function revision_keys_rules()
     local int i;
 
     switch(dxr.localURL) {
+    // #region Revision M15
     case "01_NYC_UNATCOISLAND":
         keys_rules[i].item_name = 'UNhatchdoor';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
@@ -640,7 +710,9 @@ function revision_keys_rules()
         i++;
 
         break;
+    // #endregion
 
+    // #region Revision M02
     case "02_NYC_BATTERYPARK":
         //Anywhere above ground
         keys_rules[i].item_name = 'KioskDoors';
@@ -674,7 +746,9 @@ function revision_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Revision M03
     case "03_NYC_UNATCOHQ":
         keys_rules[i].item_name = 'UNcloset';
         keys_rules[i].min_pos = vect(-99999, -99999, -999999);
@@ -757,7 +831,9 @@ function revision_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Revision M04
     case "04_NYC_UNATCOHQ":
         keys_rules[i].item_name = 'UNcloset';
         keys_rules[i].min_pos = vect(-99999, -99999, -999999);
@@ -780,7 +856,9 @@ function revision_keys_rules()
         i++;
 
         break;
+    // #endregion
 
+    // #region Revision M06
     case "06_HONGKONG_HELIBASE":
         // Not allowed on the rooftop
         keys_rules[i].item_name = 'LockerMasterKey';
@@ -820,13 +898,23 @@ function revision_keys_rules()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1694,-283,-677);
+        keys_rules[i].max_pos = vect(-1647,-384,-709);
+        keys_rules[i].allow = false;
+        i++;
+
+        //The lab area
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Revision M09
     case "09_NYC_DOCKYARD":
         keys_rules[i].item_name = 'WeaponWarehouse';
         keys_rules[i].min_pos = vect(-99999,-99999,-99999);
@@ -855,7 +943,9 @@ function revision_keys_rules()
         keys_rules[i].allow = false;
         i++;
         break;
+    // #endregion
 
+    // #region Revision M10
     case "10_Paris_Catacombs":
         keys_rules[i].item_name = 'cata_officedoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -888,7 +978,9 @@ function revision_keys_rules()
         i++;
 
         break;
+    // #endregion
 
+    // #region Revision M11
     case "11_Paris_Cathedral":
         keys_rules[i].item_name = 'cath_maindoors';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -908,7 +1000,9 @@ function revision_keys_rules()
         keys_rules[i].allow = false;
         i++;
         break;
+    // #endregion
 
+    // #region Revision M12
     case "12_VANDENBERG_CMD":
         //This key is added in DXRFixupVandenberg
         //Stairwell Cupboard
@@ -1083,7 +1177,9 @@ function revision_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    // #endregion
 
+    // #region Revision M14
     case "14_Vandenberg_Sub":
         //This key would normally be inside the shed itself, but now it can be anywhere,
         //there is a button inside to open the door out, and placeholders inside to incentivize
@@ -1206,7 +1302,9 @@ function revision_keys_rules()
         keys_rules[i].allow = false;
         i++;
         break;
+    // #endregion
 
+    // #region Revision M15
     case "15_area51_entrance":
         keys_rules[i].item_name = 'Factory';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -1257,6 +1355,7 @@ function revision_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    //#endregion
     }
 }
 

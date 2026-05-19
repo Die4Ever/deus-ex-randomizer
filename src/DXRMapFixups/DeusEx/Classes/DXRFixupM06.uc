@@ -108,6 +108,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)MJ12Commando commando;
     local WaterCooler wc;
+    local Vector loc;
     local Rotator rot;
     local GordonQuick gordon;
     // local DXRReinforcementPoint reinforce;
@@ -116,6 +117,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ControlPanel panel;
     local #var(prefix)HKHangingLantern lantern;
     local #var(prefix)ScientistFemale sf;
+    local MoverPropTrigger mpt;
+    local #var(prefix)AlarmLight al;
     local int i;
 
     local bool VanillaMaps;
@@ -159,15 +162,25 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
-            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-                if (injbutton.tag == 'Weapons_Lock_broken' || injbutton.tag == 'Weapons_lock' || injbutton.event == 'missile_door') {
-                    injbutton.SetRotation(rotm(14400,16500,0,GetRotationOffset(injbutton.class))); //A similar rotation to original that only rotates in two axes instead of all three
-                } else if (injbutton.Event=='elevator_door' && injbutton.ButtonType==BT_Blank){
-                    //Both the button inside and outside
-                    injbutton.RandoButtonType=RBT_OpenDoors;
-                    injbutton.BeginPlay();
+            foreach AllActors(class'Button1',button){
+                if (button.tag == 'Weapons_Lock_broken' || button.tag == 'Weapons_lock' || button.event == 'missile_door') {
+                    button.SetRotation(rotm(14400,16500,0,GetRotationOffset(button.class))); //A similar rotation to original that only rotates in two axes instead of all three
                 }
             }
+        }
+
+        if (#defined(gmdx)){
+            foreach AllActors(class'Button1',button){
+                if (button.Event!='fDoor') continue;
+
+                m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',button));
+                if (m!=None){
+                    button.Event='flightDeckDoorDXR'; //Throw a DXR on there to make sure it's unique...
+                    m.Tag=button.Event;
+                }
+                break;
+            }
+
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
@@ -259,12 +272,6 @@ function PreFirstEntryMapFixes()
             // button to get out of Tong's base
             // Revision already has a button in place (In WANCHAI_COMPOUND)
             AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
-            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-                if ((injbutton.Event=='elevator_door' || injbutton.Event=='elevator_door01') && injbutton.ButtonType==BT_Blank){ //Helibase and Versalife elevators
-                    injbutton.RandoButtonType=RBT_OpenDoors;
-                    injbutton.BeginPlay();
-                }
-            }
         }
 
         MassSetSecretGoalBox(class'NavigationPoint', vectm(104,-3262,-147), vectm(1342,-1645,-317), true); //Block the nav points behind the teleporter towards the Lucky Money
@@ -426,12 +433,6 @@ function PreFirstEntryMapFixes()
                     d.bFrobbable=True;
                 }
             }
-            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-                if ((injbutton.Event=='Eledoor01' || injbutton.Event=='eledoor02') && injbutton.ButtonType==BT_Blank){ //Penthouse and renovation elevators
-                    injbutton.RandoButtonType=RBT_OpenDoors;
-                    injbutton.BeginPlay();
-                }
-            }
 
             foreach AllActors(class'#var(prefix)ScriptedPawn', p, 'MaggieTroop') {
                 if(p.Name == 'MJ12Troop4') {
@@ -536,13 +537,6 @@ function PreFirstEntryMapFixes()
         }
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
-
-        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-            if ((injbutton.Event=='elevator_door' || injbutton.Event=='elevator_door01' || injbutton.Event=='eledoor02') && injbutton.ButtonType==BT_Blank){ //Office, Level 2, and balcony elevators
-                injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
-            }
-        }
 
         foreach AllActors(class'#var(prefix)AllianceTrigger',at){
             //These alliance triggers didn't have the right tag set,
@@ -836,13 +830,6 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-            if ((injbutton.Event=='LobbyDoor' || injbutton.Event=='elevator_door') && injbutton.ButtonType==BT_Blank){ //Market and Level 1 elevators
-                injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
-            }
-        }
-
         if (VanillaMaps) {
             foreach RadiusActors(class'WaterCooler', wc, 1.0, vectm(-1000.329651, 155.701721, 201.670242)) {
                 // this water cooler faces the wall normally
@@ -896,13 +883,6 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-            if (injbutton.Event=='elevator_door' && injbutton.ButtonType==BT_Blank){ //Level 1 elevator
-                injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
-            }
-        }
-
         //Swap BeamTriggers to LaserTrigger, since these lasers set off an alarm
         foreach AllActors(class'#var(prefix)BeamTrigger',bt){
             lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
@@ -938,16 +918,46 @@ function PreFirstEntryMapFixes()
         oot.Event='Self_Destruct_Once';
         oot.Tag='Self_Destruct';
 
+        mpt = Spawn(class'MoverPropTrigger');
+        mpt.Tag = 'VirusUploaded'; //Triggered when the virus is uploaded normally...
+        mpt.Event = 'VirusUploaded'; //Changes properties on the door that's triggered at the same time
+        mpt.SetHighlight(true);
+        mpt.SetFrobbable(true);
+        mpt.SetLocked(true);
+        mpt.SetPickable(false);
+
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //The lockdown door should only close once the UC has been destroyed,
             //so that there's always an exit available.
             foreach AllActors(class'#var(DeusExPrefix)Mover',m,'VirusUploaded'){
                 m.Tag='LockdownDoorClosing';
+
+                //This door is backwards, so it thinks it's closed when it's open and open when it's closed
+                //You can always close an open door though, so it's always free to open.  Make sure to switch
+                //the keyframes so it actually is locked when it's down (With frobbability handled by the
+                //MoverPropTrigger above)
+                m.KeyNum=1;
+                m.PrevKeyNum=0;
+
+                loc = m.KeyPos[0];
+                m.KeyPos[0]=m.KeyPos[1];
+                m.KeyPos[1]=loc;
+
                 break;
             }
+
+            //Make the alarm lights also turn on at the same time as the door closes (instead of when the virus is uploaded)
+            foreach AllActors(class'#var(prefix)AlarmLight',al,'VirusUploaded'){
+                al.Tag='LockdownDoorClosing';
+            }
+
             oot = Spawn(class'OnceOnlyTrigger');
             oot.Event='LockdownDoorClosing';
             oot.Tag='Self_Destruct';
+
+            //Make sure the mover properties are still updated at the right time
+            mpt.Tag = 'LockdownDoorClosing'; //Triggered when the UC is shutdown
+            mpt.Event = 'LockdownDoorClosing';
 
             //The sleeping bots are already hostile, but are sitting in Idle state.
             //The existing orders trigger can just change them to Wandering instead of Attacking
@@ -1362,24 +1372,12 @@ function AnyEntryMapFixes()
                 ces = ConEventSpeech(ce);
                 if (InStr(ces.conSpeech.speech,"Don't try that again")!=-1){
                     //Spawn a ConEventSetFlag to set "PaidForLuckyMoney", insert it between this and it's next event
-                    cesf = new(c) class'ConEventSetFlag';
-                    cesf.eventType=ET_SetFlag;
+                    cesf = NewConEventSetFlag(c,ces,'PaidForLuckyMoney',True,7);
                     cesf.label="PaidForLuckyMoneyTrue";
-                    cesf.flagRef = new(c) class'ConFlagRef';
-                    cesf.flagRef.flagName='PaidForLuckyMoney';
-                    cesf.flagRef.value=True;
-                    cesf.flagRef.expiration=7;
-                    cesf.nextEvent = ces.nextEvent;
-                    ces.nextEvent = cesf;
-
                 }
                 if (InStr(ces.conSpeech.speech,"Your choice.")!=-1){
                     //Spawn a ConEventTrigger to hit an alliance trigger or something so he starts attacking, insert between this and next event
-                    cet = new(c) class'ConEventTrigger';
-                    cet.eventType=ET_Trigger;
-                    cet.triggerTag = 'BouncerStartAttacking';
-                    cet.nextEvent = ces.nextEvent;
-                    ces.nextEvent = cet;
+                    cet = NewConEventTrigger(c,ces,'BouncerStartAttacking');
                 }
             }
             ce = ce.nextEvent;
@@ -1460,16 +1458,12 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "DXRandoNoRoom";
 
     //Trigger a SpawnItemTrigger to spawn the wine on the bar
-    cet = new(c) class'ConEventTrigger';
+
+    cet = NewConEventTrigger(c,cee,'SpawnMaxWine1');
     cet.label = "DXRandoNoRoom";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnMaxWine1';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
 
     //Move the camera - dupe all the properties from the original one
-    cemc = new(c) class'ConEventMoveCamera';
-    cemc.eventType=ET_MoveCamera;
+    cemc = ConEventMoveCamera(NewConEvent(c,cet,class'ConEventMoveCamera'));
     cemc.cameraType = origMoveCam.cameraType;
     cemc.cameraPosition = origMoveCam.cameraPosition;
     cemc.cameraTransition = origMoveCam.cameraTransition;
@@ -1480,26 +1474,17 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.distanceMultiplier = origMoveCam.distanceMultiplier;
     cemc.cameraActor = origMoveCam.cameraActor;
     cemc.cameraActorName = origMoveCam.cameraActorName;
-    AddConEvent(c,cet,cemc);
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = new(c) class'ConEventSpeech';
-    ces.eventType=ET_Speech;
-    ces.conversation = c;
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
-    AddConEvent(c, cet, ces);
 
-    cee = new(c) class'ConEventEnd'; //Stick a new "end" event after
-    cee.eventType=ET_End;
-    AddConEvent(c,ces, cee);
+    cee = ConEventEnd(NewConEvent(c,ces,class'ConEventEnd')); //Stick a new "end" event after
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -1521,16 +1506,11 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "DXRandoNoRoom";
 
     //Trigger a SpawnItemTrigger to spawn the wine on the bar
-    cet = new(c) class'ConEventTrigger';
+    cet = NewConEventTrigger(c,cee,'SpawnMaxWine2');
     cet.label = "DXRandoNoRoom";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnMaxWine2';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
 
     //Move the camera - dupe all the properties from the original one
-    cemc = new(c) class'ConEventMoveCamera';
-    cemc.eventType=ET_MoveCamera;
+    cemc = ConEventMoveCamera(NewConEvent(c,cet,class'ConEventMoveCamera'));
     cemc.cameraType = origMoveCam.cameraType;
     cemc.cameraPosition = origMoveCam.cameraPosition;
     cemc.cameraTransition = origMoveCam.cameraTransition;
@@ -1541,26 +1521,17 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.distanceMultiplier = origMoveCam.distanceMultiplier;
     cemc.cameraActor = origMoveCam.cameraActor;
     cemc.cameraActorName = origMoveCam.cameraActorName;
-    AddConEvent(c,cet,cemc);
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = new(c) class'ConEventSpeech';
-    ces.eventType=ET_Speech;
-    ces.conversation = c;
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
-    AddConEvent(c, cet, ces);
 
-    cee = new(c) class'ConEventEnd'; //Stick a new "end" event after
-    cee.eventType=ET_End;
-    AddConEvent(c,ces, cee);
+    cee = ConEventEnd(NewConEvent(c,ces,class'ConEventEnd')); //Stick a new "end" event after
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1587,13 +1558,8 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "GordonGive1Fail";
 
     //Create the Trigger event that will spawn wine on the bar
-    cet = new(c) class'ConEventTrigger';
+    cet = NewConEventTrigger(c,cee,'SpawnGordonWine1');
     cet.label = "GordonGive1Fail";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnGordonWine1';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
-
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1617,12 +1583,8 @@ function FixLuckyMoneyDragonHeadWineConvos()
     }
 
     //Create the Trigger event that will spawn wine on the bar
-    cet = new(c) class'ConEventTrigger';
+    cet = NewConEventTrigger(c,cee,'SpawnGordonWine2');
     cet.label = "NoRoom";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnGordonWine2';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
 
     //Remove the label on the jump to the other conversation
     cej.label="";
@@ -1811,3 +1773,72 @@ function HandleJohnSmithDeath()
         //We could send a death message here?
     }
 }
+
+function MakeElevatorOpenDoorButtons(name eleEvents[5])
+{
+    local #var(injectsprefix)Button1 injbutton;
+    local int i;
+
+    foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+        for (i=0;i<ArrayCount(eleEvents);i++){
+            if (eleEvents[i]=='') continue;
+
+            if (injbutton.Event==eleEvents[i] && injbutton.ButtonType==BT_Blank){
+                //Both the button inside and outside
+                injbutton.RandoButtonType=RBT_OpenDoors;
+                injbutton.BeginPlay();
+            }
+        }
+    }
+
+}
+
+//#region PostAnyEntry
+function PostAnyEntry()
+{
+    local #var(injectsprefix)Button1 injbutton;
+    local bool VanillaMaps;
+    local name eleEvents[5];
+    local int  i;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+
+    switch(dxr.localURL) {
+    case "06_HONGKONG_HELIBASE":
+        eleEvents[i++]='elevator_door'; //To the market, both inside and outside button
+        break;
+
+    case "06_HONGKONG_WANCHAI_MARKET":
+        eleEvents[i++]='elevator_door';  //Helibase Elevator
+        eleEvents[i++]='elevator_door01';//Versalife elevator
+        break;
+
+    case "06_HONGKONG_WANCHAI_STREET":
+        eleEvents[i++]='Eledoor01'; //Penthouse Elevator
+        eleEvents[i++]='eledoor02'; //The other one
+        break;
+
+    case "06_HONGKONG_MJ12LAB":
+        eleEvents[i++]='elevator_door';   //Office Elevator
+        eleEvents[i++]='elevator_door01'; //Level 2 Elevator
+        eleEvents[i++]='eledoor02';       //Balcony elevaotr
+        break;
+
+    case "06_HONGKONG_VERSALIFE":
+        eleEvents[i++]='LobbyDoor';     //Lobby elevator
+        eleEvents[i++]='elevator_door'; //Lab elevator
+        break;
+
+    case "06_HONGKONG_STORAGE":
+        eleEvents[i++]='elevator_door'; //Elevator up to Level 1
+        break;
+    }
+
+    if (i>0){
+        //This has to run after PostFirstEntry, which is when the
+        //elevator buttons are replaced by DXRReplaceActors
+        MakeElevatorOpenDoorButtons(eleEvents);
+    }
+}
+
+//#endregion

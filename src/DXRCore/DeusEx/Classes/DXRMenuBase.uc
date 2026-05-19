@@ -451,6 +451,61 @@ event DestroyWindow()
 {
 }
 
+//Mostly a dupe of the original from MenuUIWindow, but checks if the button already exists before creating it
+function CreateActionButtons()
+{
+    local int    buttonIndex;
+    local string buttonText;
+
+    if (winButtonBar == None)
+        return;
+
+    for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
+    {
+        if (actionButtons[buttonIndex].action != AB_None)
+        {
+            // First get the string
+            switch(actionButtons[buttonIndex].action)
+            {
+                case AB_OK:
+                    buttonText = btnLabelOK;
+                    break;
+
+                case AB_Cancel:
+                    buttonText = btnLabelCancel;
+                    break;
+
+                case AB_Reset:
+                    buttonText = btnLabelResetToDefaults;
+                    break;
+
+                case AB_Previous:
+                    buttonText = btnLabelPrevious;
+                    break;
+
+                case AB_Other:
+                    buttonText = actionButtons[buttonIndex].text;
+                    break;
+            }
+
+            if (actionButtons[buttonIndex].btn==None){ //Rando added
+                actionButtons[buttonIndex].btn =
+                    winButtonBar.AddButton(buttonText, actionButtons[buttonIndex].align);
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+function MenuUIActionButtonBarWindow CreateActionButtonBar()
+{
+    if (winButtonBar!=None) return winButtonBar; //Don't create a duplicate button bar
+    return super.CreateActionButtonBar();
+}
+
 function CreateControls()
 {
     Super.CreateControls();

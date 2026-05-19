@@ -104,6 +104,12 @@ function CalcBehindView(out vector CameraLocation, out rotator CameraRotation, f
 
     CameraRotation = ViewRotation;
     CameraLocation.Z+=BaseEyeHeight; //Adjust camera center to eye height
+    if (EyeHeight>BaseEyeHeight){
+        //Shake the camera (Allow the standard JoltView logic to apply here)
+        if ((Physics == PHYS_Walking) && (Bob != 0)){
+            CameraLocation.Z+=(EyeHeight-BaseEyeHeight) * 2;
+        }
+    }
     View = vect(1,-0.2,0) >> CameraRotation; //Slightly offset the view to the right (so it's over the shoulder)
     if( Trace( HitLocation, HitNormal, CameraLocation - (Dist + 30) * vector(CameraRotation), CameraLocation ) != None )
         ViewDist = FMin( (CameraLocation - HitLocation) Dot View, Dist );
@@ -563,7 +569,7 @@ function float GetJumpZ()
         jumpAug.TickUse();
         f = jump;
     }
-    if(!class'MenuChoice_FixGlitches'.default.enabled) {
+    if(!class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-10
         return FMax(JumpZ, default.JumpZ * f);
     }
     return default.JumpZ * f;
@@ -1132,7 +1138,7 @@ function HighlightCenterObjectMain()
 
     if(LevelInfo(target) != None) target = None;
 
-    if(target != None && Brush(target) == None && class'MenuChoice_FixGlitches'.default.enabled) {
+    if(target != None && Brush(target) == None && class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-15
         t = HighlightCenterObjectRay(vect(0,-0.2,1.5), dist2);
         fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
 
@@ -1153,7 +1159,7 @@ function HighlightCenterObjectMain()
     // rapidly changing frob target.
     //
     // If glitches aren't being fixed, don't stop highlighting items that are being deleted (for item duping)
-    if (FrobTime < 0.1 && FrobTarget != None && target == None && (!FrobTarget.bDeleteMe || !class'MenuChoice_FixGlitches'.default.enabled))
+    if (FrobTime < 0.1 && FrobTarget != None && target == None && (!FrobTarget.bDeleteMe || !class'MenuChoice_FixGlitches'.default.enabled)) //GLITCHFIX-01
     {
         return;
     }
@@ -1227,7 +1233,7 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
             }
         }
         else if(LevelInfo(target) != None || Brush(target) != None) {
-            if (class'MenuChoice_FixGlitches'.default.enabled){
+            if (class'MenuChoice_FixGlitches'.default.enabled){ //GLITCHFIX-09  /  GLITCHFIX-15
                 //This helps prevent squeaking your highlight under the Reactor ending button
                 if(bFirstTarget && dm==None) {
                     smallestTargetDist = VSize(Location-HitLoc);
@@ -2705,6 +2711,21 @@ exec function DebugPassword(optional string password)
             ClientMessage("Note: "$note.TextTag);
             ClientMessage("Text: "$Left(note.Text,50));
         }
+    }
+}
+
+exec function ForceCC(string effect)
+{
+    local DXRCrowdControl cc;
+    local string params[5];
+
+    cc = DXRCrowdControl(class'DXRCrowdControl'.static.Find());
+
+    if (cc!=None && cc.link!=None && cc.link.ccEffects!=None){
+        params[0]="1"; //This is usually a quantity
+        cc.link.ccEffects.doCrowdControlEvent(effect,params,TruePlayerName,0,30);
+    } else {
+        ClientMessage("Crowd Control not active");
     }
 }
 
