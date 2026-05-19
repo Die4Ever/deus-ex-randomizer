@@ -53,6 +53,7 @@
   - "Catch the News": Watch enough TV newscasts through the game with binoculars or a scope.
   - "Signs of the End": Look at the signs marking the different endings in Area 51 Sector 4.
   - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
+  - The amount is now shown when picking up or receiving ammo.
 </details>
 
 ## Intra-Patch Changes
