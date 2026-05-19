@@ -13,6 +13,7 @@ var string       tagFilter;
 var string       eventFilter;
 var string       customFilterAttrib;
 var string       customFilterVal;
+var bool         bCustomFilterPartial;
 var bool         bLimitRadius;
 var int          actorRadius;
 var bool         bShowTagEvent;
@@ -89,6 +90,16 @@ function String GetCustomFilterVal(){
 
 function SetCustomFilterVal(string newVal){
     customFilterVal = newVal;
+}
+
+function SetCustomFilterPartialMatch(bool bPartial)
+{
+    bCustomFilterPartial = bPartial;
+}
+
+function Bool IsCustomFilterPartialMatch()
+{
+	return bCustomFilterPartial;
 }
 
 function SetViewClass(Class<Actor> newViewClass)
@@ -372,8 +383,19 @@ function DrawWindow(GC gc)
             continue;
         if (eventFilter!="" && !(eventFilter~=string(trackActor.Event)))
             continue;
-        if (customFilterAttrib!="" && !(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib)))
-            continue;
+        if (customFilterAttrib!="" && customFilterVal!=""){
+            if (bCustomFilterPartial){ //partial, case-insensitive match
+                str = Caps(trackActor.GetPropertyText(customFilterAttrib));
+                str2 = Caps(customFilterVal);
+                if (InStr(str,str2)==-1){
+                    continue;
+                }
+            } else { //Full, case-insensitive, match
+                if (!(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib))){
+                    continue;
+                }
+            }
+        }
 
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
