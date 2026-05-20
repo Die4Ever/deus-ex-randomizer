@@ -1491,7 +1491,6 @@ function MarkNaturalKeyOctantRule(#var(prefix)NanoKey k)
     local Vector key_min, key_max; //Extents of the 5000 unit radius around the key
     local Vector final_min, final_max; //The final accumulated extents where the key can go
     local float spare;
-    local bool found_door;
 
     local string item,s;
     local DebugBox db;
@@ -1505,8 +1504,6 @@ function MarkNaturalKeyOctantRule(#var(prefix)NanoKey k)
     {
         if( d.KeyIDNeeded == 'None' ) continue;
         if( d.KeyIDNeeded != k.KeyID ) continue;
-
-        found_door=true;
 
         //Define the box of the octant
         oct_min = d.Location;
@@ -1556,16 +1553,14 @@ function MarkNaturalKeyOctantRule(#var(prefix)NanoKey k)
         if (final_min.Z > final_max.Z) return;
     }
 
-    if(found_door){
-        item = string(k.KeyID);
+    item = string(k.KeyID);
 
-        s = CR()$"Allow: True";
-        s = s$CR()$"Rule: Natural";
+    s = CR()$"Allow: True";
+    s = s$CR()$"Rule: Natural";
 
-        db = class'DebugBox'.static.CreateDB(self,final_min,final_max,,'DXRKeys',item,s);
-        db.SetBoxColour(0,128,0);
-        db.Tag = k.KeyID;
-    }
+    db = class'DebugBox'.static.CreateDB(self,final_min,final_max,,'DXRKeys',item,s);
+    db.SetBoxColour(0,128,0);
+    db.Tag = k.KeyID;
 
 }
 
