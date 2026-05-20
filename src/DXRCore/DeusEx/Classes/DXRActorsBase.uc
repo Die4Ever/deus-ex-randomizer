@@ -1515,6 +1515,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
         newactor.Mass = a.Mass;
         newactor.Buoyancy = a.Buoyancy;
         newactor.Texture = a.Texture;
+        newactor.Skin = a.Skin;
         newactor.Mesh = a.Mesh;
         for(i=0; i<ArrayCount(a.Multiskins); i++) {
             newactor.Multiskins[i] = a.Multiskins[i];

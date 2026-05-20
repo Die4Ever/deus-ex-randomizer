@@ -437,6 +437,7 @@ function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture
     if (ComputerSecurity(a)!=None){
         #ifdef revision
         ComputerSecurity(a).Facelift(false);
+        //GMDX does not change the mesh on the security computer, only the skin
         #endif
         if(newTex != None) a.Skin = newTex;
         else a.Skin = Texture'GoalSecurityComputerGreen';
@@ -444,6 +445,8 @@ function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture
     } else if (ComputerPersonal(a)!=None){
         #ifdef revision
         ComputerPersonal(a).Facelift(false);
+        #elseif gmdx
+        ComputerPersonal(a).Mesh=LodMesh'DeusExDeco.ComputerPersonal'; //Revert to the non-HDTP mesh
         #endif
         if(newTex != None) a.Skin = newTex;
         else a.Skin=Texture'GoalComputerPersonalYellow';
@@ -457,6 +460,11 @@ function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture
 
     if (!enableTextures && changed){
         a.Skin=a.Default.Skin;
+
+#ifdef gmdx
+        ComputerPersonal(a).Mesh=a.Default.Mesh; //Go back to the HDTP mesh
+#endif
+
 #ifdef revision
         //For now, everything being dignified is a decoration, but maybe not in the future?
         #var(DeusExPrefix)Decoration(a).Facelift(true);

@@ -32,6 +32,7 @@
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
 - GMDX fixes and improvements:
   - Enable "Flickering Lights" setting
+  - Enabled "Goal Textures" setting to allow adjusting the textures on some randomized goal computers for better visibility.
   - Augbotswill now properly show with their blue skin and will glow red by default.
   - Medical Bots will now properly count their number of uses.
   - The window for recharging at a Repair Bot now properly updates the bio energy bar immediately.
@@ -42,6 +43,7 @@
   - Beheaded corpses that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
   - Scripted grenades that get thrown into vents will not be set off by Aggressive Defense System before being thrown.
   - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
+  - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
 - Vanilla? Madder! 2.0 fixes and improvements
   - The conversation in the intro will actually start playing.
   - Backing out of the New Game screen will no longer cause the game to crash.

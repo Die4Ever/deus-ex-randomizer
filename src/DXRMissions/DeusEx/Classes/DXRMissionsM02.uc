@@ -24,7 +24,13 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Shanty Town", NORMAL_GOAL, vect(-2970,1840,348), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Behind the cargo", NORMAL_GOAL, vect(58.725319, -446.887207, -405.899323), rot(0, 32768, 0));
-        AddGoalLocation("02_NYC_BATTERYPARK", "By the desk", NORMAL_GOAL, vect(-615.152161, -665.281738, -397.581146), rot(0, -24786, 0));
+        if (!#defined(gmdx)){
+            //Normal
+            AddGoalLocation("02_NYC_BATTERYPARK", "By the desk", NORMAL_GOAL, vect(-615.152161, -665.281738, -397.581146), rot(0, -24786, 0));
+        } else {
+            //GMDX has a trashcan in *exactly* the normal location, nudge it slightly to the side
+            AddGoalLocation("02_NYC_BATTERYPARK", "By the desk", NORMAL_GOAL, vect(-557,-666,-397), rot(0, -24786, 0));
+        }
         AddGoalLocation("02_NYC_BATTERYPARK", "Walkway by the water", NORMAL_GOAL, vect(-420.000000, -2222.000000, -400), rot(0, 16436, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, -16412, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, -49276, 0));
