@@ -1284,18 +1284,6 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
         }
     }
 
-    belt = DeusExRootWindow(player.rootWindow).hud.belt;
-    pos = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
-    if (IsAssignableBeltPos(pos)) {
-        // move the first melee weapon to the starting melee slot
-        for (i = 1; i < ArrayCount(belt.objects); i++) {
-            if (IsMeleeWeapon(belt.GetObjectFromBelt(i))) {
-                PercolateBeltItem(i, pos);
-                break;
-            }
-        }
-    }
-
     if(dxr.flags.moresettings.shuffle_missions > 0 && dxr.flags.moresettings.shuffle_missions < 1000) {
         if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)BioelectricCell'))
             GiveItem(player, class'#var(prefix)BioelectricCell');
