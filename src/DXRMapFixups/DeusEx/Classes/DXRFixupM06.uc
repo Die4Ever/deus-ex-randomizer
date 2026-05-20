@@ -259,9 +259,7 @@ function PreFirstEntryMapFixes()
         MassSetSecretGoalBox(class'NavigationPoint', vectm(-295,360,190), vectm(1155,549,-238), true);
 
         //Don't clone guys who are vaguely near the hall
-        foreach RadiusActors(class'#var(prefix)ScriptedPawn',p, 750, vectm(460,460,-30)){
-            p.bIsSecretGoal=true;
-        }
+        MassSetSecretGoalBox(class'#var(prefix)ScriptedPawn', vectm(-500,100,190), vectm(1300,800,-238), true);
 
         break;
     //#endregion
