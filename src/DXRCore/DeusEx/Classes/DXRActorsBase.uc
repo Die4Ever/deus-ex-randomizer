@@ -2137,9 +2137,11 @@ function FindActorExtents(out vector min_ext, out vector max_ext, optional bool 
             }
         } else if (#var(prefix)Vehicles(a)!=None){
             v = #var(prefix)Vehicles(a);
+            #ifndef hx
             if (v.bInWorld==False){
                 actLoc = v.WorldPosition;
             }
+            #endif
         }
 
         //Expand the extents based on this actor
