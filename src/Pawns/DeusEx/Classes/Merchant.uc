@@ -89,7 +89,4 @@ defaultproperties
     greetings(1)="Got a selection of good things on sale, stranger."
     greetings(2)="Got somethin' that might interest ya'."
     greetings(3)="Got some rare things on sale, stranger!"
-#ifdef injections
-    dropsAmmo=true
-#endif
 }

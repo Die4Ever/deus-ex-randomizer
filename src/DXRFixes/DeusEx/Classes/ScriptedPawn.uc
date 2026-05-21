@@ -6,7 +6,6 @@ var int flareBurnTime;
 var int loopCounter;
 var float lastEnableCheckDestLocTime;
 var int EmpHealth;
-var bool dropsAmmo; // when gibbed
 
 /*function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 {
@@ -39,11 +38,28 @@ function ThrowInventory()
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        drop = NanoKey(item) != None;
-        if( !drop && class'MenuChoice_BalanceEtc'.static.IsEnabled() ) {
-            drop = (dropsAmmo && Ammo(item) != None && item.PickupViewMesh != Mesh'TestBox');
-            drop = drop || (item.bDisplayableInv && (DeusExWeapon(item) == None || DeusExWeapon(item).bNativeAttack == false));
+
+        if( NanoKey(item) != None ) {
+            // always drop nanokeys
+            drop = true;
+        } else if( Ammo(item) != None ) {
+            // drop ammo iff dropsAmmo==true (and it has a mesh)
+#ifdef injections
+            drop = class<DeusExCarcass>(CarcassType).default.dropsAmmo && item.PickupViewMesh != Mesh'TestBox';
+#else
+            drop = false;
+#endif
+        } else if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack ) {
+            // never drop native attack weapons
+            drop = false;
+        } else if( item.bDisplayableInv && class'MenuChoice_BalanceEtc'.static.IsEnabled() ) {
+            // drop everything else that can normally appear in the world if Misc. Balance Changes are enabled
+            drop = true;
+        } else {
+            // don't drop anything else
+            drop = false;
         }
+
         if( drop ) {
             item.SetLocation(Location);
             class'DXRActorsBase'.static.ThrowItem(item, 0.3);
