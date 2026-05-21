@@ -387,6 +387,9 @@ function PreFirstEntryMapFixes()
 
             //A rooftop over the bridge close to the start of the map
             MassSetSecretGoalBox(class'Inventory', vectm(-5475,812,124), vectm(-5201,-376,20), true);
+
+            //Behind a permanently locked gate
+            MassSetSecretGoalBox(class'Decoration', vectm(1105,1185,-245), vectm(2815,2050,-500), true);
         }
 
 
