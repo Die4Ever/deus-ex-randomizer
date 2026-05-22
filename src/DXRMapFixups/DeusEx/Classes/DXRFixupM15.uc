@@ -504,6 +504,28 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
 
     UpdateDefaultSecurityComputerPassword("Sector2Security");
 
+    if (#defined(gmdx)){
+        //Block things from spawning/randomizing in unused rooms around the map
+
+        //Big chunk of unused rooms
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(5318,4801,-222), vectm(3753,6854,-33), true);
+        MassSetSecretGoalBox(class'ScriptedPawn', vectm(5318,4801,-222), vectm(3753,6854,-33), true);
+        MassSetSecretGoalBox(class'Inventory', vectm(5318,4801,-222), vectm(3753,6854,-33), true);
+        MassSetSecretGoalBox(class'Decoration', vectm(5318,4801,-222), vectm(3753,6854,-33), true);
+
+        //Unused meeting room
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(3422,6606,-33), vectm(2785,5969,-222), true);
+        MassSetSecretGoalBox(class'ScriptedPawn', vectm(3422,6606,-33), vectm(2785,5969,-222), true);
+        MassSetSecretGoalBox(class'Inventory', vectm(3422,6606,-33), vectm(2785,5969,-222), true);
+        MassSetSecretGoalBox(class'Decoration', vectm(3422,6606,-33), vectm(2785,5969,-222), true);
+
+        //Tunnel for overhead pod things
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(-334,7116,250), vectm(92,4960,0), true);
+        MassSetSecretGoalBox(class'ScriptedPawn', vectm(-334,7116,250), vectm(92,4960,0), true);
+        MassSetSecretGoalBox(class'Inventory', vectm(-334,7116,250), vectm(92,4960,0), true);
+        MassSetSecretGoalBox(class'Decoration', vectm(-334,7116,250), vectm(92,4960,0), true);
+    }
+
     if (isVanilla) {
         Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');

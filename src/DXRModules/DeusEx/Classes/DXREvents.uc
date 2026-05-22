@@ -2744,14 +2744,6 @@ simulated function int tweakBingoMissions(string event, int missions)
                 newMissions = newMissions | #bit(1);
             }
             break;
-        case "VialAmbrosia_Activated":
-            //Vanilla is #bit(9,14)
-            //Revision matches Vanilla
-            if (#defined(gmdx)){
-                //GMDX adds a bunch in Area 51 Entrance
-                newMissions = newMissions | #bit(15);
-            }
-            break;
         case "HazMatSuit_Activated":
             //Vanilla is #bit(1,4,6,9,10,12,14,15)
             //Revision matches Vanilla

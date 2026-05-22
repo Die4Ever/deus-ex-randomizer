@@ -427,6 +427,13 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "Ambrosia";
     _StupidQuestions[numStupidQuestions].answers[1] = "Biocell";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Is this loss?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "||_";
+    _StupidQuestions[numStupidQuestions].answers[1] = "No";
+    _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
+    numStupidQuestions++;
 }
 
 

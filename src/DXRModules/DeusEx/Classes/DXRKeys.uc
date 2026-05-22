@@ -635,15 +635,15 @@ function vanilla_keys_rules()
 
         // disallow in other locked sleeping pods (6786 and 3901)
         keys_rules[i].item_name = 'Factory';
-        keys_rules[i].min_pos = vect(4474, 420, -99999);
-        keys_rules[i].max_pos = vect(4900, 550, 99999);
+        keys_rules[i].min_pos = vect(4474, 420, -200);
+        keys_rules[i].max_pos = vect(4900, 550, 0);
         keys_rules[i].allow = false;
         i++;
 
         // disallow in other locked sleeping pod (4322)
         keys_rules[i].item_name = 'Factory';
-        keys_rules[i].min_pos = vect(4985, -450, -99999);
-        keys_rules[i].max_pos = vect(5157, -325, 99999);
+        keys_rules[i].min_pos = vect(4985, -450, -200);
+        keys_rules[i].max_pos = vect(5157, -325, 0);
         keys_rules[i].allow = false;
         i++;
 
@@ -653,6 +653,61 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        if (#defined(gmdx)){
+            //GMDX adds a duplicated room of sleeping pods
+
+            //Left, Far
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(6193,-450, -200);
+            keys_rules[i].max_pos = vect(6350,-331, 0);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Right, Middle
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(6094,550, -200);
+            keys_rules[i].max_pos = vect(5937,429, 0);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Right, Close
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5838,550, -200);
+            keys_rules[i].max_pos = vect(5681,429, 0);
+            keys_rules[i].allow = false;
+            i++;
+
+
+
+            //Don't put the key in the shooting gallery
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5180,2073,15);
+            keys_rules[i].max_pos = vect(3952,2707,-300);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Don't put the key in the locked medicine cabinet near the pool
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5886,3767,-161);
+            keys_rules[i].max_pos = vect(5867,3801,-128);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Don't put the key in the locked changeroom locker near the pool
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5609,3243,-119);
+            keys_rules[i].max_pos = vect(5632,3214,-220);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Don't put the key in the spiderbot cage in the wind control room thing?
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(1052,5014,225);
+            keys_rules[i].max_pos = vect(929,4901,150);
+            keys_rules[i].allow = false;
+            i++;
+        }
 
         // allow between barracks and sector 3 access door (not allowed in barracks or sleeping pods)
         keys_rules[i].item_name = 'a51entr_vent';
