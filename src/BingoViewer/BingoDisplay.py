@@ -803,9 +803,18 @@ class BingoDisplay:
         self.main.BoardUpdate()
 
     def ResetWindowSize(self):
-        self.width=args.width
-        self.height=args.height
-        self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
+        def resetFont():
+            # deferred: winfo_width() isn't reliable until Tkinter finishes laying out the resized window
+            # 500ms is an arbitrary but safe delay
+            self._font_cache_key = None
+            tile_w = self.tkBoard[0][0].winfo_width() - self.tile_padding_width
+            for x in range(5):
+                for y in range(5):
+                    self.tkBoard[x][y].config(wraplength=tile_w)
+            self.fitFontToBoard()
+
+        self.win.geometry(str(args.width + BUTTON_BORDER_WIDTH_TOTAL) + "x" + str(args.height + BUTTON_BORDER_WIDTH_TOTAL))
+        self.win.after(500, resetFont)
 
     def ShowAboutWindow(self):
         msg = "Deus Ex Randomizer Bingo Viewer\n\n"
