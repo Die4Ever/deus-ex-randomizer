@@ -128,6 +128,7 @@ class BingoViewerMain:
         for x in range(5):
             for y in range(5):
                 self.display.updateSquare(x,y,self.board[x][y])
+        self.display.fitFontToBoard()
 
         self.sendBingoState()
 
@@ -602,9 +603,65 @@ class BingoDisplay:
     def isWindowOpen(self):
         return self.win!=None
 
-    def getFontSizeByWindowSize(self):
-        width = min(self.width, self.height)
-        return round(width / 39.9)
+    # find the ideal font size for the current board
+    def fitFontToBoard(self):
+        # does the text at this size fit in its tile?
+        def textFits(text, size):
+            self.font.configure(size=size)
+            linespace = self.font.metrics("linespace")
+            space_w = self.font.measure(" ")
+            lines = 1
+            line_w = 0
+            for word in text.split():
+                word_w = self.font.measure(word)
+                if word_w > tile_w:
+                    return False  # single word wider than tile
+                gap = space_w if line_w > 0 else 0
+                if line_w > 0 and line_w + gap + word_w > tile_w:
+                    lines += 1
+                    line_w = word_w
+                else:
+                    line_w += gap + word_w
+            return lines * linespace <= tile_h
+
+        def binarySearch(lo, hi):
+            best = lo
+            while lo <= hi:
+                mid = (lo + hi) // 2
+                if textFits(hardest, mid):
+                    best = mid
+                    lo = mid + 1
+                else:
+                    hi = mid - 1
+            return best
+
+        tile_w = self.tkBoard[0][0].winfo_width() - self.tile_padding_width
+        tile_h = self.tkBoard[0][0].winfo_height() - self.tile_padding_width
+        if tile_w <= 1 or tile_h <= 1:
+            return
+
+        texts = [
+            self.tkBoardText[x][y].get()
+            for x in range(5) for y in range(5)
+            if self.tkBoardText[x][y] is not None and self.tkBoardText[x][y].get() != ""
+        ]
+
+        if not texts:
+            return
+
+        # assumes the longest goal string is the most constrained; not always correct in theory but seems to work in practice and is much faster
+        hardest = max(texts, key=len)
+
+        # search for the ideal font size, starting near the current size
+        current = self.font.cget("size")
+        lo, hi = max(1, current - 5), current + 5
+        best = binarySearch(lo, hi)
+        if best == lo or best == hi:
+            # hit a boundary, fall back to full range
+            best = binarySearch(1, 100)
+
+        if self.font.cget("size") != best:
+            self.font.configure(size=best)
 
     def resize(self,event):
         if event.widget == self.win:
@@ -618,13 +675,17 @@ class BingoDisplay:
 
             self.main.SetWindowDimensions(self.width,self.height)
 
-            self.font = font.Font(size=self.getFontSizeByWindowSize())
+            # don't queue up a bunch of redraws
+            if hasattr(self, '_resize_job'):
+                self.win.after_cancel(self._resize_job)
+            self._resize_job = self.win.after(1, self._apply_resize)
 
-            for x in range(5):
-                for y in range(5):
-                    self.tkBoard[x][y].config(
-                        width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
-                    )
+    def _apply_resize(self):
+        self.fitFontToBoard()
+        tile_w = self.tkBoard[0][0].winfo_width() - self.tile_padding_width
+        for x in range(5):
+            for y in range(5):
+                self.tkBoard[x][y].config(width=self.width/5, height=self.height/5, wraplength=tile_w, font=self.font)
 
     def SelectNewJsonPushDest(self):
         dest = self.main.GetJSONPushDest()
@@ -763,7 +824,7 @@ class BingoDisplay:
         self.win.config(menu=self.menubar)
 
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
-        self.font = font.Font(size=self.getFontSizeByWindowSize())
+        self.font = font.Font()
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
@@ -780,6 +841,8 @@ class BingoDisplay:
                 #self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
+
+        self.tile_padding_width = 2 * (BUTTON_BORDER_WIDTH + self.win.winfo_pixels(self.tkBoard[0][0].cget("padx")))
 
         self.active=True
 
@@ -823,18 +886,28 @@ class BingoDisplay:
         #    tkTile.config(bg="#303030")
         elif isActive == -1:# -1 is for impossible
             if not multiplayer:
-                tkTile.config(bg=IMPOSSIBLE_RED)
+                tkTile.config(bg=IMPOSSIBLE_COLOUR)
             else:
                 tkTile.config(bg=POSSIBLE_COLOUR)
             tkTile.finished_time=None
         else:
-            tkTile.config(bg=NOT_NOW_BLACK, fg=NOT_POSSIBLE_TEXT)
+            tkTile.config(bg=NOT_NOW_COLOUR, fg=NOT_POSSIBLE_TEXT)
             tkTile.finished_time=None
 
     def UpdateButtonImage(self,x,y,boardEntry):
         if (self.showProgressBars.get()):
             isActive = boardEntry.get('active', 1)
             multiplayer = (self.mpVal.get()!=0)
+
+            cache_key = (
+                int(self.width), int(self.height),
+                boardEntry["progress"], boardEntry["max"],
+                isActive,
+                self.mpVal.get()
+            )
+            if getattr(self.tkBoardImg[x][y], "_cache_key", None) == cache_key:
+                return
+
             if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
                 #finished
                 img = self.UpdateButtonImageFinished(x,y,boardEntry)
@@ -843,12 +916,13 @@ class BingoDisplay:
                 img = self.UpdateButtonImagePossible(x,y,boardEntry)
             elif (isActive == -1):
                 #impossible
-                img = self.UpdateButtonImagePlainColour(x,y,IMPOSSIBLE_RED)
+                img = self.UpdateButtonImagePlainColour(x,y,IMPOSSIBLE_COLOUR)
             else:
                 #not this mission
-                img = self.UpdateButtonImagePlainColour(x,y,NOT_NOW_BLACK)
+                img = self.UpdateButtonImagePlainColour(x,y,NOT_NOW_COLOUR)
 
             tkimg = ImageTk.PhotoImage(img)
+            tkimg._cache_key = cache_key
             self.tkBoardImg[x][y] = tkimg
         else:
             self.tkBoardImg[x][y]=self.pixel
@@ -873,7 +947,7 @@ class BingoDisplay:
             percent = progress
 
         #Clamp the percentage between 0.0 and 1.0
-        max(min(percent,1.0),0.0)
+        percent = max(min(percent,1.0),0.0)
 
         barHeight = min(height, max(height * percent, 0))
 
@@ -913,7 +987,7 @@ class BingoDisplay:
 
     def updateFinishedTileColour(self,x,y):
         if self.mpVal.get()!=0:
-            self.tkBoard[x][y].config(bg=NOT_NOW_BLACK,activebackground=NOT_NOW_BLACK)
+            self.tkBoard[x][y].config(bg=NOT_NOW_COLOUR,activebackground=NOT_NOW_COLOUR)
         else:
             self.tkBoard[x][y].config(bg=FINISHED_COLOUR,activebackground=FINISHED_COLOUR)
         self.UpdateButtonImage(x,y,self.main.GetBoardEntry(x,y))
