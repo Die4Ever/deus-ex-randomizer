@@ -31,6 +31,7 @@ BRIGHT_GREEN   = "#00CC00"
 POSSIBLE_GREY  = "#505050"
 IMPOSSIBLE_RED = "#300000"
 NOT_NOW_BLACK  = "#000000"
+MARKED_GOLD    = "#FFD700"
 TEXT_GREY      = "#c8c8c8"
 TEXT_WHITE     = "#FFFFFF"
 
@@ -47,6 +48,7 @@ FINISHED_COLOUR = MAGIC_GREEN
 POSSIBLE_COLOUR = POSSIBLE_GREY
 IMPOSSIBLE_COLOUR = IMPOSSIBLE_RED
 NOT_NOW_COLOUR = NOT_NOW_BLACK
+MARKED_COLOUR = MARKED_GOLD
 POSSIBLE_TEXT = TEXT_WHITE
 NOT_POSSIBLE_TEXT = TEXT_GREY
 
@@ -81,6 +83,7 @@ class BingoViewerMain:
 
         #Maintain board state here
         self.board = [[None]*5 for i in range(5)]
+        self.prevDescs = None
         self.selectedMod = ""
         self.numMods=0
 
@@ -430,6 +433,17 @@ class BingoReader:
 ###############################
 
     def readerTask(self):
+        def isNewBoard():
+            descs = frozenset(
+                self.main.board[x][y]["desc"]
+                for x in range(5) for y in range(5)
+                if self.main.board[x][y] is not None
+            )
+            if descs != self.main.prevDescs:
+                self.main.prevDescs = descs
+                return True
+            return False
+
         time.sleep(1)
         try:
             while(self.main.IsRunning() and self.running):
@@ -437,6 +451,8 @@ class BingoReader:
                 changed = self.readBingoFile()
                 self.main.UpdateNumMods(self.numMods)
                 if (changed):
+                    if isNewBoard():
+                        self.main.display.clearAllMarks()
                     self.main.BoardUpdate()
                     self.main.SetSelectedMod(self.selectedMod)
         except Exception as e:
@@ -528,6 +544,7 @@ class BingoDisplay:
         self.tkBoard = [[None]*5 for i in range(5)]
         self.tkBoardText = [[None]*5 for i in range(5)]
         self.tkBoardImg = [[None]*5 for i in range(5)]
+        self.tkBoardMarked = [[False]*5 for i in range(5)]
 
         self.width,self.height = self.main.GetWindowDimensions()
         #self.width=args.width
@@ -686,6 +703,9 @@ class BingoDisplay:
         for x in range(5):
             for y in range(5):
                 self.tkBoard[x][y].config(width=self.width/5, height=self.height/5, wraplength=tile_w, font=self.font)
+                boardEntry = self.main.GetBoardEntry(x, y)
+                if boardEntry is not None:
+                    self.UpdateButtonImage(x, y, boardEntry)
 
     def SelectNewJsonPushDest(self):
         dest = self.main.GetJSONPushDest()
@@ -838,6 +858,7 @@ class BingoDisplay:
                     activeforeground=POSSIBLE_TEXT,
                     disabledforeground=POSSIBLE_TEXT, bd=BUTTON_BORDER_WIDTH
                 )
+                self.tkBoard[x][y].bind("<Button-1>", lambda e, x=x, y=y: self.toggleMark(x, y))
                 #self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
@@ -848,6 +869,31 @@ class BingoDisplay:
 
         self.main.BoardUpdate()
 
+
+    def clearAllMarks(self):
+        for x in range(5):
+            for y in range(5):
+                self.clearMark(x, y)
+
+    def toggleMark(self, x, y):
+        self.tkBoardMarked[x][y] = not self.tkBoardMarked[x][y]
+        boardEntry = self.main.GetBoardEntry(x, y)
+        if boardEntry is not None:
+            self.UpdateButtonImage(x, y, boardEntry)
+
+    def clearMark(self, x, y):
+        self.tkBoardMarked[x][y] = False
+
+    # draw a highlight border inside the image for marked tiles
+    def drawMarkBorder(self, img, tile_w):
+        draw = ImageDraw.Draw(img)
+        img_w, img_h = img.size
+        thickness = max(3, tile_w // 20)
+        for layer in range(thickness):
+            inset = BUTTON_BORDER_WIDTH + layer
+            if 2 * inset >= img_w - 1 or 2 * inset >= img_h - 1:
+                break
+            draw.rectangle([(inset, inset), (img_w - 1 - inset, img_h - 1 - inset)], outline=MARKED_COLOUR)
 
     def drawTile(self, x, y, boardEntry):
         tkTile = self.tkBoard[x][y]
@@ -903,7 +949,8 @@ class BingoDisplay:
                 int(self.width), int(self.height),
                 boardEntry["progress"], boardEntry["max"],
                 isActive,
-                self.mpVal.get()
+                self.mpVal.get(),
+                self.tkBoardMarked[x][y]
             )
             if getattr(self.tkBoardImg[x][y], "_cache_key", None) == cache_key:
                 return
@@ -932,8 +979,8 @@ class BingoDisplay:
     def UpdateButtonImagePossible(self,x,y,boardEntry):
         progress = boardEntry["progress"]
         maximum = boardEntry["max"]
-        width  = int(self.width / 5)
-        height = int(self.height / 5)
+        width  = self.tkBoard[x][y].winfo_width()
+        height = self.tkBoard[x][y].winfo_height()
 
         img = Image.new("RGB",(width,height))
         draw = ImageDraw.Draw(img)
@@ -955,6 +1002,8 @@ class BingoDisplay:
         draw.rectangle([(left,0),(width,height-barHeight)],fill=POSSIBLE_COLOUR)
         self.tkBoard[x][y].config(activebackground=POSSIBLE_COLOUR)
 
+        if self.tkBoardMarked[x][y]:
+            self.drawMarkBorder(img, width)
         return img
 
     def UpdateButtonImageFinished(self,x,y,boardEntry):
@@ -970,8 +1019,8 @@ class BingoDisplay:
 
     #For when we just want to make the square a certain colour and it doesn't need any fancy logic
     def UpdateButtonImagePlainColour(self,x,y,colour):
-        width  = int(self.width / 5)
-        height = int(self.height / 5)
+        width  = self.tkBoard[x][y].winfo_width()
+        height = self.tkBoard[x][y].winfo_height()
 
         img = Image.new("RGB",(width,height))
         draw = ImageDraw.Draw(img)
@@ -982,6 +1031,8 @@ class BingoDisplay:
         draw.rectangle([(left,0),(width,height)],fill=colour)
         self.tkBoard[x][y].config(activebackground=colour)
 
+        if self.tkBoardMarked[x][y]:
+            self.drawMarkBorder(img, width)
         return img
 
 
