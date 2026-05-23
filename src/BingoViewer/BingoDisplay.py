@@ -26,22 +26,24 @@ WINDOW_TITLE=DEF_WINDOW_TITLE
 DEFAULT_WINDOW_WIDTH = 500
 DEFAULT_WINDOW_HEIGHT = 500
 
-MAGIC_GREEN    = "#1e641e"
-BRIGHT_GREEN   = "#00CC00"
-POSSIBLE_GREY  = "#505050"
-IMPOSSIBLE_RED = "#300000"
-NOT_NOW_BLACK  = "#000000"
-MARKED_GOLD    = "#FFD700"
-TEXT_GREY      = "#c8c8c8"
-TEXT_WHITE     = "#FFFFFF"
+MAGIC_GREEN         = "#1e641e"
+BRIGHT_GREEN        = "#00CC00"
+POSSIBLE_GREY       = "#505050"
+IMPOSSIBLE_RED      = "#300000"
+NOT_NOW_BLACK       = "#000000"
+MARKED_GOLD         = "#FFD700"
+MARK_PREVIEW_GOLD   = "#FFF0A0"
+UNMARK_PREVIEW_GOLD = "#B8860B"
+TEXT_GREY           = "#c8c8c8"
+TEXT_WHITE          = "#FFFFFF"
 
-P1_FINISHED_COLOUR = "#a46e23"
-P1_RECENT_COLOUR   = "#e6992f"
-P1_POSSIBLE_COLOUR = "#000000"
+P1_FINISHED_COLOUR  = "#a46e23"
+P1_RECENT_COLOUR    = "#e6992f"
+P1_POSSIBLE_COLOUR  = "#000000"
 
-P2_FINISHED_COLOUR = "#23379b"
-P2_RECENT_COLOUR   = "#2747e9"
-P2_POSSIBLE_COLOUR = "#000000"
+P2_FINISHED_COLOUR  = "#23379b"
+P2_RECENT_COLOUR    = "#2747e9"
+P2_POSSIBLE_COLOUR  = "#000000"
 
 RECENT_COLOUR = BRIGHT_GREEN
 FINISHED_COLOUR = MAGIC_GREEN
@@ -49,8 +51,18 @@ POSSIBLE_COLOUR = POSSIBLE_GREY
 IMPOSSIBLE_COLOUR = IMPOSSIBLE_RED
 NOT_NOW_COLOUR = NOT_NOW_BLACK
 MARKED_COLOUR = MARKED_GOLD
+MARK_PREVIEW_COLOUR = MARK_PREVIEW_GOLD
+UNMARK_PREVIEW_COLOUR = UNMARK_PREVIEW_GOLD
 POSSIBLE_TEXT = TEXT_WHITE
 NOT_POSSIBLE_TEXT = TEXT_GREY
+
+# all valid bingo lines: 5 rows, 5 columns, 2 diagonals
+BINGO_LINES = (
+    [[(x, y) for x in range(5)] for y in range(5)] +  # rows
+    [[(x, y) for y in range(5)] for x in range(5)] +  # columns
+    [[(i, i) for i in range(5)]] +                    # first diagonal
+    [[(i, 4 - i) for i in range(5)]]                  # second diagonal
+)
 
 def GetBorderScale():
     if os.name == 'nt': # Windows works correctly (for once)
@@ -545,6 +557,10 @@ class BingoDisplay:
         self.tkBoardText = [[None]*5 for i in range(5)]
         self.tkBoardImg = [[None]*5 for i in range(5)]
         self.tkBoardMarked = [[False]*5 for i in range(5)]
+        self.tkBoardPreview = [[False]*5 for i in range(5)]
+        self._line_drag_origin = None  # tile where mouse drag started
+        self._line_drag_mark_value = None  # True for marking, False for unmarking
+        self._line_drag_current_line = None  # currently previewed bingo line
 
         self.width,self.height = self.main.GetWindowDimensions()
         #self.width=args.width
@@ -858,12 +874,18 @@ class BingoDisplay:
                     activeforeground=POSSIBLE_TEXT,
                     disabledforeground=POSSIBLE_TEXT, bd=BUTTON_BORDER_WIDTH
                 )
-                self.tkBoard[x][y].bind("<Button-1>", lambda e, x=x, y=y: self.toggleMark(x, y))
-                #self.tkBoard[x][y]["state"]='disabled'
+                self.tkBoard[x][y].bind("<Button-1>", lambda e, x=x, y=y: self.onPress(x, y, True))
+                self.tkBoard[x][y].bind("<Button-3>", lambda e, x=x, y=y: self.onPress(x, y, False))
+                self.tkBoard[x][y].bind("<ButtonRelease-1>", self.onRelease)
+                self.tkBoard[x][y].bind("<ButtonRelease-3>", self.onRelease)
                 self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
 
         self.tile_padding_width = 2 * (BUTTON_BORDER_WIDTH + self.win.winfo_pixels(self.tkBoard[0][0].cget("padx")))
+
+        # track mouse drag motion across the whole window, not just within individual tiles
+        self.win.bind("<B1-Motion>", self.onLineDragMotion)
+        self.win.bind("<B3-Motion>", self.onLineDragMotion)
 
         self.active=True
 
@@ -873,19 +895,99 @@ class BingoDisplay:
     def clearAllMarks(self):
         for x in range(5):
             for y in range(5):
+                self.tkBoardPreview[x][y] = False
                 self.clearMark(x, y)
 
-    def toggleMark(self, x, y):
-        self.tkBoardMarked[x][y] = not self.tkBoardMarked[x][y]
-        boardEntry = self.main.GetBoardEntry(x, y)
-        if boardEntry is not None:
-            self.UpdateButtonImage(x, y, boardEntry)
+    def onPress(self, x, y, mark):
+        self._line_drag_origin = (x, y)
+        self._line_drag_mark_value = mark
+        self._line_drag_current_line = None
+        self._markPreview([(x, y)])
+
+    def onRelease(self, e):
+        # commit mark preview
+        for x in range(5):
+            for y in range(5):
+                if self.tkBoardPreview[x][y]:
+                    self.tkBoardPreview[x][y] = False
+                    self.tkBoardMarked[x][y] = self._line_drag_mark_value
+                    boardEntry = self.main.GetBoardEntry(x, y)
+                    if boardEntry is not None:
+                        self.UpdateButtonImage(x, y, boardEntry)
+        self._line_drag_origin = None
+        self._line_drag_mark_value = None
+        self._line_drag_current_line = None
+
+    def _markPreview(self, new_tiles):
+        # clear preview tiles not in new selection
+        for x in range(5):
+            for y in range(5):
+                if self.tkBoardPreview[x][y] and (x, y) not in new_tiles:
+                    self.tkBoardPreview[x][y] = False
+                    boardEntry = self.main.GetBoardEntry(x, y)
+                    if boardEntry is not None:
+                        self.UpdateButtonImage(x, y, boardEntry)
+        # set new preview tiles
+        for x, y in new_tiles:
+            if not self.tkBoardPreview[x][y]:
+                self.tkBoardPreview[x][y] = True
+                boardEntry = self.main.GetBoardEntry(x, y)
+                if boardEntry is not None:
+                    self.UpdateButtonImage(x, y, boardEntry)
+
+    def onLineDragMotion(self, e):
+        if self._line_drag_origin is None:
+            return
+        ox, oy = self._line_drag_origin
+
+        # find which tile the cursor is over
+        tx, ty = None, None
+        try:
+            widget = self.win.winfo_containing(e.x_root, e.y_root)
+        except KeyError:
+            widget = None
+        if widget is not None:
+            for x in range(5):
+                for y in range(5):
+                    if self.tkBoard[x][y] == widget:
+                        tx, ty = x, y
+                        break
+
+        if tx is None:
+            # cursor is outside the board — clear all preview
+            if self._line_drag_current_line is not None:
+                self._line_drag_current_line = None
+                self._markPreview([])
+            return
+
+        if (tx, ty) == (ox, oy):
+            # cursor is on origin — preview only origin
+            self._line_drag_current_line = None
+            self._markPreview([(ox, oy)])
+            return
+
+        # find the bingo line containing both origin and current tile, if any
+        current_line = None
+        for line in BINGO_LINES:
+            if (ox, oy) in line and (tx, ty) in line:
+                current_line = line
+                break
+
+        if current_line == self._line_drag_current_line:
+            return
+
+        self._line_drag_current_line = current_line
+        if current_line is not None:
+            self._markPreview(current_line)
+        else:
+            # no shared line — clear all preview
+            self._markPreview([])
 
     def clearMark(self, x, y):
         self.tkBoardMarked[x][y] = False
 
     # draw a highlight border inside the image for marked tiles
-    def drawMarkBorder(self, img, tile_w):
+    def drawMarkBorder(self, img, tile_w, colour=MARKED_COLOUR):
         draw = ImageDraw.Draw(img)
         img_w, img_h = img.size
         thickness = max(3, tile_w // 20)
@@ -893,7 +995,7 @@ class BingoDisplay:
             inset = BUTTON_BORDER_WIDTH + layer
             if 2 * inset >= img_w - 1 or 2 * inset >= img_h - 1:
                 break
-            draw.rectangle([(inset, inset), (img_w - 1 - inset, img_h - 1 - inset)], outline=MARKED_COLOUR)
+            draw.rectangle([(inset, inset), (img_w - 1 - inset, img_h - 1 - inset)], outline=colour)
 
     def drawTile(self, x, y, boardEntry):
         tkTile = self.tkBoard[x][y]
@@ -946,11 +1048,12 @@ class BingoDisplay:
             multiplayer = (self.mpVal.get()!=0)
 
             cache_key = (
-                int(self.width), int(self.height),
+                self.tkBoard[x][y].winfo_width(), self.tkBoard[x][y].winfo_height(),
                 boardEntry["progress"], boardEntry["max"],
                 isActive,
                 self.mpVal.get(),
-                self.tkBoardMarked[x][y]
+                self.tkBoardMarked[x][y],
+                self.tkBoardPreview[x][y]
             )
             if getattr(self.tkBoardImg[x][y], "_cache_key", None) == cache_key:
                 return
@@ -1002,7 +1105,10 @@ class BingoDisplay:
         draw.rectangle([(left,0),(width,height-barHeight)],fill=POSSIBLE_COLOUR)
         self.tkBoard[x][y].config(activebackground=POSSIBLE_COLOUR)
 
-        if self.tkBoardMarked[x][y]:
+        if self.tkBoardPreview[x][y] and self.tkBoardMarked[x][y] != self._line_drag_mark_value:
+            preview_colour = MARK_PREVIEW_COLOUR if self._line_drag_mark_value else UNMARK_PREVIEW_COLOUR
+            self.drawMarkBorder(img, width, preview_colour)
+        elif self.tkBoardMarked[x][y]:
             self.drawMarkBorder(img, width)
         return img
 
@@ -1031,7 +1137,10 @@ class BingoDisplay:
         draw.rectangle([(left,0),(width,height)],fill=colour)
         self.tkBoard[x][y].config(activebackground=colour)
 
-        if self.tkBoardMarked[x][y]:
+        if self.tkBoardPreview[x][y] and self.tkBoardMarked[x][y] != self._line_drag_mark_value:
+            preview_colour = MARK_PREVIEW_COLOUR if self._line_drag_mark_value else UNMARK_PREVIEW_COLOUR
+            self.drawMarkBorder(img, width, preview_colour)
+        elif self.tkBoardMarked[x][y]:
             self.drawMarkBorder(img, width)
         return img
 
