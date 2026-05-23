@@ -640,13 +640,13 @@ class BingoDisplay:
     def fitFontToBoard(self):
         # does the text at this size fit in its tile?
         def textFits(text, size):
-            self.font.configure(size=size)
-            linespace = self.font.metrics("linespace")
-            space_w = self.font.measure(" ")
+            self._measure_font.configure(size=size)
+            linespace = self._measure_font.metrics("linespace")
+            space_w = self._measure_font.measure(" ")
             lines = 1
             line_w = 0
             for word in text.split():
-                word_w = self.font.measure(word)
+                word_w = self._measure_font.measure(word)
                 if word_w > tile_w:
                     return False  # single word wider than tile
                 gap = space_w if line_w > 0 else 0
@@ -861,6 +861,7 @@ class BingoDisplay:
 
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
         self.font = font.Font()
+        self._measure_font = font.Font(family=self.font.cget("family"))
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
