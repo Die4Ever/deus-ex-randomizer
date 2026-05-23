@@ -2700,7 +2700,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Just make the mask from scratch instead of trying to adjust
                 newMissions = #bit(1,3,4,6,11,12,14,15);
             } else if (#defined(gmdx)){
-                //Somehow Revision (v9, at least) only has rebreathers in Hong Kong???
+                //Somehow GMDX (v9, at least) only has rebreathers in Hong Kong???
                 //Tong's Base, Lucky Money, and Level 2 Labs
                 newMissions = #bit(6);
             }

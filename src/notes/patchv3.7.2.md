@@ -23,6 +23,7 @@
 - "UC Shutdown Code" datacube in the Versalife Level 1 Labs (Mission 6) will no longer randomize into any locked areas.
 - Tong will no longer tell you that you've found one of the weld points if you've already destroyed one (Mission 9).
 - Crowd Control effects will no longer sometimes set off grenades planted by the player.
+- Randomly spawned "SecurityBot4" (The treaded bot with yellow shoulders) will now use a modified texture with gray shoulders instead.  In GMDX, this helps to distinguish these bots from the similar looking ones that have rockets and can cloak.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
@@ -34,7 +35,7 @@
 - GMDX fixes and improvements:
   - Enable "Flickering Lights" setting
   - Enabled "Goal Textures" setting to allow adjusting the textures on some randomized goal computers for better visibility.
-  - Augbotswill now properly show with their blue skin and will glow red by default.
+  - Augbots will now properly show with their blue skin and will glow red by default.
   - Medical Bots will now properly count their number of uses.
   - The window for recharging at a Repair Bot now properly updates the bio energy bar immediately.
   - The first conversation with Paul (Mission 1) is no longer skipped.  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
