@@ -685,6 +685,11 @@ class BingoDisplay:
         # assumes the longest goal string is the most constrained; not always correct in theory but seems to work in practice and is much faster
         hardest = max(texts, key=len)
 
+        cache_key = (hardest, tile_w, tile_h)
+        if cache_key == self._font_cache_key:
+            return
+        self._font_cache_key = cache_key
+
         # search for the ideal font size, starting near the current size
         current = self.font.cget("size")
         lo, hi = max(1, current - 5), current + 5
@@ -862,6 +867,7 @@ class BingoDisplay:
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
         self.font = font.Font()
         self._measure_font = font.Font(family=self.font.cget("family"))
+        self._font_cache_key = None
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
