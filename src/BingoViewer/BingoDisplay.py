@@ -1181,7 +1181,7 @@ parser.add_argument('--height', '-y', type=int, default=DEFAULT_WINDOW_HEIGHT, h
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v3.6.7.3 Beta'
+    return 'v3.7.2.0 Alpha'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)
