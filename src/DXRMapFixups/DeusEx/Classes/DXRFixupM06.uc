@@ -447,6 +447,21 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(-1195,-1065,2285),vectm(-1075,-1045,2245)); //Maggie's Guest Bathroom
             class'FakeMirrorInfo'.static.Create(self,vectm(-1060,-1415,2285),vectm(-1180,-1405,2240)); //Maggie's Master Bathroom
 
+            //A few placeholder items around Maggie's apartment
+            //Spawn(class'PlaceholderItem',,, vectm(-280,-1540,1985)); //Table behind Maggie's bench, but there's a datacube we add on this table already (see above)
+            Spawn(class'PlaceholderItem',,, vectm(-830,-1860,2040)); //Brown side table in living room
+            Spawn(class'PlaceholderItem',,, vectm(-1111,-1700,2030)); //Coffee Table between leather chairs
+            Spawn(class'PlaceholderItem',,, vectm(-550,-700,2020)); //Dining Table 1
+            Spawn(class'PlaceholderItem',,, vectm(-460,-675,2020)); //Dining Table 2
+            Spawn(class'PlaceholderItem',,, vectm(-1223,-900,2240)); //Guest bathroom
+            Spawn(class'PlaceholderItem',,, vectm(-1150,-1425,2230)); //Master bathroom
+
+            //Placeholders in Jock's apartment to make up for items getting sucked into Maggie's
+            Spawn(class'PlaceholderItem',,, vectm(155,-1375,1730)); //Balcony rail
+            Spawn(class'PlaceholderItem',,, vectm(1150,-1490,1740)); //Next to kitchen sink
+            Spawn(class'PlaceholderItem',,, vectm(585,-1890,1700)); //Living Room shelves
+
+
         } else {
             //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }

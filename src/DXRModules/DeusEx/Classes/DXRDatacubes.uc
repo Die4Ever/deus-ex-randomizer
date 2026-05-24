@@ -386,22 +386,22 @@ function vanilla_datacubes_rules()
     case "06_HONGKONG_WANCHAI_STREET":
         //"Insurgent"
         datacubes_rules[i].item_name = '06_Book16';
-        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
-        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
         datacubes_rules[i].allow = true;
         i++;
 
         //Tai-Fun and Insurgent
         datacubes_rules[i].item_name = '06_Datacube21';
-        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
-        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
         datacubes_rules[i].allow = true;
         i++;
 
         //Police Vault entry code (in apartment, nowhere else)
         datacubes_rules[i].item_name = 'PoliceVaultPassword';
-        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
-        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
         datacubes_rules[i].allow = true;
         i++;
 
@@ -411,6 +411,18 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        //Maggie's Birthday (in apartment, nowhere else)
+        datacubes_rules[i].item_name = '06_Datacube05';
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '06_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = false;
+        i++;
 
         datacubes_rules[i].item_name = 'QuickStopATMPassword';
         datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
