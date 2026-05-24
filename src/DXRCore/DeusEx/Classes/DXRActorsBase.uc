@@ -1772,6 +1772,15 @@ function rotator GetRandomYaw(optional bool unseeded)
     return r;
 }
 
+//This version just makes secret goal boxes for basically everything
+function MassSetSecretGoalBoxAll(vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
+{
+    MassSetSecretGoalBox(class'NavigationPoint', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'ScriptedPawn', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Inventory', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Decoration', minLoc, maxLoc, IsSecret, OppositeOutside);
+}
+
 function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
 {
     local float spare;

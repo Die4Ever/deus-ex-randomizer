@@ -625,6 +625,17 @@ function vanilla_keys_rules()
     // #endregion
 
     // #region Vanilla M15
+    case "15_area51_bunker":
+        if (#defined(gmdx)){
+            //Give an area where the tower key is allowed to give the new key
+            //in the tunnel under the tower more places to go
+            keys_rules[i].item_name = 'Tower';
+            keys_rules[i].min_pos = vect(2319,-3710,190);
+            keys_rules[i].max_pos = vect(-212,3742,-526);
+            keys_rules[i].allow = true;
+            i++;
+        }
+        break;
     case "15_area51_entrance":
         // key to sector 3, disallow in the vents area and lower
         keys_rules[i].item_name = 'Factory';
