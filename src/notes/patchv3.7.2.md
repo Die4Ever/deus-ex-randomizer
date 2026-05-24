@@ -24,6 +24,7 @@
 - Tong will no longer tell you that you've found one of the weld points if you've already destroyed one (Mission 9).
 - Crowd Control effects will no longer sometimes set off grenades planted by the player.
 - Randomly spawned "SecurityBot4" (The treaded bot with yellow shoulders) will now use a modified texture with gray shoulders instead.  In GMDX, this helps to distinguish these bots from the similar looking ones that have rockets and can cloak.
+- "Flickering Lights" setting now prevents electricity emitters from flickering as well.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.

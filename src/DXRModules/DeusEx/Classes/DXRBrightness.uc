@@ -18,6 +18,7 @@ function PreFirstEntry()
 {
     local ZoneInfo Z;
     local Light lght;
+    local #var(prefix)ElectricityEmitter ee;
 #ifdef gmdx
     local Decoration d;
 #endif
@@ -33,6 +34,10 @@ function PreFirstEntry()
     foreach AllActors(class'Light',lght){
         class'DXRStoredLightFog'.static.Init(lght);
         class'DXRStoredLightType'.static.Init(lght);
+    }
+
+    foreach AllActors(class'#var(prefix)ElectricityEmitter',ee){
+        class'DXRStoredLightType'.static.InitElecEmitter(ee);
     }
 
 #ifdef gmdx
@@ -165,14 +170,7 @@ function ApplyEpilepsySafe(bool enabled)
 #endif
 
     foreach AllActors(class'DXRStoredLightType',slt){
-        lght = slt.Owner;
-        if (lght==None) continue;
-
-        if (enabled){
-            lght.LightType = LT_Pulse; //more gentle light mode
-        } else {
-            lght.LightType = slt.origLightType;
-        }
+        slt.ApplyEpilepsyFix(enabled);
     }
 
 #ifdef gmdx
