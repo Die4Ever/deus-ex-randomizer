@@ -1027,8 +1027,109 @@ static function ConEvent NewConEvent(Conversation c, ConEvent prev, class<ConEve
 {
     local ConEvent e;
     e = new(c) newclass;
-    InitConEventType(e);
+    InitConEventType(e); //Make sure the eventType is populated
     AddConEvent(c, prev, e);
+    return e;
+}
+
+static function ConEventSpeech NewConEventSpeech(Conversation c, ConEvent prev, string speech, optional int soundID)
+{
+    local ConEventSpeech e;
+
+    e = ConEventSpeech(NewConEvent(c,prev,class'ConEventSpeech'));
+
+    e.conSpeech = new(c) class'ConSpeech';
+    e.conSpeech.speech = speech;
+    e.conSpeech.soundID = soundID;
+
+    return e;
+}
+
+static function ConEventSetFlag NewConEventSetFlag(Conversation c, ConEvent prev, name flagName, bool value, int expiry)
+{
+    local ConEventSetFlag e;
+
+    e = ConEventSetFlag(NewConEvent(c,prev,class'ConEventSetFlag'));
+
+    e.flagRef = new(c) class'ConFlagRef';
+    e.flagRef.flagName=flagName;
+    e.flagRef.value=value;
+    e.flagRef.expiration=expiry;
+
+    return e;
+}
+
+static function ConEventMoveCamera NewConEventMoveCamera(Conversation c, ConEvent prev, int camPos)
+{
+    local ConEventMoveCamera cam;
+
+    cam = ConEventMoveCamera(NewConEvent(c,prev,class'ConEventMoveCamera'));
+
+    cam.cameraType = CT_Predefined;
+    switch (camPos){
+        case 0:  cam.cameraPosition = CP_SideTight; break;
+        case 1:  cam.cameraPosition = CP_SideMid; break;
+        case 2:  cam.cameraPosition = CP_SideAbove; break;
+        case 3:  cam.cameraPosition = CP_SideAbove45; break;
+        case 4:  cam.cameraPosition = CP_ShoulderLeft; break;
+        case 5:  cam.cameraPosition = CP_ShoulderRight; break;
+        case 6:  cam.cameraPosition = CP_HeadShotTight; break;
+        case 7:  cam.cameraPosition = CP_HeadShotMid; break;
+        case 8:  cam.cameraPosition = CP_HeadShotLeft; break;
+        case 9:  cam.cameraPosition = CP_HeadShotRight; break;
+        case 10: cam.cameraPosition = CP_HeadShotSlightRight; break;
+        case 11: cam.cameraPosition = CP_HeadShotSlightLeft; break;
+        case 12: cam.cameraPosition = CP_StraightAboveLookingDown; break;
+        case 13: cam.cameraPosition = CP_StraightBelowLookingUp; break;
+        case 14: cam.cameraPosition = CP_BelowLookingUp; break;
+
+        //Randomized in groups
+        //For when you maybe want a bit of variation, but still want a somewhat consistent shot
+        //Note that these use unseeded RNG, so will change on level load
+        case 20: //Side shots
+            switch(Rand(4)){
+                case 0: cam.cameraPosition = CP_SideTight; break;
+                case 1: cam.cameraPosition = CP_SideMid; break;
+                case 2: cam.cameraPosition = CP_SideAbove; break;
+                case 3: cam.cameraPosition = CP_SideAbove45; break;
+            }
+            break;
+        case 21: //Shoulder shots
+            switch(Rand(2)){
+                case 0: cam.cameraPosition = CP_ShoulderLeft; break;
+                case 1: cam.cameraPosition = CP_ShoulderRight; break;
+            }
+            break;
+        case 22: //Head shots
+            switch(Rand(6)){
+                case 0: cam.cameraPosition = CP_HeadShotTight; break;
+                case 1: cam.cameraPosition = CP_HeadShotMid; break;
+                case 2: cam.cameraPosition = CP_HeadShotLeft; break;
+                case 3: cam.cameraPosition = CP_HeadShotRight; break;
+                case 4: cam.cameraPosition = CP_HeadShotSlightRight; break;
+                case 5: cam.cameraPosition = CP_HeadShotSlightLeft; break;
+            }
+            break;
+        case 23: //Bad ones, really don't
+            switch(Rand(3)){
+                case 0: cam.cameraPosition = CP_StraightAboveLookingDown; break;
+                case 1: cam.cameraPosition = CP_StraightBelowLookingUp; break;
+                case 2: cam.cameraPosition = CP_BelowLookingUp; break;
+            }
+            break;
+    }
+    cam.cameraTransition = TR_Jump;
+
+    return cam;
+}
+
+static function ConEventTrigger NewConEventTrigger(Conversation c, ConEvent prev, name triggerTag)
+{
+    local ConEventTrigger e;
+
+    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
+    e.triggerTag = triggerTag;
+
     return e;
 }
 
@@ -1040,6 +1141,7 @@ static function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
         prev.nextEvent = e;
     }
     else {
+        e.nextEvent = c.eventList;
         c.eventList = e;
     }
 }
@@ -1413,6 +1515,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
         newactor.Mass = a.Mass;
         newactor.Buoyancy = a.Buoyancy;
         newactor.Texture = a.Texture;
+        newactor.Skin = a.Skin;
         newactor.Mesh = a.Mesh;
         for(i=0; i<ArrayCount(a.Multiskins); i++) {
             newactor.Multiskins[i] = a.Multiskins[i];
@@ -1669,6 +1772,15 @@ function rotator GetRandomYaw(optional bool unseeded)
     return r;
 }
 
+//This version just makes secret goal boxes for basically everything
+function MassSetSecretGoalBoxAll(vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
+{
+    MassSetSecretGoalBox(class'NavigationPoint', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'ScriptedPawn', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Inventory', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Decoration', minLoc, maxLoc, IsSecret, OppositeOutside);
+}
+
 function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
 {
     local float spare;
@@ -1689,6 +1801,10 @@ function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector ma
         spare = minLoc.Z;
         minLoc.Z = maxLoc.Z;
         maxLoc.Z = spare;
+    }
+
+    if (#bool(debug)){
+        class'DebugBox'.static.CreateDB(self,minLoc,maxLoc,,'SecretGoalBox',String(classToFind),"Is Secret: "$IsSecret$"  Opposite Outside: "$ OppositeOutside);
     }
 
     foreach AllActors(classToFind,a){
@@ -2005,9 +2121,65 @@ function Vector GetCenter(Actor test)
     return (MinVect+MaxVect)/2;
 }
 
-function safe_rule FixSafeRule(safe_rule r)
+const EXTENT_BUFFER=100;
+function FindActorExtents(out vector min_ext, out vector max_ext, optional bool force_test)
+{
+    local Actor a;
+    local Vector actLoc;
+    local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)Vehicles v;
+
+    if (DXRandoTests(Level.Game)!=None && force_test==False){
+        //Don't do this in tests unless explicitly forced
+        return;
+    }
+
+    foreach AllActors(class'Actor',a){
+        if (a.Region.iLeaf==-1) continue; //Skip actors that aren't inside the BSP
+        if (a.Region.Zone.IsA('SkyZoneInfo')) continue; //Skip actors in sky boxes
+        //if (Info(a)!=None) continue;
+
+        actLoc = a.Location;
+        if (#var(prefix)ScriptedPawn(a)!=None){
+            sp = #var(prefix)ScriptedPawn(a);
+            if (sp.bInWorld==False){
+                actLoc = sp.WorldPosition;
+            }
+        } else if (#var(prefix)Vehicles(a)!=None){
+            v = #var(prefix)Vehicles(a);
+            #ifndef hx
+            if (v.bInWorld==False){
+                actLoc = v.WorldPosition;
+            }
+            #endif
+        }
+
+        //Expand the extents based on this actor
+        if (actLoc.X > max_ext.X) max_ext.X = actLoc.X;
+        if (actLoc.Y > max_ext.Y) max_ext.Y = actLoc.Y;
+        if (actLoc.Z > max_ext.Z) max_ext.Z = actLoc.Z;
+
+        if (actLoc.X < min_ext.X) min_ext.X = actLoc.X;
+        if (actLoc.Y < min_ext.Y) min_ext.Y = actLoc.Y;
+        if (actLoc.Z < min_ext.Z) min_ext.Z = actLoc.Z;
+    }
+
+    min_ext.X = min_ext.X - EXTENT_BUFFER;
+    min_ext.Y = min_ext.Y - EXTENT_BUFFER;
+    min_ext.Z = min_ext.Z - EXTENT_BUFFER;
+
+    max_ext.X = max_ext.X + EXTENT_BUFFER;
+    max_ext.Y = max_ext.Y + EXTENT_BUFFER;
+    max_ext.Z = max_ext.Z + EXTENT_BUFFER;
+}
+
+function safe_rule FixSafeRule(safe_rule r, optional vector min_ext, optional vector max_ext)
 {
     local float a, b;
+    local bool use_extents;
+
+    use_extents = (min_ext.X!=0 || min_ext.Y!=0 || min_ext.Z!=0 || max_ext.X!=0 || max_ext.Y!=0 || max_ext.Z!=0);
+
     r.min_pos *= coords_mult;
     r.max_pos *= coords_mult;
 
@@ -2025,6 +2197,11 @@ function safe_rule FixSafeRule(safe_rule r)
     b = FMax(r.min_pos.Z, r.max_pos.Z);
     r.min_pos.Z = a;
     r.max_pos.Z = b;
+
+    if (use_extents){
+        r.min_pos = ApplyVectorExtents(r.min_pos,min_ext,max_ext);
+        r.max_pos = ApplyVectorExtents(r.max_pos,min_ext,max_ext);
+    }
 
     return r;
 }
@@ -2092,6 +2269,19 @@ function RemoveMoverPrePivot(Mover m)
 function Vector GetMoverCenter(Mover m)
 {
     return m.Location-(m.PrePivot >> m.Rotation);
+}
+
+static function Vector ApplyVectorExtents(vector in_vect, vector ext_min, vector ext_max)
+{
+    if (in_vect.X < ext_min.X) in_vect.X = ext_min.X;
+    if (in_vect.Y < ext_min.Y) in_vect.Y = ext_min.Y;
+    if (in_vect.Z < ext_min.Z) in_vect.Z = ext_min.Z;
+
+    if (in_vect.X > ext_max.X) in_vect.X = ext_max.X;
+    if (in_vect.Y > ext_max.Y) in_vect.Y = ext_max.Y;
+    if (in_vect.Z > ext_max.Z) in_vect.Z = ext_max.Z;
+
+    return in_vect;
 }
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
@@ -2232,9 +2422,7 @@ static function MarkDataVaultImagesAsViewed(#var(PlayerPawn) p)
 
 static function bool IsUsingOggMusic(#var(PlayerPawn) player)
 {
-#ifndef revision
-    return False;
-#else
+#ifdef revision
     if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
         //Vanilla Maps in Revision only support the original tracker music
         return False;
@@ -2242,6 +2430,17 @@ static function bool IsUsingOggMusic(#var(PlayerPawn) player)
         //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
         return True;
     }
+    return False;
+#elseif vmd2
+    if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
+        //Vanilla Maps only support the original tracker music
+        return False;
+    }else if (class'VMDBufferPlayer'.Default.bUseRevisionSoundtrack){
+        //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
+        return True;
+    }
+    return False;
+#else
     return False;
 #endif
 }

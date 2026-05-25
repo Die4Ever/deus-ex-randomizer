@@ -2714,6 +2714,21 @@ exec function DebugPassword(optional string password)
     }
 }
 
+exec function ForceCC(string effect)
+{
+    local DXRCrowdControl cc;
+    local string params[5];
+
+    cc = DXRCrowdControl(class'DXRCrowdControl'.static.Find());
+
+    if (cc!=None && cc.link!=None && cc.link.ccEffects!=None){
+        params[0]="1"; //This is usually a quantity
+        cc.link.ccEffects.doCrowdControlEvent(effect,params,TruePlayerName,0,30);
+    } else {
+        ClientMessage("Crowd Control not active");
+    }
+}
+
 state CheatFlying
 {
 ignores SeePlayer, HearNoise, Bump, TakeDamage;
