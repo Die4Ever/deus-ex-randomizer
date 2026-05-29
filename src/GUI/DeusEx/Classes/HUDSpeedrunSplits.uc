@@ -2,6 +2,7 @@ class HUDSpeedrunSplits expands HUDBaseWindow config(DXRSplits);
 
 var DeusExPlayer    player;
 var DXRStats        stats;
+var DXRMapVariants  mapvariants;
 
 var config int version;
 var config Font textfont;
@@ -176,6 +177,8 @@ function InitStats(DXRStats newstats)
         return;
     }
 
+    mapvariants = DXRMapVariants(stats.dxr.FindModule(class'DXRMapVariants'));
+
     ttitle = ReplaceVariables(title);
     tsubtitle = ReplaceVariables(subtitle);
     tfooter = ReplaceVariables(footer);
@@ -259,6 +262,14 @@ static function string GetPB()
         total += default.PB[i];
     }
     return class'DXRStats'.static.fmtTimeToString(total, true, false, true);
+}
+
+function DXRMapVariants GetMapVariants()
+{
+    if (mapvariants == None) {
+        mapvariants = DXRMapVariants(stats.dxr.FindModule(class'DXRMapVariants'));
+    }
+    return mapvariants;
 }
 
 function CompletedRun(int total)
@@ -476,6 +487,8 @@ function DrawSplits(GC gc, int cur)
     local Color cmpColor;
     local bool bShuffle;
 
+    GetMapVariants();
+
     total = TotalTime();
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
@@ -509,19 +522,17 @@ function DrawSplits(GC gc, int cur)
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
     bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
-
-    for(i=1; i<ArrayCount(Golds); i++) {
-        // TODO: fix ordering when Speedrun Shuffle
+    for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
         if(showAllSplits
         || (alwaysShowSplit[i] != 0)
         || (i == prevprev && showPrevprev)
         || (i == prev && showPrev)
         || (i == cur && showCurrentMission)
         || (i == next && showNext)
-        || (i == ArrayCount(Golds)-1 && showPB)
-        || (bShuffle && stats.missions_times[i] > 0) // Speedrun Shuffle always show completed missions
+        || (i == ArrayCount(mapvariants.missions)-1 && showPB)
+        || bShuffle
         ) {
-            y = DrawSplit(gc, i, cur, x, y);
+            y = DrawSplit(gc, mapvariants.missions[i], cur, x, y);
         }
     }
 

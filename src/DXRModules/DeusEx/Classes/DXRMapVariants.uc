@@ -223,6 +223,14 @@ function CheckConfig()
 
     Super.CheckConfig();
 
+    if (dxr.flags.moresettings.shuffle_missions == 0) {
+        for (i = 0; i < ArrayCount(missions); i++) {
+            missions[i] = default.missions[i];
+            starts[i] = default.starts[i];
+        }
+        return;
+    }
+
     SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
     len = ArrayCount(starts)-1;
     if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
