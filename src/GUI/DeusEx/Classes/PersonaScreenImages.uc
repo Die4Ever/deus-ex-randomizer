@@ -209,6 +209,41 @@ function EnableButtons()
     Super.EnableButtons();
 }
 
+event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
+{
+    local DataVaultImage image;
+    local int listIndex,curIdx,rowId;
+
+    Super.ListSelectionChanged(list,numSelections,focusRowId);
+
+    image = DataVaultImage(lstImages.GetRowClientObject(focusRowId));
+    if (image!=None){
+        //Immediately mark the image as viewed, if necessary
+        //This is better for the case where you close the images tab with a hotkey,
+        //which directly destroys the window without calling SaveSettings, but the
+        //image list is already empty by the time *this* window gets its DestroyWindow
+        //called.
+        MarkViewed(image);
+    }
+
+    //Clear the "new image" marker of the image you just clicked away from.
+    //In an ideal world, we would just know the "last selection" and
+    //update that specific one manually, but alas.  Just do everything that's
+    //been viewed instead.
+    curIdx = lstImages.RowIdToIndex(focusRowId);
+    for(listIndex=0; listIndex<lstImages.GetNumRows(); listIndex++)
+    {
+        if (listIndex==curIdx) continue; //Skip over the current one
+
+        rowId = lstImages.IndexToRowId(listIndex);
+        if (lstImages.GetFieldValue(rowId, 2) > 0)
+        {
+            //If the image has been viewed, remove the "new image" marker (Which is just a "C")
+            lstImages.SetField(rowId, 1, "");
+        }
+    }
+}
+
 function ClearViewedImageFlags()
 {
     local DataVaultImage image;
