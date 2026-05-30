@@ -55,4 +55,6 @@ defaultproperties
      CollisionHeight=1.00000
      DrawScale=0.5
      LifeSpan=0.000000
+     AccurateRange=99999
+     maxRange=99999
 }

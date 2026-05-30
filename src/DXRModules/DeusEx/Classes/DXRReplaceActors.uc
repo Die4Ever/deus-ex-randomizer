@@ -870,7 +870,7 @@ function ReplaceATM(#var(prefix)ATM a)
     if(n == None)
         return;
 
-    ReplaceDecoration(a, n);
+    ReplaceDeusExDecoration(a, n);
 
 #ifndef hx
     for (i=0;i<ArrayCount(n.userList);i++){
