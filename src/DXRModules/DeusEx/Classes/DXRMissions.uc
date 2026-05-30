@@ -230,6 +230,9 @@ function AddMapMarker(class<DataVaultImage> image, int posX, int posY, String ma
 function bool MapHasGoalMarkers(class<DataVaultImage> image)
 {
     local int i;
+
+    if (image==None) return False; //Obviously a None image has no goal markers
+
     for (i=0;i<num_locations;i++){
         if (locations[i].mapMarker.image==image){
             return True;

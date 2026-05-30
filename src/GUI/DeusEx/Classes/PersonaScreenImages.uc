@@ -197,7 +197,7 @@ function EnableButtons()
     btnGoalLocations.Show(False);
 
     //Check if image has hint information available from DXRMissions
-    if (dxrMissions!=None && dxrMissions.dxr.flags.settings.goals > 0){
+    if (image!=None && dxrMissions!=None && dxrMissions.dxr.flags.settings.goals > 0){
         if (dxrMissions.MapHasGoalMarkers(image.class)){
             if (dxrMissions.dxr.flags.moresettings.spoilers==1){
                 btnShowSpoilers.Show(True);

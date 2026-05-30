@@ -31,6 +31,7 @@
 - Bingo goals that require looking at an image will be marked as soon as the image is viewed, instead of when the window is closed.  This also fixes an issue where sometimes the image wouldn't get marked as viewed, depending on how the window was closed.
 - The "New Image" icon in the list on the "Images" menu will disappear when you click off of the image to another one.
 - "The Three Leg Augs" and "My Vision Is Augmented" loadouts will now default to Balanced Aug Slot Randomization instead of Unbalanced.
+- "Goal Locations" and "Goal Spoilers" buttons will no longer appear on the "Images" menu when you have no images to view.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
