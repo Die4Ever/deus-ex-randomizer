@@ -555,11 +555,11 @@ static function AdjustFlags(DXRFlags flags, int loadout)
     switch(loadout) {
     case 15:
         //The Three Leg Augs
-        flags.moresettings.aug_loc_rando = 100;
+        flags.moresettings.aug_loc_rando = 200;
         break;
     case 17:
         //My Vision Is Augmented
-        flags.moresettings.aug_loc_rando = 100;
+        flags.moresettings.aug_loc_rando = 200;
         break;
     }
 }
