@@ -443,8 +443,7 @@ function ReplaceShipsWheel(#var(prefix)ShipsWheel a)
     if(n == None)
         return;
 
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -456,8 +455,7 @@ function ReplaceWaterFountain(#var(prefix)WaterFountain a)
     if(n == None)
         return;
 
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -469,8 +467,7 @@ function ReplaceWaterCooler(#var(prefix)WaterCooler a)
     if(n == None)
         return;
 
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -485,8 +482,7 @@ function ReplaceVendingMachine(#var(prefix)VendingMachine a)
     n.SkinColor=a.SkinColor;
     n.PreBeginPlay();
     n.BeginPlay();
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -502,8 +498,7 @@ function ReplacePoolball(#var(prefix)Poolball a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     //Update the PoolTableManager that this ball belongs to
     ptm = PoolTableManager(a.Owner);
@@ -543,6 +538,12 @@ function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
 
     if (#var(DeusExPrefix)Decoration(n)!=None){
         ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration(a),#var(DeusExPrefix)Decoration(n));
+    } else if (Decoration(n)!=None) {
+        //This shouldn't really be necessary, but just to cover my ass
+        ReplaceDecoration(Decoration(a),Decoration(n));
+    } else {
+        //Seriously, how did we get here
+        UpdateActorReferences(a, n);
     }
 
     a.Destroy();
@@ -557,8 +558,7 @@ function ReplaceToilet(#var(prefix)Toilet a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -572,8 +572,7 @@ function ReplaceToilet2(#var(prefix)Toilet2 a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 #ifdef hx
     n.PrecessorName = a.PrecessorName;
 #endif
@@ -620,8 +619,7 @@ function ReplaceClothesRack(#var(prefix)ClothesRack a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 #ifdef hx
     n.PrecessorName = a.PrecessorName;
 #endif
@@ -653,6 +651,7 @@ function #var(DeusExPrefix)Weapon ReplaceWeapon(#var(DeusExPrefix)Weapon a, #var
     if(owner != None && owner.Weapon == a) {
         bWasDrawn = true;
     }
+    UpdateActorReferences(a, n); //Particularly for VMD2, but the other stuff is nice too
     a.Destroy();
     if(owner != None) {
         GiveExistingItem(owner, n);
@@ -669,6 +668,7 @@ function #var(DeusExPrefix)Pickup ReplacePickup(#var(DeusExPrefix)Pickup a, #var
     local #var(PlayerPawn) player;
     owner = ScriptedPawn(a.Owner);
     player = #var(PlayerPawn)(a.Owner);
+    UpdateActorReferences(a, n); //Particularly for VMD2, but the other stuff is nice too
     a.Destroy();
     if(owner != None) {
         GiveExistingItem(owner, n);
@@ -869,6 +869,8 @@ function ReplaceATM(#var(prefix)ATM a)
     n = DXRATM(SpawnReplacement(a, class'DXRATM'));
     if(n == None)
         return;
+
+    ReplaceDecoration(a, n);
 
 #ifndef hx
     for (i=0;i<ArrayCount(n.userList);i++){

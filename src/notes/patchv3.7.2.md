@@ -54,6 +54,7 @@
   - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
   - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
 - Vanilla? Madder! 2.0 fixes and improvements
+  - Objects will no longer be sometimes left without collision when they are replaced by DXRando.
   - The conversation in the intro will actually start playing.
   - Backing out of the New Game screen will no longer cause the game to crash.
   - The "Character Setup" screen will now be considered a title screen, so Crowd Control effects will not function there, and Crowd Control will be able to connect while on that screen.
