@@ -223,6 +223,7 @@ function ReplaceKeypad(#var(prefix)Keypad a)
 {
     local DXRKeypad n;
     local int i;
+    local DXRPasswords pass;
 #ifndef hx
     if(a.IsA('DXRKeypad'))
         return;
@@ -245,6 +246,11 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     //Make it look like the right kind of keypad
     n.Mesh = a.Mesh;
     n.SetCollisionSize(a.CollisionRadius,a.CollisionHeight);
+
+    pass = DXRPasswords(class'DXRPasswords'.static.Find());
+    if (pass!=None){
+        pass.UpdateKnownPasswords(n);
+    }
 
     ReplaceDeusExDecoration(a, n);
     a.Destroy();
@@ -865,6 +871,7 @@ function ReplaceATM(#var(prefix)ATM a)
 {
     local DXRATM n;
     local int i;
+    local DXRPasswords pass;
 
     n = DXRATM(SpawnReplacement(a, class'DXRATM'));
     if(n == None)
@@ -880,6 +887,11 @@ function ReplaceATM(#var(prefix)ATM a)
     }
 #endif
 
+    pass = DXRPasswords(class'DXRPasswords'.static.Find());
+    if (pass!=None){
+        pass.UpdateKnownPasswords(n);
+    }
+
     n.lockoutDelay=a.lockoutDelay;
 
     a.Destroy();
@@ -888,6 +900,7 @@ function ReplaceATM(#var(prefix)ATM a)
 function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
 {
     local int i;
+    local DXRPasswords pass;
 
     for(i=0;i<ArrayCount(n.specialOptions);i++){
         n.specialOptions[i].Text=a.specialOptions[i].Text;
@@ -903,6 +916,11 @@ function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
         n.userList[i].userName=a.userList[i].userName;
         n.userList[i].password=a.userList[i].password;
         n.userList[i].accessLevel=a.userList[i].accessLevel;
+    }
+
+    pass = DXRPasswords(class'DXRPasswords'.static.Find());
+    if (pass!=None){
+        pass.UpdateKnownPasswords(n);
     }
 
     n.bOn = a.bOn;

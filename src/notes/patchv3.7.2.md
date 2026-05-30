@@ -37,6 +37,7 @@
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
   - Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
   - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
+  - When entering a map for the first time with the password or code to a computer or keypad, the password will be correctly marked as known.
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
