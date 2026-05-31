@@ -56,12 +56,14 @@
   - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
   - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
 - Vanilla? Madder! 2.0 fixes and improvements
-  - Objects will no longer be sometimes left without collision when they are replaced by DXRando.
+  - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
   - Backing out of the New Game screen will no longer cause the game to crash.
   - The "Character Setup" screen will now be considered a title screen, so Crowd Control effects will not function there, and Crowd Control will be able to connect while on that screen.
   - Skill costs shown on the "Character Setup" screen will now match the ones you see when you enter the game.
   - Turrets that have been moved will now have their guns placed in the correct location.
+  - Scopes (Either binoculars or on a weapon) will now properly mark bingo goals.
+  - Scopes (Either binoculars or on a weapon) will now look the same as they do in non-randomized Vanilla? Madder!
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
