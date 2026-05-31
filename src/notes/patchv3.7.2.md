@@ -61,6 +61,7 @@
   - Backing out of the New Game screen will no longer cause the game to crash.
   - The "Character Setup" screen will now be considered a title screen, so Crowd Control effects will not function there, and Crowd Control will be able to connect while on that screen.
   - Skill costs shown on the "Character Setup" screen will now match the ones you see when you enter the game.
+  - Turrets that have been moved will now have their guns placed in the correct location.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
