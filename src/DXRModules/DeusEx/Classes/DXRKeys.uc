@@ -565,7 +565,7 @@ function vanilla_keys_rules()
         i++;
 
         //disallow flooded area
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
         keys_rules[i].allow = false;
@@ -579,9 +579,9 @@ function vanilla_keys_rules()
         i++;
 
         //disallow storage closet
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
-        keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
+        keys_rules[i].max_pos = vect(1047.852173, 436.867401, -1441);
         keys_rules[i].allow = false;
         i++;
 
@@ -592,7 +592,7 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(500, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, -1644.895142);
         keys_rules[i].allow = false;
@@ -605,14 +605,14 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(1879, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = false;
         i++;
 
         //allow before greasel lab
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
         keys_rules[i].max_pos = vect(1888, 1930.014771, 99999);
         keys_rules[i].allow = true;

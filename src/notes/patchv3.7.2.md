@@ -64,6 +64,7 @@
   - Turrets that have been moved will now have their guns placed in the correct location.
   - Scopes (Either binoculars or on a weapon) will now properly mark bingo goals.
   - Scopes (Either binoculars or on a weapon) will now look the same as they do in non-randomized Vanilla? Madder!
+  - Key location randomization rules for Ocean Lab "Storage" key (Mission 14) will now be properly applied.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
