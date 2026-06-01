@@ -50,12 +50,8 @@ function AddWeaponChoiceTrigger()
     //which goes and generates the weapon choices for the conversation
     c = GetConversation(convoName);
 
-    cet = new(c) class'ConEventTrigger';
-    cet.eventType=ET_Trigger;
+    cet = ConEventTrigger(class'DXRActorsBase'.static.NewConEvent(c,None,class'ConEventTrigger'));
     cet.triggerTag = tag;
-
-    cet.nextEvent = c.eventList;
-    c.eventList = cet;
 }
 
 function Trigger(Actor Other,Pawn Instigator)

@@ -1524,4 +1524,19 @@ exec function MarkLoc(int x, int y, int z, optional string markName)
     actorDisplay.ShowBindName(true);
 }
 
+exec function ForceCC(string effect)
+{
+    local DXRCrowdControl cc;
+    local string params[5];
+
+    cc = DXRCrowdControl(class'DXRCrowdControl'.static.Find());
+
+    if (cc!=None && cc.link!=None && cc.link.ccEffects!=None){
+        params[0]="1"; //This is usually a quantity
+        cc.link.ccEffects.doCrowdControlEvent(effect,params,TruePlayerName,0,30);
+    } else {
+        ClientMessage("Crowd Control not active");
+    }
+}
+
 //#endregion

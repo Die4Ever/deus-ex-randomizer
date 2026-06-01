@@ -1,4 +1,4 @@
-class ActorDisplayWindow injects ActorDisplayWindow;
+class DXRActorDisplayWindow injects ActorDisplayWindow;
 // legend, for searching
 
 var Font textfont;
@@ -13,6 +13,7 @@ var string       tagFilter;
 var string       eventFilter;
 var string       customFilterAttrib;
 var string       customFilterVal;
+var bool         bCustomFilterPartial;
 var bool         bLimitRadius;
 var int          actorRadius;
 var bool         bShowTagEvent;
@@ -89,6 +90,16 @@ function String GetCustomFilterVal(){
 
 function SetCustomFilterVal(string newVal){
     customFilterVal = newVal;
+}
+
+function SetCustomFilterPartialMatch(bool bPartial)
+{
+    bCustomFilterPartial = bPartial;
+}
+
+function Bool IsCustomFilterPartialMatch()
+{
+	return bCustomFilterPartial;
 }
 
 function SetViewClass(Class<Actor> newViewClass)
@@ -332,7 +343,7 @@ function DrawWindow(GC gc)
     local Inventory item;
     local name filter;
     local int radius;
-    local FakeMirrorInfo fmi;
+    local DebugBox db;
     local class<Actor> classToShow;
     local bool bPointIsClose;
 
@@ -372,8 +383,19 @@ function DrawWindow(GC gc)
             continue;
         if (eventFilter!="" && !(eventFilter~=string(trackActor.Event)))
             continue;
-        if (customFilterAttrib!="" && !(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib)))
-            continue;
+        if (customFilterAttrib!="" && customFilterVal!=""){
+            if (bCustomFilterPartial){ //partial, case-insensitive match
+                str = Caps(trackActor.GetPropertyText(customFilterAttrib));
+                str2 = Caps(customFilterVal);
+                if (InStr(str,str2)==-1){
+                    continue;
+                }
+            } else { //Full, case-insensitive, match
+                if (!(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib))){
+                    continue;
+                }
+            }
+        }
 
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
@@ -532,14 +554,10 @@ function DrawWindow(GC gc)
                 r=0;
                 g=0;
                 b=0;
-                if (FakeMirrorInfo(trackActor)!=None){
-                    r=255;
-                    g=255;
-                    b=255;
+                if (DebugBox(trackActor)!=None){
+                    db = DebugBox(trackActor);
 
-                    fmi = FakeMirrorInfo(trackActor);
-
-                    DrawCube(gc, fmi.min_pos, fmi.max_pos, r, g, b);
+                    DrawCube(gc, db.min_pos, db.max_pos, db.BoxColour.R, db.BoxColour.G, db.BoxColour.B);
 
                 } else {
                     if (trackActor.bCollideActors){
@@ -1167,7 +1185,7 @@ function string CalcWeaponScore(Actor item)
     local float        enemyRange;
     local float        minEnemy, accEnemy, maxEnemy;
     local ScriptedPawn enemyPawn;
-    local Robot        enemyRobot;
+    local #var(prefix)Robot enemyRobot;
     local DeusExPlayer enemyPlayer;
     local float        enemyRadius;
     local bool         bEnemySet;

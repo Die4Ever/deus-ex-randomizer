@@ -35,4 +35,16 @@ function NewGameSetup(float difficulty)
         newGame.Init(dxr);
     }
 }
+
+//Gets called both when you hit escape and if you hit the Cancel button
+function CancelScreen()
+{
+    ReturnToTitle();
+}
+
+function ReturnToTitle()
+{
+    Player.ConsoleCommand("Open DXOnly");
+}
+
 #endif

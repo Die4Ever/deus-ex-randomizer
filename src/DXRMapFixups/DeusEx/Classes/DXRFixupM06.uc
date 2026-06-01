@@ -162,15 +162,25 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
-            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-                if (injbutton.tag == 'Weapons_Lock_broken' || injbutton.tag == 'Weapons_lock' || injbutton.event == 'missile_door') {
-                    injbutton.SetRotation(rotm(14400,16500,0,GetRotationOffset(injbutton.class))); //A similar rotation to original that only rotates in two axes instead of all three
-                } else if (injbutton.Event=='elevator_door' && injbutton.ButtonType==BT_Blank){
-                    //Both the button inside and outside
-                    injbutton.RandoButtonType=RBT_OpenDoors;
-                    injbutton.BeginPlay();
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.tag == 'Weapons_Lock_broken' || button.tag == 'Weapons_lock' || button.event == 'missile_door') {
+                    button.SetRotation(rotm(14400,16500,0,GetRotationOffset(button.class))); //A similar rotation to original that only rotates in two axes instead of all three
                 }
             }
+        }
+
+        if (#defined(gmdx)){
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event!='fDoor') continue;
+
+                m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',button));
+                if (m!=None){
+                    button.Event='flightDeckDoorDXR'; //Throw a DXR on there to make sure it's unique...
+                    m.Tag=button.Event;
+                }
+                break;
+            }
+
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
@@ -249,9 +259,7 @@ function PreFirstEntryMapFixes()
         MassSetSecretGoalBox(class'NavigationPoint', vectm(-295,360,190), vectm(1155,549,-238), true);
 
         //Don't clone guys who are vaguely near the hall
-        foreach RadiusActors(class'#var(prefix)ScriptedPawn',p, 750, vectm(460,460,-30)){
-            p.bIsSecretGoal=true;
-        }
+        MassSetSecretGoalBox(class'#var(prefix)ScriptedPawn', vectm(-500,100,190), vectm(1300,800,-238), true);
 
         break;
     //#endregion
@@ -262,12 +270,6 @@ function PreFirstEntryMapFixes()
             // button to get out of Tong's base
             // Revision already has a button in place (In WANCHAI_COMPOUND)
             AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
-            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-                if ((injbutton.Event=='elevator_door' || injbutton.Event=='elevator_door01') && injbutton.ButtonType==BT_Blank){ //Helibase and Versalife elevators
-                    injbutton.RandoButtonType=RBT_OpenDoors;
-                    injbutton.BeginPlay();
-                }
-            }
         }
 
         MassSetSecretGoalBox(class'NavigationPoint', vectm(104,-3262,-147), vectm(1342,-1645,-317), true); //Block the nav points behind the teleporter towards the Lucky Money
@@ -429,12 +431,6 @@ function PreFirstEntryMapFixes()
                     d.bFrobbable=True;
                 }
             }
-            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-                if ((injbutton.Event=='Eledoor01' || injbutton.Event=='eledoor02') && injbutton.ButtonType==BT_Blank){ //Penthouse and renovation elevators
-                    injbutton.RandoButtonType=RBT_OpenDoors;
-                    injbutton.BeginPlay();
-                }
-            }
 
             foreach AllActors(class'#var(prefix)ScriptedPawn', p, 'MaggieTroop') {
                 if(p.Name == 'MJ12Troop4') {
@@ -450,6 +446,21 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(1345,-1545,1736),vectm(1280,-1535,1790)); //Jock's Bathroom (right side)
             class'FakeMirrorInfo'.static.Create(self,vectm(-1195,-1065,2285),vectm(-1075,-1045,2245)); //Maggie's Guest Bathroom
             class'FakeMirrorInfo'.static.Create(self,vectm(-1060,-1415,2285),vectm(-1180,-1405,2240)); //Maggie's Master Bathroom
+
+            //A few placeholder items around Maggie's apartment
+            //Spawn(class'PlaceholderItem',,, vectm(-280,-1540,1985)); //Table behind Maggie's bench, but there's a datacube we add on this table already (see above)
+            Spawn(class'PlaceholderItem',,, vectm(-830,-1860,2040)); //Brown side table in living room
+            Spawn(class'PlaceholderItem',,, vectm(-1111,-1700,2030)); //Coffee Table between leather chairs
+            Spawn(class'PlaceholderItem',,, vectm(-550,-700,2020)); //Dining Table 1
+            Spawn(class'PlaceholderItem',,, vectm(-460,-675,2020)); //Dining Table 2
+            Spawn(class'PlaceholderItem',,, vectm(-1223,-900,2240)); //Guest bathroom
+            Spawn(class'PlaceholderItem',,, vectm(-1150,-1425,2230)); //Master bathroom
+
+            //Placeholders in Jock's apartment to make up for items getting sucked into Maggie's
+            Spawn(class'PlaceholderItem',,, vectm(155,-1375,1730)); //Balcony rail
+            Spawn(class'PlaceholderItem',,, vectm(1150,-1490,1740)); //Next to kitchen sink
+            Spawn(class'PlaceholderItem',,, vectm(585,-1890,1700)); //Living Room shelves
+
 
         } else {
             //These mirrors actually work in Revision, so no FakeMirrorInfo required
@@ -539,13 +550,6 @@ function PreFirstEntryMapFixes()
         }
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
-
-        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-            if ((injbutton.Event=='elevator_door' || injbutton.Event=='elevator_door01' || injbutton.Event=='eledoor02') && injbutton.ButtonType==BT_Blank){ //Office, Level 2, and balcony elevators
-                injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
-            }
-        }
 
         foreach AllActors(class'#var(prefix)AllianceTrigger',at){
             //These alliance triggers didn't have the right tag set,
@@ -839,13 +843,6 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-            if ((injbutton.Event=='LobbyDoor' || injbutton.Event=='elevator_door') && injbutton.ButtonType==BT_Blank){ //Market and Level 1 elevators
-                injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
-            }
-        }
-
         if (VanillaMaps) {
             foreach RadiusActors(class'WaterCooler', wc, 1.0, vectm(-1000.329651, 155.701721, 201.670242)) {
                 // this water cooler faces the wall normally
@@ -898,13 +895,6 @@ function PreFirstEntryMapFixes()
         }
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
-
-        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
-            if (injbutton.Event=='elevator_door' && injbutton.ButtonType==BT_Blank){ //Level 1 elevator
-                injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
-            }
-        }
 
         //Swap BeamTriggers to LaserTrigger, since these lasers set off an alarm
         foreach AllActors(class'#var(prefix)BeamTrigger',bt){
@@ -1395,24 +1385,12 @@ function AnyEntryMapFixes()
                 ces = ConEventSpeech(ce);
                 if (InStr(ces.conSpeech.speech,"Don't try that again")!=-1){
                     //Spawn a ConEventSetFlag to set "PaidForLuckyMoney", insert it between this and it's next event
-                    cesf = new(c) class'ConEventSetFlag';
-                    cesf.eventType=ET_SetFlag;
+                    cesf = NewConEventSetFlag(c,ces,'PaidForLuckyMoney',True,7);
                     cesf.label="PaidForLuckyMoneyTrue";
-                    cesf.flagRef = new(c) class'ConFlagRef';
-                    cesf.flagRef.flagName='PaidForLuckyMoney';
-                    cesf.flagRef.value=True;
-                    cesf.flagRef.expiration=7;
-                    cesf.nextEvent = ces.nextEvent;
-                    ces.nextEvent = cesf;
-
                 }
                 if (InStr(ces.conSpeech.speech,"Your choice.")!=-1){
                     //Spawn a ConEventTrigger to hit an alliance trigger or something so he starts attacking, insert between this and next event
-                    cet = new(c) class'ConEventTrigger';
-                    cet.eventType=ET_Trigger;
-                    cet.triggerTag = 'BouncerStartAttacking';
-                    cet.nextEvent = ces.nextEvent;
-                    ces.nextEvent = cet;
+                    cet = NewConEventTrigger(c,ces,'BouncerStartAttacking');
                 }
             }
             ce = ce.nextEvent;
@@ -1493,16 +1471,12 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "DXRandoNoRoom";
 
     //Trigger a SpawnItemTrigger to spawn the wine on the bar
-    cet = new(c) class'ConEventTrigger';
+
+    cet = NewConEventTrigger(c,cee,'SpawnMaxWine1');
     cet.label = "DXRandoNoRoom";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnMaxWine1';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
 
     //Move the camera - dupe all the properties from the original one
-    cemc = new(c) class'ConEventMoveCamera';
-    cemc.eventType=ET_MoveCamera;
+    cemc = ConEventMoveCamera(NewConEvent(c,cet,class'ConEventMoveCamera'));
     cemc.cameraType = origMoveCam.cameraType;
     cemc.cameraPosition = origMoveCam.cameraPosition;
     cemc.cameraTransition = origMoveCam.cameraTransition;
@@ -1513,26 +1487,17 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.distanceMultiplier = origMoveCam.distanceMultiplier;
     cemc.cameraActor = origMoveCam.cameraActor;
     cemc.cameraActorName = origMoveCam.cameraActorName;
-    AddConEvent(c,cet,cemc);
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = new(c) class'ConEventSpeech';
-    ces.eventType=ET_Speech;
-    ces.conversation = c;
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
-    AddConEvent(c, cet, ces);
 
-    cee = new(c) class'ConEventEnd'; //Stick a new "end" event after
-    cee.eventType=ET_End;
-    AddConEvent(c,ces, cee);
+    cee = ConEventEnd(NewConEvent(c,ces,class'ConEventEnd')); //Stick a new "end" event after
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -1554,16 +1519,11 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "DXRandoNoRoom";
 
     //Trigger a SpawnItemTrigger to spawn the wine on the bar
-    cet = new(c) class'ConEventTrigger';
+    cet = NewConEventTrigger(c,cee,'SpawnMaxWine2');
     cet.label = "DXRandoNoRoom";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnMaxWine2';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
 
     //Move the camera - dupe all the properties from the original one
-    cemc = new(c) class'ConEventMoveCamera';
-    cemc.eventType=ET_MoveCamera;
+    cemc = ConEventMoveCamera(NewConEvent(c,cet,class'ConEventMoveCamera'));
     cemc.cameraType = origMoveCam.cameraType;
     cemc.cameraPosition = origMoveCam.cameraPosition;
     cemc.cameraTransition = origMoveCam.cameraTransition;
@@ -1574,26 +1534,17 @@ function FixLuckyMoneyDragonHeadWineConvos()
     cemc.distanceMultiplier = origMoveCam.distanceMultiplier;
     cemc.cameraActor = origMoveCam.cameraActor;
     cemc.cameraActorName = origMoveCam.cameraActorName;
-    AddConEvent(c,cet,cemc);
 
     //Dupe the "No Room" speech line, but with Max instead
-    ces = new(c) class'ConEventSpeech';
-    ces.eventType=ET_Speech;
-    ces.conversation = c;
+    ces = NewConEventSpeech(c,cet,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     ces.speaker = normalMaxSpeech.speakingTo;
     ces.speakerName = normalMaxSpeech.speakingToName;
     ces.speakingTo = normalMaxSpeech.speaker;
     ces.speakingToName = normalMaxSpeech.speakerName;
-    ces.conSpeech = new(c) class'ConSpeech';
-    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
-    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     ces.bBold = origNoRoom.bBold;
     ces.speechFont = origNoRoom.speechFont;
-    AddConEvent(c, cet, ces);
 
-    cee = new(c) class'ConEventEnd'; //Stick a new "end" event after
-    cee.eventType=ET_End;
-    AddConEvent(c,ces, cee);
+    cee = ConEventEnd(NewConEvent(c,ces,class'ConEventEnd')); //Stick a new "end" event after
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1620,13 +1571,8 @@ function FixLuckyMoneyDragonHeadWineConvos()
     ceto.failLabel = "GordonGive1Fail";
 
     //Create the Trigger event that will spawn wine on the bar
-    cet = new(c) class'ConEventTrigger';
+    cet = NewConEventTrigger(c,cee,'SpawnGordonWine1');
     cet.label = "GordonGive1Fail";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnGordonWine1';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
-
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1650,12 +1596,8 @@ function FixLuckyMoneyDragonHeadWineConvos()
     }
 
     //Create the Trigger event that will spawn wine on the bar
-    cet = new(c) class'ConEventTrigger';
+    cet = NewConEventTrigger(c,cee,'SpawnGordonWine2');
     cet.label = "NoRoom";
-    cet.eventType=ET_Trigger;
-    cet.triggerTag = 'SpawnGordonWine2';
-    cet.conversation=c;
-    AddConEvent(c,cee,cet);
 
     //Remove the label on the jump to the other conversation
     cej.label="";
@@ -1844,3 +1786,72 @@ function HandleJohnSmithDeath()
         //We could send a death message here?
     }
 }
+
+function MakeElevatorOpenDoorButtons(name eleEvents[5])
+{
+    local #var(injectsprefix)Button1 injbutton;
+    local int i;
+
+    foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+        for (i=0;i<ArrayCount(eleEvents);i++){
+            if (eleEvents[i]=='') continue;
+
+            if (injbutton.Event==eleEvents[i] && injbutton.ButtonType==BT_Blank){
+                //Both the button inside and outside
+                injbutton.RandoButtonType=RBT_OpenDoors;
+                injbutton.BeginPlay();
+            }
+        }
+    }
+
+}
+
+//#region PostAnyEntry
+function PostAnyEntry()
+{
+    local #var(injectsprefix)Button1 injbutton;
+    local bool VanillaMaps;
+    local name eleEvents[5];
+    local int  i;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+
+    switch(dxr.localURL) {
+    case "06_HONGKONG_HELIBASE":
+        eleEvents[i++]='elevator_door'; //To the market, both inside and outside button
+        break;
+
+    case "06_HONGKONG_WANCHAI_MARKET":
+        eleEvents[i++]='elevator_door';  //Helibase Elevator
+        eleEvents[i++]='elevator_door01';//Versalife elevator
+        break;
+
+    case "06_HONGKONG_WANCHAI_STREET":
+        eleEvents[i++]='Eledoor01'; //Penthouse Elevator
+        eleEvents[i++]='eledoor02'; //The other one
+        break;
+
+    case "06_HONGKONG_MJ12LAB":
+        eleEvents[i++]='elevator_door';   //Office Elevator
+        eleEvents[i++]='elevator_door01'; //Level 2 Elevator
+        eleEvents[i++]='eledoor02';       //Balcony elevaotr
+        break;
+
+    case "06_HONGKONG_VERSALIFE":
+        eleEvents[i++]='LobbyDoor';     //Lobby elevator
+        eleEvents[i++]='elevator_door'; //Lab elevator
+        break;
+
+    case "06_HONGKONG_STORAGE":
+        eleEvents[i++]='elevator_door'; //Elevator up to Level 1
+        break;
+    }
+
+    if (i>0){
+        //This has to run after PostFirstEntry, which is when the
+        //elevator buttons are replaced by DXRReplaceActors
+        MakeElevatorOpenDoorButtons(eleEvents);
+    }
+}
+
+//#endregion

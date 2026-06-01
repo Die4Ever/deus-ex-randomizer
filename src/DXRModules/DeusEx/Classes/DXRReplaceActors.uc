@@ -146,6 +146,11 @@ function ReplaceActors()
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
         }
+        else if( ScriptedGrenadeTrigger(a) != None && !#defined(gmdxae)) {
+            //These are being replaced to fix ADS triggering the scripted grenades
+            //GMDX: AE already fixes this in a reasonable way, so no need to replace there
+            ReplaceScriptedGrenadeTrigger(ScriptedGrenadeTrigger(a));
+        }
 #endif
         //Leave this at the end of the list (or at least make sure there are no containers after it)
         else if( #var(prefix)Containers(a) != None ) {
@@ -218,6 +223,7 @@ function ReplaceKeypad(#var(prefix)Keypad a)
 {
     local DXRKeypad n;
     local int i;
+    local DXRPasswords pass;
 #ifndef hx
     if(a.IsA('DXRKeypad'))
         return;
@@ -240,6 +246,11 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     //Make it look like the right kind of keypad
     n.Mesh = a.Mesh;
     n.SetCollisionSize(a.CollisionRadius,a.CollisionHeight);
+
+    pass = DXRPasswords(class'DXRPasswords'.static.Find());
+    if (pass!=None){
+        pass.UpdateKnownPasswords(n);
+    }
 
     ReplaceDeusExDecoration(a, n);
     a.Destroy();
@@ -364,6 +375,25 @@ function ReplaceGEPGun(WeaponGEPGUN a)
 #endif
 }
 
+#ifdef gmdx
+function ReplaceScriptedGrenadeTrigger(ScriptedGrenadeTrigger a)
+{
+    local DXRScriptedGrenadeTrigger n;
+
+    n = DXRScriptedGrenadeTrigger(SpawnReplacement(a, class'DXRScriptedGrenadeTrigger'));
+    if(n == None)
+        return;
+
+    n.bNoMoverCheck = a.bNoMoverCheck;
+    n.CheckHumanRadius = a.CheckHumanRadius;
+    n.CheckMoverRadius = a.CheckMoverRadius;
+    n.CheckGasRadius = a.CheckGasRadius;
+
+    ReplaceTrigger(a, n);
+    a.Destroy();
+}
+#endif
+
 function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
 {
     local DXRAllianceTrigger n;
@@ -419,8 +449,7 @@ function ReplaceShipsWheel(#var(prefix)ShipsWheel a)
     if(n == None)
         return;
 
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -432,8 +461,7 @@ function ReplaceWaterFountain(#var(prefix)WaterFountain a)
     if(n == None)
         return;
 
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -445,8 +473,7 @@ function ReplaceWaterCooler(#var(prefix)WaterCooler a)
     if(n == None)
         return;
 
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -461,8 +488,7 @@ function ReplaceVendingMachine(#var(prefix)VendingMachine a)
     n.SkinColor=a.SkinColor;
     n.PreBeginPlay();
     n.BeginPlay();
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -478,8 +504,7 @@ function ReplacePoolball(#var(prefix)Poolball a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     //Update the PoolTableManager that this ball belongs to
     ptm = PoolTableManager(a.Owner);
@@ -519,6 +544,12 @@ function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
 
     if (#var(DeusExPrefix)Decoration(n)!=None){
         ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration(a),#var(DeusExPrefix)Decoration(n));
+    } else if (Decoration(n)!=None) {
+        //This shouldn't really be necessary, but just to cover my ass
+        ReplaceDecoration(Decoration(a),Decoration(n));
+    } else {
+        //Seriously, how did we get here
+        UpdateActorReferences(a, n);
     }
 
     a.Destroy();
@@ -533,8 +564,7 @@ function ReplaceToilet(#var(prefix)Toilet a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 
     a.Destroy();
 }
@@ -548,8 +578,7 @@ function ReplaceToilet2(#var(prefix)Toilet2 a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 #ifdef hx
     n.PrecessorName = a.PrecessorName;
 #endif
@@ -596,8 +625,7 @@ function ReplaceClothesRack(#var(prefix)ClothesRack a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
+    ReplaceDecoration(a, n);
 #ifdef hx
     n.PrecessorName = a.PrecessorName;
 #endif
@@ -629,6 +657,7 @@ function #var(DeusExPrefix)Weapon ReplaceWeapon(#var(DeusExPrefix)Weapon a, #var
     if(owner != None && owner.Weapon == a) {
         bWasDrawn = true;
     }
+    UpdateActorReferences(a, n); //Particularly for VMD2, but the other stuff is nice too
     a.Destroy();
     if(owner != None) {
         GiveExistingItem(owner, n);
@@ -645,6 +674,7 @@ function #var(DeusExPrefix)Pickup ReplacePickup(#var(DeusExPrefix)Pickup a, #var
     local #var(PlayerPawn) player;
     owner = ScriptedPawn(a.Owner);
     player = #var(PlayerPawn)(a.Owner);
+    UpdateActorReferences(a, n); //Particularly for VMD2, but the other stuff is nice too
     a.Destroy();
     if(owner != None) {
         GiveExistingItem(owner, n);
@@ -841,10 +871,13 @@ function ReplaceATM(#var(prefix)ATM a)
 {
     local DXRATM n;
     local int i;
+    local DXRPasswords pass;
 
     n = DXRATM(SpawnReplacement(a, class'DXRATM'));
     if(n == None)
         return;
+
+    ReplaceDeusExDecoration(a, n);
 
 #ifndef hx
     for (i=0;i<ArrayCount(n.userList);i++){
@@ -854,6 +887,11 @@ function ReplaceATM(#var(prefix)ATM a)
     }
 #endif
 
+    pass = DXRPasswords(class'DXRPasswords'.static.Find());
+    if (pass!=None){
+        pass.UpdateKnownPasswords(n);
+    }
+
     n.lockoutDelay=a.lockoutDelay;
 
     a.Destroy();
@@ -862,6 +900,7 @@ function ReplaceATM(#var(prefix)ATM a)
 function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
 {
     local int i;
+    local DXRPasswords pass;
 
     for(i=0;i<ArrayCount(n.specialOptions);i++){
         n.specialOptions[i].Text=a.specialOptions[i].Text;
@@ -877,6 +916,11 @@ function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
         n.userList[i].userName=a.userList[i].userName;
         n.userList[i].password=a.userList[i].password;
         n.userList[i].accessLevel=a.userList[i].accessLevel;
+    }
+
+    pass = DXRPasswords(class'DXRPasswords'.static.Find());
+    if (pass!=None){
+        pass.UpdateKnownPasswords(n);
     }
 
     n.bOn = a.bOn;
@@ -921,6 +965,24 @@ function UpdateActorReferences(Actor a, Actor n)
         hoverhint.ReplaceActor(a,n);
     }
 
+    UpdateVMD2PathRebuildReferences(a,n);
+
     PopulateReplacedActors();
     replacements.AddReplacement(a,n); //Log the replacement
+}
+
+//VMD2 does some tomfoolery that removes collision, then adds it back in a later frame
+//In theory we can replace actors in between those two actions, leaving the replaced
+//actor with no collision, preventing highlighting
+function UpdateVMD2PathRebuildReferences(Actor a, Actor n)
+{
+#ifdef vmd2
+    local VMDLadderPointAdder lpa;
+    local int i;
+
+    foreach AllActors(class'VMDLadderPointAdder',lpa){
+        //Update any references to the old actor that might have already had collision changed
+        lpa.SwapCollisionReferences(a,n);
+    }
+#endif
 }

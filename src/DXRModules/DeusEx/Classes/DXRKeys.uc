@@ -5,14 +5,37 @@ var safe_rule keys_rules[16];
 function CheckConfig()
 {
     local int i;
+    local string s, item;
+    local DebugBox db;
+    local Vector min_ext,max_ext;
 
     if(class'DXRMapVariants'.static.IsRevisionMaps(player()))
         revision_keys_rules();
     else
         vanilla_keys_rules();
 
+    FindActorExtents(min_ext,max_ext);
     for(i=0;i<ArrayCount(keys_rules);i++) {
-        keys_rules[i] = FixSafeRule(keys_rules[i]);
+        keys_rules[i] = FixSafeRule(keys_rules[i],min_ext,max_ext);
+    }
+
+    if (#bool(debug)){
+        for(i=0;i<ArrayCount(keys_rules);i++) {
+            if (keys_rules[i].item_name=='') continue;
+
+            item = string(keys_rules[i].item_name);
+
+            s = CR()$"Allow: "$keys_rules[i].allow;
+            s = s $ CR()$"Rule: "$i;
+
+            db = class'DebugBox'.static.CreateDB(self,keys_rules[i].min_pos,keys_rules[i].max_pos,,'DXRKeys',item,s);
+            if (keys_rules[i].allow){
+                db.SetBoxColour(0,255,0);
+            } else {
+                db.SetBoxColour(255,0,0);
+            }
+            db.Tag = keys_rules[i].item_name;
+        }
     }
 
     Super.CheckConfig();
@@ -253,6 +276,14 @@ function vanilla_keys_rules()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1694,-283,-677);
+        keys_rules[i].max_pos = vect(-1647,-384,-709);
+        keys_rules[i].allow = false;
+        i++;
+
+        //The lab area
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);
@@ -418,8 +449,8 @@ function vanilla_keys_rules()
         i++;
 
         keys_rules[i].item_name = 'cathedralgatekey';
-        keys_rules[i].min_pos = vect(-4907, 1802, -99999);
-        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].min_pos = vect(-4907, 1802, -2000);
+        keys_rules[i].max_pos = vect(-2000, 3000, 500);
         keys_rules[i].allow = true;
         i++;
         break;
@@ -534,7 +565,7 @@ function vanilla_keys_rules()
         i++;
 
         //disallow flooded area
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
         keys_rules[i].allow = false;
@@ -548,9 +579,9 @@ function vanilla_keys_rules()
         i++;
 
         //disallow storage closet
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
-        keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
+        keys_rules[i].max_pos = vect(1047.852173, 436.867401, -1441);
         keys_rules[i].allow = false;
         i++;
 
@@ -561,7 +592,7 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(500, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, -1644.895142);
         keys_rules[i].allow = false;
@@ -574,14 +605,14 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(1879, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = false;
         i++;
 
         //allow before greasel lab
-        keys_rules[i].item_name = 'storage';
+        keys_rules[i].item_name = #switch(vmd:'olstorage','storage');
         keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
         keys_rules[i].max_pos = vect(1888, 1930.014771, 99999);
         keys_rules[i].allow = true;
@@ -594,6 +625,17 @@ function vanilla_keys_rules()
     // #endregion
 
     // #region Vanilla M15
+    case "15_area51_bunker":
+        if (#defined(gmdx)){
+            //Give an area where the tower key is allowed to give the new key
+            //in the tunnel under the tower more places to go
+            keys_rules[i].item_name = 'Tower';
+            keys_rules[i].min_pos = vect(2319,-3710,190);
+            keys_rules[i].max_pos = vect(-212,3742,-526);
+            keys_rules[i].allow = true;
+            i++;
+        }
+        break;
     case "15_area51_entrance":
         // key to sector 3, disallow in the vents area and lower
         keys_rules[i].item_name = 'Factory';
@@ -604,15 +646,15 @@ function vanilla_keys_rules()
 
         // disallow in other locked sleeping pods (6786 and 3901)
         keys_rules[i].item_name = 'Factory';
-        keys_rules[i].min_pos = vect(4474, 420, -99999);
-        keys_rules[i].max_pos = vect(4900, 550, 99999);
+        keys_rules[i].min_pos = vect(4474, 420, -200);
+        keys_rules[i].max_pos = vect(4900, 550, 0);
         keys_rules[i].allow = false;
         i++;
 
         // disallow in other locked sleeping pod (4322)
         keys_rules[i].item_name = 'Factory';
-        keys_rules[i].min_pos = vect(4985, -450, -99999);
-        keys_rules[i].max_pos = vect(5157, -325, 99999);
+        keys_rules[i].min_pos = vect(4985, -450, -200);
+        keys_rules[i].max_pos = vect(5157, -325, 0);
         keys_rules[i].allow = false;
         i++;
 
@@ -622,6 +664,61 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        if (#defined(gmdx)){
+            //GMDX adds a duplicated room of sleeping pods
+
+            //Left, Far
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(6193,-450, -200);
+            keys_rules[i].max_pos = vect(6350,-331, 0);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Right, Middle
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(6094,550, -200);
+            keys_rules[i].max_pos = vect(5937,429, 0);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Right, Close
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5838,550, -200);
+            keys_rules[i].max_pos = vect(5681,429, 0);
+            keys_rules[i].allow = false;
+            i++;
+
+
+
+            //Don't put the key in the shooting gallery
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5180,2073,15);
+            keys_rules[i].max_pos = vect(3952,2707,-300);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Don't put the key in the locked medicine cabinet near the pool
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5886,3767,-161);
+            keys_rules[i].max_pos = vect(5867,3801,-128);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Don't put the key in the locked changeroom locker near the pool
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(5609,3243,-119);
+            keys_rules[i].max_pos = vect(5632,3214,-220);
+            keys_rules[i].allow = false;
+            i++;
+
+            //Don't put the key in the spiderbot cage in the wind control room thing?
+            keys_rules[i].item_name = 'Factory';
+            keys_rules[i].min_pos = vect(1052,5014,225);
+            keys_rules[i].max_pos = vect(929,4901,150);
+            keys_rules[i].allow = false;
+            i++;
+        }
 
         // allow between barracks and sector 3 access door (not allowed in barracks or sleeping pods)
         keys_rules[i].item_name = 'a51entr_vent';
@@ -871,6 +968,14 @@ function revision_keys_rules()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1694,-283,-677);
+        keys_rules[i].max_pos = vect(-1647,-384,-709);
+        keys_rules[i].allow = false;
+        i++;
+
+        //The lab area
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);
@@ -1378,6 +1483,8 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     SetActorScale(k, 1.3);
 #endif
 
+    MarkNaturalKeyOctantRule(k); //"debug" only
+
     num=0;
     foreach AllActors(class'Inventory', a)
     {
@@ -1442,6 +1549,87 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         if( Swap(temp[slot], k) ) break;
     }
 }
+
+function MarkNaturalKeyOctantRule(#var(prefix)NanoKey k)
+{
+    local #var(DeusExPrefix)Mover d;
+    local Vector oct_min,oct_max; //Extents of the octant the key is in, relative to a door
+    local Vector key_min, key_max; //Extents of the 5000 unit radius around the key
+    local Vector final_min, final_max; //The final accumulated extents where the key can go
+    local float spare;
+
+    local string item,s;
+    local DebugBox db;
+
+
+    if (#bool(debug)==False) return;
+
+    FindActorExtents(final_min,final_max);
+
+    foreach AllActors(class'#var(DeusExPrefix)Mover', d)
+    {
+        if( d.KeyIDNeeded == 'None' ) continue;
+        if( d.KeyIDNeeded != k.KeyID ) continue;
+
+        //Define the box of the octant
+        oct_min = d.Location;
+
+        if (k.Location.X < d.Location.X) oct_max.X = d.Location.X - 999999;
+        if (k.Location.X > d.Location.X) oct_max.X = d.Location.X + 999999;
+
+        if (k.Location.Y < d.Location.Y) oct_max.Y = d.Location.Y - 999999;
+        if (k.Location.Y > d.Location.Y) oct_max.Y = d.Location.Y + 999999;
+
+        if (k.Location.Z < d.Location.Z) oct_max.Z = d.Location.Z - 999999;
+        if (k.Location.Z > d.Location.Z) oct_max.Z = d.Location.Z + 999999;
+
+        //Make sure oct_min and oct_max are organized correctly
+        if (oct_min.X>oct_max.X){
+            spare = oct_min.X;
+            oct_min.X = oct_max.X;
+            oct_max.X = spare;
+        }
+        if (oct_min.Y>oct_max.Y){
+            spare = oct_min.Y;
+            oct_min.Y = oct_max.Y;
+            oct_max.Y = spare;
+        }
+        if (oct_min.Z>oct_max.Z){
+            spare = oct_min.Z;
+            oct_min.Z = oct_max.Z;
+            oct_max.Z = spare;
+        }
+
+        //Define the box of 5000 distance around the key (rough)
+        key_min = k.Location - vect(5000,5000,5000);
+        key_max = k.Location + vect(5000,5000,5000);
+
+        //Apply the octant box as extents for the key box
+        key_min = ApplyVectorExtents(key_min,oct_min,oct_max);
+        key_max = ApplyVectorExtents(key_max,oct_min,oct_max);
+
+        //Apply this key box as an extent to the final box
+        final_min = ApplyVectorExtents(final_min,key_min,key_max);
+        final_max = ApplyVectorExtents(final_max,key_min,key_max);
+
+
+        //If any of the coordinates got inverted, there aren't any valid locations
+        if (final_min.X > final_max.X) return;
+        if (final_min.Y > final_max.Y) return;
+        if (final_min.Z > final_max.Z) return;
+    }
+
+    item = string(k.KeyID);
+
+    s = CR()$"Allow: True";
+    s = s$CR()$"Rule: Natural";
+
+    db = class'DebugBox'.static.CreateDB(self,final_min,final_max,,'DXRKeys',item,s);
+    db.SetBoxColour(0,128,0);
+    db.Tag = k.KeyID;
+
+}
+
 
 function bool KeyPositionGood(#var(prefix)NanoKey k, vector newpos)
 {

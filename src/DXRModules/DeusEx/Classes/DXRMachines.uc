@@ -151,6 +151,11 @@ function MoveTurret(#var(prefix)AutoTurret t, vector loc)
     v2 += t.Location;
     t.gun.SetLocation(v2);
     t.gun.SetBase(t);
+#ifdef vmd
+    //VMD tracks the gun attachment point offset, make sure we update that in case the rotation changed, etc
+    t.gun.AttachOff = t.Gun.Location - t.Location;
+#endif
+
 }
 
 function #var(prefix)AutoTurret SpawnTurret(vector loc, bool small)

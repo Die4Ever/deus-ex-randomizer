@@ -230,6 +230,9 @@ function AddMapMarker(class<DataVaultImage> image, int posX, int posY, String ma
 function bool MapHasGoalMarkers(class<DataVaultImage> image)
 {
     local int i;
+
+    if (image==None) return False; //Obviously a None image has no goal markers
+
     for (i=0;i<num_locations;i++){
         if (locations[i].mapMarker.image==image){
             return True;
@@ -437,6 +440,7 @@ function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture
     if (ComputerSecurity(a)!=None){
         #ifdef revision
         ComputerSecurity(a).Facelift(false);
+        //GMDX does not change the mesh on the security computer, only the skin
         #endif
         if(newTex != None) a.Skin = newTex;
         else a.Skin = Texture'GoalSecurityComputerGreen';
@@ -444,6 +448,8 @@ function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture
     } else if (ComputerPersonal(a)!=None){
         #ifdef revision
         ComputerPersonal(a).Facelift(false);
+        #elseif gmdx
+        ComputerPersonal(a).Mesh=LodMesh'DeusExDeco.ComputerPersonal'; //Revert to the non-HDTP mesh
         #endif
         if(newTex != None) a.Skin = newTex;
         else a.Skin=Texture'GoalComputerPersonalYellow';
@@ -457,6 +463,11 @@ function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture
 
     if (!enableTextures && changed){
         a.Skin=a.Default.Skin;
+
+#ifdef gmdx
+        ComputerPersonal(a).Mesh=a.Default.Mesh; //Go back to the HDTP mesh
+#endif
+
 #ifdef revision
         //For now, everything being dignified is a decoration, but maybe not in the future?
         #var(DeusExPrefix)Decoration(a).Facelift(true);
@@ -914,6 +925,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     local Mover m;
     local bool success, oldbCollideWorld, oldbCollideActors, oldbBlockActors, oldbBlockPlayers;
     local #var(prefix)Vehicles v;
+    local #var(DeusExPrefix)Mover dxm;
     local int offset;
 
     loc = vectm(loc.X, loc.Y, loc.Z);
@@ -943,6 +955,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     sp = #var(prefix)ScriptedPawn(a);
     v = #var(prefix)Vehicles(a);
     m = Mover(a);
+    dxm = #var(DeusExPrefix)Mover(a);
 
     if( sp != None ) {
         if(sp.Orders == 'Patrolling')
@@ -966,11 +979,22 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
             v.SetLocation(v.Location+vect(0,0,20000));
         }
         else a.bCollideWorld = true;
+
+        //bFloating updates rotation on Tick based on origRot, so we need to make sure that's updated correctly
+        //GMDX adds a sway effect to AttackHelicopter and BlackHelicopter, like bFloating...
+        //Maybe this should be applied at a higher level to any bFloating DeusExDecorations?
+        if (v.bFloating || (#defined(gmdx) && (#var(prefix)BlackHelicopter(v)!=None || #var(prefix)AttackHelicopter(v)!=None))){
+            v.origRot = rotation;
+        }
 #endif
     }
     else if( m != None ) {
         m.BasePos = a.Location;
         m.BaseRot = a.Rotation;
+        if (dxm!=None && dxm.bDestroyed){
+            //Primarily for when using ShuffleGoals after a mover is destroyed
+            dxm.SetLocation(dxm.Location + vect(0,0,20000)); //Destroyed movers just go up to the great city in the sky
+        }
     } else {
         a.bCollideWorld = true;
     }

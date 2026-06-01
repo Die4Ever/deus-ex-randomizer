@@ -23,8 +23,10 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_AugLevels');
         CreateChoice(class'MenuChoice_ColorVision');
     }
-    if (#defined(vanilla||revision)){
+    if (#defined(vanilla||revision||gmdx)){
         CreateChoice(class'MenuChoice_GoalTextures');
+    }
+    if (#defined(vanilla||revision)){
         CreateChoice(class'MenuChoice_ScopeBlackout');
         CreateChoice(class'MenuChoice_ScopeScaling');
     }

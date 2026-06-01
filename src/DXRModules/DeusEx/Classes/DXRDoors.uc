@@ -457,6 +457,19 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].tag = 'secretdoor01';
         door_fixes[num_door_fixes].frag = sf(class'Rockchip', BIT_VANILLA);
         num_door_fixes++;
+
+        if (#defined(gmdx)){
+            // GMDX adds a gate at the side of the cathedral that isn't supposed to open
+            // it leads into an area where the floor is non-solid, and the gate itself
+            // rotates around its centre, so obviously never intended to be seen opening.
+            door_fixes[num_door_fixes].location = vectm(1857,1077,-359);
+            door_fixes[num_door_fixes].breakable = SB_False;
+            door_fixes[num_door_fixes].minDamageThreshold = 100;
+            door_fixes[num_door_fixes].doorStrength = 1;
+            door_fixes[num_door_fixes].pickable = SB_False;
+            door_fixes[num_door_fixes].lockStrength = 1;
+            num_door_fixes++;
+        }
         break;
 
     // TODO: 3 vent grates in 11_PARIS_UNDERGROUND should break into smaller fragments

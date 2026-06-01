@@ -70,6 +70,8 @@ static function Texture GetTeleporterTexture(string map)
 {
     local vector coordsMult;
 
+    map = GetPureTeleporterMapName(map); //Strip off the teleporter destinations
+
     coordsMult = GetCoordsMult(map);
 
     if (_MapIsNormal(coordsMult)) {
@@ -105,6 +107,27 @@ static function vector GetCoordsMult(string map)
     }
 
     return vect(1,1,1);
+}
+
+//Remove teleporter destinations or anything weird at the end of the map name
+static function string GetPureTeleporterMapName(string mapName)
+{
+    local string mapNameOnly;
+    local int pos;
+
+    pos = InStr(mapName,".dx");
+    if (pos!=-1){
+        //".dx" in map name, so just get what's left of that
+        return Left(mapName, pos);
+    }
+
+    pos = InStr(mapName,"#");
+    if (pos!=-1){
+        //"#" in map name, so just get what's left of that
+        return Left(mapName, pos);
+    }
+
+    return mapName;
 }
 
 static function string GetMapPostfix(vector v)
@@ -260,9 +283,11 @@ simulated function FirstEntry()
 
     foreach AllActors(class'Teleporter', t) {
         t.URL = VaryURL(t.URL);
+        t.Texture = class'DXRMapVariants'.static.GetTeleporterTexture(t.URL);
     }
     foreach AllActors(class'MapExit', me) {
         me.DestMap = VaryURL(me.DestMap);
+        //me.Texture = class'DXRMapVariants'.static.GetTeleporterTexture(me.DestMap);
     }
 
     if(dxr.flags.moresettings.shuffle_missions > 0) {
