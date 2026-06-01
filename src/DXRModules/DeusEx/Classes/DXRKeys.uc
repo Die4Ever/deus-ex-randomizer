@@ -1708,6 +1708,7 @@ function RunTests()
 function ExtendedTests()
 {
     local string oldurl;
+    local name key;
 
     Super.ExtendedTests();
 
@@ -1715,23 +1716,25 @@ function ExtendedTests()
     dxr.localURL = Caps("14_oceanlab_lab");
     CheckConfig();
 
-    TestKeyRules( 'Glab', false, vect(1964.752808, 3191.954834, -2537.410400), "crew area" );
-    TestKeyRules( 'Glab', false, vect(-2535.691162, 234.638947, -1833.254883), "far flooded area" );
-    TestKeyRules( 'Glab', false, vect(4225.205078, 407.563324, -1540.875000), "electricity room" );
-    TestKeyRules( 'Glab', false, vect(1557.180542, 350.402100, -1809.903687), "below storage room" );
-    TestKeyRules( 'Glab', true, vect(207.516022, 527.347168, -1575.402710), "gun turret room before storage" );
-    TestKeyRules( 'Glab', true, vect(1237.800659, 112.333527, -1616.783936), "hallway before storage" );
-    TestKeyRules( 'Glab', true, vect(1657.591064, -30.407259, -1630.926147), "unlocked storage room" );
-    TestKeyRules( 'Glab', true, vect(785.475647, -79.326523, -1601.681763), "locked storage room" );
+    key = 'Glab';
+    TestKeyRules( key, false, vect(1964.752808, 3191.954834, -2537.410400), "crew area" );
+    TestKeyRules( key, false, vect(-2535.691162, 234.638947, -1833.254883), "far flooded area" );
+    TestKeyRules( key, false, vect(4225.205078, 407.563324, -1540.875000), "electricity room" );
+    TestKeyRules( key, false, vect(1557.180542, 350.402100, -1809.903687), "below storage room" );
+    TestKeyRules( key, true, vect(207.516022, 527.347168, -1575.402710), "gun turret room before storage" );
+    TestKeyRules( key, true, vect(1237.800659, 112.333527, -1616.783936), "hallway before storage" );
+    TestKeyRules( key, true, vect(1657.591064, -30.407259, -1630.926147), "unlocked storage room" );
+    TestKeyRules( key, true, vect(785.475647, -79.326523, -1601.681763), "locked storage room" );
 
-    TestKeyRules( 'storage', false, vect(1964.752808, 3191.954834, -2537.410400), "crew area" );
-    TestKeyRules( 'storage', false, vect(-2535.691162, 234.638947, -1833.254883), "far flooded area" );
-    TestKeyRules( 'storage', false, vect(4225.205078, 407.563324, -1540.875000), "electricity room" );
-    TestKeyRules( 'storage', false, vect(1557.180542, 350.402100, -1809.903687), "below storage room" );
-    TestKeyRules( 'storage', true, vect(207.516022, 527.347168, -1575.402710), "gun turret room before storage" );
-    TestKeyRules( 'storage', true, vect(1237.800659, 112.333527, -1616.783936), "hallway before storage" );
-    TestKeyRules( 'storage', true, vect(1657.591064, -30.407259, -1630.926147), "unlocked storage room" );
-    TestKeyRules( 'storage', false, vect(785.475647, -79.326523, -1601.681763), "locked storage room" );
+    key = #switch(vmd:'olstorage','storage');
+    TestKeyRules( key, false, vect(1964.752808, 3191.954834, -2537.410400), "crew area" );
+    TestKeyRules( key, false, vect(-2535.691162, 234.638947, -1833.254883), "far flooded area" );
+    TestKeyRules( key, false, vect(4225.205078, 407.563324, -1540.875000), "electricity room" );
+    TestKeyRules( key, false, vect(1557.180542, 350.402100, -1809.903687), "below storage room" );
+    TestKeyRules( key, true, vect(207.516022, 527.347168, -1575.402710), "gun turret room before storage" );
+    TestKeyRules( key, true, vect(1237.800659, 112.333527, -1616.783936), "hallway before storage" );
+    TestKeyRules( key, true, vect(1657.591064, -30.407259, -1630.926147), "unlocked storage room" );
+    TestKeyRules( key, false, vect(785.475647, -79.326523, -1601.681763), "locked storage room" );
 
     dxr.localURL = oldurl;
     CheckConfig();
