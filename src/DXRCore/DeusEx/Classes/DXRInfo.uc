@@ -269,6 +269,10 @@ static function bool OnTitleScreen()
         if (Left(dxr.LocalURL,9)~="BENCHMARK"){ //The animated main menus are the "BENCHMARK" maps
             return True;
         }
+    } else if (#defined(vmd)){
+        if (dxr.LocalURL~="00_CharacterSetup"){ //The map where you're setting up your character in VMD
+            return True;
+        }
     }
     return dxr.LocalURL=="DX" || dxr.LocalURL=="DXONLY";
 }

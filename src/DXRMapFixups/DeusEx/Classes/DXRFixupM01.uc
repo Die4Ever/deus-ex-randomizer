@@ -12,7 +12,7 @@ function PostFirstEntryMapFixes()
             AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
         }
 
-        if(class'MenuChoice_FixGlitches'.default.enabled && class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+        if(class'MenuChoice_FixGlitches'.default.enabled && class'MenuChoice_BalanceMaps'.static.MinorEnabled()) { // GLITCHFIX-13
             foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
                 m.bBreakable = false;
                 m.bPickable = false;
@@ -361,7 +361,9 @@ function AnyEntryMapFixes()
     local Conversation c;
     local ConEvent ce,before,after;
     local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
     local string afterTextLine;
+    local bool isConfix;
 
     // if you can talk to gunther then obviously he's been rescued
     DeleteConversationFlag(GetConversation('GuntherRescued'), 'GuntherFreed', true);
@@ -378,6 +380,7 @@ function AnyEntryMapFixes()
     //Confix adds a requirement to have talked to Paul (to get the password) before you can talk to Harley Filben
     //Remove that requirement, because it can be annoying for Rando.  This should do nothing if Confix isn't present.
     DeleteConversationFlag(GetConversation('MeetFilben'), 'MeetPaul_Played', true);
+    DeleteConversationFlag(GetConversation('MeetFilbenAfterStatue'), 'MeetPaul_Played', true);
 
     //In addition to the above, Confix now adds a new conversation, FilbenStranger, that plays some barks if you get
     //to Filben without having talked to Paul.  Since we're removing the Paul requirement for the above conversation,
@@ -391,7 +394,10 @@ function AnyEntryMapFixes()
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
 
     c = GetConversation('MeetPaul');
-    //TODO: We could determine whether this is Confix or not by looking for the existence of the "PaulGaveWeapon=False" requirement on the conversation
+
+    //We can determine whether this is Confix or not by looking for the existence of the "PaulGaveWeapon=False" requirement on the conversation
+    isConfix=ConversationFlagExists(c,'PaulGaveWeapon',false);
+
     ce = c.eventList;
 
     SetSeed("MeetPaul");
@@ -410,7 +416,6 @@ function AnyEntryMapFixes()
             if (InStr(ces.conSpeech.speech,afterTextLine)!=-1){
                 after = ce;
             }
-            //TODO: If we wanted to fix Confix, we would need to set PaulGaveWeapon at the end of the conversation (To make sure it doesn't replay)
             if (before!=None && after!=None){
                 break;
             }
@@ -421,6 +426,13 @@ function AnyEntryMapFixes()
     //Just in case something went wrong
     if (before!=None && after!=None){
         before.nextEvent = after;
+        if (isConfix){
+            //To fix Confix, we need to set PaulGaveWeapon in here somewhere so that the conversation doesn't replay.
+            //Throw it in after the "before" line, so it's set around when it would have originally been set...
+            cesf = NewConEventSetFlag(c,before,'PaulGaveWeapon',True,2);
+        }
     }
+
+
 }
 //#endregion

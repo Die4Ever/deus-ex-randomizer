@@ -22,6 +22,7 @@ struct loadouts
 const PURE_LETHAL     =  1; //No weapons to do knockouts
 const PURE_NONLETHAL  =  2; //No weapons to do kills
 const NO_CORPSES      =  4; //No corpses can be created
+const NO_RANGED_WEAPS =  8; //No ranged weapons (For handling "Shoot" BingoTriggers)
 const VAGUE_LETHALITY =  0; //Neither purely lethal nor non-lethal
 
 var loadouts item_set;
@@ -174,6 +175,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         #endif
         AddAugBan(class'#var(prefix)AugSpeed');
         SetLoadoutPureNonLethal();
+        SetLoadoutNoRangedWeapons();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -289,6 +291,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)WeaponCrowbar');
         AddStandardAugSet();
         SetLoadoutPureLethal();
+        SetLoadoutNoRangedWeapons();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -327,6 +330,11 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStandardAugSet();
         SetLoadoutPureLethal();
         SetLoadoutNoCorpses();
+
+        //Technically not true, grenades can set off the Shoot BingoTriggers,
+        //but ones like shooting the antenna tip or the satellites would be
+        //unreasonably difficult/impossible, so just treat it the same way
+        SetLoadoutNoRangedWeapons();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -547,11 +555,11 @@ static function AdjustFlags(DXRFlags flags, int loadout)
     switch(loadout) {
     case 15:
         //The Three Leg Augs
-        flags.moresettings.aug_loc_rando = 100;
+        flags.moresettings.aug_loc_rando = 200;
         break;
     case 17:
         //My Vision Is Augmented
-        flags.moresettings.aug_loc_rando = 100;
+        flags.moresettings.aug_loc_rando = 200;
         break;
     }
 }
@@ -721,6 +729,11 @@ function SetLoadoutNoCorpses()
     item_set.lethality = item_set.lethality | NO_CORPSES;
 }
 
+function SetLoadoutNoRangedWeapons()
+{
+    item_set.lethality = item_set.lethality | NO_RANGED_WEAPS;
+}
+
 function SetLoadoutDefaultLethal()
 {
     item_set.lethality = VAGUE_LETHALITY;
@@ -739,6 +752,11 @@ function bool IsLoadoutPureNonLethal()
 function bool IsLoadoutNoCorpses()
 {
     return bool(item_set.lethality & NO_CORPSES);
+}
+
+function bool IsLoadoutNoRangedWeapons()
+{
+    return bool(item_set.lethality & NO_RANGED_WEAPS);
 }
 
 function AddInvBan(class<Inventory> inv)
@@ -1062,7 +1080,7 @@ function bool ban(DeusExPlayer player, Inventory item)
         }
         return true;
     } else if(item.bDeleteMe) {
-        if(class'MenuChoice_FixGlitches'.default.enabled) {
+        if(class'MenuChoice_FixGlitches'.default.enabled) { //GLITCHFIX-01
             return true;
         }
         else {

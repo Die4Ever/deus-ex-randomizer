@@ -113,35 +113,20 @@ function FixFordSchickConvo()
         ceto.failLabel = "AugUpgradeTransferFailed";
 
         //Trigger a SpawnItemTrigger to spawn the upgrade can on the table
-        cet = new(c) class'ConEventTrigger';
-        cet.eventType=ET_Trigger;
+        cet = NewConEventTrigger(c,cee,'SpawnOverflowAugUpgrade'); //Trigger goes after the regular end
         cet.label = "AugUpgradeTransferFailed";
-        cet.triggerTag = 'SpawnOverflowAugUpgrade';
-        cet.conversation=c;
 
         //Stitch a "No room!" line onto the end of the conversation for more clarity
-        ces = new(c) class'ConEventSpeech';
-        ces.eventType=ET_Speech;
-        ces.conversation = c;
+        ces = NewConEventSpeech(c,cet,noRoom.conSpeech.speech,noRoom.conSpeech.soundID);
         ces.speaker = normalSpeech.speaker;
         ces.speakerName = normalSpeech.speakerName;
         ces.speakingTo = normalSpeech.speakingTo;
         ces.speakingToName = normalSpeech.speakingToName;
-        ces.conSpeech = new(c) class'ConSpeech';
-        ces.conSpeech.speech = noRoom.conSpeech.speech;
-        ces.conSpeech.soundID = noRoom.conSpeech.soundID;
         ces.bBold = noRoom.bBold;
         ces.speechFont = noRoom.speechFont;
 
         //End the conversation
-        cee2 = new(c) class'ConEventEnd';
-        cee2.eventType=ET_End;
-        cee2.conversation = c;
-
-        //Wire the ConEvent's together
-        cee.nextEvent = cet; //Trigger goes after the regular end
-        cet.nextEvent=ces; //"No Room" goes after the trigger
-        ces.nextEvent=cee2;//End goes after the voice line
+        cee2 = ConEventEnd(NewConEvent(c,ces,class'ConEventEnd')); //End goes after the voice line
 
         //Tweak the final camera angle, to hopefully give vision on the spawning aug can when it fails
         //No promises though, because the camera positions are more like suggestions
@@ -220,7 +205,7 @@ function AddNoRoomToJordanSheaConvo(){
     //line that's good enough that we can yoink from the conversation with Smuggler.
     local ConEventSpeech origNoRoom, newNoRoom, normalSpeech;
     local Conversation c;
-    local ConEvent ce;
+    local ConEvent ce,ceeNext;
     local ConEventTransferObject ceto;
     local ConEventEnd cee,cee2;
 
@@ -245,31 +230,20 @@ function AddNoRoomToJordanSheaConvo(){
     }
 
     if (cee == None) return; //We're hosed if this doesn't exist.
+    ceeNext = cee.nextEvent;
 
-    newNoRoom = new(c) class'ConEventSpeech';
-    newNoRoom.eventType=ET_Speech;
-    newNoRoom.conversation = c;
+    newNoRoom = NewConEventSpeech(c,cee,origNoRoom.conSpeech.speech,origNoRoom.conSpeech.soundID);
     newNoRoom.speaker = normalSpeech.speaker;
     newNoRoom.speakerName = normalSpeech.speakerName;
     newNoRoom.speakingTo = normalSpeech.speakingTo;
     newNoRoom.speakingToName = normalSpeech.speakingToName;
-    newNoRoom.conSpeech = new(c) class'ConSpeech';
-    newNoRoom.conSpeech.speech = origNoRoom.conSpeech.speech;
-    newNoRoom.conSpeech.soundID = origNoRoom.conSpeech.soundID;
     newNoRoom.bBold = origNoRoom.bBold;
     newNoRoom.speechFont = origNoRoom.speechFont;
     newNoRoom.label = "DXRandoNoRoom";
 
     //End the conversation
-    cee2 = new(c) class'ConEventEnd';
-    cee2.eventType=ET_End;
-    cee2.conversation = c;
-
-    //Wire the ConEvent's together
-    cee2.nextEvent=cee.nextEvent;//New ending will point to what the old ending pointed to (presumably None)
-    newNoRoom.nextEvent=cee2; //New ending goes after the "No Room" speech
-    cee.nextEvent = newNoRoom; //New "No Room" speech goes after the old end
-
+    cee2 = ConEventEnd(NewConEvent(c,newNoRoom,class'ConEventEnd')); //New ending goes after the "No Room" speech
+    cee2.nextEvent=ceeNext;//New ending will point to what the old ending pointed to (presumably None)
 
     //Now point all the Transfer Object events to the "No Room" branch if they fail
     ce = c.eventList;

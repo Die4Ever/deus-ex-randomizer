@@ -435,9 +435,7 @@ function ParisUndergroundAnyEntry()
     hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), ft.Location, ft.CollisionRadius+5, ft.CollisionHeight+5);
     hoverHint.SetBaseActor(ft);
     hoverHint.VisibleDistance=5000;
-    hoverHint.Texture=Texture'Engine.S_Teleport'; //Fake it to show as a teleporter
-    hoverHint.DrawType=DT_Sprite;
-    hoverHint.bHidden=!class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
+    DXRTeleporterHoverHint(hoverHint).FakeTeleporterAppearance();
 
     foreach AllActors(class'#var(prefix)Keypad3',keypad, 'TrackElectricalKeypad'){
         keypad.hackStrength=0;

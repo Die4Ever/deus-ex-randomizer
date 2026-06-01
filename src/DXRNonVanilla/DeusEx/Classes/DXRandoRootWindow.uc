@@ -21,6 +21,10 @@ event InitWindow()
 
     splits = HUDSpeedrunSplits(NewChild(Class'HUDSpeedrunSplits'));
     splits.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+
+    actorDisplay.Destroy();
+    actorDisplay = ActorDisplayWindow(NewChild(Class'DXRActorDisplayWindow'));
+    actorDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 }
 
 event DescendantRemoved(Window descendant)
@@ -53,14 +57,14 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
 
     // check for super jumps
     f = DeusExPlayer(parentPawn).AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-    if(bFixGlitches && f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f) {
+    if(bFixGlitches && f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f) { //GLITCHFIX-10
         parentPawn.JumpZ = parentPawn.default.JumpZ * f;
     }
     else if(f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f*1.3) {
         class'DXRStats'.static.AddCheatOffense(DeusExPlayer(parentPawn));
     }
 
-    if(bFixGlitches && !bNoUnPause && #defined(gmdx)) {
+    if(bFixGlitches && !bNoUnPause && #defined(gmdx)) { //GLITCHFIX-04
         foreach parentPawn.AllActors(class'DeusExMover', m) {
             if(!m.bPicking) continue;
             m.LastTickTime = m.Level.TimeSeconds;
@@ -70,7 +74,7 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
             h.LastTickTime = h.Level.TimeSeconds;
         }
     }
-    else if(!bFixGlitches && !bNoUnPause && #defined(gmdx)) {
+    else if(!bFixGlitches && !bNoUnPause && #defined(gmdx)) { //GLITCHFIX-04
         // check for using tools during paused menus, the issue is in DeusExMover::Timer and HackableDevices::Timer
         foreach parentPawn.AllActors(class'SkilledTool', tool) {
             if(!tool.IsInState('UseIt')) continue;
@@ -197,6 +201,23 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
     }
     return Super.InvokeUIScreen(newScreen, GetNoPause(bNoPause));
 }
+
+function DeusExBaseWindow PushWindow(
+    Class<DeusExBaseWindow> newWindowClass,
+    optional Bool hideCurrentWin,
+    optional Bool bNoPause)
+{
+    log("DXRandoRootWindow PushWindow "$newWindowClass);
+
+    switch(newWindowClass) {
+        case class'ShowClassWindow':
+            newWindowClass = class'DXRShowClassWindow';
+            break;
+    }
+
+    return Super.PushWindow(newWindowClass,hideCurrentWin,bNoPause);
+}
+
 
 function bool CheckSingleDataVaultWindow(EInputKey key, string function, class<DeusExBaseWindow> winClass)
 {

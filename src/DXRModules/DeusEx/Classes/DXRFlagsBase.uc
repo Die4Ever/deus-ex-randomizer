@@ -299,6 +299,7 @@ simulated function LoadFlags()
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
         class'DXREvents'.static.Upgrade(p, stored_version);
+        class'DXRBrightness'.static.Upgrade(p, stored_version);
         SaveFlags();
     } else if (stored_version > flagsversion ) {
         warning("downgraded flags from "$stored_version$" to "$flagsversion);
@@ -461,15 +462,17 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
 
-    if(!FlagInt('Rando_loop_initial_version',loop_initial_version,mode,str) && stored_version != 0 && mode==Reading) {
-        // if the flag didn't exist, make sure to set it to 0 for compatibility
-        loop_initial_version = 0;
-    }
-    switch(dxr.dxInfo.missionNumber) {
-        case 0: // always update this between games
-        case 98:
-        case 99:
-            loop_initial_version = VersionNumber();
+    if(mode != Hashing) {
+        if(!FlagInt('Rando_loop_initial_version',loop_initial_version,mode,str) && stored_version != 0 && mode==Reading) {
+            // if the flag didn't exist, make sure to set it to 0 for compatibility
+            loop_initial_version = 0;
+        }
+        switch(dxr.dxInfo.missionNumber) {
+            case 0: // always update this between games
+            case 98:
+            case 99:
+                loop_initial_version = VersionNumber();
+        }
     }
 
     if(mode!=Reading && mode!=Writing) {

@@ -186,7 +186,7 @@ event DescendantRemoved(Window descendant)
     local Inventory draggedItem;
 
     if (descendant==winStatus){ //Only act as the inventory is being dismantled
-        if (class'MenuChoice_FixGlitches'.default.enabled && bDragging && dragButton!=None){
+        if (class'MenuChoice_FixGlitches'.default.enabled && bDragging && dragButton!=None){ //GLITCHFIX-03
             draggedItem=Inventory(dragButton.GetClientObject());
             if (draggedItem!=None){
                 //Return the item to the slot it started in

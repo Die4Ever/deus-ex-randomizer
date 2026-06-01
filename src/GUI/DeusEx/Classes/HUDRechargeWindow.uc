@@ -30,7 +30,7 @@ function UpdateRepairBotWindows()
     dxrbot = DXRRepairBot(repairBot);
 #endif
 
-    if(#defined(gmdx) || #defined(vmd)) {
+    if(#defined(vmd)) {
         Super.UpdateRepairBotWindows();
         return;
     }
@@ -129,7 +129,7 @@ event Tick(float deltaSeconds)
         return;
     }
 
-    if(#defined(gmdx) || #defined(vmd)) {
+    if(#defined(vmd)) {
         Super.Tick(deltaSeconds);
         return;
     }

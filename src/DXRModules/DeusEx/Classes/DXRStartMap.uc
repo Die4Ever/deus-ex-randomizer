@@ -1418,6 +1418,11 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 15: // Area 51
         switch(bingo_event)
         {
+            case "A51_Sign_41_singlepeepedtex":
+            case "SignsOfTheEnd_singlepeepedtex":
+                //These are in sector 4, don't give these goals if you start in early Area 51
+                //Allowed on Sector 3 or Sector 4 starts?
+                return start_map >= 150 && start_map < 153;
         }
         break;
     }
