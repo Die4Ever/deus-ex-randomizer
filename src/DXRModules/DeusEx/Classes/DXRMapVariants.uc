@@ -245,7 +245,10 @@ function CheckConfig()
         missions[i] = missions[slot];
         missions[slot] = tempi;
     }
-    if (dxr.flags.moresettings.shuffle_missions >= 13) {
+    if(dxr.flags.moresettings.shuffle_missions < 13 && dxr.flags.moresettings.shuffle_missions > 0) {
+        len = dxr.flags.moresettings.shuffle_missions; // use number of missions instead of estimated duration
+    }
+    else if(dxr.flags.moresettings.shuffle_missions > 0) {
         minMinutes = dxr.flags.moresettings.shuffle_missions; // duration in minutes
         for(i=0; i<len; i++) {
             if(totalMinutes >= minMinutes) {
@@ -262,8 +265,10 @@ function CheckConfig()
                 default: totalMinutes += 10; break;
             }
         }
-        starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
-        missions[len] = 99;
+    }
+    starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
+    missions[len] = 99;
+    if(dxr.flags.moresettings.shuffle_missions > 0) {
         for(i=0; i<len+1; i++) {
             l("speedshuffle " $ i @ starts[i]);
         }
