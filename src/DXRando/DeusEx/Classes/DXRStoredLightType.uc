@@ -56,7 +56,7 @@ function ApplyEpilepsyFix(bool enabled)
             if (ee.bIsOn){
                 ee.LightType = LT_Pulse;
                 //ee.LightType = LT_Steady; //Maybe flickering electricity emitters should just become steady light sources? idk
-                ee.LightPeriod = 24;
+                ee.LightPeriod = 18 + Rand(13); //24 +/- 6, so the lights aren't all synchronized (eg. Vandenberg Computer)
                 ee.SetHiddenBeam(False); //Make sure the electricity isn't hidden
             }
         } else {

@@ -27,11 +27,17 @@
 - "Flickering Lights" setting now prevents electricity emitters from flickering as well.
 - More locations for items to be randomized around Maggie's and Jock's apartments (Mission 6).
 - The datacube with Maggie's birthday is guaranteed to be in her apartment (Mission 6)
+- Bingo goals that require using a ranged weapon to shoot something will no longer be given when using loadouts that don't allow any ranged weapons to be used.
+- Bingo goals that require looking at an image will be marked as soon as the image is viewed, instead of when the window is closed.  This also fixes an issue where sometimes the image wouldn't get marked as viewed, depending on how the window was closed.
+- The "New Image" icon in the list on the "Images" menu will disappear when you click off of the image to another one.
+- "The Three Leg Augs" and "My Vision Is Augmented" loadouts will now default to Balanced Aug Slot Randomization instead of Unbalanced.
+- "Goal Locations" and "Goal Spoilers" buttons will no longer appear on the "Images" menu when you have no images to view.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
   - Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
   - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
+  - When entering a map for the first time with the password or code to a computer or keypad, the password will be correctly marked as known.
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
@@ -50,10 +56,15 @@
   - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
   - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
 - Vanilla? Madder! 2.0 fixes and improvements
+  - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
   - Backing out of the New Game screen will no longer cause the game to crash.
   - The "Character Setup" screen will now be considered a title screen, so Crowd Control effects will not function there, and Crowd Control will be able to connect while on that screen.
   - Skill costs shown on the "Character Setup" screen will now match the ones you see when you enter the game.
+  - Turrets that have been moved will now have their guns placed in the correct location.
+  - Scopes (Either binoculars or on a weapon) will now properly mark bingo goals.
+  - Scopes (Either binoculars or on a weapon) will now look the same as they do in non-randomized Vanilla? Madder!
+  - Key location randomization rules for Ocean Lab "Storage" key (Mission 14) will now be properly applied.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
@@ -66,9 +77,4 @@
 
 - In Speedrun Shuffle mode, highlight text now shows the next map you will be going to when looking at the game endings in Mission 15.
 - Some flickering lights that weren't being caught by the "Flickering Lights" setting in GMDX will now also be adjusted.
-
-<!--
-## Intra-Patch Changes
-
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
--->

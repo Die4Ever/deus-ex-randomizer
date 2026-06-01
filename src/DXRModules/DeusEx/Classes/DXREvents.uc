@@ -3463,6 +3463,18 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     //Or only possible on Revision maps
         case "PCLOADLETTER_DestroyDeco":
             return !RevisionMaps;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require ranged weapons
+        case "TongTargets":
+        case "VandenbergAntenna":
+        case "SubBaseSatellite":
+            if (loadout!=None){
+                if (loadout.IsLoadoutNoRangedWeapons()){
+                    return true;
+                }
+            }
+            break;
     }
 
     //More broad loadout checks
