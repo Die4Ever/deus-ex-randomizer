@@ -177,8 +177,6 @@ function InitStats(DXRStats newstats)
         return;
     }
 
-    mapvariants = DXRMapVariants(stats.dxr.FindModule(class'DXRMapVariants'));
-
     ttitle = ReplaceVariables(title);
     tsubtitle = ReplaceVariables(subtitle);
     tfooter = ReplaceVariables(footer);
@@ -522,7 +520,7 @@ function DrawSplits(GC gc, int cur)
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
     bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
-    for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
+    for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
         if(showAllSplits
         || (alwaysShowSplit[i] != 0)
         || (i == prevprev && showPrevprev)

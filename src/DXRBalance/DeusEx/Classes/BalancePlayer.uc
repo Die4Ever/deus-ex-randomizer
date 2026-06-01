@@ -542,17 +542,6 @@ function HealPart(out int points, out int amt)
     _HealPart(points, amt, amt);
 }
 
-exec function missions()
-{
-    local DXRMapVariants mapvariants;
-    local int i;
-
-    mapvariants = DXRMapVariants(class'DXRando'.default.dxr.FindModule(class'DXRMapVariants'));
-    for (i = 0; i < ArrayCount(mapvariants.missions); i++) {
-        ClientMessage("mapvariants.missions["$i$"]: " $ mapvariants.missions[i]);
-    }
-}
-
 exec function ActivateAugmentation(int num)
 {
     local Augmentation anAug;

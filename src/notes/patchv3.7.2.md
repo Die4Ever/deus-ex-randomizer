@@ -78,3 +78,4 @@
 - In Speedrun Shuffle mode, highlight text now shows the next map you will be going to when looking at the game endings in Mission 15.
 - Some flickering lights that weren't being caught by the "Flickering Lights" setting in GMDX will now also be adjusted.
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
+- In Speedrun Shuffle mode, missions are now shown in correct order on the splits view and credits screen.
