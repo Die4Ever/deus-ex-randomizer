@@ -1000,6 +1000,8 @@ function bool HandlePickupQuery(Inventory Item)
                             ammoToAdd = ammoToAdd - ammoRemaining;
                         }
 
+                        #var(DeusExPrefix)Ammo(defAmmo).ShowPickupMessage(player, ammoToAdd);
+
                         w.PickUpAmmoCount = ammoToAdd;
                         if (ammoRemaining>0){
                             if(defAmmoClass.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
@@ -1034,6 +1036,29 @@ function DropFrom(vector StartLocation)
     if(oldAmmo > 0) {
         PickupAmmoCount = oldAmmo;
     }
+}
+
+// vanilla function with a ClientMessage added
+function GiveAmmo( Pawn Other )
+{
+    local int amountAdded;
+
+    if ( AmmoName == None )
+        return;
+    AmmoType = Ammo(Other.FindInventoryType(AmmoName));
+    if ( AmmoType != None ) {
+        amountAdded = Min(PickUpAmmoCount, AmmoType.MaxAmmo - AmmoType.AmmoAmount);
+        AmmoType.AddAmmo(PickUpAmmoCount);
+    } else {
+        amountAdded = PickUpAmmoCount;
+        AmmoType = Spawn(AmmoName);   // Create ammo type required
+        Other.AddInventory(AmmoType); // and add to player's inventory
+        AmmoType.BecomeItem();
+        AmmoType.AmmoAmount = PickUpAmmoCount;
+        AmmoType.GotoState('Idle2');
+    }
+
+    #var(DeusExPrefix)Ammo(AmmoType).ShowPickupMessage(DeusExPlayer(other), amountAdded);
 }
 
 // vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0
