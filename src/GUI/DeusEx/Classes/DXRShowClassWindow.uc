@@ -23,6 +23,7 @@ var ToolCheckboxWindow	chkTextures;
 var ToolCheckboxWindow	chkPhysics;
 var ToolCheckboxWindow	chkConvoInfo;
 var ToolCheckboxWindow  chkPartialMatch;
+var ToolCheckboxWindow  chkOverlap;
 
 event InitWindow()
 {
@@ -245,6 +246,10 @@ function CreateDXRandoControls()
     chkPhysics = CreateToolCheckbox(rightX, rightY,  "Show Physics", actorDisplayWin.ArePhysicsVisible());
     rightY += 25;
 
+    // Show Touching Actors
+    chkOverlap = CreateToolCheckbox(rightX, rightY,  "Show Overlapping Actors", actorDisplayWin.AreOverlappedVisible());
+    rightY += 25;
+
 
 //////////////////////////////////////////////////
 }
@@ -351,6 +356,8 @@ function SaveSettings()
     actorDisplayWin.default.bShowPhysics = actorDisplayWin.ArePhysicsVisible();
     actorDisplayWin.ShowConvoInfo(chkConvoInfo.GetToggle());
     actorDisplayWin.default.bShowConvoInfo = actorDisplayWin.IsConvoInfoVisible();
+    actorDisplayWin.ShowOverlapping(chkOverlap.GetToggle());
+    actorDisplayWin.default.bShowOverlap = actorDisplayWin.AreOverlappedVisible();
 
     actorDisplayWin.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplayWin.default.bLimitRadius = actorDisplayWin.IsRadiusLimited();
