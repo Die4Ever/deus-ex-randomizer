@@ -1,8 +1,11 @@
 class DXRStoredLightType extends Info;
 
+const LATEST_VERSION_NUMBER = 2; //Update this when adding new versions
+
 var int VersionNum; //To theoretically help with upgrades if more information is added in this class
 
 var ELightType origLightType;
+var Byte       origLightPeriod;
 
 
 static function DXRStoredLightType Init(Actor l)
@@ -18,6 +21,9 @@ static function DXRStoredLightType Init(Actor l)
     slf.SetOwner(l);
 
     slf.origLightType = l.LightType;
+    slf.origLightPeriod = l.LightPeriod;
+
+    slf.VersionNum = LATEST_VERSION_NUMBER;
 
     return slf;
 }
@@ -36,6 +42,11 @@ static function DXRStoredLightType InitElecEmitter(#var(prefix)ElectricityEmitte
     slf.SetOwner(ee);
 
     slf.origLightType = LT_Flicker; //Not true, just for the vibe
+
+    //24 +/- 6, so the lights aren't all synchronized (eg. Vandenberg Computer)
+    slf.origLightPeriod = 18 + Rand(13); //Randomly determine once, so it is consistent if you toggle
+
+    slf.VersionNum = LATEST_VERSION_NUMBER;
 
     return slf;
 }
@@ -56,7 +67,7 @@ function ApplyEpilepsyFix(bool enabled)
             if (ee.bIsOn){
                 ee.LightType = LT_Pulse;
                 //ee.LightType = LT_Steady; //Maybe flickering electricity emitters should just become steady light sources? idk
-                ee.LightPeriod = 18 + Rand(13); //24 +/- 6, so the lights aren't all synchronized (eg. Vandenberg Computer)
+                ee.LightPeriod = origLightPeriod;
                 ee.SetHiddenBeam(False); //Make sure the electricity isn't hidden
             }
         } else {
@@ -67,15 +78,42 @@ function ApplyEpilepsyFix(bool enabled)
         //Standard light handling
         if (enabled){
             Owner.LightType = LT_Pulse; //more gentle light mode
+            Owner.LightPeriod = origLightPeriod;
+            if (origLightPeriod < 16){
+                Owner.LightPeriod = Owner.LightPeriod + 12; //so it isn't super fast still
+            }
         } else {
             Owner.LightType = origLightType;
+            Owner.LightPeriod = origLightPeriod;
         }
     }
+}
 
+function Upgrade()
+{
+    local bool upgraded;
+
+    if (VersionNum==LATEST_VERSION_NUMBER) return; //Fast exit
+
+    if (VersionNum < 2){
+        //Version 2 started tracking light period
+        if (#var(prefix)ElectricityEmitter(Owner)!=None){
+            origLightPeriod = 18 + Rand(13);
+        } else {
+            origLightPeriod = Owner.LightPeriod;
+        }
+        upgraded=true;
+    }
+
+    //Add further version upgrades here
+
+    if (upgraded){
+        VersionNum = LATEST_VERSION_NUMBER;
+    }
 }
 
 defaultproperties
 {
-    VersionNum=1
+    VersionNum=1 //I hate this.  The default means it isn't saved, so don't touch this.  Explicitly set it in the Init with LATEST_VERSION_NUMBER
     bAlwaysRelevant=True
 }

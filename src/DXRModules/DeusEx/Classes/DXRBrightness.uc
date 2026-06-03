@@ -76,11 +76,19 @@ function AnyEntry()
     Super.AnyEntry();
 
     MigrateSavedData(); //TODO: To be removed when the ZoneBrightnessData is stripped out
-    //UpdateStoredData(); //If more is added to DXRStoredZoneInfo or DXRStoredLightFog
+    UpdateStoredData(); //If more is added to DXRStoredZoneInfo or DXRStoredLightFog
 
     IncreaseBrightness(GetSavedBrightnessBoost());
     ApplyFog(class'MenuChoice_Fog'.default.enabled);
     ApplyEpilepsySafe(class'MenuChoice_Epilepsy'.default.enabled);
+}
+
+function UpdateStoredData(){
+    local DXRStoredLightType slt;
+
+    foreach AllActors(class'DXRStoredLightType',slt){
+        slt.Upgrade();
+    }
 }
 
 //TODO: To be removed when the ZoneBrightnessData is stripped out
