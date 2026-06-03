@@ -1027,6 +1027,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(121,-672,1086),vectm(63,-628,1146), bg); //Breakable Corner Mirror
 
+        if (#defined(gmdx)){
+            //In GMDX, there's a pile of boxes near the exit.
+            //prevent them from being randomized, so that you don't end up with something
+            //that can't be moved blocking the exit.
+            MassSetSecretGoalRadius(class'CrateUnbreakableSmall',vectm(-2455,-1734,1650),250,true);
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers
         Spawn(class'PlaceholderItem',,, vectm(1169,-1490,459)); //Water pool
