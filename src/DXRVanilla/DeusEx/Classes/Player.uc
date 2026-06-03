@@ -2820,6 +2820,16 @@ function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotat
     }
 }
 
+function Actor GetKiller()
+{
+    if (!IsInState('Dying')) return None;
+
+    if (Enemy==None) return None;
+    if (DXRandoCrowdControlPawn(Enemy)!=None) return None; //Crowd Control Pawns aren't "Real"
+
+    return Enemy;
+}
+
 state Dying
 {
     ignores all;
@@ -2847,7 +2857,7 @@ state Dying
     function HighlightCenterObject()
     {
         if (class'MenuChoice_KillCam'.Default.Enabled){
-            FrobTarget = Enemy;
+            FrobTarget = GetKiller();
         }
     }
 }

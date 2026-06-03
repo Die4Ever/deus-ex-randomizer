@@ -157,6 +157,16 @@ function UpdateCameraRoll()
     DesiredRotation.roll = roll;
 }
 
+function Actor GetKiller(DeusExPlayer player)
+{
+    if (!player.IsInState('Dying')) return None;
+
+    if (player.Enemy==None) return None;
+    if (DXRandoCrowdControlPawn(player.Enemy)!=None) return None; //Crowd Control Pawns aren't "Real", don't try to look at them
+
+    return player.Enemy;
+}
+
 
 function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
 {
@@ -180,8 +190,8 @@ function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
         aimTarget = player.conPlay.currentSpeaker;
     } else if (class'MenuChoice_KillCam'.Default.Enabled && player.GetStateName()=='Dying') {
         if (#defined(vanilla||revision)){
-            if (player.Enemy!=None){
-                aimTarget=player.Enemy;
+            if (GetKiller(player)!=None){
+                aimTarget=GetKiller(player);
             }
         }
     }
