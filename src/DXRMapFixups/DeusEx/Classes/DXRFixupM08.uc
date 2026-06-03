@@ -668,6 +668,10 @@ function PreFirstEntryMapFixes()
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
 
+            if (#defined(gmdx) && !#defined(gmdxae)){ //I assume AE already fixed this
+                FixGMDXSmugglerBots();
+            }
+
             if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
                 //The bot will no longer directly be ordered to attack the player
                 //This prevents him from breaking stealth
@@ -753,6 +757,45 @@ function PreFirstEntryMapFixes()
     }
 }
 //#endregion
+
+//Smugglers bots in GMDX are always hostile to the player in M08, presumably a mistake?
+function FixGMDXSmugglerBots()
+{
+    local SecurityBot3 bot;
+    local DeusExMover  dxm;
+    local Dispatcher   disp;
+    local FlagTrigger  ft;
+
+    //We will have already added a OnceOnlyTrigger to the lasers, expecting this door to be named this
+    foreach AllActors(class'DeusExMover', dxm,'InitiateOrder')
+    {
+        dxm.tag = 'botordertriggerDoor';
+    }
+
+    //The bots start hostile instead of friendly
+    foreach AllActors(class'SecurityBot3',bot)
+    {
+        ChangeInitialAlliance(bot,'Player',1.0,true); //Make sure the initial alliance is updated for clones
+        bot.ChangeAlly('Player',1.0,true,false); //Make sure the bots are permanently friendly
+    }
+
+    //The flagtrigger has no tag or event
+    foreach AllActors(class'FlagTrigger',ft)
+    {
+        if (ft.FlagName!='MetSmuggler') continue;
+        ft.Tag = 'botordertrigger';
+        ft.Event = 'InitiateOrder';
+        ft.flagValue=False; //We want the bots to become hostile if the flag is false
+    }
+
+    //The dispatcher hits InitiateOrder directly, instead of botordertrigger
+    foreach AllActors(class'Dispatcher',disp)
+    {
+        if (disp.OutEvents[1]!='InitiateOrder') continue;
+        disp.OutEvents[1]='botordertrigger';
+    }
+
+}
 
 function FixHotelPatrolPaths()
 {

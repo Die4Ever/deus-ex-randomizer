@@ -65,6 +65,7 @@
   - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
   - Hardcore settings become unlocked when you finish the game.
   - Added an exit button to the Hong Kong Helibase barracks (Mission 6).
+  - Smugglers bots in Mission 8 are no longer permanently hostile.  They will only be hostile if you have not spoken to Smuggler before this mission.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
