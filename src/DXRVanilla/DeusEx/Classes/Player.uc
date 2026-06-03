@@ -2783,7 +2783,7 @@ function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotat
         else
         {
             CameraRotation.Pitch = -16384;
-            CameraRotation.Yaw = (time * 8192.0) % 65536;
+            CameraRotation.Yaw = (time * class'MenuChoice_DeathCam'.static.CameraSpinRotationMult()) % 65536;
             ViewDist = 32 + distTime * 32;
 
             // make sure we don't go through the ceiling
@@ -2825,6 +2825,7 @@ function Actor GetKiller()
     if (!IsInState('Dying')) return None;
 
     if (Enemy==None) return None;
+    if (Enemy==Self) return None;
     if (DXRandoCrowdControlPawn(Enemy)!=None) return None; //Crowd Control Pawns aren't "Real"
 
     return Enemy;
@@ -2838,7 +2839,7 @@ state Dying
         local DXRCameraModes camera;
         local CCResidentEvilCam reCam;
 
-        if (class'MenuChoice_KillCam'.Default.Enabled && Enemy!=None){
+        if (class'MenuChoice_DeathCam'.static.IsKillCam() && GetKiller()!=None){
             camera = DXRCameraModes(class'DXRCameraModes'.static.Find());
             camera.EnableTempFixedCamera(true);
 
@@ -2856,7 +2857,7 @@ state Dying
 
     function HighlightCenterObject()
     {
-        if (class'MenuChoice_KillCam'.Default.Enabled){
+        if (class'MenuChoice_DeathCam'.static.IsKillCam()){
             FrobTarget = GetKiller();
         }
     }

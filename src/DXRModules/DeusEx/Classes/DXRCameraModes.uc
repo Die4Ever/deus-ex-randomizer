@@ -232,7 +232,7 @@ function SetCameraMode(int mode)
         if (stateName=='Interpolating' || stateName=='Paralyzed'){
             mode = CM_FirstPerson; //Leave it in first person
         } else if (stateName=='Dying') {
-            if (class'MenuChoice_KillCam'.Default.Enabled){
+            if (class'MenuChoice_DeathCam'.static.IsKillCam()){
                 //Allow the camera to go on if we're using the kill cam
             } else {
                 return; // setting camera mode while dying causes your weapon and hand to show after dying

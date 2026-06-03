@@ -188,7 +188,7 @@ function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
     if (player.InConversation()) {
         //In a conversation, look at the person who is talking, instead of always at JC
         aimTarget = player.conPlay.currentSpeaker;
-    } else if (class'MenuChoice_KillCam'.Default.Enabled && player.GetStateName()=='Dying') {
+    } else if (class'MenuChoice_DeathCam'.Static.IsKillCam() && player.GetStateName()=='Dying') {
         if (#defined(vanilla||revision)){
             if (GetKiller(player)!=None){
                 aimTarget=GetKiller(player);

@@ -33,8 +33,12 @@
 - "The Three Leg Augs" and "My Vision Is Augmented" loadouts will now default to Balanced Aug Slot Randomization instead of Unbalanced.
 - "Goal Locations" and "Goal Spoilers" buttons will no longer appear on the "Images" menu when you have no images to view.
 - Items that are randomized into a location "inside" a crate (Or if a crate is randomized into a location that overlaps an item) will get pushed to the top of the crate instead of being hidden inside it.
-- Optional "Kill Cam" mode can be enabled under Rando > Visuals (Vanilla and Revision only).  When you die, the camera will follow the person who killed you.
-- Regular spinning death camera will continue to spin forever, instead of stopping after 8 seconds (Vanilla and Revision only).
+- New "Death Cam" options under Rando > Visuals (Vanilla and Revision only).
+  - "Spinning Camera (Original)": When you die the camera will spin over your dead body.
+  - "Spinning Camera (Slowed)": When you die the camera will spin over your dead body more slowly.
+  - "Overhead Camera (No Spin)": When you die the camera will hover over your dead body.
+  - "Show Killer (Kill Cam)": When you die, the camera will follow the person who killed you.
+- Regular spinning death cameras will continue to spin forever, instead of stopping after 8 seconds (Vanilla and Revision only).
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
