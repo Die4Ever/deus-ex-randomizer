@@ -63,6 +63,7 @@
   - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
   - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
   - Hardcore settings become unlocked when you finish the game.
+  - Added an exit button to the Hong Kong Helibase barracks (Mission 6).
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.

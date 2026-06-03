@@ -119,6 +119,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ScientistFemale sf;
     local MoverPropTrigger mpt;
     local #var(prefix)AlarmLight al;
+    local #var(prefix)Switch2 sw;
     local int i;
 
     local bool VanillaMaps;
@@ -181,6 +182,13 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
+            //Add an exit button from the barracks in GMDX
+            sw = #var(prefix)Switch2(AddSwitch(vect(1041.5,935,160), rot(0, 0, 0), 'GMDXBarracksDoorDXR'));
+            m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',sw));
+            if (m!=None){
+                button.Event='GMDXBarracksDoorDXR'; //Throw a DXR on there to make sure it's unique...
+                m.Tag=button.Event;
+            }
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
