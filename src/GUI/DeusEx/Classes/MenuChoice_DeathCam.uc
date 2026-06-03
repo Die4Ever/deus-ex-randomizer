@@ -19,6 +19,8 @@ static function float CameraSpinRotationMult()
             return 2048.0;
         case 2: //"Overhead Camera (No Spin)"
             return 0.0;
+        case 3: //"Show Killer (Kill Cam)"
+            return 2048.0; //Kill Cam reverts to the spin if the killer dies (or isn't valid)
     }
 
     return 8192.0; //Default value
