@@ -2752,18 +2752,20 @@ ignores SeePlayer, HearNoise, Bump, TakeDamage;
 }
 
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView
+//Massively cut down for DXRando so that the game doesn't fade out or go back to the main menu, just spin forever and ever
 function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
 {
     local vector ViewVect, HitLocation, HitNormal, whiteVec;
     local float ViewDist;
     local actor HitActor;
-    local float time;
+    local float time, distTime;
 
     ViewActor = Self;
     if (bHidden)
     {
         // spiral up and around carcass and fade to white in five seconds
         time = Level.TimeSeconds - FrobTime;
+        distTime = FMin(time,8.0);
 
         if ( ((myKiller != None) && (killProfile != None) && (!killProfile.bKilledSelf)) ||
             ((killProfile != None) && killProfile.bValid && (!killProfile.bKilledSelf)))
@@ -2777,56 +2779,12 @@ function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotat
             CameraLocation = Location;
             CameraRotation = Rotator(ViewVect);
         }
-        else if (time < 8.0)
-        {
-            whiteVec.X = time / 16.0;
-            whiteVec.Y = time / 16.0;
-            whiteVec.Z = time / 16.0;
-            CameraRotation.Pitch = -16384;
-            CameraRotation.Yaw = (time * 8192.0) % 65536;
-            ViewDist = 32 + time * 32;
-            InstantFog = whiteVec;
-            InstantFlash = 0.5;
-            ViewFlash(1.0);
-            // make sure we don't go through the ceiling
-            ViewVect = vect(0,0,1);
-            HitActor = Trace(HitLocation, HitNormal, Location + ViewDist * ViewVect, Location);
-            if ( HitActor != None )
-                CameraLocation = HitLocation;
-            else
-                CameraLocation = Location + ViewDist * ViewVect;
-        }
         else
         {
-            if  ( Level.NetMode != NM_Standalone )
-            {
-                // Don't fade to black in multiplayer
-            }
-            else
-            {
-                // then, fade out to black in four seconds and bring up
-                // the main menu automatically
-                whiteVec.X = FMax(0.5 - (time-8.0) / 8.0, -1.0);
-                whiteVec.Y = FMax(0.5 - (time-8.0) / 8.0, -1.0);
-                whiteVec.Z = FMax(0.5 - (time-8.0) / 8.0, -1.0);
-                CameraRotation.Pitch = -16384;
-                CameraRotation.Yaw = (time * 8192.0) % 65536;
-                ViewDist = 32 + 8.0 * 32;
-                InstantFog = whiteVec;
-                InstantFlash = whiteVec.X;
-                ViewFlash(1.0);
+            CameraRotation.Pitch = -16384;
+            CameraRotation.Yaw = (time * 8192.0) % 65536;
+            ViewDist = 32 + distTime * 32;
 
-                // start the splash screen after a bit
-                // only if we don't have a menu open
-                // DEUS_EX AMSD Don't do this in multiplayer!!!!
-                if (Level.NetMode == NM_Standalone)
-                {
-                    if (whiteVec == vect(-1.0,-1.0,-1.0))
-                        if ((MenuUIWindow(DeusExRootWindow(rootWindow).GetTopWindow()) == None) &&
-                            (ToolWindow(DeusExRootWindow(rootWindow).GetTopWindow()) == None))
-                            ConsoleCommand("OPEN DXONLY");
-                }
-            }
             // make sure we don't go through the ceiling
             ViewVect = vect(0,0,1);
             HitActor = Trace(HitLocation, HitNormal, Location + ViewDist * ViewVect, Location);
@@ -2850,14 +2808,6 @@ function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotat
             CameraLocation = HitLocation;
         else
             CameraLocation = Location - ViewDist * ViewVect;
-    }
-
-    // don't fog view if we are "paused"
-    if (DeusExRootWindow(rootWindow).bUIPaused)
-    {
-        InstantFog   = vect(0,0,0);
-        InstantFlash = 0;
-        ViewFlash(1.0);
     }
 }
 
