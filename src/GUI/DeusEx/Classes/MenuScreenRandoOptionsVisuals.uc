@@ -35,6 +35,9 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_TextureSmoothing');
         CreateChoice(class'MenuChoice_AutoLamps');
     }
+    if (#defined(vanilla||revision)){
+        CreateChoice(class'MenuChoice_KillCam');
+    }
     CreateChoice(class'MenuChoice_ToggleFashion');
     CreateChoice(class'MenuChoice_ConsoleFontSize');
 }

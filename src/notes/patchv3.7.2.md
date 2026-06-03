@@ -33,6 +33,7 @@
 - "The Three Leg Augs" and "My Vision Is Augmented" loadouts will now default to Balanced Aug Slot Randomization instead of Unbalanced.
 - "Goal Locations" and "Goal Spoilers" buttons will no longer appear on the "Images" menu when you have no images to view.
 - Items that are randomized into a location "inside" a crate (Or if a crate is randomized into a location that overlaps an item) will get pushed to the top of the crate instead of being hidden inside it.
+- Optional "Kill Cam" mode can be enabled under Rando > Visuals (Vanilla and Revision only).  When you die, the camera will follow the person who killed you.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
