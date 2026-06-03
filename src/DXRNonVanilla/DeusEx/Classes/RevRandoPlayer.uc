@@ -1393,11 +1393,12 @@ function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotat
     local float ViewDist;
     local actor HitActor;
     local float time, distTime;
+    local CCResidentEvilCam reCam;
 
     ViewActor = Self;
     if (bHidden)
     {
-        // spiral up and around carcass and fade to white in five seconds
+        // spiral up and around carcass
         time = Level.TimeSeconds - FrobTime;
         distTime = FMin(time,8.0);
 
@@ -1433,15 +1434,23 @@ function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotat
         // use FrobTime as the cool DeathCam timer
         FrobTime = Level.TimeSeconds;
 
-        // make sure we don't go through the wall
-        ViewDist = 190;
-        ViewVect = vect(1,0,0) >> Rotation;
-        HitActor = Trace( HitLocation, HitNormal,
-                Location - ViewDist * vector(CameraRotation), Location, false, vect(12,12,2));
-        if ( HitActor != None )
-            CameraLocation = HitLocation;
-        else
-            CameraLocation = Location - ViewDist * ViewVect;
+        reCam = CCResidentEvilCam(ViewTarget);
+
+        if (reCam!=None){
+            //Stay in fixed cameras until you're down
+            CameraRotation = reCam.Rotation;
+            CameraLocation = reCam.Location;
+        } else {
+            // make sure we don't go through the wall
+            ViewDist = 190;
+            ViewVect = vect(1,0,0) >> Rotation;
+            HitActor = Trace( HitLocation, HitNormal,
+                    Location - ViewDist * vector(CameraRotation), Location, false, vect(12,12,2));
+            if ( HitActor != None )
+                CameraLocation = HitLocation;
+            else
+                CameraLocation = Location - ViewDist * ViewVect;
+        }
     }
 }
 
