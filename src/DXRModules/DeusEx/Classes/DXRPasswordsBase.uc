@@ -5,6 +5,8 @@ var transient DeusExNote lastCheckedNote;
 var int num_not_passwords;
 var string not_passwords[100];
 
+var string known_passwords[100];
+
 struct YesPassword {
     var string map;
     var string password;
@@ -340,6 +342,7 @@ simulated function NotifyPlayerNotesUpdated(#var(PlayerPawn) p)
 
 function MarkPasswordKnown(string password)
 {
+    local int i;
 #ifdef injections
     local #var(prefix)Keypad k;
     local #var(prefix)Computers c;
@@ -388,6 +391,68 @@ function MarkPasswordKnown(string password)
         atm.SetAccountKnownByPassword(password);
     }
 
+#endif
+    //Add the known password to a list (for reasons)
+    for (i=0;i<ArrayCount(known_passwords);i++){
+        if (known_passwords[i]==password) break; //Don't add the same password to the list again
+        if (known_passwords[i]!="") continue; //don't write into a slot that's already used
+
+        known_passwords[i]=password;
+        break;
+    }
+}
+
+function UpdateKnownPasswords(Actor passHaver)
+{
+    local int i;
+    for (i=0;i<ArrayCount(known_passwords);i++){
+        if (known_passwords[i]=="") continue;
+        GenericSetAccountKnown(passHaver,known_passwords[i]);
+    }
+}
+
+function GenericSetAccountKnown(Actor passHaver, string password)
+{
+#ifdef injections
+    local #var(prefix)Keypad k;
+    local #var(prefix)Computers c;
+    local #var(prefix)ATM a;
+
+    k = #var(prefix)Keypad(passHaver);
+    c = #var(prefix)Computers(passHaver);
+    a = #var(prefix)ATM(passHaver);
+
+    if (k!=None){
+        if (password == k.validCode) {
+            k.bCodeKnown = True;
+        }
+    } else if (c!=None){
+        c.SetAccountKnownByPassword(password);
+    } else if (a!=None){
+        a.SetAccountKnownByPassword(password);
+    }
+#else
+    local DXRKeypad k;
+    local DXRComputerPersonal cp;
+    local DXRComputerSecurity cs;
+    local DXRATM atm;
+
+    k   = DXRKeypad(passHaver);
+    cp  = DXRComputerPersonal(passHaver);
+    cs  = DXRComputerSecurity(passHaver);
+    atm = DXRATM(passHaver);
+
+    if (k!=None){
+        if (password == k.validCode) {
+            k.bCodeKnown = True;
+        }
+    } else if (cp!=None){
+        cp.SetAccountKnownByPassword(password);
+    } else if (cs!=None){
+        cs.SetAccountKnownByPassword(password);
+    } else if (atm!=None){
+        atm.SetAccountKnownByPassword(password);
+    }
 #endif
 }
 

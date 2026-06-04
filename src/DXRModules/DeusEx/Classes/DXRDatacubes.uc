@@ -6,6 +6,10 @@ var float min_hack_adjust, max_hack_adjust;
 function CheckConfig()
 {
     local int i;
+    local string s, item;
+    local DebugBox db;
+    local Vector min_ext,max_ext;
+
     min_hack_adjust = 0.4;
     max_hack_adjust = 1.5;
 
@@ -14,10 +18,32 @@ function CheckConfig()
     else
         vanilla_datacubes_rules();
 
+    FindActorExtents(min_ext,max_ext);
     for(i=0;i<ArrayCount(datacubes_rules);i++) {
-        datacubes_rules[i] = FixSafeRule(datacubes_rules[i]);
+        datacubes_rules[i] = FixSafeRule(datacubes_rules[i],min_ext,max_ext);
         datacubes_rules[i] = ApplyDefaultTextPackage(datacubes_rules[i]);
     }
+
+    if (#bool(debug)){
+        for(i=0;i<ArrayCount(datacubes_rules);i++) {
+            if (datacubes_rules[i].item_name=='') continue;
+
+            item = string(datacubes_rules[i].item_name);
+            item = item $" ("$GetHumanTextTagName(string(datacubes_rules[i].item_name), datacubes_rules[i].package_name)$")";
+
+
+            s = CR()$"Allow: "$datacubes_rules[i].allow;
+            s = s $ CR()$"Rule: "$i;
+            db = class'DebugBox'.static.CreateDB(self,datacubes_rules[i].min_pos,datacubes_rules[i].max_pos,,'DXRDatacubes',item,s);
+            if (datacubes_rules[i].allow){
+                db.SetBoxColour(0,255,0);
+            } else {
+                db.SetBoxColour(255,0,0);
+            }
+            db.Tag = datacubes_rules[i].item_name;
+        }
+    }
+
 
     Super.CheckConfig();
 }
@@ -360,22 +386,22 @@ function vanilla_datacubes_rules()
     case "06_HONGKONG_WANCHAI_STREET":
         //"Insurgent"
         datacubes_rules[i].item_name = '06_Book16';
-        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
-        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
         datacubes_rules[i].allow = true;
         i++;
 
         //Tai-Fun and Insurgent
         datacubes_rules[i].item_name = '06_Datacube21';
-        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
-        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
         datacubes_rules[i].allow = true;
         i++;
 
         //Police Vault entry code (in apartment, nowhere else)
         datacubes_rules[i].item_name = 'PoliceVaultPassword';
-        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
-        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
         datacubes_rules[i].allow = true;
         i++;
 
@@ -385,6 +411,18 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        //Maggie's Birthday (in apartment, nowhere else)
+        datacubes_rules[i].item_name = '06_Datacube05';
+        datacubes_rules[i].min_pos = vect(-1342,-1919,1920);
+        datacubes_rules[i].max_pos = vect(-65,-385,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '06_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = false;
+        i++;
 
         datacubes_rules[i].item_name = 'QuickStopATMPassword';
         datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
@@ -443,6 +481,57 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(-1694,-283,-677);
+        datacubes_rules[i].max_pos = vect(-1647,-384,-709);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Meeting Room Cabinet
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(1030,-733,480);
+        datacubes_rules[i].max_pos = vect(1060,-800,420);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Armoury Cabinet
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(1138,-2063,480);
+        datacubes_rules[i].max_pos = vect(1171,-2127,420);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Magnetic Resonance Room
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(-1310,958,-798);
+        datacubes_rules[i].max_pos = vect(-993,641,-657);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Locked Barracks Lockers 1 and 2
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(15,1553,-417);
+        datacubes_rules[i].max_pos = vect(-15,1774,-510);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Locked Barracks Locker 4
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(15,2129,-417);
+        datacubes_rules[i].max_pos = vect(-15,2158,-510);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Locked Shower Room Locker
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(-623,2450,-529);
+        datacubes_rules[i].max_pos = vect(-594,2480,-622);
+        datacubes_rules[i].allow = false;
         i++;
         break;
 
@@ -608,8 +697,8 @@ function vanilla_datacubes_rules()
         i++;
 
         datacubes_rules[i].item_name = '11_Datacube03';// DataCube0 and 2 have the same textTag
-        datacubes_rules[i].min_pos = vect(3587, -812, -487); //before gunther room
-        datacubes_rules[i].max_pos = vect(4322, -124, 74);
+        datacubes_rules[i].min_pos = vect(3617, -1198, -487); //before gunther room
+        datacubes_rules[i].max_pos = vect(4285,-850, 74);
         datacubes_rules[i].allow = false;
         i++;
 
@@ -1398,6 +1487,57 @@ function revision_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_MJ12LAB":
+        //Locked cabinet near karkian dissection
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(-1694,-283,-677);
+        datacubes_rules[i].max_pos = vect(-1647,-384,-709);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Meeting Room Cabinet
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(1030,-733,480);
+        datacubes_rules[i].max_pos = vect(1060,-800,420);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Armoury Cabinet
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(1138,-2063,480);
+        datacubes_rules[i].max_pos = vect(1171,-2127,420);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Magnetic Resonance Room
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(-1310,958,-798);
+        datacubes_rules[i].max_pos = vect(-993,641,-657);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Locked Barracks Lockers 1 and 2
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(15,1553,-417);
+        datacubes_rules[i].max_pos = vect(-15,1774,-510);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Locked Barracks Locker 4
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(15,2129,-417);
+        datacubes_rules[i].max_pos = vect(-15,2158,-510);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Locked Shower Room Locker
+        datacubes_rules[i].item_name = '06_Datacube25'; //UC Shutdown Code
+        datacubes_rules[i].min_pos = vect(-623,2450,-529);
+        datacubes_rules[i].max_pos = vect(-594,2480,-622);
+        datacubes_rules[i].allow = false;
         i++;
         break;
 

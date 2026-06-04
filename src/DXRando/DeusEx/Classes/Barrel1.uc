@@ -1,6 +1,7 @@
 class DXRBarrel1 injects #var(prefix)Barrel1;
 
 var travel ESkinColor _SkinColor;
+var bool initBarrel;
 
 function BeginPlay()
 {
@@ -10,18 +11,35 @@ function BeginPlay()
     Super.BeginPlay();
     bInvincible = false;
     _SkinColor = SkinColor;
+    initBarrel=true;
     SetTimer(0.1,False);
 }
 
 function Timer()
 {
     local DXRFlags f;
-    foreach AllActors(class'DXRFlags',f){break;}
-    if (f==None){
-        SetTimer(0.1,False);
-        return;
+
+    if (initBarrel){
+        foreach AllActors(class'DXRFlags',f){break;}
+        if (f==None){
+            SetTimer(0.1,False);
+            return;
+        }
+        AdjustBarrels();
+        initBarrel=False;
+
+        //Just in case somehow the barrel got pushed during the init
+        if (bPushSoundPlaying)
+        {
+            StopSound(pushSoundId);
+            AIEndEvent('LoudNoise', EAITYPE_Audio);
+            bPushSoundPlaying = False;
+        }
+
+    } else {
+        //For normal push sounds...
+        Super.Timer();
     }
-    AdjustBarrels();
 }
 
 function AdjustBarrels()

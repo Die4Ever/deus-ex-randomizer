@@ -32,6 +32,14 @@ local DXRando dxr;
     }
 #endif
 
+#ifdef vmd2
+    //Duplicated from VMD2's MissionIntro
+    if (Flags != None)
+    {
+        VMDSecondFrame();
+    }
+#endif
+
     Super(#var(prefix)MissionScript).Timer();
 
     // After the Intro conversation is over, tell the player to go on

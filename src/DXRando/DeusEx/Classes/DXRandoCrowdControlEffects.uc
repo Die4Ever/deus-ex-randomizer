@@ -652,6 +652,12 @@ function InitOnEnter() {
 
     if (isTimerActive('cc_invertMouseTimer')) {
         player().bInvertMouse = !bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
+    } else {
+        //If there's still valid mouse inversion defaults in data storage, revert to those, just in case
+        //the save was made during the inverted mouse effect
+        if (datastorage.HasConfigKey('cc_InvertMouseDef')==true){
+            player().bInvertMouse = bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
+        }
     }
 
     if (isTimerActive('cc_invertMovementTimer')) {

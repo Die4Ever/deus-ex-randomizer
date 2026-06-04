@@ -23,8 +23,10 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_AugLevels');
         CreateChoice(class'MenuChoice_ColorVision');
     }
-    if (#defined(vanilla||revision)){
+    if (#defined(vanilla||revision||gmdx)){
         CreateChoice(class'MenuChoice_GoalTextures');
+    }
+    if (#defined(vanilla||revision)){
         CreateChoice(class'MenuChoice_ScopeBlackout');
         CreateChoice(class'MenuChoice_ScopeScaling');
     }
@@ -32,6 +34,9 @@ function CreateChoices()
     if (#defined(vanilla)) {
         CreateChoice(class'MenuChoice_TextureSmoothing');
         CreateChoice(class'MenuChoice_AutoLamps');
+    }
+    if (#defined(vanilla||revision)){
+        CreateChoice(class'MenuChoice_DeathCam');
     }
     CreateChoice(class'MenuChoice_ToggleFashion');
     CreateChoice(class'MenuChoice_ConsoleFontSize');

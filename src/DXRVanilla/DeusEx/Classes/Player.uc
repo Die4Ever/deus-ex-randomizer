@@ -2714,6 +2714,21 @@ exec function DebugPassword(optional string password)
     }
 }
 
+exec function ForceCC(string effect)
+{
+    local DXRCrowdControl cc;
+    local string params[5];
+
+    cc = DXRCrowdControl(class'DXRCrowdControl'.static.Find());
+
+    if (cc!=None && cc.link!=None && cc.link.ccEffects!=None){
+        params[0]="1"; //This is usually a quantity
+        cc.link.ccEffects.doCrowdControlEvent(effect,params,TruePlayerName,0,30);
+    } else {
+        ClientMessage("Crowd Control not active");
+    }
+}
+
 state CheatFlying
 {
 ignores SeePlayer, HearNoise, Bump, TakeDamage;
@@ -2733,6 +2748,118 @@ ignores SeePlayer, HearNoise, Bump, TakeDamage;
 
         UpdateTimePlayed(deltaTime); //The timer for the game save
 
+    }
+}
+
+//Borrowed from DeusExPlayer, Dying::PlayerCalcView
+//Massively cut down for DXRando so that the game doesn't fade out or go back to the main menu, just spin forever and ever
+function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
+{
+    local vector ViewVect, HitLocation, HitNormal, whiteVec;
+    local float ViewDist;
+    local actor HitActor;
+    local float time, distTime;
+    local CCResidentEvilCam reCam;
+
+    ViewActor = Self;
+    if (bHidden)
+    {
+        // spiral up and around carcass
+        time = Level.TimeSeconds - FrobTime;
+        distTime = FMin(time,8.0);
+
+        if ( ((myKiller != None) && (killProfile != None) && (!killProfile.bKilledSelf)) ||
+            ((killProfile != None) && killProfile.bValid && (!killProfile.bKilledSelf)))
+        {
+            if ( killProfile.bValid && killProfile.bTurretKilled )
+                ViewVect = killProfile.killerLoc - Location;
+            else if ( killProfile.bValid && killProfile.bProximityKilled )
+                ViewVect = killProfile.killerLoc - Location;
+            else if (( !killProfile.bKilledSelf ) && ( myKiller != None ))
+                ViewVect = myKiller.Location - Location;
+            CameraLocation = Location;
+            CameraRotation = Rotator(ViewVect);
+        }
+        else
+        {
+            CameraRotation.Pitch = -16384;
+            CameraRotation.Yaw = (time * class'MenuChoice_DeathCam'.static.CameraSpinRotationMult()) % 65536;
+            ViewDist = 32 + distTime * 32;
+
+            // make sure we don't go through the ceiling
+            ViewVect = vect(0,0,1);
+            HitActor = Trace(HitLocation, HitNormal, Location + ViewDist * ViewVect, Location);
+            if ( HitActor != None )
+                CameraLocation = HitLocation;
+            else
+                CameraLocation = Location + ViewDist * ViewVect;
+        }
+    }
+    else
+    {
+        // use FrobTime as the cool DeathCam timer
+        FrobTime = Level.TimeSeconds;
+
+        reCam = CCResidentEvilCam(ViewTarget);
+
+        if (reCam!=None){
+            //Stay in fixed cameras until you're down
+            CameraRotation = reCam.Rotation;
+            CameraLocation = reCam.Location;
+        } else {
+            // make sure we don't go through the wall
+            ViewDist = 190;
+            ViewVect = vect(1,0,0) >> Rotation;
+            HitActor = Trace( HitLocation, HitNormal,
+                    Location - ViewDist * vector(CameraRotation), Location, false, vect(12,12,2));
+            if ( HitActor != None )
+                CameraLocation = HitLocation;
+            else
+                CameraLocation = Location - ViewDist * ViewVect;
+        }
+    }
+}
+
+function Actor GetKiller()
+{
+    if (!IsInState('Dying')) return None;
+
+    if (Enemy==None) return None;
+    if (Enemy==Self) return None;
+    if (DXRandoCrowdControlPawn(Enemy)!=None) return None; //Crowd Control Pawns aren't "Real"
+
+    return Enemy;
+}
+
+state Dying
+{
+    ignores all;
+    function PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
+    {
+        local DXRCameraModes camera;
+        local CCResidentEvilCam reCam;
+
+        if (class'MenuChoice_DeathCam'.static.IsKillCam() && GetKiller()!=None){
+            camera = DXRCameraModes(class'DXRCameraModes'.static.Find());
+            camera.EnableTempFixedCamera(true);
+
+            reCam = CCResidentEvilCam(ViewTarget);
+
+            if (reCam!=None){
+                CameraRotation = reCam.Rotation;
+                CameraLocation = reCam.Location;
+                return;
+            }
+        } else {
+            CalcDeathSpin(ViewActor,CameraLocation,CameraRotation);
+        }
+    }
+
+    function HighlightCenterObject()
+    {
+        if (class'MenuChoice_DeathCam'.static.IsKillCam()){
+            FrobTarget = GetKiller();
+        }
     }
 }
 

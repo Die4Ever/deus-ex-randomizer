@@ -31,21 +31,55 @@ event InitWindow()
         preset_custom_choice = true; // HACK: people coming from the Zero Rando installer probably want to see the difficulty choices
     }
     Init(GetDxr());
+    AddTimer(1.0,true,0,'PeriodicCrowdControlCheck');
 }
 
-function CheckCrowdControlConnection(DXRFlags f)
+function PeriodicCrowdControlCheck(int timerID, int invocations, int clientData)
+{
+    local DXRFlags f;
+    f = GetFlags();
+    if (f.crowdcontrol==1){
+        //If it's been turned on, stop the timer
+        _BindControls(false);
+        RemoveTimer(timerID);
+        return;
+    }
+
+    if (class'DXRMenuSelectDifficulty'.static.IsCrowdControlConnected(f)){
+        //_BindControls(true);
+        f.crowdcontrol=1; //Enabled (Streaming)
+        _BindControls(false);
+        RemoveTimer(timerID);
+    }
+}
+
+static function bool IsCrowdControlConnected(Actor a)
+{
+    local DXRandoCrowdControlLink ccLink;
+
+    if (a==None) return false;
+
+    //Look to see if there's a connected Crowd Control link
+    foreach a.AllActors(class'DXRandoCrowdControlLink',ccLink){
+        if (ccLink.IsConnected()){
+            //Crowd Control is connected!
+            return true;
+        }
+    }
+    return false;
+}
+
+static function CheckCrowdControlConnection(DXRFlags f)
 {
     local DXRandoCrowdControlLink ccLink;
 
     if (f==None) return;
 
-    //Look to see if there's a connected Crowd Control link
-    foreach f.AllActors(class'DXRandoCrowdControlLink',ccLink){
-        if (ccLink.IsConnected()){
-            //Crowd Control is connected!
-            f.crowdcontrol=1; //Enabled (Streaming)
-        }
+    if (IsCrowdControlConnected(f)){
+        //Crowd Control is connected!
+        f.crowdcontrol=1; //Enabled (Streaming)
     }
+
 }
 
 function BindControls(optional string action)

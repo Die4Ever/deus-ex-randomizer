@@ -255,6 +255,8 @@ function PostFirstEntry()
     RemoveStopWhenEncroach();
 
     FixStandingDancingBlockages();
+
+    NudgeItemsUnderOthers();
 }
 
 function AnyEntry()
@@ -377,6 +379,15 @@ function AdjustBookColours()
         }
     }
 
+}
+
+function NudgeItemsUnderOthers()
+{
+    local #var(prefix)Containers c;
+
+    foreach AllActors(class'#var(prefix)Containers',c){
+        NudgeOutOfOverlap(c);
+    }
 }
 
 // convert horizontal FOV (deg) -> vertical FOV (deg) for an aspect ratio
@@ -912,15 +923,21 @@ function MakeTurretsNonHostile()
 
 function FixUNATCOCarterCloset()
 {
-    local Inventory i;
-    local #var(DeusExPrefix)Decoration d;
+    local bool RevisionMaps;
+    local Vector max_pos,min_pos;
 
-    foreach RadiusActors(class'Inventory', i, 360, vectm(1075, -1150, 10)) {
-        i.bIsSecretGoal = true;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps){
+        min_pos = vectm(801,-1630,500);
+        max_pos = vectm(1374,-961,-70);
+    } else {
+        min_pos = vectm(818,-1454,510);
+        max_pos = vectm(1390,-785,-65);
     }
-    foreach RadiusActors(class'#var(DeusExPrefix)Decoration', d, 360, vectm(1075, -1150, 10)) {
-        d.bIsSecretGoal = true;
-    }
+    MassSetSecretGoalBox(class'Inventory', min_pos, max_pos, true);
+    MassSetSecretGoalBox(class'#var(DeusExPrefix)Decoration', min_pos, max_pos, true);
+
 }
 
 function FixAlexsEmail()
@@ -1585,17 +1602,10 @@ function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCom
             where--;
         }
 
-        ceag = new(con) class'ConEventAddGoal';
-        ceag.eventType = ET_AddGoal;
+        ceag = ConEventAddGoal(NewConEvent(con,cePrev,class'ConEventAddGoal'));
         ceag.goalName = goalName;
         ceag.bGoalCompleted = bGoalCompleted;
         ceag.goalText = goalText;
-        ceag.nextEvent = ce;
-        if (cePrev == None) {
-            con.eventList = ceag;
-        } else {
-            cePrev.nextEvent = ceag;
-        }
     }
 
     return ceag;

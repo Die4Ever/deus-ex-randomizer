@@ -635,13 +635,19 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     else if( a.Class == class'#var(prefix)AugCombat'
 #ifdef gmdx
     || a.Class == class'AugCombatStrength'
+#elseif vmd2
+    || a.Class == class'AugMechCombat'
 #endif
     ) {
         word = "Damage";
         shortDisplay = int(val * 100.0) $"%";
         return shortDisplay;
     }
-    else if( a.Class == class'#var(prefix)AugBallistic' || a.Class == class'#var(prefix)AugEMP' || a.Class == class'#var(prefix)AugEnviro' || a.Class == class'#var(prefix)AugShield') {
+    else if( a.Class == class'#var(prefix)AugBallistic' || a.Class == class'#var(prefix)AugEMP' || a.Class == class'#var(prefix)AugEnviro' || a.Class == class'#var(prefix)AugShield'
+#ifdef vmd2
+          || a.Class == class'AugMechDermal' || a.Class == class'AugMechEMP' || a.Class == class'AugMechEnviro' || a.Class == class'AugMechDermal' || a.Class == class'AugMechEnergy'
+#endif
+    ) {
         word = "Damage Reduction";
         if(#defined(injections) && #var(prefix)AugEMP(a)!=None && i==3) val = 0; // max level always 0%
         if(val < 0) {
@@ -650,7 +656,11 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int( (1.0 - val) * 100.0 ) $ "%";
         return shortDisplay;
     }
-    else if( a.Class == class'#var(prefix)AugCloak' || a.Class == class'#var(prefix)AugRadarTrans') {
+    else if( a.Class == class'#var(prefix)AugCloak' || a.Class == class'#var(prefix)AugRadarTrans'
+#ifdef vmd2
+          || a.Class == class'AugMechCloak'
+#endif
+    ) {
         word = "Energy Use";
         shortDisplay=int(a.EnergyRate * val) $"/min"; //Slightly shorter display
         return int(a.EnergyRate * val) $" per min";
@@ -703,7 +713,11 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int(val) $ " HP";
         return shortDisplay;
     }
-    else if( a.Class == class'#var(prefix)AugMuscle') {
+    else if( a.Class == class'#var(prefix)AugMuscle'
+#ifdef vmd2
+          || a.Class == class'AugMechMuscle'
+#endif
+    ) {
         word = "Strength";
         shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
@@ -713,7 +727,11 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
     }
-    else if( a.Class == class'#var(prefix)AugSpeed' || a.Class == class'AugNinja' || a.Class == class'AugOnlySpeed') {
+    else if( a.Class == class'#var(prefix)AugSpeed' || a.Class == class'AugNinja' || a.Class == class'AugOnlySpeed'
+#ifdef vmd2
+          || a.Class == class'AugMechSpeed'
+#endif
+    ) {
         word = "Speed";
         shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
@@ -723,7 +741,11 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
     }
-    else if( a.Class == class'#var(prefix)AugStealth') {
+    else if( a.Class == class'#var(prefix)AugStealth'
+#ifdef vmd2
+          || a.Class == class'AugMechStealth'
+#endif
+    ) {
         if(#defined(vmd)) {
             word = "Energy Cost Per Minute";
             shortDisplay=string(int(a.energyRate * val + 0.5));
@@ -739,13 +761,21 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
     }
-    else if( a.Class == class'#var(prefix)AugTarget') {
+    else if( a.Class == class'#var(prefix)AugTarget'
+#ifdef vmd2
+          || a.Class == class'AugMechTarget'
+#endif
+    ) {
         word = "Damage";
         f = -2.0 * val + 1.0;
         shortDisplay=int(f * 100.0) $ "%";
         return shortDisplay;
     }
-    else if(#var(prefix)AugVision(a) != None) { // allow subclasses
+    else if(#var(prefix)AugVision(a) != None   // allow subclasses
+#ifdef vmd2
+          || a.Class == class'AugMechVision'
+#endif
+    ) {
         word = "See-through walls distance";
         if(!#defined(balance) && i<2) return "--";
         if(val < 0)
@@ -838,24 +868,6 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     else if(
         a.Class.Name == 'AugDefenseNPC' //ADS for Walt
         || a.Class.Name == 'AugDefenseHeli' //ADS for Jock
-    ) {
-        word = "Values";
-        shortDisplay=string(val);
-        return shortDisplay;
-    }
-#endif
-
-#ifdef vmd2
-    // TODO: actual descriptions
-    else if(
-        a.Class.Name == 'AugMechCloak'
-        || a.Class.Name == 'AugMechDermal'
-        || a.Class.Name == 'AugMechEMP'
-        || a.Class.Name == 'AugMechEnergy'
-        || a.Class.Name == 'AugMechEnviro'
-        || a.Class.Name == 'AugMechSpeed'
-        || a.Class.Name == 'AugMechTarget'
-        || a.Class.Name == 'AugMechVision'
     ) {
         word = "Values";
         shortDisplay=string(val);

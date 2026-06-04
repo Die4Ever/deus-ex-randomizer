@@ -22,13 +22,21 @@ function int InitGoals(int mission, string map)
         loc=AddGoalLocation("09_NYC_GRAVEYARD", "Main Tunnel", NORMAL_GOAL, vect(-283.503448, -787.867920, -184.000000), rot(0, 0, -32768));
         AddActorLocation(loc, 7, vect(-347.961243,-736.953247,-163.610138), rot(0,-16416,0));
 
-        loc=AddGoalLocation("09_NYC_GRAVEYARD", "Open Grave", NORMAL_GOAL, vect(-766.879333, 501.505676, -88.109619), rot(0, 0, -32768));
+        if (!#defined(gmdx)){
+            loc=AddGoalLocation("09_NYC_GRAVEYARD", "Open Grave", NORMAL_GOAL, vect(-766.879333, 501.505676, -88.109619), rot(0, 0, -32768));
+        } else {
+            loc=AddGoalLocation("09_NYC_GRAVEYARD", "Open Grave", NORMAL_GOAL, vect(-767.879333, 509.505676, -88.109619), rot(0, 0, -32768));
+        }
         AddActorLocation(loc, 7, vect(-801.517029,480.807953,-8.614368), rot(0,16392,0));
 
         loc=AddGoalLocation("09_NYC_GRAVEYARD", "Tunnel Ledge", NORMAL_GOAL, vect(-1530.000000, 845.000000, -107.000000), rot(0, 0, -32768));
         AddActorLocation(loc, 7, vect(-1568.019653,909.726563,-89.847336), rot(1700,0,0));
 
-        loc=AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1103.000000,728.000000,48.000000), rot(0,0,-32768));
+        if (!#defined(gmdx)){
+            loc=AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1103.000000,728.000000,48.000000), rot(0,0,-32768));
+        } else {
+            loc=AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1104,736,48), rot(0,0,-32768));
+        }
         AddActorLocation(loc, 7, vect(1127.001465,763.400208,69.272461), rot(0,-32760,0));
 
         AddGoal("09_NYC_GRAVEYARD", "Jock", GOAL_TYPE1, 'BlackHelicopter1', PHYS_None);
@@ -67,7 +75,11 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 3, 'DataLinkTrigger2', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered2', PHYS_None);
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
+        if (!#defined(gmdx)){
+            loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
+        } else {
+            loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-475, 1024, -272), rot(0, 49152, 0));
+        }
         AddActorLocation(loc, 2, vect(-378, 978, -272), rot(0,0,0));
         AddMapMarker(class'Image09_NYC_Ship_Bottom',320,343,"W","Weld Point", loc,"A weld point can be located at the North end of the engine room.");
 
@@ -91,7 +103,11 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 2, vect(-4120, -816, -128), rot(0,0,0));
         AddMapMarker(class'Image09_NYC_Ship_Bottom',130,247,"W","Weld Point", loc,"A weld point can be located in the helipad storage room.");
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4752, 1536, -144), rot(0, -16384, 0));
+        if (!#defined(gmdx)){
+            loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4752, 1536, -144), rot(0, -16384, 0));
+        } else {
+            loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4752, 1536, -125), rot(0, -16384, 0));
+        }
         AddActorLocation(loc, 2, vect(-4717, 1501, -144), rot(0,0,0));
         AddMapMarker(class'Image09_NYC_Ship_Bottom',97,368,"W","Weld Point", loc,"A weld point can be located in the air control room of the helipad.");
 

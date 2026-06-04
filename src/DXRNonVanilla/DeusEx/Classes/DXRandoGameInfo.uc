@@ -241,6 +241,19 @@ exec function ShuffleGoals()
     }
 }
 
+//A summon function for easily getting things from the rando package
+exec function RSummon(string ClassName)
+{
+    local #var(PlayerPawn) p;
+
+    if(instr(ClassName, ".") == -1)
+        ClassName = "#var(package)." $ ClassName;
+
+    foreach AllActors(class'#var(PlayerPawn)',p){
+        p.Summon(ClassName);
+    }
+}
+
 exec function CheatsOn()
 {
     SetCheatsState(true);
