@@ -84,6 +84,7 @@
   - "Catch the News": Watch enough TV newscasts through the game with binoculars or a scope.
   - "Signs of the End": Look at the signs marking the different endings in Area 51 Sector 4.
   - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
+  - "Fire it up!": Use the pipe flame button in the coolant area of Area 51 Sector 4 (Mission 15).
 </details>
 
 ## Intra-Patch Changes
