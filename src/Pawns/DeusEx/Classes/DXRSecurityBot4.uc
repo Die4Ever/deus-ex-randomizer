@@ -34,6 +34,7 @@ defaultproperties
      AttitudeToPlayer=ATTITUDE_Ignore
      DrawType=DT_Mesh
      Mesh=LodMesh'DeusExCharacters.SecurityBot4'
+     Skin=Texture'SecurityBot4Tex1Gray' //So they are visually distinct from the scary GMDX bots
      SoundRadius=16
      SoundVolume=128
      AmbientSound=Sound'DeusExSounds.Robot.SecurityBot4Move'

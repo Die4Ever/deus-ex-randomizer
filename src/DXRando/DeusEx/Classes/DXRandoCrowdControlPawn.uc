@@ -60,4 +60,5 @@ defaultproperties
      Physics=PHYS_None
      bHighlight=False
      bHasShadow=False
+     Mass=0.0 //Prevents grenades from being proximity triggered by the pawn
 }

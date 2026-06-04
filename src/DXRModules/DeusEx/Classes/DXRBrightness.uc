@@ -18,6 +18,10 @@ function PreFirstEntry()
 {
     local ZoneInfo Z;
     local Light lght;
+    local #var(prefix)ElectricityEmitter ee;
+#ifdef gmdx
+    local Decoration d;
+#endif
 
     Super.PreFirstEntry();
 
@@ -31,6 +35,21 @@ function PreFirstEntry()
         class'DXRStoredLightFog'.static.Init(lght);
         class'DXRStoredLightType'.static.Init(lght);
     }
+
+    foreach AllActors(class'#var(prefix)ElectricityEmitter',ee){
+        class'DXRStoredLightType'.static.InitElecEmitter(ee);
+    }
+
+#ifdef gmdx
+    //GMDX loves to use invisible decorations for things it shouldn't
+    //Like an invisible (Actually very small) CageLight in Brooklyn Bridge Station and Free Clinic
+    foreach AllActors(class'Decoration',d){
+        //class'DXRStoredLightFog'.static.Init(d); //I want to believe in my heart that they wouldn't do something like adding fog to non-Lights
+        if (d.LightType!=LT_None){ //Let's be a little bit picky here, at least
+            class'DXRStoredLightType'.static.Init(d);
+        }
+    }
+#endif
 }
 
 static function Upgrade(#var(PlayerPawn) player, int old_version)
@@ -57,11 +76,19 @@ function AnyEntry()
     Super.AnyEntry();
 
     MigrateSavedData(); //TODO: To be removed when the ZoneBrightnessData is stripped out
-    //UpdateStoredData(); //If more is added to DXRStoredZoneInfo or DXRStoredLightFog
+    UpdateStoredData(); //If more is added to DXRStoredZoneInfo or DXRStoredLightFog
 
     IncreaseBrightness(GetSavedBrightnessBoost());
     ApplyFog(class'MenuChoice_Fog'.default.enabled);
     ApplyEpilepsySafe(class'MenuChoice_Epilepsy'.default.enabled);
+}
+
+function UpdateStoredData(){
+    local DXRStoredLightType slt;
+
+    foreach AllActors(class'DXRStoredLightType',slt){
+        slt.Upgrade();
+    }
 }
 
 //TODO: To be removed when the ZoneBrightnessData is stripped out
@@ -145,18 +172,23 @@ function ApplyFog(bool enabled)
 function ApplyEpilepsySafe(bool enabled)
 {
     local DXRStoredLightType slt;
-    local Light lght;
+    local Actor lght;
+#ifdef gmdx
+    local LightCoronaFlicker lcf;
+#endif
 
     foreach AllActors(class'DXRStoredLightType',slt){
-        lght = Light(slt.Owner);
-        if (lght==None) continue;
+        slt.ApplyEpilepsyFix(enabled);
+    }
 
-        if (enabled){
-            lght.LightType = LT_Pulse; //more gentle light mode
-        } else {
-            lght.LightType = slt.origLightType;
+#ifdef gmdx
+    if (enabled){
+        foreach AllActors(class'LightCoronaFlicker',lcf){
+            //These things are the devil and I don't want to try to deal with them.
+            lcf.Destroy();
         }
     }
+#endif
 }
 
 function IncreaseBrightness(int brightness)

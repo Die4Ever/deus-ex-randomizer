@@ -142,12 +142,24 @@ static function SetZombieTime(#var(DeusExPrefix)Carcass carc, float time)
 }
 #endif
 
+static function bool IsBeheadedCorpseType(class<#var(DeusExPrefix)Carcass> carcClass)
+{
+    local string className;
+
+    if(!#defined(gmdx)) return false;
+
+    className = string(carcClass);
+
+    return InStr(className,"CarcassBeheaded")!=-1;
+}
+
 function bool CheckReanimateCorpse(#var(DeusExPrefix)Carcass carc, float time)
 {
     // return true to compress the array
     if(carc == None) return true;
     if(carc.bDeleteMe) return true;
     if(!carc.bHidden && carc.bNotDead) return true; //only allow hidden "unconscious" bodies to respawn
+    if (IsBeheadedCorpseType(carc.class)) return true; //Beheaded bodies can't reanimate
 
     // wait for Zombie Time!
     if(time > curtime) return false;
@@ -175,6 +187,10 @@ static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#
             livingClassName = string(carcClass);
             livingClassName = module.ReplaceText(livingClassName,"NametagCarcass","Carcass");// for our Aug guys
 
+            if (IsBeheadedCorpseType(carcClass)){
+                return ""; //No head, real dead
+            }
+
             //Strip everything Carcass onwards (Revision has things like MJ12TroopCarcassA, MJ12TroopCarcassB... )
             i = module.InStr(livingClassName,"Carcass");
             livingClassName = module.Left(livingClassName,i);
@@ -200,8 +216,13 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local string s;
 
     if(carc==None || carc.bDeleteMe) return False;
+    if (IsBeheadedCorpseType(carc.class)) return False;
 
     livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
+    if (livingClassName==""){
+        //We don't have a name, so don't try
+        return False;
+    }
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn',true);
 
 #ifdef revision

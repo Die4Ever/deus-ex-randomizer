@@ -27,7 +27,12 @@ function int InitGoals(int mission, string map)
         AddActorLocation(pPit, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
         AddMapMarker(class'Image05_NYC_MJ12Lab',325,226,"P","Paul", pPit,"Paul can be located in the greasel pit accessed through the vent on the back wall of the nanotech lab.  If Paul is in this location, your equipment will be located in the armory.");
 
-        pRobot = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+        if(!#defined(gmdx)){
+            pRobot = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+        } else {
+            //GMDX has a little counter where Paul is, and he kind of stands on it in the vanilla position.  Slightly nudged forward.
+            pRobot = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1125,210), rot(0, 16392, 0));
+        }
         AddActorLocation(pRobot, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
         AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P","Paul", pRobot,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
 

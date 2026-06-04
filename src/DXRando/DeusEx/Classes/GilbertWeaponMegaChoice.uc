@@ -80,11 +80,7 @@ function GenerateWeaponChoice()
         log("GilbertWeaponMegaChoice found a flag ref on at least one of the conversation options... You must have a conversation altering mod installed? Confix?");
     }
 
-    megaChoiceEv = new(c) class'ConEventChoice';
-    megaChoiceEv.eventType=ET_Choice;
-    megaChoiceEv.nextEvent = insertPoint.nextEvent;
-    insertPoint.nextEvent = megaChoiceEv;
-    megaChoiceEv.conversation = c;
+    megaChoiceEv = ConEventChoice(class'DXRActorsBase'.static.NewConEvent(c,insertPoint,class'ConEventChoice'));
     megaChoiceEv.bClearScreen = true;
     megaChoiceEv.label="megachoice";
 

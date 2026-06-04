@@ -690,6 +690,8 @@ function AnyEntryMapFixes()
     local Mover door;
     local ConEventSpeech ces;
     local Conversation c;
+    local ConEvent ce;
+    local ConEventTransferObject ceto;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)BlackHelicopter jock;
     local bool raidStarted;
@@ -711,6 +713,22 @@ function AnyEntryMapFixes()
     case "04_NYC_UNATCOHQ":
         // restore a couple troop barks if you didn't kill Lebedev, example: "A little trigger-shy, eh?  You'll get used to it."
         FixConversationFlagJump(GetConversation('M04TroopBarks'), 'AnnaEntrance_Played', true, 'PlayerKilledLebedev', false);
+
+        //Sam has an option to give you shotgun ammo, but he has some in his inventory.
+        //Just make all of his item transfers come from a non-existent actor instead.
+        c = GetConversation('M04MeetCarter');
+        if (c!=None){
+            ce = c.eventList;
+            while(ce!=None){
+                ceto = ConEventTransferObject(ce);
+                if (ceto!=None){
+                    ceto.fromName="SamsImaginaryFriend";
+                    ceto.fromActor=None;
+                }
+                ce = ce.nextEvent;
+            }
+
+        }
         break;
 
     case "04_NYC_BATTERYPARK":

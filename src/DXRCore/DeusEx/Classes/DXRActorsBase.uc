@@ -38,7 +38,53 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function SwapAll(string classname, float percent_chance)
+function NudgeOutOfOverlap(Actor a)
+{
+    local Actor other,basedActor;
+    local Actor based[10];
+    local vector baseOffset[10];
+    local vector newLoc;
+    local int i;
+
+    foreach a.RadiusActors(class'Actor',other,Max(a.CollisionHeight,a.CollisionRadius)*2){ //A bit of radius slop, since this is spherical radius, afaik
+        if (other==a) continue; //Don't nudge yourself
+        if (Inventory(Other)==None && #var(prefix)InformationDevices(Other)==None) continue; //Only nudge inventory objects and information devices for now
+        if (class'DXRActorsBase'.static.ActorOverlappingOther(other,a,1.01)==False) continue; //Check for cylindrical overlap (1.0 slop factor seemed not *quite* right for really bad edge cases)
+
+        for(i=0;i<ArrayCount(based);i++){ based[i]=None; } //Clear the array
+        i=0;
+        foreach other.BasedActors(class'Actor',basedActor){
+            if (DynamicLight(basedActor)==None) continue; //Skip everything but dynamic lights (For datacubes) for now?
+            baseOffset[i]=basedActor.Location - other.Location;
+            based[i++]=basedActor;
+            basedActor.SetBase(Level); //Temporarily store this based on the level (Dynamic Light self destructs with None base)
+        }
+
+        //Nudge it up
+        newLoc = other.Location;
+        newLoc.Z = a.Location.Z + a.CollisionHeight + other.CollisionHeight + 5;
+        other.SetLocation(newLoc);
+        other.SetPhysics(PHYS_Falling);
+        other.SetBase(None); //SetLocation should have nuked it already, but just in case
+
+        if (other.bCollideActors && !other.bBlockActors){
+            //Make sure bBlockActors is set so the nudged object doesn't
+            //fall through whatever we're nudging it out of
+            other.SetCollision(true, true, other.bBlockPlayers);
+        }
+
+        //Put the based actors back
+        for(i=0;i<ArrayCount(based);i++){
+            if (based[i]==None) continue;
+            based[i].SetLocation(newLoc+baseOffset[i]);
+            based[i].SetBase(other);
+        }
+
+        //player().ClientMessage("Nudging "$other$" up out of "$a);
+    }
+}
+
+function SwapAll(string classname, float percent_chance, optional bool fix_based)
 {
     local Actor temp[4096];
     local Actor a;
@@ -70,7 +116,7 @@ function SwapAll(string classname, float percent_chance)
         if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself
         if(slot >= i) slot++;
-        Swap(temp[i], temp[slot]);
+        Swap(temp[i], temp[slot],,fix_based);
     }
 }
 
@@ -708,19 +754,35 @@ static function bool PawnIsInCombat(Pawn p)
     return false;
 }
 
-function bool Swap(Actor a, Actor b, optional bool retainOrders)
+function bool Swap(Actor a, Actor b, optional bool retainOrders, optional bool fixBased)
 {
     local vector newloc, oldloc, aloc, bloc;
     local Vector HitLocation, HitNormal;
     local rotator newrot;
     local bool asuccess, bsuccess;
-    local Actor abase, bbase, HitActor;
+    local Actor abase, bbase, HitActor, basedActor;
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers, AbOwned;
     local EPhysics aphysics, bphysics;
 
     if( a == b ) return true;
 
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
+
+    if (fixBased) {
+        //give things physics again, before the base is swapped out
+        foreach a.BasedActors(class'Actor',basedActor){
+            if (basedActor.Region.Zone.bWaterZone) continue; //Just don't
+            if (basedActor.bCollideActors==False) continue;
+            if (basedActor.bBlockActors==False) continue;
+            basedActor.SetPhysics(PHYS_Falling);
+        }
+        foreach b.BasedActors(class'Actor',basedActor){
+            if (basedActor.Region.Zone.bWaterZone) continue; //Just don't
+            if (basedActor.bCollideActors==False) continue;
+            if (basedActor.bBlockActors==False) continue;
+            basedActor.SetPhysics(PHYS_Falling);
+        }
+    }
 
     AbCollideActors = a.bCollideActors;
     AbBlockActors = a.bBlockActors;
@@ -1027,8 +1089,109 @@ static function ConEvent NewConEvent(Conversation c, ConEvent prev, class<ConEve
 {
     local ConEvent e;
     e = new(c) newclass;
-    InitConEventType(e);
+    InitConEventType(e); //Make sure the eventType is populated
     AddConEvent(c, prev, e);
+    return e;
+}
+
+static function ConEventSpeech NewConEventSpeech(Conversation c, ConEvent prev, string speech, optional int soundID)
+{
+    local ConEventSpeech e;
+
+    e = ConEventSpeech(NewConEvent(c,prev,class'ConEventSpeech'));
+
+    e.conSpeech = new(c) class'ConSpeech';
+    e.conSpeech.speech = speech;
+    e.conSpeech.soundID = soundID;
+
+    return e;
+}
+
+static function ConEventSetFlag NewConEventSetFlag(Conversation c, ConEvent prev, name flagName, bool value, int expiry)
+{
+    local ConEventSetFlag e;
+
+    e = ConEventSetFlag(NewConEvent(c,prev,class'ConEventSetFlag'));
+
+    e.flagRef = new(c) class'ConFlagRef';
+    e.flagRef.flagName=flagName;
+    e.flagRef.value=value;
+    e.flagRef.expiration=expiry;
+
+    return e;
+}
+
+static function ConEventMoveCamera NewConEventMoveCamera(Conversation c, ConEvent prev, int camPos)
+{
+    local ConEventMoveCamera cam;
+
+    cam = ConEventMoveCamera(NewConEvent(c,prev,class'ConEventMoveCamera'));
+
+    cam.cameraType = CT_Predefined;
+    switch (camPos){
+        case 0:  cam.cameraPosition = CP_SideTight; break;
+        case 1:  cam.cameraPosition = CP_SideMid; break;
+        case 2:  cam.cameraPosition = CP_SideAbove; break;
+        case 3:  cam.cameraPosition = CP_SideAbove45; break;
+        case 4:  cam.cameraPosition = CP_ShoulderLeft; break;
+        case 5:  cam.cameraPosition = CP_ShoulderRight; break;
+        case 6:  cam.cameraPosition = CP_HeadShotTight; break;
+        case 7:  cam.cameraPosition = CP_HeadShotMid; break;
+        case 8:  cam.cameraPosition = CP_HeadShotLeft; break;
+        case 9:  cam.cameraPosition = CP_HeadShotRight; break;
+        case 10: cam.cameraPosition = CP_HeadShotSlightRight; break;
+        case 11: cam.cameraPosition = CP_HeadShotSlightLeft; break;
+        case 12: cam.cameraPosition = CP_StraightAboveLookingDown; break;
+        case 13: cam.cameraPosition = CP_StraightBelowLookingUp; break;
+        case 14: cam.cameraPosition = CP_BelowLookingUp; break;
+
+        //Randomized in groups
+        //For when you maybe want a bit of variation, but still want a somewhat consistent shot
+        //Note that these use unseeded RNG, so will change on level load
+        case 20: //Side shots
+            switch(Rand(4)){
+                case 0: cam.cameraPosition = CP_SideTight; break;
+                case 1: cam.cameraPosition = CP_SideMid; break;
+                case 2: cam.cameraPosition = CP_SideAbove; break;
+                case 3: cam.cameraPosition = CP_SideAbove45; break;
+            }
+            break;
+        case 21: //Shoulder shots
+            switch(Rand(2)){
+                case 0: cam.cameraPosition = CP_ShoulderLeft; break;
+                case 1: cam.cameraPosition = CP_ShoulderRight; break;
+            }
+            break;
+        case 22: //Head shots
+            switch(Rand(6)){
+                case 0: cam.cameraPosition = CP_HeadShotTight; break;
+                case 1: cam.cameraPosition = CP_HeadShotMid; break;
+                case 2: cam.cameraPosition = CP_HeadShotLeft; break;
+                case 3: cam.cameraPosition = CP_HeadShotRight; break;
+                case 4: cam.cameraPosition = CP_HeadShotSlightRight; break;
+                case 5: cam.cameraPosition = CP_HeadShotSlightLeft; break;
+            }
+            break;
+        case 23: //Bad ones, really don't
+            switch(Rand(3)){
+                case 0: cam.cameraPosition = CP_StraightAboveLookingDown; break;
+                case 1: cam.cameraPosition = CP_StraightBelowLookingUp; break;
+                case 2: cam.cameraPosition = CP_BelowLookingUp; break;
+            }
+            break;
+    }
+    cam.cameraTransition = TR_Jump;
+
+    return cam;
+}
+
+static function ConEventTrigger NewConEventTrigger(Conversation c, ConEvent prev, name triggerTag)
+{
+    local ConEventTrigger e;
+
+    e = ConEventTrigger(NewConEvent(c,prev,class'ConEventTrigger'));
+    e.triggerTag = triggerTag;
+
     return e;
 }
 
@@ -1040,6 +1203,7 @@ static function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
         prev.nextEvent = e;
     }
     else {
+        e.nextEvent = c.eventList;
         c.eventList = e;
     }
 }
@@ -1413,6 +1577,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
         newactor.Mass = a.Mass;
         newactor.Buoyancy = a.Buoyancy;
         newactor.Texture = a.Texture;
+        newactor.Skin = a.Skin;
         newactor.Mesh = a.Mesh;
         for(i=0; i<ArrayCount(a.Multiskins); i++) {
             newactor.Multiskins[i] = a.Multiskins[i];
@@ -1669,6 +1834,15 @@ function rotator GetRandomYaw(optional bool unseeded)
     return r;
 }
 
+//This version just makes secret goal boxes for basically everything
+function MassSetSecretGoalBoxAll(vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
+{
+    MassSetSecretGoalBox(class'NavigationPoint', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'ScriptedPawn', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Inventory', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Decoration', minLoc, maxLoc, IsSecret, OppositeOutside);
+}
+
 function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
 {
     local float spare;
@@ -1689,6 +1863,10 @@ function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector ma
         spare = minLoc.Z;
         minLoc.Z = maxLoc.Z;
         maxLoc.Z = spare;
+    }
+
+    if (#bool(debug)){
+        class'DebugBox'.static.CreateDB(self,minLoc,maxLoc,,'SecretGoalBox',String(classToFind),"Is Secret: "$IsSecret$"  Opposite Outside: "$ OppositeOutside);
     }
 
     foreach AllActors(classToFind,a){
@@ -2005,9 +2183,65 @@ function Vector GetCenter(Actor test)
     return (MinVect+MaxVect)/2;
 }
 
-function safe_rule FixSafeRule(safe_rule r)
+const EXTENT_BUFFER=100;
+function FindActorExtents(out vector min_ext, out vector max_ext, optional bool force_test)
+{
+    local Actor a;
+    local Vector actLoc;
+    local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)Vehicles v;
+
+    if (DXRandoTests(Level.Game)!=None && force_test==False){
+        //Don't do this in tests unless explicitly forced
+        return;
+    }
+
+    foreach AllActors(class'Actor',a){
+        if (a.Region.iLeaf==-1) continue; //Skip actors that aren't inside the BSP
+        if (a.Region.Zone.IsA('SkyZoneInfo')) continue; //Skip actors in sky boxes
+        //if (Info(a)!=None) continue;
+
+        actLoc = a.Location;
+        if (#var(prefix)ScriptedPawn(a)!=None){
+            sp = #var(prefix)ScriptedPawn(a);
+            if (sp.bInWorld==False){
+                actLoc = sp.WorldPosition;
+            }
+        } else if (#var(prefix)Vehicles(a)!=None){
+            v = #var(prefix)Vehicles(a);
+            #ifndef hx
+            if (v.bInWorld==False){
+                actLoc = v.WorldPosition;
+            }
+            #endif
+        }
+
+        //Expand the extents based on this actor
+        if (actLoc.X > max_ext.X) max_ext.X = actLoc.X;
+        if (actLoc.Y > max_ext.Y) max_ext.Y = actLoc.Y;
+        if (actLoc.Z > max_ext.Z) max_ext.Z = actLoc.Z;
+
+        if (actLoc.X < min_ext.X) min_ext.X = actLoc.X;
+        if (actLoc.Y < min_ext.Y) min_ext.Y = actLoc.Y;
+        if (actLoc.Z < min_ext.Z) min_ext.Z = actLoc.Z;
+    }
+
+    min_ext.X = min_ext.X - EXTENT_BUFFER;
+    min_ext.Y = min_ext.Y - EXTENT_BUFFER;
+    min_ext.Z = min_ext.Z - EXTENT_BUFFER;
+
+    max_ext.X = max_ext.X + EXTENT_BUFFER;
+    max_ext.Y = max_ext.Y + EXTENT_BUFFER;
+    max_ext.Z = max_ext.Z + EXTENT_BUFFER;
+}
+
+function safe_rule FixSafeRule(safe_rule r, optional vector min_ext, optional vector max_ext)
 {
     local float a, b;
+    local bool use_extents;
+
+    use_extents = (min_ext.X!=0 || min_ext.Y!=0 || min_ext.Z!=0 || max_ext.X!=0 || max_ext.Y!=0 || max_ext.Z!=0);
+
     r.min_pos *= coords_mult;
     r.max_pos *= coords_mult;
 
@@ -2025,6 +2259,11 @@ function safe_rule FixSafeRule(safe_rule r)
     b = FMax(r.min_pos.Z, r.max_pos.Z);
     r.min_pos.Z = a;
     r.max_pos.Z = b;
+
+    if (use_extents){
+        r.min_pos = ApplyVectorExtents(r.min_pos,min_ext,max_ext);
+        r.max_pos = ApplyVectorExtents(r.max_pos,min_ext,max_ext);
+    }
 
     return r;
 }
@@ -2092,6 +2331,19 @@ function RemoveMoverPrePivot(Mover m)
 function Vector GetMoverCenter(Mover m)
 {
     return m.Location-(m.PrePivot >> m.Rotation);
+}
+
+static function Vector ApplyVectorExtents(vector in_vect, vector ext_min, vector ext_max)
+{
+    if (in_vect.X < ext_min.X) in_vect.X = ext_min.X;
+    if (in_vect.Y < ext_min.Y) in_vect.Y = ext_min.Y;
+    if (in_vect.Z < ext_min.Z) in_vect.Z = ext_min.Z;
+
+    if (in_vect.X > ext_max.X) in_vect.X = ext_max.X;
+    if (in_vect.Y > ext_max.Y) in_vect.Y = ext_max.Y;
+    if (in_vect.Z > ext_max.Z) in_vect.Z = ext_max.Z;
+
+    return in_vect;
 }
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
@@ -2232,9 +2484,7 @@ static function MarkDataVaultImagesAsViewed(#var(PlayerPawn) p)
 
 static function bool IsUsingOggMusic(#var(PlayerPawn) player)
 {
-#ifndef revision
-    return False;
-#else
+#ifdef revision
     if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
         //Vanilla Maps in Revision only support the original tracker music
         return False;
@@ -2242,6 +2492,17 @@ static function bool IsUsingOggMusic(#var(PlayerPawn) player)
         //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
         return True;
     }
+    return False;
+#elseif vmd2
+    if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
+        //Vanilla Maps only support the original tracker music
+        return False;
+    }else if (class'VMDBufferPlayer'.Default.bUseRevisionSoundtrack){
+        //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
+        return True;
+    }
+    return False;
+#else
     return False;
 #endif
 }
@@ -2373,6 +2634,69 @@ function bool DXRStartDataLinkTransmission( String DatalinkName )
 #else
     return player().StartDataLinkTransmission( DatalinkName );
 #endif
+}
+
+//#region Belt Slots
+static function bool IsAssignableBeltPos(int pos)
+{
+    return pos >= 1 && pos <= 9;
+}
+
+function SwapBeltItems(int posA, int posB)
+{
+    local HUDObjectBelt belt;
+    local Inventory itemA, itemB;
+
+    if (!IsAssignableBeltPos(posA) || !IsAssignableBeltPos(posB)) return;
+
+    belt = DeusExRootWindow(dxr.player.rootWindow).hud.belt;
+
+    itemA = belt.GetObjectFromBelt(posA);
+    itemB = belt.GetObjectFromBelt(posB);
+    belt.ClearPosition(posA);
+    belt.ClearPosition(posB);
+    belt.AddObjectToBelt(itemA, posB, false);
+    belt.AddObjectToBelt(itemB, posA, false);
+}
+
+function PercolateBeltItem(int posStart, int posEnd)
+{
+    while (posStart < posEnd) {
+        SwapBeltItems(posStart, posStart + 1);
+        posStart++;
+    }
+    while (posStart > posEnd) {
+        SwapBeltItems(posStart, posStart - 1);
+        posStart--;
+    }
+}
+//#endregion
+
+//Is the Location of a inside the collision cylinder of other?
+//Note that this does mean there still can be some overlap, we're
+//just making sure the center of the object is outside the collision radius
+static function bool ActorOverlappingOther(Actor a, Actor other, optional float slopFactor)
+{
+    local vector vA,vOther;
+
+    if (slopFactor==0){
+        slopFactor = 1.0;
+    }
+
+    if (a==None || other==None) return false; //Can't overlap nothing
+    if (a==other) return false; //Can't overlap yourself
+    if (a.bHidden || other.bHidden) return false;  //Hidden objects can't overlap
+
+    if (a.Location.Z > (other.Location.Z + (other.CollisionHeight*slopFactor))) return false; //Above the other
+    if (a.Location.Z < (other.Location.Z - (other.CollisionHeight*slopFactor))) return false; //Below the other
+
+    //Compare on a flat plane for the radius
+    vA     =     a.Location * vect(1,1,0);
+    vOther = other.Location * vect(1,1,0);
+
+    if (a.VSize(vA-vOther) > (other.CollisionRadius*slopFactor)) return false; //Further away than the collision radius
+
+    return true;
 }
 
 //#region Unit Handling

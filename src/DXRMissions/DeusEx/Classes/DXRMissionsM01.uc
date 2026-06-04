@@ -31,11 +31,11 @@ function int InitGoals(int mission, string map)
         AddActorLocation(harleydock, PLAYER_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
 
     //Boat locations
-    boat_pauldock = AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL , vect(-5122.414551, 10138.813477, -269.806213), rot(0, 0, 0));
-    boat_harleydock = AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4535.585938, -10046.186523, -269.806213), rot(0, 0, 0));
+    boat_pauldock = AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL , vect(-5122.414551, 10138.813477, -269.806213), rot(0, 16384, 0));
+    boat_harleydock = AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4535.585938, -10046.186523, -269.806213), rot(0, 49152, 0));
     if(bMemes) {
-        boat_hut = AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4578.414551, 267.813477, 24.193787), rot(0, 0, 0));
-        boat_top = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 326, 2108.193848), rot(0, 0, 0));
+        boat_hut = AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4578.414551, 267.813477, 24.193787), rot(0, 49152, 0));
+        boat_top = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 326, 2108.193848), rot(0, 49152, 0));
     }
 
     // Leo vs start location mutual exclusions
@@ -110,10 +110,10 @@ function int InitGoalsRev(int mission, string map)
 
     //Boat locations
     boat_pauldock = AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL, vect(-5023.598145,9131.867188,-269.806213), rot(0, 16192, 0));
-    boat_harleydock = AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1, vect(4471, -10046.186523, -269.806213), rot(0, 16192, 0));
+    boat_harleydock = AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1, vect(4471, -10046.186523, -269.806213), rot(0, 49152, 0));
     if(bMemes) {
-        boat_top = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1, vect(3682.585449, 231.813477, 2108.193848), rot(0, 16192, 0));
-        boat_hut = AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1, vect(-4571,135,24), rot(0, 16192, 0));
+        boat_top = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1, vect(3682.585449, 326, 2108.193848), rot(0, 49152, 0));
+        boat_hut = AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1, vect(-4571,135,24), rot(0, 49152, 0));
     }
 
 
@@ -242,9 +242,5 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             $ "|nIf you get really stuck then click on Show Spoilers, Show Nanokeys, or Show Datacubes.";
 
         SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0,0), text, "LeoHintCube", true);
-
-        if(ScriptedPawn(g.actors[0].a) != None) {
-            RemoveFears(ScriptedPawn(g.actors[0].a));
-        }
     }
 }
