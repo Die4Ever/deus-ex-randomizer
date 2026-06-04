@@ -51,6 +51,23 @@ static function DXRStoredLightType InitElecEmitter(#var(prefix)ElectricityEmitte
     return slf;
 }
 
+//Timer for enabling and disabling the lighting on electricity emitters
+function Timer()
+{
+    local #var(prefix)ElectricityEmitter ee;
+
+    ee = #var(prefix)ElectricityEmitter(Owner);
+
+    if (ee==None) return;
+
+    if (ee.bIsOn){
+        ee.LightType = LT_Pulse;
+        ee.LightPeriod = origLightPeriod;
+    } else {
+        ee.LightType = LT_None;
+    }
+}
+
 
 function ApplyEpilepsyFix(bool enabled)
 {
@@ -63,16 +80,14 @@ function ApplyEpilepsyFix(bool enabled)
     if (ee!=None){
         //Handling for flickering electricity emitters, which switch between LT_Steady and LT_None randomly
         if (enabled){
-            ee.bFlicker=False;
-            if (ee.bIsOn){
-                ee.LightType = LT_Pulse;
-                //ee.LightType = LT_Steady; //Maybe flickering electricity emitters should just become steady light sources? idk
-                ee.LightPeriod = origLightPeriod;
-                ee.SetHiddenBeam(False); //Make sure the electricity isn't hidden
-            }
+            ee.bEmitLight=False;
+            ee.LightType = LT_Pulse;
+            SetTimer(0.1,True); //Timer will manage the lighting
         } else {
             ee.LightType = LT_None;
-            ee.bFlicker=True;
+            ee.bEmitLight=True;
+            SetTimer(0.0,False); //Disable the timer again
+
         }
     } else {
         //Standard light handling
