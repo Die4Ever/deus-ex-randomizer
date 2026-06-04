@@ -2131,6 +2131,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(7235,-8823,-5134),40,40);
         bt.bDestroyOthers=False;
 
+        bt = class'BingoTrigger'.static.Create(self,'fire_start',vectm(7699,-8800,-5969));
+
         break;
     //#endregion
     }
@@ -2700,7 +2702,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Just make the mask from scratch instead of trying to adjust
                 newMissions = #bit(1,3,4,6,11,12,14,15);
             } else if (#defined(gmdx)){
-                //Somehow Revision (v9, at least) only has rebreathers in Hong Kong???
+                //Somehow GMDX (v9, at least) only has rebreathers in Hong Kong???
                 //Tong's Base, Lucky Money, and Level 2 Labs
                 newMissions = #bit(6);
             }
@@ -2742,14 +2744,6 @@ simulated function int tweakBingoMissions(string event, int missions)
             if (#defined(gmdx)){
                 //GMDX adds one on Liberty Island
                 newMissions = newMissions | #bit(1);
-            }
-            break;
-        case "VialAmbrosia_Activated":
-            //Vanilla is #bit(9,14)
-            //Revision matches Vanilla
-            if (#defined(gmdx)){
-                //GMDX adds a bunch in Area 51 Entrance
-                newMissions = newMissions | #bit(15);
             }
             break;
         case "HazMatSuit_Activated":
@@ -3471,6 +3465,18 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     //Or only possible on Revision maps
         case "PCLOADLETTER_DestroyDeco":
             return !RevisionMaps;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require ranged weapons
+        case "TongTargets":
+        case "VandenbergAntenna":
+        case "SubBaseSatellite":
+            if (loadout!=None){
+                if (loadout.IsLoadoutNoRangedWeapons()){
+                    return true;
+                }
+            }
+            break;
     }
 
     //More broad loadout checks
@@ -5079,6 +5085,7 @@ defaultproperties
     bingo_options(413)=(event="CatchTheNews_singlepeepedtex",desc="Catch the News",max=5,missions=#bit(1,3,4,5,6,10,11))
     bingo_options(414)=(event="A51_Sign_41_singlepeepedtex",desc="Construction Inspector",max=3,missions=#bit(15),do_not_scale=true)
     bingo_options(415)=(event="SignsOfTheEnd_singlepeepedtex",desc="Signs of the End",max=3,missions=#bit(15),do_not_scale=true)
+    bingo_options(416)=(event="fire_start",desc="Fire it up!",max=1,missions=#bit(15))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion

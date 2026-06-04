@@ -195,6 +195,10 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
         }
     }
 
+    if (#defined(gmdx)){
+        //Area you can see out of window behind vanilla walls
+        MassSetSecretGoalBoxAll(vectm(2450,-492,-550), vectm(5646,3727,-200), true);
+    }
 
     if (isVanilla) {
         // doors_lower is for backtracking
@@ -503,6 +507,19 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     }
 
     UpdateDefaultSecurityComputerPassword("Sector2Security");
+
+    if (#defined(gmdx)){
+        //Block things from spawning/randomizing in unused rooms around the map
+
+        //Big chunk of unused rooms
+        MassSetSecretGoalBoxAll(vectm(5318,4801,-222), vectm(3753,6854,-33), true);
+
+        //Unused meeting room
+        MassSetSecretGoalBoxAll(vectm(3422,6606,-33), vectm(2785,5969,-222), true);
+
+        //Tunnel for overhead pod things
+        MassSetSecretGoalBoxAll(vectm(-334,7116,250), vectm(92,4960,0), true);
+    }
 
     if (isVanilla) {
         Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');

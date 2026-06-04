@@ -13,6 +13,7 @@ var string       tagFilter;
 var string       eventFilter;
 var string       customFilterAttrib;
 var string       customFilterVal;
+var bool         bCustomFilterPartial;
 var bool         bLimitRadius;
 var int          actorRadius;
 var bool         bShowTagEvent;
@@ -26,6 +27,7 @@ var bool         bShowReactions;
 var bool         bShowPatrolPaths;
 var bool         bShowTextures;
 var bool         bShowConvoInfo;
+var bool         bShowOverlap;
 
 var Color        patrolColours[14];
 
@@ -89,6 +91,16 @@ function String GetCustomFilterVal(){
 
 function SetCustomFilterVal(string newVal){
     customFilterVal = newVal;
+}
+
+function SetCustomFilterPartialMatch(bool bPartial)
+{
+    bCustomFilterPartial = bPartial;
+}
+
+function Bool IsCustomFilterPartialMatch()
+{
+	return bCustomFilterPartial;
 }
 
 function SetViewClass(Class<Actor> newViewClass)
@@ -244,6 +256,16 @@ function ShowConvoInfo(bool bShow)
     bShowConvoInfo = bShow;
 }
 
+function bool AreOverlappedVisible()
+{
+    return bShowOverlap;
+}
+
+function ShowOverlapping(bool bShow)
+{
+    bShowOverlap = bShow;
+}
+
 
 function string GetActorName(Actor a)
 {
@@ -372,8 +394,19 @@ function DrawWindow(GC gc)
             continue;
         if (eventFilter!="" && !(eventFilter~=string(trackActor.Event)))
             continue;
-        if (customFilterAttrib!="" && !(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib)))
-            continue;
+        if (customFilterAttrib!="" && customFilterVal!=""){
+            if (bCustomFilterPartial){ //partial, case-insensitive match
+                str = Caps(trackActor.GetPropertyText(customFilterAttrib));
+                str2 = Caps(customFilterVal);
+                if (InStr(str,str2)==-1){
+                    continue;
+                }
+            } else { //Full, case-insensitive, match
+                if (!(customFilterVal~=trackActor.GetPropertyText(customFilterAttrib))){
+                    continue;
+                }
+            }
+        }
 
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
@@ -1101,6 +1134,17 @@ function DrawWindow(GC gc)
                 str = str $ "UnfamiliarName="$ trackActor.UnfamiliarName $CR();
                 str = str $ "BindName="$ trackActor.BindName $CR();
                 str = str $ "BarkBindName="$ trackActor.BarkBindName $CR();
+            }
+            //#endregion
+
+            //#region Show Overlapping
+            if (bShowOverlap){
+                str = str $ "|c5412ec"; // #5412ec
+                str = str $ "Overlapping:"$CR();
+                foreach trackActor.RadiusActors(class'Actor',otherActor,Max(trackActor.CollisionHeight,trackActor.CollisionRadius)*2){
+                    if (class'DXRActorsBase'.static.ActorOverlappingOther(otherActor,trackActor)==False) continue;
+                    str = str $ "  "$ otherActor.Name $CR();
+                }
             }
             //#endregion
 

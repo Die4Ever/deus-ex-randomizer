@@ -119,6 +119,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ScientistFemale sf;
     local MoverPropTrigger mpt;
     local #var(prefix)AlarmLight al;
+    local #var(prefix)Switch2 sw;
     local int i;
 
     local bool VanillaMaps;
@@ -162,7 +163,7 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
-            foreach AllActors(class'Button1',button){
+            foreach AllActors(class'#var(prefix)Button1',button){
                 if (button.tag == 'Weapons_Lock_broken' || button.tag == 'Weapons_lock' || button.event == 'missile_door') {
                     button.SetRotation(rotm(14400,16500,0,GetRotationOffset(button.class))); //A similar rotation to original that only rotates in two axes instead of all three
                 }
@@ -170,7 +171,7 @@ function PreFirstEntryMapFixes()
         }
 
         if (#defined(gmdx)){
-            foreach AllActors(class'Button1',button){
+            foreach AllActors(class'#var(prefix)Button1',button){
                 if (button.Event!='fDoor') continue;
 
                 m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',button));
@@ -181,6 +182,13 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
+            //Add an exit button from the barracks in GMDX
+            sw = #var(prefix)Switch2(AddSwitch(vect(1041.5,935,160), rot(0, 0, 0), 'GMDXBarracksDoorDXR'));
+            m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',sw));
+            if (m!=None){
+                button.Event='GMDXBarracksDoorDXR'; //Throw a DXR on there to make sure it's unique...
+                m.Tag=button.Event;
+            }
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
@@ -259,9 +267,7 @@ function PreFirstEntryMapFixes()
         MassSetSecretGoalBox(class'NavigationPoint', vectm(-295,360,190), vectm(1155,549,-238), true);
 
         //Don't clone guys who are vaguely near the hall
-        foreach RadiusActors(class'#var(prefix)ScriptedPawn',p, 750, vectm(460,460,-30)){
-            p.bIsSecretGoal=true;
-        }
+        MassSetSecretGoalBox(class'#var(prefix)ScriptedPawn', vectm(-500,100,190), vectm(1300,800,-238), true);
 
         break;
     //#endregion
@@ -448,6 +454,21 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(1345,-1545,1736),vectm(1280,-1535,1790)); //Jock's Bathroom (right side)
             class'FakeMirrorInfo'.static.Create(self,vectm(-1195,-1065,2285),vectm(-1075,-1045,2245)); //Maggie's Guest Bathroom
             class'FakeMirrorInfo'.static.Create(self,vectm(-1060,-1415,2285),vectm(-1180,-1405,2240)); //Maggie's Master Bathroom
+
+            //A few placeholder items around Maggie's apartment
+            //Spawn(class'PlaceholderItem',,, vectm(-280,-1540,1985)); //Table behind Maggie's bench, but there's a datacube we add on this table already (see above)
+            Spawn(class'PlaceholderItem',,, vectm(-830,-1860,2040)); //Brown side table in living room
+            Spawn(class'PlaceholderItem',,, vectm(-1111,-1700,2030)); //Coffee Table between leather chairs
+            Spawn(class'PlaceholderItem',,, vectm(-550,-700,2020)); //Dining Table 1
+            Spawn(class'PlaceholderItem',,, vectm(-460,-675,2020)); //Dining Table 2
+            Spawn(class'PlaceholderItem',,, vectm(-1223,-900,2240)); //Guest bathroom
+            Spawn(class'PlaceholderItem',,, vectm(-1150,-1425,2230)); //Master bathroom
+
+            //Placeholders in Jock's apartment to make up for items getting sucked into Maggie's
+            Spawn(class'PlaceholderItem',,, vectm(155,-1375,1730)); //Balcony rail
+            Spawn(class'PlaceholderItem',,, vectm(1150,-1490,1740)); //Next to kitchen sink
+            Spawn(class'PlaceholderItem',,, vectm(585,-1890,1700)); //Living Room shelves
+
 
         } else {
             //These mirrors actually work in Revision, so no FakeMirrorInfo required
@@ -1005,6 +1026,13 @@ function PreFirstEntryMapFixes()
         //Verified in both vanilla and Revision
         foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(121,-672,1086),vectm(63,-628,1146), bg); //Breakable Corner Mirror
+
+        if (#defined(gmdx)){
+            //In GMDX, there's a pile of boxes near the exit.
+            //prevent them from being randomized, so that you don't end up with something
+            //that can't be moved blocking the exit.
+            MassSetSecretGoalRadius(class'CrateUnbreakableSmall',vectm(-2455,-1734,1650),250,true);
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers

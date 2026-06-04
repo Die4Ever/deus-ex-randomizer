@@ -22,6 +22,8 @@ var ToolCheckboxWindow	chkPatrolPaths;
 var ToolCheckboxWindow	chkTextures;
 var ToolCheckboxWindow	chkPhysics;
 var ToolCheckboxWindow	chkConvoInfo;
+var ToolCheckboxWindow  chkPartialMatch;
+var ToolCheckboxWindow  chkOverlap;
 
 event InitWindow()
 {
@@ -204,18 +206,25 @@ function CreateDXRandoControls()
 
     CreateToolLabel(rightX, rightY, "Custom Filter");
     rightY += 20;
+
     CreateToolLabel(rightX+3, rightY, "Attribute:");
     CreateToolLabel(rightX+97, rightY, "Value:");
     rightY += 15;
+
     customFilterAttrib = CreateToolEditWindow(rightX, rightY, 91, 64);
     customFilterAttrib.SetText(actorDisplayWin.GetCustomFilterAttrib());
     customFilterAttrib.SetInsertionPoint(Len(actorDisplayWin.GetCustomFilterAttrib()) - 1);
     customFilterAttrib.SetSelectedArea(0, Len(actorDisplayWin.GetCustomFilterAttrib()));
+
     customFilterVal = CreateToolEditWindow(rightX+94, rightY, 91, 64);
-    rightY += 40;
     customFilterVal.SetText(actorDisplayWin.GetCustomFilterVal());
     customFilterVal.SetInsertionPoint(Len(actorDisplayWin.GetCustomFilterVal()) - 1);
     customFilterVal.SetSelectedArea(0, Len(actorDisplayWin.GetCustomFilterVal()));
+    rightY += 25;
+
+    // Custom Filter, Partial Match
+    chkPartialMatch = CreateToolCheckbox(rightX, rightY,  "Partial Match", actorDisplayWin.IsCustomFilterPartialMatch());
+    rightY += 35;
 
     // Show inventory
     chkInventory = CreateToolCheckbox(rightX, rightY,  "Show Inventory", actorDisplayWin.IsInventoryVisible());
@@ -235,6 +244,10 @@ function CreateDXRandoControls()
 
     // Show Physics
     chkPhysics = CreateToolCheckbox(rightX, rightY,  "Show Physics", actorDisplayWin.ArePhysicsVisible());
+    rightY += 25;
+
+    // Show Touching Actors
+    chkOverlap = CreateToolCheckbox(rightX, rightY,  "Show Overlapping Actors", actorDisplayWin.AreOverlappedVisible());
     rightY += 25;
 
 
@@ -310,6 +323,8 @@ function SaveSettings()
     actorDisplayWin.default.customAttrib = actorDisplayWin.GetCustomAttrib();
     actorDisplayWin.ShowCustom(chkCustom.GetToggle());
     actorDisplayWin.default.bShowCustom = actorDisplayWin.IsCustomVisible();
+    actorDisplayWin.SetCustomFilterPartialMatch(chkPartialMatch.GetToggle());
+    actorDisplayWin.default.bCustomFilterPartial = actorDisplayWin.IsCustomFilterPartialMatch();
     actorDisplayWin.SetCustomFilterAttrib(customFilterAttrib.GetText());
     actorDisplayWin.default.customFilterAttrib = actorDisplayWin.GetCustomFilterAttrib();
     actorDisplayWin.SetCustomFilterVal(customFilterVal.GetText());
@@ -341,6 +356,8 @@ function SaveSettings()
     actorDisplayWin.default.bShowPhysics = actorDisplayWin.ArePhysicsVisible();
     actorDisplayWin.ShowConvoInfo(chkConvoInfo.GetToggle());
     actorDisplayWin.default.bShowConvoInfo = actorDisplayWin.IsConvoInfoVisible();
+    actorDisplayWin.ShowOverlapping(chkOverlap.GetToggle());
+    actorDisplayWin.default.bShowOverlap = actorDisplayWin.AreOverlappedVisible();
 
     actorDisplayWin.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplayWin.default.bLimitRadius = actorDisplayWin.IsRadiusLimited();

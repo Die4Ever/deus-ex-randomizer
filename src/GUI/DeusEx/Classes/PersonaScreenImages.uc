@@ -197,7 +197,7 @@ function EnableButtons()
     btnGoalLocations.Show(False);
 
     //Check if image has hint information available from DXRMissions
-    if (dxrMissions!=None && dxrMissions.dxr.flags.settings.goals > 0){
+    if (image!=None && dxrMissions!=None && dxrMissions.dxr.flags.settings.goals > 0){
         if (dxrMissions.MapHasGoalMarkers(image.class)){
             if (dxrMissions.dxr.flags.moresettings.spoilers==1){
                 btnShowSpoilers.Show(True);
@@ -209,6 +209,56 @@ function EnableButtons()
     Super.EnableButtons();
 }
 
+event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
+{
+    local DataVaultImage image;
+    local int listIndex,curIdx,rowId;
+
+    Super.ListSelectionChanged(list,numSelections,focusRowId);
+
+    //Make sure the images get marked as viewed shortly.  If done when the window
+    //is being created, the window stack is empty for some reason.  Let the window
+    //finish being created, then mark it on the next frame.
+    //This is better for the case where you close the images tab with a hotkey,
+    //which directly destroys the window without calling SaveSettings, but the
+    //image list is already empty by the time *this* window gets its DestroyWindow
+    //called.
+    AddTimer(0.001,false,focusRowId,'MarkImageViewed');
+
+    //Clear the "new image" marker of the image you just clicked away from.
+    //In an ideal world, we would just know the "last selection" and
+    //update that specific one manually, but alas.  Just do everything that's
+    //been viewed instead.
+    curIdx = lstImages.RowIdToIndex(focusRowId);
+    for(listIndex=0; listIndex<lstImages.GetNumRows(); listIndex++)
+    {
+        if (listIndex==curIdx) continue; //Skip over the current one
+
+        rowId = lstImages.IndexToRowId(listIndex);
+        if (lstImages.GetFieldValue(rowId, 2) > 0)
+        {
+            //If the image has been viewed, remove the "new image" marker (Which is just a "C")
+            lstImages.SetField(rowId, 1, "");
+        }
+    }
+}
+
+//ClientData is the RowId of the image to mark
+function MarkImageViewed(int timerID, int invocations, int clientData)
+{
+    local DataVaultImage image;
+
+    if (lstImages.GetFieldValue(clientData, 2) > 0)
+    {
+        image = DataVaultImage(lstImages.GetRowClientObject(clientData));
+        if (image!=None){
+            MarkViewed(image);
+        }
+    }
+}
+
+//In theory this isn't needed anymore, as the images should all be marked as viewed
+//as soon as they've been selected (plus one frame)
 function ClearViewedImageFlags()
 {
     local DataVaultImage image;

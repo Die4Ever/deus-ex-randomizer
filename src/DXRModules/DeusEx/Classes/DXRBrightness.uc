@@ -18,6 +18,7 @@ function PreFirstEntry()
 {
     local ZoneInfo Z;
     local Light lght;
+    local #var(prefix)ElectricityEmitter ee;
 #ifdef gmdx
     local Decoration d;
 #endif
@@ -33,6 +34,10 @@ function PreFirstEntry()
     foreach AllActors(class'Light',lght){
         class'DXRStoredLightFog'.static.Init(lght);
         class'DXRStoredLightType'.static.Init(lght);
+    }
+
+    foreach AllActors(class'#var(prefix)ElectricityEmitter',ee){
+        class'DXRStoredLightType'.static.InitElecEmitter(ee);
     }
 
 #ifdef gmdx
@@ -71,11 +76,19 @@ function AnyEntry()
     Super.AnyEntry();
 
     MigrateSavedData(); //TODO: To be removed when the ZoneBrightnessData is stripped out
-    //UpdateStoredData(); //If more is added to DXRStoredZoneInfo or DXRStoredLightFog
+    UpdateStoredData(); //If more is added to DXRStoredZoneInfo or DXRStoredLightFog
 
     IncreaseBrightness(GetSavedBrightnessBoost());
     ApplyFog(class'MenuChoice_Fog'.default.enabled);
     ApplyEpilepsySafe(class'MenuChoice_Epilepsy'.default.enabled);
+}
+
+function UpdateStoredData(){
+    local DXRStoredLightType slt;
+
+    foreach AllActors(class'DXRStoredLightType',slt){
+        slt.Upgrade();
+    }
 }
 
 //TODO: To be removed when the ZoneBrightnessData is stripped out
@@ -165,14 +178,7 @@ function ApplyEpilepsySafe(bool enabled)
 #endif
 
     foreach AllActors(class'DXRStoredLightType',slt){
-        lght = slt.Owner;
-        if (lght==None) continue;
-
-        if (enabled){
-            lght.LightType = LT_Pulse; //more gentle light mode
-        } else {
-            lght.LightType = slt.origLightType;
-        }
+        slt.ApplyEpilepsyFix(enabled);
     }
 
 #ifdef gmdx

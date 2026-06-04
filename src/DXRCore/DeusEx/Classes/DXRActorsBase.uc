@@ -38,7 +38,53 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function SwapAll(string classname, float percent_chance)
+function NudgeOutOfOverlap(Actor a)
+{
+    local Actor other,basedActor;
+    local Actor based[10];
+    local vector baseOffset[10];
+    local vector newLoc;
+    local int i;
+
+    foreach a.RadiusActors(class'Actor',other,Max(a.CollisionHeight,a.CollisionRadius)*2){ //A bit of radius slop, since this is spherical radius, afaik
+        if (other==a) continue; //Don't nudge yourself
+        if (Inventory(Other)==None && #var(prefix)InformationDevices(Other)==None) continue; //Only nudge inventory objects and information devices for now
+        if (class'DXRActorsBase'.static.ActorOverlappingOther(other,a,1.01)==False) continue; //Check for cylindrical overlap (1.0 slop factor seemed not *quite* right for really bad edge cases)
+
+        for(i=0;i<ArrayCount(based);i++){ based[i]=None; } //Clear the array
+        i=0;
+        foreach other.BasedActors(class'Actor',basedActor){
+            if (DynamicLight(basedActor)==None) continue; //Skip everything but dynamic lights (For datacubes) for now?
+            baseOffset[i]=basedActor.Location - other.Location;
+            based[i++]=basedActor;
+            basedActor.SetBase(Level); //Temporarily store this based on the level (Dynamic Light self destructs with None base)
+        }
+
+        //Nudge it up
+        newLoc = other.Location;
+        newLoc.Z = a.Location.Z + a.CollisionHeight + other.CollisionHeight + 5;
+        other.SetLocation(newLoc);
+        other.SetPhysics(PHYS_Falling);
+        other.SetBase(None); //SetLocation should have nuked it already, but just in case
+
+        if (other.bCollideActors && !other.bBlockActors){
+            //Make sure bBlockActors is set so the nudged object doesn't
+            //fall through whatever we're nudging it out of
+            other.SetCollision(true, true, other.bBlockPlayers);
+        }
+
+        //Put the based actors back
+        for(i=0;i<ArrayCount(based);i++){
+            if (based[i]==None) continue;
+            based[i].SetLocation(newLoc+baseOffset[i]);
+            based[i].SetBase(other);
+        }
+
+        //player().ClientMessage("Nudging "$other$" up out of "$a);
+    }
+}
+
+function SwapAll(string classname, float percent_chance, optional bool fix_based)
 {
     local Actor temp[4096];
     local Actor a;
@@ -70,7 +116,7 @@ function SwapAll(string classname, float percent_chance)
         if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself
         if(slot >= i) slot++;
-        Swap(temp[i], temp[slot]);
+        Swap(temp[i], temp[slot],,fix_based);
     }
 }
 
@@ -708,19 +754,35 @@ static function bool PawnIsInCombat(Pawn p)
     return false;
 }
 
-function bool Swap(Actor a, Actor b, optional bool retainOrders)
+function bool Swap(Actor a, Actor b, optional bool retainOrders, optional bool fixBased)
 {
     local vector newloc, oldloc, aloc, bloc;
     local Vector HitLocation, HitNormal;
     local rotator newrot;
     local bool asuccess, bsuccess;
-    local Actor abase, bbase, HitActor;
+    local Actor abase, bbase, HitActor, basedActor;
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers, AbOwned;
     local EPhysics aphysics, bphysics;
 
     if( a == b ) return true;
 
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
+
+    if (fixBased) {
+        //give things physics again, before the base is swapped out
+        foreach a.BasedActors(class'Actor',basedActor){
+            if (basedActor.Region.Zone.bWaterZone) continue; //Just don't
+            if (basedActor.bCollideActors==False) continue;
+            if (basedActor.bBlockActors==False) continue;
+            basedActor.SetPhysics(PHYS_Falling);
+        }
+        foreach b.BasedActors(class'Actor',basedActor){
+            if (basedActor.Region.Zone.bWaterZone) continue; //Just don't
+            if (basedActor.bCollideActors==False) continue;
+            if (basedActor.bBlockActors==False) continue;
+            basedActor.SetPhysics(PHYS_Falling);
+        }
+    }
 
     AbCollideActors = a.bCollideActors;
     AbBlockActors = a.bBlockActors;
@@ -1515,6 +1577,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
         newactor.Mass = a.Mass;
         newactor.Buoyancy = a.Buoyancy;
         newactor.Texture = a.Texture;
+        newactor.Skin = a.Skin;
         newactor.Mesh = a.Mesh;
         for(i=0; i<ArrayCount(a.Multiskins); i++) {
             newactor.Multiskins[i] = a.Multiskins[i];
@@ -1769,6 +1832,15 @@ function rotator GetRandomYaw(optional bool unseeded)
     }
 
     return r;
+}
+
+//This version just makes secret goal boxes for basically everything
+function MassSetSecretGoalBoxAll(vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
+{
+    MassSetSecretGoalBox(class'NavigationPoint', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'ScriptedPawn', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Inventory', minLoc, maxLoc, IsSecret, OppositeOutside);
+    MassSetSecretGoalBox(class'Decoration', minLoc, maxLoc, IsSecret, OppositeOutside);
 }
 
 function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
@@ -2137,18 +2209,20 @@ function FindActorExtents(out vector min_ext, out vector max_ext, optional bool 
             }
         } else if (#var(prefix)Vehicles(a)!=None){
             v = #var(prefix)Vehicles(a);
+            #ifndef hx
             if (v.bInWorld==False){
                 actLoc = v.WorldPosition;
             }
+            #endif
         }
 
+        //Expand the extents based on this actor
         if (actLoc.X > max_ext.X) max_ext.X = actLoc.X;
-        if (actLoc.X < min_ext.X) min_ext.X = actLoc.X;
-
         if (actLoc.Y > max_ext.Y) max_ext.Y = actLoc.Y;
-        if (actLoc.Y < min_ext.Y) min_ext.Y = actLoc.Y;
-
         if (actLoc.Z > max_ext.Z) max_ext.Z = actLoc.Z;
+
+        if (actLoc.X < min_ext.X) min_ext.X = actLoc.X;
+        if (actLoc.Y < min_ext.Y) min_ext.Y = actLoc.Y;
         if (actLoc.Z < min_ext.Z) min_ext.Z = actLoc.Z;
     }
 
@@ -2187,22 +2261,8 @@ function safe_rule FixSafeRule(safe_rule r, optional vector min_ext, optional ve
     r.max_pos.Z = b;
 
     if (use_extents){
-        if (r.min_pos.X < min_ext.X) r.min_pos.X = min_ext.X;
-        if (r.min_pos.Y < min_ext.Y) r.min_pos.Y = min_ext.Y;
-        if (r.min_pos.Z < min_ext.Z) r.min_pos.Z = min_ext.Z;
-
-        if (r.max_pos.X < min_ext.X) r.max_pos.X = min_ext.X;
-        if (r.max_pos.Y < min_ext.Y) r.max_pos.Y = min_ext.Y;
-        if (r.max_pos.Z < min_ext.Z) r.max_pos.Z = min_ext.Z;
-
-
-        if (r.min_pos.X > max_ext.X) r.min_pos.X = max_ext.X;
-        if (r.min_pos.Y > max_ext.Y) r.min_pos.Y = max_ext.Y;
-        if (r.min_pos.Z > max_ext.Z) r.min_pos.Z = max_ext.Z;
-
-        if (r.max_pos.X > max_ext.X) r.max_pos.X = max_ext.X;
-        if (r.max_pos.Y > max_ext.Y) r.max_pos.Y = max_ext.Y;
-        if (r.max_pos.Z > max_ext.Z) r.max_pos.Z = max_ext.Z;
+        r.min_pos = ApplyVectorExtents(r.min_pos,min_ext,max_ext);
+        r.max_pos = ApplyVectorExtents(r.max_pos,min_ext,max_ext);
     }
 
     return r;
@@ -2271,6 +2331,19 @@ function RemoveMoverPrePivot(Mover m)
 function Vector GetMoverCenter(Mover m)
 {
     return m.Location-(m.PrePivot >> m.Rotation);
+}
+
+static function Vector ApplyVectorExtents(vector in_vect, vector ext_min, vector ext_max)
+{
+    if (in_vect.X < ext_min.X) in_vect.X = ext_min.X;
+    if (in_vect.Y < ext_min.Y) in_vect.Y = ext_min.Y;
+    if (in_vect.Z < ext_min.Z) in_vect.Z = ext_min.Z;
+
+    if (in_vect.X > ext_max.X) in_vect.X = ext_max.X;
+    if (in_vect.Y > ext_max.Y) in_vect.Y = ext_max.Y;
+    if (in_vect.Z > ext_max.Z) in_vect.Z = ext_max.Z;
+
+    return in_vect;
 }
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
@@ -2598,6 +2671,33 @@ function PercolateBeltItem(int posStart, int posEnd)
     }
 }
 //#endregion
+
+//Is the Location of a inside the collision cylinder of other?
+//Note that this does mean there still can be some overlap, we're
+//just making sure the center of the object is outside the collision radius
+static function bool ActorOverlappingOther(Actor a, Actor other, optional float slopFactor)
+{
+    local vector vA,vOther;
+
+    if (slopFactor==0){
+        slopFactor = 1.0;
+    }
+
+    if (a==None || other==None) return false; //Can't overlap nothing
+    if (a==other) return false; //Can't overlap yourself
+    if (a.bHidden || other.bHidden) return false;  //Hidden objects can't overlap
+
+    if (a.Location.Z > (other.Location.Z + (other.CollisionHeight*slopFactor))) return false; //Above the other
+    if (a.Location.Z < (other.Location.Z - (other.CollisionHeight*slopFactor))) return false; //Below the other
+
+    //Compare on a flat plane for the radius
+    vA     =     a.Location * vect(1,1,0);
+    vOther = other.Location * vect(1,1,0);
+
+    if (a.VSize(vA-vOther) > (other.CollisionRadius*slopFactor)) return false; //Further away than the collision radius
+
+    return true;
+}
 
 //#region Unit Handling
 //Unit Conversion functions

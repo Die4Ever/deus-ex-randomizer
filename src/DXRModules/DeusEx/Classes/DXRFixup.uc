@@ -255,6 +255,8 @@ function PostFirstEntry()
     RemoveStopWhenEncroach();
 
     FixStandingDancingBlockages();
+
+    NudgeItemsUnderOthers();
 }
 
 function AnyEntry()
@@ -377,6 +379,15 @@ function AdjustBookColours()
         }
     }
 
+}
+
+function NudgeItemsUnderOthers()
+{
+    local #var(prefix)Containers c;
+
+    foreach AllActors(class'#var(prefix)Containers',c){
+        NudgeOutOfOverlap(c);
+    }
 }
 
 // convert horizontal FOV (deg) -> vertical FOV (deg) for an aspect ratio

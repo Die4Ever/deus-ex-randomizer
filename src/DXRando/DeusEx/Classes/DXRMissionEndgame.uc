@@ -72,6 +72,13 @@ function FirstFrame()
         savedSoundVolume = SoundVolume;
         SoundVolume = 32;
         Player.SetInstantSoundVolume(SoundVolume);
+        if (#defined(gmdx)){
+            //Apply immediately, like in the regular GMDX MissionEndgame
+            //No, I don't know why it does both.  Let's just be consistent, I guess
+            //No need to check for the specific map, like GMDX does
+            Player.ConsoleCommand("set" @ "DeusExPlayer bHardcoreUnlocked" @ "True");
+            Player.ConsoleCommand("set" @ "JCDentonMale bHardcoreUnlocked" @ "True");
+        }
     }
 }
 
