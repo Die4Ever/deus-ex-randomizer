@@ -668,7 +668,7 @@ function PreFirstEntryMapFixes()
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
 
-            if (#defined(gmdx) && !#defined(gmdxae)){ //I assume AE already fixed this
+            if (#defined(gmdx) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
                 FixGMDXSmugglerBots();
             }
 
