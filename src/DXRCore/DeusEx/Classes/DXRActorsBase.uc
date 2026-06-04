@@ -2636,6 +2636,42 @@ function bool DXRStartDataLinkTransmission( String DatalinkName )
 #endif
 }
 
+//#region Belt Slots
+static function bool IsAssignableBeltPos(int pos)
+{
+    return pos >= 1 && pos <= 9;
+}
+
+function SwapBeltItems(int posA, int posB)
+{
+    local HUDObjectBelt belt;
+    local Inventory itemA, itemB;
+
+    if (!IsAssignableBeltPos(posA) || !IsAssignableBeltPos(posB)) return;
+
+    belt = DeusExRootWindow(dxr.player.rootWindow).hud.belt;
+
+    itemA = belt.GetObjectFromBelt(posA);
+    itemB = belt.GetObjectFromBelt(posB);
+    belt.ClearPosition(posA);
+    belt.ClearPosition(posB);
+    belt.AddObjectToBelt(itemA, posB, false);
+    belt.AddObjectToBelt(itemB, posA, false);
+}
+
+function PercolateBeltItem(int posStart, int posEnd)
+{
+    while (posStart < posEnd) {
+        SwapBeltItems(posStart, posStart + 1);
+        posStart++;
+    }
+    while (posStart > posEnd) {
+        SwapBeltItems(posStart, posStart - 1);
+        posStart--;
+    }
+}
+//#endregion
+
 //Is the Location of a inside the collision cylinder of other?
 //Note that this does mean there still can be some overlap, we're
 //just making sure the center of the object is outside the collision radius
