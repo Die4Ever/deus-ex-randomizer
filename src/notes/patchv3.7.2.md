@@ -90,5 +90,6 @@
 ## Intra-Patch Changes
 
 - In Speedrun Shuffle mode, highlight text now shows the next map you will be going to when looking at the game endings in Mission 15.
+- Lebedev's surrender conversation doesn't play if Anna's already dead in Speedrun Shuffle.
 - Some flickering lights that weren't being caught by the "Flickering Lights" setting in GMDX will now also be adjusted.
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
