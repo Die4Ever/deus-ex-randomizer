@@ -17,6 +17,11 @@ event DrawWindow(GC gc)
     local bool blackOut;
     local Actor a;
 
+    if (#defined(vmd)){
+        Super.DrawWindow(gc); //VMD will draw its own scope stuff
+        return;
+    }
+
     Super(Window).DrawWindow(gc);
 
     a = GetRootWindow().parentPawn;
@@ -116,7 +121,7 @@ event DrawWindow(GC gc)
 function ActivateView(int newFOV, bool bNewBinocs, bool bInstant)
 {
     Super.ActivateView(newFOV,bNewBinocs,bInstant);
-    if (bViewVisible){
+    if (bViewVisible && watchTimerId==0){
         lastWatched = None;
         //SetTimer(0.25,True);
         watchTimerId=AddTimer(0.25,true,0,'PeepTimer');
@@ -126,11 +131,12 @@ function ActivateView(int newFOV, bool bNewBinocs, bool bInstant)
 function DeactivateView()
 {
     Super.DeactivateView();
-    if (!bViewVisible){
+    if (!bViewVisible && watchTimerId!=0){
         //SetTimer(0,False);
         RemoveTimer(watchTimerId);
         watchTimerId=0;
         lastWatched = None;
+        lastWatchedTex = '';
     }
 }
 

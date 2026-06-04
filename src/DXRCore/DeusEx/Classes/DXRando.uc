@@ -386,17 +386,27 @@ function vmd_modules()
 
 function DXRFlags LoadFlagsModule()
 {
+    local bool forceNew;
+
     // always force a new spawn, DXRFlags is transient anyways, and then new game menu calls this function
-    flags = DXRFlags(LoadModule(class'DXRFlags', true));
+    // VMD is doing new game screen stuff on a new map, so only force a new spawn outside of VMD
+    forceNew = !#defined(vmd);
+
+    flags = DXRFlags(LoadModule(class'DXRFlags', forceNew));
     return flags;
 }
 
 //Loads a bare minimum number of modules for the new game menu
 function LoadNewGameMenuModules()
 {
+    local bool forceNew;
+
+    // VMD is doing new game screen stuff on a new map, so only force a new spawn outside of VMD
+    forceNew = !#defined(vmd);
+
     LoadFlagsModule();  //Transient
-    LoadModule(class'DXRSkills', true); //Transient
-    LoadModule(class'DXRLoadouts', true); //Transient
+    LoadModule(class'DXRSkills', forceNew); //Transient
+    LoadModule(class'DXRLoadouts', forceNew); //Transient
 }
 
 function DXRBase LoadModule(class<DXRBase> moduleclass, optional bool forcenew)

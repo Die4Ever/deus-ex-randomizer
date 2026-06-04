@@ -1,9 +1,8 @@
 class DXRMapVariants extends DXRBase transient;
 
-/*const*/ var name EndingFlag;
-
-var int missions[13];
-var string starts[13];
+var name EndingFlag;
+var int missions[14];
+var string starts[14];
 
 static function bool MirrorMapsAvailable()
 {
@@ -72,6 +71,8 @@ static function Texture GetTeleporterTexture(string map)
 {
     local vector coordsMult;
 
+    map = GetPureTeleporterMapName(map); //Strip off the teleporter destinations
+
     coordsMult = GetCoordsMult(map);
 
     if (_MapIsNormal(coordsMult)) {
@@ -107,6 +108,27 @@ static function vector GetCoordsMult(string map)
     }
 
     return vect(1,1,1);
+}
+
+//Remove teleporter destinations or anything weird at the end of the map name
+static function string GetPureTeleporterMapName(string mapName)
+{
+    local string mapNameOnly;
+    local int pos;
+
+    pos = InStr(mapName,".dx");
+    if (pos!=-1){
+        //".dx" in map name, so just get what's left of that
+        return Left(mapName, pos);
+    }
+
+    pos = InStr(mapName,"#");
+    if (pos!=-1){
+        //"#" in map name, so just get what's left of that
+        return Left(mapName, pos);
+    }
+
+    return mapName;
 }
 
 static function string GetMapPostfix(vector v)
@@ -227,7 +249,7 @@ function CheckConfig()
 
         len -= 2;
     }
-    for(i=len; i>=0; i--) {
+    for(i=len-1; i>0; i--) {
         slot = rng(i+1);
 
         temp = starts[i];
@@ -239,7 +261,7 @@ function CheckConfig()
         missions[slot] = tempi;
     }
     if(dxr.flags.moresettings.shuffle_missions < 13 && dxr.flags.moresettings.shuffle_missions > 0) {
-        len = dxr.flags.moresettings.shuffle_missions;
+        len = dxr.flags.moresettings.shuffle_missions; // use number of missions instead of estimated duration
     }
     else if(dxr.flags.moresettings.shuffle_missions > 0) {
         minMinutes = dxr.flags.moresettings.shuffle_missions; // duration in minutes
@@ -258,9 +280,11 @@ function CheckConfig()
                 default: totalMinutes += 10; break;
             }
         }
-        starts[len] = GetEnding();
-        missions[len] = 99;
-        for(i=0; i<len; i++) {
+    }
+    starts[len] = GetEnding();
+    missions[len] = 99;
+    if(dxr.flags.moresettings.shuffle_missions > 0) {
+        for(i=0; i<len+1; i++) {
             l("speedshuffle " $ i @ starts[i]);
         }
     }
@@ -279,9 +303,11 @@ simulated function FirstEntry()
 
     foreach AllActors(class'Teleporter', t) {
         t.URL = VaryURL(t.URL);
+        t.Texture = class'DXRMapVariants'.static.GetTeleporterTexture(t.URL);
     }
     foreach AllActors(class'MapExit', me) {
         me.DestMap = VaryURL(me.DestMap);
+        //me.Texture = class'DXRMapVariants'.static.GetTeleporterTexture(me.DestMap);
     }
 
     if(dxr.flags.moresettings.shuffle_missions > 0) {

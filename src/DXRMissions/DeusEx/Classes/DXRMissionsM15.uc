@@ -77,7 +77,12 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("15_AREA51_PAGE", "Radioactive Room", NORMAL_GOAL | VANILLA_GOAL, vect(4764.696289, -6270.016113, -5596.736328), rot(0, -61760, 0));
         AddMapMarker(class'Image15_Area51_Sector4',155,376,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor in the radioactive room.");
 
-        goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 2 Control", GOAL_TYPE1 | NORMAL_GOAL, 'Keypad1', PHYS_None);
+        if (!#defined(gmdx)){
+            goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 2 Control", GOAL_TYPE1 | NORMAL_GOAL, 'Keypad1', PHYS_None);
+        } else {
+            //The keypad is Keypad11 instead of Keypad1 in GMDX
+            goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 2 Control", GOAL_TYPE1 | NORMAL_GOAL, 'Keypad11', PHYS_None);
+        }
         AddGoalActor(goal, 1, 'DataLinkTrigger18', PHYS_None); // DL_Blue_Fusion
         loc = AddGoalLocation("15_AREA51_PAGE", "Under Page", NORMAL_GOAL | VANILLA_GOAL, vect(6153.652832, -7133.199219, -5596.736328), rot(0, -61568, 0));
         AddMapMarker(class'Image15_Area51_Sector4',115,314,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor on the middle floor underneath Bob Page.");

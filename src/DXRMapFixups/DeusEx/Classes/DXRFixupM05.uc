@@ -479,12 +479,7 @@ function FixSvenConvoLoop()
     if (ceDone!=None){
         if (ceDone.nextEvent!=None && ceDone.nextEvent.eventType!=ET_End){
             //If the event after "Done" isn't an end, the conversation needs fixing.
-            cee = new(c) class'ConEventEnd';
-            cee.eventType=ET_End;
-            cee.conversation = c;
-
-            cee.nextEvent = ceDone.nextEvent;
-            ceDone.nextEvent = cee;
+            cee = ConEventEnd(NewConEvent(c,ceDone,class'ConEventEnd'));
         }
     }
 

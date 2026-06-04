@@ -16,7 +16,36 @@ var ERandoMessageBoxModes nextScreenNum;
 event InitWindow()
 {
     Super.InitWindow();
+    AddTimer(1.0,true,0,'PeriodicCrowdControlCheck');
 }
+
+function PeriodicCrowdControlCheck(int timerID, int invocations, int clientData)
+{
+    local DXRFlags f;
+    local int scrollPos;
+
+    f = GetFlags();
+
+    if (f.crowdcontrol==1){
+        //If it's been turned on, stop the timer
+        RemoveTimer(timerID);
+        _BindControls(false);
+        return;
+    }
+
+    scrollPos = winScroll.vScale.GetTickPosition();
+
+    if (class'DXRMenuSelectDifficulty'.static.IsCrowdControlConnected(f)){
+        _BindControls(true);
+        f.crowdcontrol=1; //Enabled (Streaming)
+        _BindControls(false);
+        RemoveTimer(timerID);
+
+        //Scroll to same position again
+        winScroll.vScale.SetTickPosition(scrollPos);
+    }
+}
+
 
 function CreateControls()
 {
@@ -32,6 +61,8 @@ function BindControls(optional string action)
     local int iDifficulty, i;
     local bool bMatched;
     f = GetFlags();
+
+    class'DXRMenuSelectDifficulty'.static.CheckCrowdControlConnection(f);
 
     CreateBasicOptions(f);
 

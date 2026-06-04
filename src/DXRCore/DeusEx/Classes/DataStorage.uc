@@ -225,6 +225,24 @@ function string GetConfigKey(coerce string key)
     return "";
 }
 
+function bool HasConfigKey(coerce string key)
+{
+    local int i, min, max;
+
+    GetRange(key, min, max);
+    key = key@playthrough_id;
+
+    for( i=min; i < max; i++) {
+        if( config_data[i].key == key ) {
+            if( IsData(config_data[i]) ) {
+                return true;
+            }
+            else return false;
+        }
+    }
+    return false;
+}
+
 function string GetConfigIndex(int i, optional out string key)
 {
     if( IsData(config_data[i]) ) {

@@ -195,6 +195,10 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
         }
     }
 
+    if (#defined(gmdx)){
+        //Area you can see out of window behind vanilla walls
+        MassSetSecretGoalBoxAll(vectm(2450,-492,-550), vectm(5646,3727,-200), true);
+    }
 
     if (isVanilla) {
         // doors_lower is for backtracking
@@ -266,6 +270,8 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
     local Dispatcher disp;
+    local #var(prefix)MapExit exit;
+    local DXRButtonHoverHint buttonHint;
     local int i;
 
     //Increase the radius of the datalink that opens the sector 4 blast doors
@@ -346,6 +352,16 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         }
     }
 
+    if (dxr.flags.moresettings.shuffle_missions > 0){
+        //Speedrun Shuffle, add teleporter hover hint for the reactor switch
+        foreach AllActors(class'#var(prefix)MapExit',exit,'map_exit_generator'){break;}
+        foreach AllActors(class'#var(prefix)Switch1',s){
+            if (s.Event=='destroy_generator') break;
+        }
+
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", s.Location, s.CollisionRadius+5, s.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(s);
+    }
 
     if (isVanilla) {
         AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
@@ -496,6 +512,19 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
 
     UpdateDefaultSecurityComputerPassword("Sector2Security");
 
+    if (#defined(gmdx)){
+        //Block things from spawning/randomizing in unused rooms around the map
+
+        //Big chunk of unused rooms
+        MassSetSecretGoalBoxAll(vectm(5318,4801,-222), vectm(3753,6854,-33), true);
+
+        //Unused meeting room
+        MassSetSecretGoalBoxAll(vectm(3422,6606,-33), vectm(2785,5969,-222), true);
+
+        //Tunnel for overhead pod things
+        MassSetSecretGoalBoxAll(vectm(-334,7116,250), vectm(92,4960,0), true);
+    }
+
     if (isVanilla) {
         Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
@@ -605,6 +634,8 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
     local string cloneCubeText;
     local AmbientSound as;
     local DXRAmbientSoundTrigger ast;
+    local #var(prefix)MapExit exit;
+    local DXRButtonHoverHint buttonHint;
 
     if(dxr.flags.settings.infodevices > 0) {
         //Rather than duplicating the existing cubes, add new clone text so there are more possibilities
@@ -659,6 +690,18 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
     }
 
     UpdateDefaultSecurityComputerPassword("BotSecurity");
+
+    if (dxr.flags.moresettings.shuffle_missions > 0){
+        //Speedrun Shuffle, add teleporter hover hint for the Page Killing Switch
+        foreach AllActors(class'#var(prefix)MapExit',exit,'start_endgame'){break;}
+        foreach AllActors(class'#var(prefix)Switch1',s){
+            if (s.Event=='kill_page') break;
+        }
+
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", s.Location, s.CollisionRadius+5, s.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(s);
+    }
+
 
     if (isVanilla) {
         // fix in-fighting
@@ -813,6 +856,11 @@ function AnyEntryMapFixes()
     local bool VanillaMaps;
     local Conversation c;
     local ConEventTrigger cet;
+    local #var(prefix)MapExit exit;
+    local DXRTeleporterHoverHint teleHint;
+    local #var(prefix)FlagTrigger ft;
+    local #var(prefix)Fan1 fan;
+    local ZoneInfo zone;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -823,28 +871,55 @@ function AnyEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    case "15_AREA51_BUNKER":
+        //Sometimes you can save after destroying the fan, but before the pain zone is disabled
+        //These tags are valid across Vanilla, Revision, and GMDX
+        foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1') {break;}
+        foreach AllActors(class'ZoneInfo',zone,'fan') {break;}
+
+        if (fan==None && zone!=None && zone.bPainZone==true){
+            zone.bPainZone=false;
+            zone.DamagePerSec=0; //Just to make sure it doesn't get toggled back on with some pending event
+        }
+        break;
     case "15_AREA51_ENTRANCE":
         if (VanillaMaps){
             c = GetConversation('DL_Elevator');
             if (c != None) {
-                cet = new(c) class'ConEventTrigger';
-                cet.eventType = ET_Trigger;
-                cet.triggerTag = 'Area51ScratchOMatic';
-                cet.nextEvent = c.eventList;
-                c.eventList = cet;
+                cet = NewConEventTrigger(c,None,'Area51ScratchOMatic');
             }
             c = GetConversation('DL_Final_Page02');
             if (c != None) {
-                cet = new(c) class'ConEventTrigger';
-                cet.eventType = ET_Trigger;
-                cet.triggerTag = 'Area51ScratchOMatic';
-                cet.nextEvent = c.eventList;
-                c.eventList = cet;
+                cet = NewConEventTrigger(c,None,'Area51ScratchOMatic');
             }
         }
         break;
     case "15_AREA51_FINAL":
         SetTimer(1, true);// fix ReactorReady flag being set by infolinks
+
+        if (dxr.flags.moresettings.shuffle_missions > 0){
+            //Create a Teleporter Hover Hint in Speedrun Shuffle for the Helios Exit
+            foreach AllActors(class'DXRTeleporterHoverHint',teleHint,'HeliosHint'){break;}
+            if (teleHint==None){
+                //Hint doesn't exist, check if we need to create it yet
+                if(dxr.flagbase.GetBool('HeliosFree')){
+                    //Helios is free, we can create the hint now
+
+                    //Find the MapExit
+                    foreach AllActors(class'#var(prefix)MapExit',exit,'Merge_helios_exit'){break;}
+
+                    //Find the FlagTrigger that you actually walk into to exit
+                    foreach AllActors(class'#var(prefix)FlagTrigger',ft,){
+                        if (ft.Event=='Merge_helios_exit') break;
+                    }
+
+                    teleHint=DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", ft.Location, ft.CollisionRadius+5, ft.CollisionHeight+5, exit,, true));
+                    teleHint.Tag='HeliosHint'; //So we can find it on further entries
+                    teleHint.FakeTeleporterAppearance();
+                }
+            }
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'Gray', g) {
                 if( g.Tag == 'reactorgray1' ) g.BindName = "ReactorGray1";

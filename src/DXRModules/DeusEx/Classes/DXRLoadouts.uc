@@ -22,6 +22,7 @@ struct loadouts
 const PURE_LETHAL     =  1; //No weapons to do knockouts
 const PURE_NONLETHAL  =  2; //No weapons to do kills
 const NO_CORPSES      =  4; //No corpses can be created
+const NO_RANGED_WEAPS =  8; //No ranged weapons (For handling "Shoot" BingoTriggers)
 const VAGUE_LETHALITY =  0; //Neither purely lethal nor non-lethal
 
 var loadouts item_set;
@@ -174,6 +175,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         #endif
         AddAugBan(class'#var(prefix)AugSpeed');
         SetLoadoutPureNonLethal();
+        SetLoadoutNoRangedWeapons();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -289,6 +291,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)WeaponCrowbar');
         AddStandardAugSet();
         SetLoadoutPureLethal();
+        SetLoadoutNoRangedWeapons();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -327,6 +330,11 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStandardAugSet();
         SetLoadoutPureLethal();
         SetLoadoutNoCorpses();
+
+        //Technically not true, grenades can set off the Shoot BingoTriggers,
+        //but ones like shooting the antenna tip or the satellites would be
+        //unreasonably difficult/impossible, so just treat it the same way
+        SetLoadoutNoRangedWeapons();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -547,11 +555,11 @@ static function AdjustFlags(DXRFlags flags, int loadout)
     switch(loadout) {
     case 15:
         //The Three Leg Augs
-        flags.moresettings.aug_loc_rando = 100;
+        flags.moresettings.aug_loc_rando = 200;
         break;
     case 17:
         //My Vision Is Augmented
-        flags.moresettings.aug_loc_rando = 100;
+        flags.moresettings.aug_loc_rando = 200;
         break;
     }
 }
@@ -721,6 +729,11 @@ function SetLoadoutNoCorpses()
     item_set.lethality = item_set.lethality | NO_CORPSES;
 }
 
+function SetLoadoutNoRangedWeapons()
+{
+    item_set.lethality = item_set.lethality | NO_RANGED_WEAPS;
+}
+
 function SetLoadoutDefaultLethal()
 {
     item_set.lethality = VAGUE_LETHALITY;
@@ -739,6 +752,11 @@ function bool IsLoadoutPureNonLethal()
 function bool IsLoadoutNoCorpses()
 {
     return bool(item_set.lethality & NO_CORPSES);
+}
+
+function bool IsLoadoutNoRangedWeapons()
+{
+    return bool(item_set.lethality & NO_RANGED_WEAPS);
 }
 
 function AddInvBan(class<Inventory> inv)
@@ -1233,7 +1251,8 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 {
     local Inventory item, nextItem;
     local DXREnemies dxre;
-    local int i, start_amount;
+    local HUDObjectBelt belt;
+    local int i, start_amount, pos;
 
     if( dxr.flags.settings.equipment == 0 ) return;
     if( dxr.dxInfo.missionNumber == 0 ) return;
@@ -1271,6 +1290,18 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
         _RandoStartingEquipment(player, dxre, respawn);
     }
 
+    belt = DeusExRootWindow(player.rootWindow).hud.belt;
+    pos = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
+    if (IsAssignableBeltPos(pos)) {
+        // move the first melee weapon to the starting melee slot
+        for (i = 1; i < ArrayCount(belt.objects); i++) {
+            if (IsMeleeWeapon(belt.GetObjectFromBelt(i))) {
+                PercolateBeltItem(i, pos);
+                break;
+            }
+        }
+    }
+
     if(dxr.flags.moresettings.shuffle_missions > 0 && dxr.flags.moresettings.shuffle_missions < 1000) {
         if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)BioelectricCell'))
             GiveItem(player, class'#var(prefix)BioelectricCell');
@@ -1286,7 +1317,7 @@ function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory ite
     if(item == None) return None;
 
     if(is_banned(item.class)) {
-        info("_RandoStartingEquipment " $item$" is banned!");
+        info("_GiveRandoStartingItem " $item$" is banned!");
         item.Destroy();
         return None;
     }
@@ -1323,14 +1354,11 @@ function class<Inventory> _GetRandomUtilityItem()
 
 function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool bFrob)
 {
-    local int i, slot;
+    local int i;
     local Inventory item;
     local class<Inventory> iclass;
-    local HUDObjectBelt belt;
 
     if(dxre != None) {
-        belt = DeusExRootWindow(player.rootWindow).hud.belt;
-        slot = class'MenuChoice_MeleeSlot'.default.StartingMeleeSlot;
         for(i=0; i<100; i++) {
             iclass = dxre.GiveRandomMeleeWeaponClass(player, false);
             if(iclass == None || is_banned(iclass)) continue;
@@ -1338,11 +1366,6 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
             item = GiveItem(player, iclass);
             item = _GiveRandoStartingItem(player, item, bFrob);
             if(item == None) continue;
-
-            if(belt.IsValidPos(slot) && belt.GetObjectFromBelt(slot) == None) {
-                belt.RemoveObjectFromBelt(item);
-                belt.AddObjectToBelt(item, slot, false);
-            }
 
             break;
         }
