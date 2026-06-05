@@ -172,7 +172,7 @@ function BindControls(optional string action)
 
     NewGroup("Bingo");
 
-    NewMenuItem("Bingo Win", "How many completed lines to instantly win (or progress in Mean Bingo Machine mode).");
+    NewMenuItem("Bingo Win", "How many completed lines to instantly win (or progress in Bingo Machine modes).");
     Slider(f.settings.bingo_win, 0, 12, GetGenericHelpText("bingowin"));
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
@@ -707,7 +707,7 @@ function String GetGenericHelpText(string opt)
         msg =       "This setting determines how many lines of bingo you must complete in your game.|n";
         msg = msg $ "|n";
         msg = msg $ "In a typical game, completing this number of bingo lines will win the game instantly.|n";
-        msg = msg $ "In Mean Bingo Machine mode, completing this number of bingo lines will allow you to progress to the next mission.|n";
+        msg = msg $ "In Bingo Machine modes, completing this number of bingo lines will allow you to progress to the next mission.|n";
         break;
     case "medbotuses":
         msg =       "This setting lets you select how many times each individual medbot can be used to heal the player.";
