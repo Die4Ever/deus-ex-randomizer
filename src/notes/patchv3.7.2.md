@@ -76,6 +76,7 @@
   - Added an exit button to the Hong Kong Helibase barracks (Mission 6).
   - Smugglers bots in Mission 8 are no longer permanently hostile when Moderate Map Balance changes are enabled.  They will only be hostile if you have not spoken to Smuggler before this mission.
   - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
+  - Upgrades to the EUAS (IFF) aug will actually display on screen (Light level and environmental hazard warnings).
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
