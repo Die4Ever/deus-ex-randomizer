@@ -29,6 +29,7 @@ function FirstEntry()
     local BeamTrigger bt;
     local LaserTrigger lt;
     local int num_lasers;
+    local bool fix_based;
 
     Super.FirstEntry();
 
@@ -47,18 +48,18 @@ function FirstEntry()
         if( swap_actors[i] == "" ) continue;
 
         c = swap_actors[i];
+        fix_based = false;
         chance = 100;
-        if( c == "Engine.Inventory" )
+
+        if( c == "Engine.Inventory" ) {
             chance = dxr.flags.settings.swapitems;
-#ifdef hx
-        else if( c == "HX.HXContainers" )
+        } else if( c == "Containers" || c == "HX.HXContainers" ) {
             chance = dxr.flags.settings.swapcontainers;
-#else
-        else if( c == "Containers" )
-            chance = dxr.flags.settings.swapcontainers;
-#endif
+            fix_based = true;
+        }
+
         l("swapping swap_actors["$i$"]: "$c$", chance: "$chance);
-        SwapAll(c, chance);
+        SwapAll(c, chance, fix_based);
         l("done swapping swap_actors["$i$"]: "$c);
     }
 

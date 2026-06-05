@@ -2131,6 +2131,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(7235,-8823,-5134),40,40);
         bt.bDestroyOthers=False;
 
+        bt = class'BingoTrigger'.static.Create(self,'fire_start',vectm(7699,-8800,-5969));
+
         break;
     //#endregion
     }
@@ -5083,6 +5085,7 @@ defaultproperties
     bingo_options(413)=(event="CatchTheNews_singlepeepedtex",desc="Catch the News",max=5,missions=#bit(1,3,4,5,6,10,11))
     bingo_options(414)=(event="A51_Sign_41_singlepeepedtex",desc="Construction Inspector",max=3,missions=#bit(15),do_not_scale=true)
     bingo_options(415)=(event="SignsOfTheEnd_singlepeepedtex",desc="Signs of the End",max=3,missions=#bit(15),do_not_scale=true)
+    bingo_options(416)=(event="fire_start",desc="Fire it up!",max=1,missions=#bit(15))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion

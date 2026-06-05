@@ -73,8 +73,11 @@ event DrawWindow(GC gc)
     local DXRando dxr;
 
     // this prevents DeusExPlayer Dying state PlayerCalcView() from timing out
-    if(Player.Level.Timeseconds - player.FrobTime > 7.9) {
-        player.FrobTime = Player.Level.Timeseconds - 7.9;
+    // Camera spin logic has been overridden in some mods, so no need for this
+    if (!#defined(vanilla||revision)){
+        if(Player.Level.Timeseconds - player.FrobTime > 7.9) {
+            player.FrobTime = Player.Level.Timeseconds - 7.9;
+        }
     }
 
     dxr = class'DXRando'.default.dxr;

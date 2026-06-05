@@ -27,6 +27,7 @@ var bool         bShowReactions;
 var bool         bShowPatrolPaths;
 var bool         bShowTextures;
 var bool         bShowConvoInfo;
+var bool         bShowOverlap;
 
 var Color        patrolColours[14];
 
@@ -253,6 +254,16 @@ function bool IsConvoInfoVisible()
 function ShowConvoInfo(bool bShow)
 {
     bShowConvoInfo = bShow;
+}
+
+function bool AreOverlappedVisible()
+{
+    return bShowOverlap;
+}
+
+function ShowOverlapping(bool bShow)
+{
+    bShowOverlap = bShow;
 }
 
 
@@ -1123,6 +1134,17 @@ function DrawWindow(GC gc)
                 str = str $ "UnfamiliarName="$ trackActor.UnfamiliarName $CR();
                 str = str $ "BindName="$ trackActor.BindName $CR();
                 str = str $ "BarkBindName="$ trackActor.BarkBindName $CR();
+            }
+            //#endregion
+
+            //#region Show Overlapping
+            if (bShowOverlap){
+                str = str $ "|c5412ec"; // #5412ec
+                str = str $ "Overlapping:"$CR();
+                foreach trackActor.RadiusActors(class'Actor',otherActor,Max(trackActor.CollisionHeight,trackActor.CollisionRadius)*2){
+                    if (class'DXRActorsBase'.static.ActorOverlappingOther(otherActor,trackActor)==False) continue;
+                    str = str $ "  "$ otherActor.Name $CR();
+                }
             }
             //#endregion
 

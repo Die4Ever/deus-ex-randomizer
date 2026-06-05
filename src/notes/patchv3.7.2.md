@@ -7,7 +7,15 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-
+- The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Allowed".
+- Bingo Viewer changes:
+  - Goals can be marked to help you keep track of what line you're aiming for.
+    - Left click to mark a goal
+    - Right click to unmark it
+    - Drag to mark/unmark an entire bingo line
+  - The window no longer locks up temporarily when moved or resized on certain systems.
+  - Font size more accurately scales to best fit the tile size.
+  - The green progress bars now fit to the edges of their tile
 - The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Fixed".
 - NPCs will now react to projectiles regardless of whether they're immune or not if "Glitches for Speedruns" is set to "Allowed"
 - When the "Camera Mode" is set to "Third Person", the camera will now shake when heavy enemies (such as Military Bots) walk near you.
@@ -32,6 +40,15 @@
 - The "New Image" icon in the list on the "Images" menu will disappear when you click off of the image to another one.
 - "The Three Leg Augs" and "My Vision Is Augmented" loadouts will now default to Balanced Aug Slot Randomization instead of Unbalanced.
 - "Goal Locations" and "Goal Spoilers" buttons will no longer appear on the "Images" menu when you have no images to view.
+- Items that are randomized into a location "inside" a crate (Or if a crate is randomized into a location that overlaps an item) will get pushed to the top of the crate instead of being hidden inside it.
+- New "Death Cam" options under Rando > Visuals (Vanilla and Revision only).
+  - "Spinning Camera (Original)": When you die the camera will spin over your dead body.
+  - "Spinning Camera (Slowed)": When you die the camera will spin over your dead body more slowly.
+  - "Overhead Camera (No Spin)": When you die the camera will hover over your dead body.
+  - "Show Killer (Kill Cam)": When you die, the camera will follow the person who killed you.
+- Regular spinning death cameras will continue to spin forever, instead of stopping after 8 seconds (Vanilla and Revision only).
+- When the "Flickering Lights" setting is set to "Epilepsy Safe", lights that flicker *extremely* quickly will now pulse at a slower rate to ensure they don't still look like they're flickering.
+- Leo Gold (the terrorist commander in Mission 1) will now be fearless in all game modes, instead of only when Goal Randomization is enabled.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
@@ -55,6 +72,10 @@
   - Scripted grenades that get thrown into vents will not be set off by Aggressive Defense System before being thrown.
   - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
   - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
+  - Hardcore settings become unlocked when you finish the game.
+  - Added an exit button to the Hong Kong Helibase barracks (Mission 6).
+  - Smugglers bots in Mission 8 are no longer permanently hostile when Moderate Map Balance changes are enabled.  They will only be hostile if you have not spoken to Smuggler before this mission.
+  - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
@@ -71,11 +92,13 @@
   - "Catch the News": Watch enough TV newscasts through the game with binoculars or a scope.
   - "Signs of the End": Look at the signs marking the different endings in Area 51 Sector 4.
   - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
+  - "Fire it up!": Use the pipe flame button in the coolant area of Area 51 Sector 4 (Mission 15).
 </details>
 
 ## Intra-Patch Changes
 
 - In Speedrun Shuffle mode, highlight text now shows the next map you will be going to when looking at the game endings in Mission 15.
+- Lebedev's surrender conversation doesn't play if Anna's already dead in Speedrun Shuffle.
 - Some flickering lights that weren't being caught by the "Flickering Lights" setting in GMDX will now also be adjusted.
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
 - In Speedrun Shuffle mode, missions are now shown in correct order on the splits view and credits screen.
