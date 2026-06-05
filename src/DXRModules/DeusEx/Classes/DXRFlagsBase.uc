@@ -299,6 +299,7 @@ simulated function LoadFlags()
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
         class'DXREvents'.static.Upgrade(p, stored_version);
+        class'DXRBrightness'.static.Upgrade(p, stored_version);
         SaveFlags();
     } else if (stored_version > flagsversion ) {
         warning("downgraded flags from "$stored_version$" to "$flagsversion);

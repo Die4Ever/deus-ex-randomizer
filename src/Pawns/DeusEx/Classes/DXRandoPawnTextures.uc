@@ -89,3 +89,10 @@ class DXRandoPawnTextures extends Object abstract;
 
 //New glasses
 #exec TEXTURE IMPORT NAME=FramesShutters FILE=Textures\FramesShutters.pcx GROUP=DXRandoPawns FLAGS=2
+
+//SecurityBot4 New Colours
+#exec TEXTURE IMPORT NAME=SecurityBot4Tex1Black FILE=Textures\SecurityBot4Tex1Black.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=SecurityBot4Tex1Blue  FILE=Textures\SecurityBot4Tex1Blue.pcx  GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=SecurityBot4Tex1Brown FILE=Textures\SecurityBot4Tex1Brown.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=SecurityBot4Tex1Gray  FILE=Textures\SecurityBot4Tex1Gray.pcx  GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=SecurityBot4Tex1Green FILE=Textures\SecurityBot4Tex1Green.pcx GROUP=DXRandoPawns

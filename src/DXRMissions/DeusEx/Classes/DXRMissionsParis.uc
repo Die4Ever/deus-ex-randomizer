@@ -28,7 +28,12 @@ function int InitGoals(int mission, string map)
     case "10_PARIS_CLUB":
         AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
         AddGoal("10_PARIS_CLUB", "Nicolette", NORMAL_GOAL, 'NicoletteDuClare0', PHYS_Falling);
-        loc=AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
+        if (!#defined(gmdx)){
+            loc=AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
+        } else {
+            //GMDX adds a big geometry bench around the table and moves Nicolette to a different spot
+            loc=AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-512,-1288,43.1), rot(0, 17368, 0));
+        }
         AddMapMarker(class'Image10_Paris_Metro',250,256,"P","Nicolette/Jaime", loc,"Nicolette or Jaime can be located upstairs in the club.  This is Nicolette's vanilla location.");
         loc=AddGoalLocation("10_PARIS_CLUB", "Back Room TV", NORMAL_GOAL, vect(-1939.340942, -478.474091, -180.899628), rot(0, -16384, 0));
         AddMapMarker(class'Image10_Paris_Metro',264,238,"P","Nicolette/Jaime", loc,"Nicolette or Jaime can be located in the back room of the club, watching TV.");
@@ -359,5 +364,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     if (g.name=="Templar Computer") {
         g.actors[2].a.SetCollisionSize(160,64);// skillawardtrigger
         g.actors[4].a.SetCollisionSize(1400,180);// DL_gunthernearcomp
+        if (#defined(gmdx)){
+            //GMDX starts with Gunther out of world until you enter the basement.  Just bring him in regardless.
+            #var(prefix)ScriptedPawn(g.actors[1].a).EnterWorld();
+        }
     }
 }

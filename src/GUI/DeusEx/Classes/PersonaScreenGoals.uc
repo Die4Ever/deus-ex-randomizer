@@ -177,8 +177,8 @@ function PopulateSpoilers()
     actorDisplay.default.viewClass = None;
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(false);
-    if(!#defined(injections))
-        actorDisplay.ShowBindName(true);
+    //if(!#defined(injections)) //We replace the ActorDisplayWindow outside of Injections now also
+    //    actorDisplay.ShowBindName(true);
 }
 
 /*
@@ -237,6 +237,8 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay.ShowPos(false);
 #ifdef injections
             actorDisplay.bUserFriendlyNames = true;
+#else
+            #var(injectsprefix)ActorDisplayWindow(actorDisplay).bUserFriendlyNames = true;
 #endif
             foreach player.AllActors(class'#var(prefix)Nanokey', key) {
                 if(key.Owner == None || !key.bHidden) continue;
@@ -258,6 +260,8 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay.ShowPos(false);
 #ifdef injections
             actorDisplay.bUserFriendlyNames = true;
+#else
+            #var(injectsprefix)ActorDisplayWindow(actorDisplay).bUserFriendlyNames = true;
 #endif
         }
         break;
@@ -434,8 +438,8 @@ function generateGoalLocationNote()
     actorDisplay.default.viewClass = None;
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(false);
-    if(!#defined(injections))
-        actorDisplay.ShowBindName(true);
+    //if(!#defined(injections)) //We replace the ActorDisplayWindow outside of Injections now also
+    //    actorDisplay.ShowBindName(true);
 }
 
 function bool ButtonActivated( Window buttonPressed )

@@ -91,6 +91,7 @@ static simulated function string GetBingoGoalHelpText(string event, int mission,
                 case "peepedtex":
                 case "peeptime":
                 case "peeped":
+                case "singlepeepedtex":
                     msg = GetBingoHelpTextPeeping(event,mission,max,FemJC);
                     break;
                 case "DestroyDeco":
@@ -965,6 +966,21 @@ static simulated function string GetBingoHelpTextPeeping(string event, int missi
             return msg;
         case "poster01_peepedtex":
             return "Have a look at a Navy recruitment poster through a pair of binoculars or a scope.  It really makes you want to sign up!";
+        case "AdvertisingWorks_singlepeepedtex":
+            return "Prove that physical advertising works by looking at "$max$" "$plur("advertisement",max)$" through the game by looking at them through binoculars or a scope.";
+        case "ChnaHandSign_A_singlepeepedtex":
+            return "Support a local business and look at "$max$" "$plur("sign",max)$" for the Old China Hand throughout Hong Kong through binoculars or a scope.";
+        case "CatchTheNews_singlepeepedtex":
+            return "Watch the news on a TV "$max$" "$plur("time",max)$" through binoculars or a scope.";
+        case "A51_Sign_41_singlepeepedtex":
+            return "Ensure that the signs marking the 3 UC Control rooms have been appropriately placed over the doors in Area 51 Sector 4.  You must use binoculars or a scope to ensure they are correctly placed.";
+        case "SignsOfTheEnd_singlepeepedtex":
+            msg=msg$"Identify the signs marking each of the possible endings in Sector 4 of Area 51:|n";
+            msg=msg$" ~ The \"Infusion Control\" sign|n";
+            msg=msg$" ~ The \"Aquinas Router\" sign|n";
+            msg=msg$" ~ The \"Coolant B13\" sign|n";
+            msg=msg$"The signs must be viewed through binoculars or a scope.";
+            return msg;
     }
 
     //Return nothing so the generic function can handle it
@@ -1210,9 +1226,9 @@ static simulated function string GetBingoHelpTextGeneric(string event, int missi
         case "coolant_switch":
             msg = "Flush the reactor coolant";
             if (dxr.flags.settings.goals>0){
-                msg = "Flush the reactor coolant somewhere in Sector 4 of Area 51.  To flush the coolant, you need to find a large orange button that is in a random location.";
+                msg = "Flush the reactor coolant somewhere in Area 51 Sector 4.  To flush the coolant, you need to find a large orange button that is in a random location.";
             } else {
-                msg = "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
+                msg = "Flush the reactor coolant in the coolant area on the bottom floor of Area 51 Sector 4.";
             }
             return msg;
         case "BlueFusionReactors":
@@ -1553,6 +1569,8 @@ static simulated function string GetBingoHelpTextGeneric(string event, int missi
             return "Crawl through the maintenance tunnel connecting the electrical room to the helipad in the lower decks of the superfreighter.";
         case "EngineeringBridge":
             return "Raise the bridge in the engine room of the superfreighter.  The keypad can be hacked, or the code can be found in a datacube on the upper decks of the ship.";
+        case "fire_start":
+            return "Use the flame trap button in the coolant area on the bottom floor of Area 51 Sector 4.";
     }
 
     //Return nothing so the generic function can handle it

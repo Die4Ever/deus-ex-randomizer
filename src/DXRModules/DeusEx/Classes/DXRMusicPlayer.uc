@@ -124,7 +124,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     if( p == None || dxr == None || (continuous_setting == c.default.disabled && rando_music_setting == false) ) {
         use_random_music = False;
     }
-#ifdef revision
+#ifdef revision||vmd2
     if (class'DXRActorsBase'.static.IsUsingOggMusic(player())){
         use_random_music = False;
         play_music=False;
@@ -167,7 +167,7 @@ function AnyEntry()
         allowCombat = music.allowCombat;
     }
 
-    #ifdef revision
+    #ifdef revision||vmd2
     if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) {
         PlayRandomOggSong(true);
         return;
@@ -181,7 +181,7 @@ function string GetCurrentSongName()
 {
     local string p, s;
 
-    #ifdef revision
+    #ifdef revision||vmd2
     if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) {
         return default.PrevOggTrackName;
     }
@@ -236,7 +236,7 @@ function GetLevelSong(bool setseed)
     savedConvSection = ConvSection;
 }
 
-#ifdef revision
+#ifdef revision||vmd2
 
 function GetLevelOggSong(bool setseed, DXOggMusicManager mm)
 {
@@ -402,7 +402,7 @@ function SkipSong()
     usingOgg = class'DXRActorsBase'.static.IsUsingOggMusic(player());
 
     if (usingOgg){
-        #ifdef revision
+        #ifdef revision||vmd2
         PlayRandomOggSong(true);
         #endif
     } else {

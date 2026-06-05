@@ -21,6 +21,10 @@ event InitWindow()
 
     splits = HUDSpeedrunSplits(NewChild(Class'HUDSpeedrunSplits'));
     splits.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+
+    actorDisplay.Destroy();
+    actorDisplay = ActorDisplayWindow(NewChild(Class'DXRActorDisplayWindow'));
+    actorDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 }
 
 event DescendantRemoved(Window descendant)
@@ -197,6 +201,23 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
     }
     return Super.InvokeUIScreen(newScreen, GetNoPause(bNoPause));
 }
+
+function DeusExBaseWindow PushWindow(
+    Class<DeusExBaseWindow> newWindowClass,
+    optional Bool hideCurrentWin,
+    optional Bool bNoPause)
+{
+    log("DXRandoRootWindow PushWindow "$newWindowClass);
+
+    switch(newWindowClass) {
+        case class'ShowClassWindow':
+            newWindowClass = class'DXRShowClassWindow';
+            break;
+    }
+
+    return Super.PushWindow(newWindowClass,hideCurrentWin,bNoPause);
+}
+
 
 function bool CheckSingleDataVaultWindow(EInputKey key, string function, class<DeusExBaseWindow> winClass)
 {

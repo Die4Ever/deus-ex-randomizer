@@ -639,6 +639,29 @@ simulated function MessageBoxClicked(int button, int callbackId) {
     //OK = 2
 }
 
+function bool IsWindowClassInStack(class<Window> winClass)
+{
+    local DeusExRootWindow root;
+    local int winCount,winNum;
+
+    root = DeusExRootWindow(player().rootWindow);
+    if (None == root) {
+        //Root window doesn't exist ¯\_(ツ)_/¯
+        return False;
+    }
+
+    winCount = root.WindowStackCount();
+    winNum = winCount-1;
+    while (winNum>=0){
+        if (root.winStack[winNum]!=None && root.winStack[winNum].IsA(winClass.name)){
+            return true;
+        }
+        winNum--;
+    }
+
+    return false;
+}
+
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
     local #var(PlayerPawn) p;
@@ -667,7 +690,11 @@ function bool InGame() {
         return False;
     }
 
-    if (root.GetTopWindow() != None) {
+    if (root.WindowStackCount()>0){
+        return False;
+    }
+
+    if (root.GetTopWindow() != None ) {
         return False;
     }
 

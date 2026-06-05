@@ -625,24 +625,15 @@ function CreateAnsweringMachineConversation(Actor tad)
     con.bNonInteractive=true;
     con.audioPackageName="Mission03";
 
-    ces = new(con) class'ConEventSpeech';
-    con.eventList = ces;
-    ces.eventType=ET_Speech;
-    ces.conversation=con;
+    ces = NewConEventSpeech(con,None,"Paul, I know you said no phone messages, but South Street's going up in smoke.  We'll have to meet at the subway station.",69);
     ces.speaker=tad;
     ces.speakerName="";
     ces.speakingTo=tad;
     ces.speechFont=SF_Normal;
-    ces.conSpeech = new(con) class'ConSpeech';
-    ces.conSpeech.speech="Paul, I know you said no phone messages, but South Street's going up in smoke.  We'll have to meet at the subway station.";
-    ces.conSpeech.soundID=69; //Yes, really
 
     player().ClientMessage("Speech audio: "$con.GetSpeechAudio(69));
 
-    ce = new(con) class'ConEventEnd';
-    ce.eventType=ET_End;
-    ces.nextEvent=ce;
-    ce.conversation=con;
+    ce = ConEventEnd(NewConEvent(con,ces,class'ConEventEnd'));
 
     conItem = new(Level) class'ConItem';
     conItem.conObject = con;
