@@ -7,7 +7,15 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-
+- The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Allowed".
+- Bingo Viewer changes:
+  - Goals can be marked to help you keep track of what line you're aiming for.
+    - Left click to mark a goal
+    - Right click to unmark it
+    - Drag to mark/unmark an entire bingo line
+  - The window no longer locks up temporarily when moved or resized on certain systems.
+  - Font size more accurately scales to best fit the tile size.
+  - The green progress bars now fit to the edges of their tile
 - The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Fixed".
 - NPCs will now react to projectiles regardless of whether they're immune or not if "Glitches for Speedruns" is set to "Allowed"
 - When the "Camera Mode" is set to "Third Person", the camera will now shake when heavy enemies (such as Military Bots) walk near you.

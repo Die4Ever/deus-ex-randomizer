@@ -26,29 +26,43 @@ WINDOW_TITLE=DEF_WINDOW_TITLE
 DEFAULT_WINDOW_WIDTH = 500
 DEFAULT_WINDOW_HEIGHT = 500
 
-MAGIC_GREEN    = "#1e641e"
-BRIGHT_GREEN   = "#00CC00"
-POSSIBLE_GREY  = "#505050"
-IMPOSSIBLE_RED = "#300000"
-NOT_NOW_BLACK  = "#000000"
-TEXT_GREY      = "#c8c8c8"
-TEXT_WHITE     = "#FFFFFF"
+MAGIC_GREEN         = "#1e641e"
+BRIGHT_GREEN        = "#00CC00"
+POSSIBLE_GREY       = "#505050"
+IMPOSSIBLE_RED      = "#300000"
+NOT_NOW_BLACK       = "#000000"
+MARKED_GOLD         = "#FFD700"
+MARK_PREVIEW_GOLD   = "#FFF0A0"
+UNMARK_PREVIEW_GOLD = "#B8860B"
+TEXT_GREY           = "#c8c8c8"
+TEXT_WHITE          = "#FFFFFF"
 
-P1_FINISHED_COLOUR = "#a46e23"
-P1_RECENT_COLOUR   = "#e6992f"
-P1_POSSIBLE_COLOUR = "#000000"
+P1_FINISHED_COLOUR  = "#a46e23"
+P1_RECENT_COLOUR    = "#e6992f"
+P1_POSSIBLE_COLOUR  = "#000000"
 
-P2_FINISHED_COLOUR = "#23379b"
-P2_RECENT_COLOUR   = "#2747e9"
-P2_POSSIBLE_COLOUR = "#000000"
+P2_FINISHED_COLOUR  = "#23379b"
+P2_RECENT_COLOUR    = "#2747e9"
+P2_POSSIBLE_COLOUR  = "#000000"
 
 RECENT_COLOUR = BRIGHT_GREEN
 FINISHED_COLOUR = MAGIC_GREEN
 POSSIBLE_COLOUR = POSSIBLE_GREY
 IMPOSSIBLE_COLOUR = IMPOSSIBLE_RED
 NOT_NOW_COLOUR = NOT_NOW_BLACK
+MARKED_COLOUR = MARKED_GOLD
+MARK_PREVIEW_COLOUR = MARK_PREVIEW_GOLD
+UNMARK_PREVIEW_COLOUR = UNMARK_PREVIEW_GOLD
 POSSIBLE_TEXT = TEXT_WHITE
 NOT_POSSIBLE_TEXT = TEXT_GREY
+
+# all valid bingo lines: 5 rows, 5 columns, 2 diagonals
+BINGO_LINES = (
+    [[(x, y) for x in range(5)] for y in range(5)] +  # rows
+    [[(x, y) for y in range(5)] for x in range(5)] +  # columns
+    [[(i, i) for i in range(5)]] +                    # first diagonal
+    [[(i, 4 - i) for i in range(5)]]                  # second diagonal
+)
 
 def GetBorderScale():
     if os.name == 'nt': # Windows works correctly (for once)
@@ -81,6 +95,7 @@ class BingoViewerMain:
 
         #Maintain board state here
         self.board = [[None]*5 for i in range(5)]
+        self.prevDescs = None
         self.selectedMod = ""
         self.numMods=0
 
@@ -128,6 +143,7 @@ class BingoViewerMain:
         for x in range(5):
             for y in range(5):
                 self.display.updateSquare(x,y,self.board[x][y])
+        self.display.fitFontToBoard()
 
         self.sendBingoState()
 
@@ -159,8 +175,8 @@ class BingoViewerMain:
         self.config["show_progress_bars"]=True
         self.config["always_on_top"]=False
         self.config["mp_value"]=0
-        self.config["win_width"]=DEFAULT_WINDOW_WIDTH
-        self.config["win_height"]=DEFAULT_WINDOW_HEIGHT
+        self.config["win_width"]=args.width
+        self.config["win_height"]=args.height
 
     def LoadConfig(self):
         conf = ""
@@ -333,20 +349,20 @@ class BingoViewerMain:
         self.config["win_height"]=int(height)
 
     def GetWindowDimensions(self):
-        width  = self.config.get("win_width",DEFAULT_WINDOW_WIDTH)
-        height = self.config.get("win_height",DEFAULT_WINDOW_HEIGHT)
+        width  = self.config.get("win_width",args.width)
+        height = self.config.get("win_height",args.height)
 
         #Window dimensions are complicated on Linux, due to the window border scale issue
         #For now, don't fetch the saved window dimensions, just return the defaults
         if os.name != 'nt':
-            width=DEFAULT_WINDOW_WIDTH
-            height=DEFAULT_WINDOW_HEIGHT
+            width=args.width
+            height=args.height
 
         #Just in case
         if (width<=0):
-            width=DEFAULT_WINDOW_WIDTH
+            width=args.width
         if (height<=0):
-            height=DEFAULT_WINDOW_HEIGHT
+            height=args.height
 
         return int(width),int(height)
 
@@ -429,6 +445,17 @@ class BingoReader:
 ###############################
 
     def readerTask(self):
+        def isNewBoard():
+            descs = frozenset(
+                self.main.board[x][y]["desc"]
+                for x in range(5) for y in range(5)
+                if self.main.board[x][y] is not None
+            )
+            if descs != self.main.prevDescs:
+                self.main.prevDescs = descs
+                return True
+            return False
+
         time.sleep(1)
         try:
             while(self.main.IsRunning() and self.running):
@@ -436,6 +463,8 @@ class BingoReader:
                 changed = self.readBingoFile()
                 self.main.UpdateNumMods(self.numMods)
                 if (changed):
+                    if isNewBoard():
+                        self.main.display.clearAllMarks()
                     self.main.BoardUpdate()
                     self.main.SetSelectedMod(self.selectedMod)
         except Exception as e:
@@ -527,10 +556,15 @@ class BingoDisplay:
         self.tkBoard = [[None]*5 for i in range(5)]
         self.tkBoardText = [[None]*5 for i in range(5)]
         self.tkBoardImg = [[None]*5 for i in range(5)]
+        self.tkBoardMarked = [[False]*5 for i in range(5)]
+        self.tkBoardPreview = [[False]*5 for i in range(5)]
+        self._line_drag_origin = None  # tile where mouse drag started
+        self._line_drag_mark_value = None  # True for marking, False for unmarking
+        self._line_drag_current_line = None  # currently previewed bingo line
 
         self.width,self.height = self.main.GetWindowDimensions()
-        #self.width=DEFAULT_WINDOW_WIDTH
-        #self.height=DEFAULT_WINDOW_HEIGHT
+        #self.width=args.width
+        #self.height=args.height
         self.title = WINDOW_TITLE
         self.win=None
 
@@ -602,26 +636,97 @@ class BingoDisplay:
     def isWindowOpen(self):
         return self.win!=None
 
-    def getFontSizeByWindowSize(self):
-        width = min(self.width, self.height)
-        return int(width / 37)
+    # find the ideal font size for the current board
+    def fitFontToBoard(self):
+        # does the text at this size fit in its tile?
+        def textFits(text, size):
+            self._measure_font.configure(size=size)
+            linespace = self._measure_font.metrics("linespace")
+            space_w = self._measure_font.measure(" ")
+            lines = 1
+            line_w = 0
+            for word in text.split():
+                word_w = self._measure_font.measure(word)
+                if word_w > tile_w:
+                    return False  # single word wider than tile
+                gap = space_w if line_w > 0 else 0
+                if line_w > 0 and line_w + gap + word_w > tile_w:
+                    lines += 1
+                    line_w = word_w
+                else:
+                    line_w += gap + word_w
+            return lines * linespace <= tile_h
+
+        def binarySearch(lo, hi):
+            best = lo
+            while lo <= hi:
+                mid = (lo + hi) // 2
+                if textFits(hardest, mid):
+                    best = mid
+                    lo = mid + 1
+                else:
+                    hi = mid - 1
+            return best
+
+        tile_w = self.tkBoard[0][0].winfo_width() - self.tile_padding_width
+        tile_h = self.tkBoard[0][0].winfo_height() - self.tile_padding_width
+        if tile_w <= 1 or tile_h <= 1:
+            return
+
+        texts = [
+            self.tkBoardText[x][y].get()
+            for x in range(5) for y in range(5)
+            if self.tkBoardText[x][y] is not None and self.tkBoardText[x][y].get() != ""
+        ]
+
+        if not texts:
+            return
+
+        # assumes the longest goal string is the most constrained; not always correct in theory but seems to work in practice and is much faster
+        hardest = max(texts, key=len)
+
+        cache_key = (hardest, tile_w, tile_h)
+        if cache_key == self._font_cache_key:
+            return
+        self._font_cache_key = cache_key
+
+        # search for the ideal font size, starting near the current size
+        current = self.font.cget("size")
+        lo, hi = max(1, current - 5), current + 5
+        best = binarySearch(lo, hi)
+        if best == lo or best == hi:
+            # hit a boundary, fall back to full range
+            best = binarySearch(1, 100)
+
+        if self.font.cget("size") != best:
+            self.font.configure(size=best)
 
     def resize(self,event):
         if event.widget == self.win:
             widthScale,heightScale = GetBorderScale()
-            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
-            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
+            width = event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
+            height = event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
+            if self.width == width and self.height == height:
+                return # the window was just moved, not resized
+            self.width=width
+            self.height=height
 
             self.main.SetWindowDimensions(self.width,self.height)
 
-            self.font = font.Font(size=self.getFontSizeByWindowSize())
+            # don't queue up a bunch of redraws
+            if hasattr(self, '_resize_job'):
+                self.win.after_cancel(self._resize_job)
+            self._resize_job = self.win.after(1, self._apply_resize)
 
-            for x in range(5):
-                for y in range(5):
-                    self.tkBoard[x][y].config(
-                        width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
-                    )
-                    self.drawTile(x,y,self.main.GetBoardEntry(x,y))
+    def _apply_resize(self):
+        self.fitFontToBoard()
+        tile_w = self.tkBoard[0][0].winfo_width() - self.tile_padding_width
+        for x in range(5):
+            for y in range(5):
+                self.tkBoard[x][y].config(width=self.width/5, height=self.height/5, wraplength=tile_w, font=self.font)
+                boardEntry = self.main.GetBoardEntry(x, y)
+                if boardEntry is not None:
+                    self.UpdateButtonImage(x, y, boardEntry)
 
     def SelectNewJsonPushDest(self):
         dest = self.main.GetJSONPushDest()
@@ -698,9 +803,18 @@ class BingoDisplay:
         self.main.BoardUpdate()
 
     def ResetWindowSize(self):
-        self.width=DEFAULT_WINDOW_WIDTH
-        self.height=DEFAULT_WINDOW_HEIGHT
-        self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
+        def resetFont():
+            # deferred: winfo_width() isn't reliable until Tkinter finishes laying out the resized window
+            # 500ms is an arbitrary but safe delay
+            self._font_cache_key = None
+            tile_w = self.tkBoard[0][0].winfo_width() - self.tile_padding_width
+            for x in range(5):
+                for y in range(5):
+                    self.tkBoard[x][y].config(wraplength=tile_w)
+            self.fitFontToBoard()
+
+        self.win.geometry(str(args.width + BUTTON_BORDER_WIDTH_TOTAL) + "x" + str(args.height + BUTTON_BORDER_WIDTH_TOTAL))
+        self.win.after(500, resetFont)
 
     def ShowAboutWindow(self):
         msg = "Deus Ex Randomizer Bingo Viewer\n\n"
@@ -760,7 +874,9 @@ class BingoDisplay:
         self.win.config(menu=self.menubar)
 
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
-        self.font = font.Font(size=self.getFontSizeByWindowSize())
+        self.font = font.Font()
+        self._measure_font = font.Font(family=self.font.cget("family"))
+        self._font_cache_key = None
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
@@ -774,14 +890,128 @@ class BingoDisplay:
                     activeforeground=POSSIBLE_TEXT,
                     disabledforeground=POSSIBLE_TEXT, bd=BUTTON_BORDER_WIDTH
                 )
-                #self.tkBoard[x][y]["state"]='disabled'
+                self.tkBoard[x][y].bind("<Button-1>", lambda e, x=x, y=y: self.onPress(x, y, True))
+                self.tkBoard[x][y].bind("<Button-3>", lambda e, x=x, y=y: self.onPress(x, y, False))
+                self.tkBoard[x][y].bind("<ButtonRelease-1>", self.onRelease)
+                self.tkBoard[x][y].bind("<ButtonRelease-3>", self.onRelease)
                 self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
+
+        self.tile_padding_width = 2 * (BUTTON_BORDER_WIDTH + self.win.winfo_pixels(self.tkBoard[0][0].cget("padx")))
+
+        # track mouse drag motion across the whole window, not just within individual tiles
+        self.win.bind("<B1-Motion>", self.onLineDragMotion)
+        self.win.bind("<B3-Motion>", self.onLineDragMotion)
 
         self.active=True
 
         self.main.BoardUpdate()
 
+
+    def clearAllMarks(self):
+        for x in range(5):
+            for y in range(5):
+                self.tkBoardPreview[x][y] = False
+                self.clearMark(x, y)
+
+    def onPress(self, x, y, mark):
+        self._line_drag_origin = (x, y)
+        self._line_drag_mark_value = mark
+        self._line_drag_current_line = None
+        self._markPreview([(x, y)])
+
+    def onRelease(self, e):
+        # commit mark preview
+        for x in range(5):
+            for y in range(5):
+                if self.tkBoardPreview[x][y]:
+                    self.tkBoardPreview[x][y] = False
+                    self.tkBoardMarked[x][y] = self._line_drag_mark_value
+                    boardEntry = self.main.GetBoardEntry(x, y)
+                    if boardEntry is not None:
+                        self.UpdateButtonImage(x, y, boardEntry)
+        self._line_drag_origin = None
+        self._line_drag_mark_value = None
+        self._line_drag_current_line = None
+
+    def _markPreview(self, new_tiles):
+        # clear preview tiles not in new selection
+        for x in range(5):
+            for y in range(5):
+                if self.tkBoardPreview[x][y] and (x, y) not in new_tiles:
+                    self.tkBoardPreview[x][y] = False
+                    boardEntry = self.main.GetBoardEntry(x, y)
+                    if boardEntry is not None:
+                        self.UpdateButtonImage(x, y, boardEntry)
+        # set new preview tiles
+        for x, y in new_tiles:
+            if not self.tkBoardPreview[x][y]:
+                self.tkBoardPreview[x][y] = True
+                boardEntry = self.main.GetBoardEntry(x, y)
+                if boardEntry is not None:
+                    self.UpdateButtonImage(x, y, boardEntry)
+
+    def onLineDragMotion(self, e):
+        if self._line_drag_origin is None:
+            return
+        ox, oy = self._line_drag_origin
+
+        # find which tile the cursor is over
+        tx, ty = None, None
+        try:
+            widget = self.win.winfo_containing(e.x_root, e.y_root)
+        except KeyError:
+            widget = None
+        if widget is not None:
+            for x in range(5):
+                for y in range(5):
+                    if self.tkBoard[x][y] == widget:
+                        tx, ty = x, y
+                        break
+
+        if tx is None:
+            # cursor is outside the board — clear all preview
+            if self._line_drag_current_line is not None:
+                self._line_drag_current_line = None
+                self._markPreview([])
+            return
+
+        if (tx, ty) == (ox, oy):
+            # cursor is on origin — preview only origin
+            self._line_drag_current_line = None
+            self._markPreview([(ox, oy)])
+            return
+
+        # find the bingo line containing both origin and current tile, if any
+        current_line = None
+        for line in BINGO_LINES:
+            if (ox, oy) in line and (tx, ty) in line:
+                current_line = line
+                break
+
+        if current_line == self._line_drag_current_line:
+            return
+
+        self._line_drag_current_line = current_line
+        if current_line is not None:
+            self._markPreview(current_line)
+        else:
+            # no shared line — clear all preview
+            self._markPreview([])
+
+    def clearMark(self, x, y):
+        self.tkBoardMarked[x][y] = False
+
+    # draw a highlight border inside the image for marked tiles
+    def drawMarkBorder(self, img, tile_w, colour=MARKED_COLOUR):
+        draw = ImageDraw.Draw(img)
+        img_w, img_h = img.size
+        thickness = max(3, tile_w // 20)
+        for layer in range(thickness):
+            inset = BUTTON_BORDER_WIDTH + layer
+            if 2 * inset >= img_w - 1 or 2 * inset >= img_h - 1:
+                break
+            draw.rectangle([(inset, inset), (img_w - 1 - inset, img_h - 1 - inset)], outline=colour)
 
     def drawTile(self, x, y, boardEntry):
         tkTile = self.tkBoard[x][y]
@@ -820,18 +1050,30 @@ class BingoDisplay:
         #    tkTile.config(bg="#303030")
         elif isActive == -1:# -1 is for impossible
             if not multiplayer:
-                tkTile.config(bg=IMPOSSIBLE_RED)
+                tkTile.config(bg=IMPOSSIBLE_COLOUR)
             else:
                 tkTile.config(bg=POSSIBLE_COLOUR)
             tkTile.finished_time=None
         else:
-            tkTile.config(bg=NOT_NOW_BLACK, fg=NOT_POSSIBLE_TEXT)
+            tkTile.config(bg=NOT_NOW_COLOUR, fg=NOT_POSSIBLE_TEXT)
             tkTile.finished_time=None
 
     def UpdateButtonImage(self,x,y,boardEntry):
         if (self.showProgressBars.get()):
             isActive = boardEntry.get('active', 1)
             multiplayer = (self.mpVal.get()!=0)
+
+            cache_key = (
+                self.tkBoard[x][y].winfo_width(), self.tkBoard[x][y].winfo_height(),
+                boardEntry["progress"], boardEntry["max"],
+                isActive,
+                self.mpVal.get(),
+                self.tkBoardMarked[x][y],
+                self.tkBoardPreview[x][y]
+            )
+            if getattr(self.tkBoardImg[x][y], "_cache_key", None) == cache_key:
+                return
+
             if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
                 #finished
                 img = self.UpdateButtonImageFinished(x,y,boardEntry)
@@ -840,12 +1082,13 @@ class BingoDisplay:
                 img = self.UpdateButtonImagePossible(x,y,boardEntry)
             elif (isActive == -1):
                 #impossible
-                img = self.UpdateButtonImagePlainColour(x,y,IMPOSSIBLE_RED)
+                img = self.UpdateButtonImagePlainColour(x,y,IMPOSSIBLE_COLOUR)
             else:
                 #not this mission
-                img = self.UpdateButtonImagePlainColour(x,y,NOT_NOW_BLACK)
+                img = self.UpdateButtonImagePlainColour(x,y,NOT_NOW_COLOUR)
 
             tkimg = ImageTk.PhotoImage(img)
+            tkimg._cache_key = cache_key
             self.tkBoardImg[x][y] = tkimg
         else:
             self.tkBoardImg[x][y]=self.pixel
@@ -855,8 +1098,8 @@ class BingoDisplay:
     def UpdateButtonImagePossible(self,x,y,boardEntry):
         progress = boardEntry["progress"]
         maximum = boardEntry["max"]
-        width  = int(self.width / 5)
-        height = int(self.height / 5)
+        width  = self.tkBoard[x][y].winfo_width()
+        height = self.tkBoard[x][y].winfo_height()
 
         img = Image.new("RGB",(width,height))
         draw = ImageDraw.Draw(img)
@@ -870,7 +1113,7 @@ class BingoDisplay:
             percent = progress
 
         #Clamp the percentage between 0.0 and 1.0
-        max(min(percent,1.0),0.0)
+        percent = max(min(percent,1.0),0.0)
 
         barHeight = min(height, max(height * percent, 0))
 
@@ -878,6 +1121,11 @@ class BingoDisplay:
         draw.rectangle([(left,0),(width,height-barHeight)],fill=POSSIBLE_COLOUR)
         self.tkBoard[x][y].config(activebackground=POSSIBLE_COLOUR)
 
+        if self.tkBoardPreview[x][y] and self.tkBoardMarked[x][y] != self._line_drag_mark_value:
+            preview_colour = MARK_PREVIEW_COLOUR if self._line_drag_mark_value else UNMARK_PREVIEW_COLOUR
+            self.drawMarkBorder(img, width, preview_colour)
+        elif self.tkBoardMarked[x][y]:
+            self.drawMarkBorder(img, width)
         return img
 
     def UpdateButtonImageFinished(self,x,y,boardEntry):
@@ -893,8 +1141,8 @@ class BingoDisplay:
 
     #For when we just want to make the square a certain colour and it doesn't need any fancy logic
     def UpdateButtonImagePlainColour(self,x,y,colour):
-        width  = int(self.width / 5)
-        height = int(self.height / 5)
+        width  = self.tkBoard[x][y].winfo_width()
+        height = self.tkBoard[x][y].winfo_height()
 
         img = Image.new("RGB",(width,height))
         draw = ImageDraw.Draw(img)
@@ -905,12 +1153,17 @@ class BingoDisplay:
         draw.rectangle([(left,0),(width,height)],fill=colour)
         self.tkBoard[x][y].config(activebackground=colour)
 
+        if self.tkBoardPreview[x][y] and self.tkBoardMarked[x][y] != self._line_drag_mark_value:
+            preview_colour = MARK_PREVIEW_COLOUR if self._line_drag_mark_value else UNMARK_PREVIEW_COLOUR
+            self.drawMarkBorder(img, width, preview_colour)
+        elif self.tkBoardMarked[x][y]:
+            self.drawMarkBorder(img, width)
         return img
 
 
     def updateFinishedTileColour(self,x,y):
         if self.mpVal.get()!=0:
-            self.tkBoard[x][y].config(bg=NOT_NOW_BLACK,activebackground=NOT_NOW_BLACK)
+            self.tkBoard[x][y].config(bg=NOT_NOW_COLOUR,activebackground=NOT_NOW_COLOUR)
         else:
             self.tkBoard[x][y].config(bg=FINISHED_COLOUR,activebackground=FINISHED_COLOUR)
         self.UpdateButtonImage(x,y,self.main.GetBoardEntry(x,y))
@@ -923,10 +1176,12 @@ class BingoDisplay:
 
 parser = argparse.ArgumentParser(description='DXRando Bingo Viewer')
 parser.add_argument('--version', action="store_true", help='Output version')
+parser.add_argument('--width', '-x', type=int, default=DEFAULT_WINDOW_WIDTH, help='Window width')
+parser.add_argument('--height', '-y', type=int, default=DEFAULT_WINDOW_HEIGHT, help='Window height')
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v3.6.7.3 Beta'
+    return 'v3.7.2.0 Alpha'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)
