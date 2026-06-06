@@ -1222,9 +1222,10 @@ static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
 static function InventoryData(DXRando dxr, bool drawInv, out string j)
 {
     local Inventory item;
-    local string invId,invClass,invInfo,invName;
+    local string invId,invClass,invInfo,invName,invRot;
     local int invNum,invPosX,invPosY,count;
     local #var(DeusExPrefix)Weapon dxw;
+    local bool rot;
 
     item = dxr.player.Inventory;
     invNum=0;
@@ -1237,6 +1238,7 @@ static function InventoryData(DXRando dxr, bool drawInv, out string j)
             invName=Item.ItemName;
             invPosX=Item.invPosX;
             invPosY=Item.invPosY;
+            invRot="false";
             count=0;
             if(Pickup(Item)!=None){ //Pickups can have a count
                 count = Pickup(Item).NumCopies;
@@ -1245,9 +1247,26 @@ static function InventoryData(DXRando dxr, bool drawInv, out string j)
                 if(ClassIsChildOf(dxw.ProjectileClass, class'#var(prefix)ThrownProjectile')){
                     count=dxw.AmmoType.AmmoAmount;
                 }
+                #ifdef vmd2
+                if (dxw!=None && dxw.bRotatedInInventory){
+                    invRot="true";
+                }
+                #elseif gmdxae
+                if (dxw!=None && dxw.bRotated){
+                    invRot="true";
+                }
+                #else if gmdx
+                //RSD also supports rotation, but not the other supported GMDX variants
+                if (dxw!=None){
+                    rot = bool(dxw.GetPropertyText("bRotated"));
+                    if (rot){
+                        invRot="true";
+                    }
+                }
+                #endif
             }
 
-            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\"}";
+            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\",\"rot\":"$invRot$"}";
             j = j $",\"" $ invId $ "\":" $ invInfo;
         }
 
