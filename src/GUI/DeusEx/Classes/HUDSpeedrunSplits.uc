@@ -515,7 +515,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    for(i=prev-1; i>=1; i--) {
+    for(i=prev-1; i>=0; i--) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
         time += stats.missions_menu_times[m];
@@ -525,7 +525,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    for(i=cur+1; i<=15; i++) {
+    for(i=cur+1; i<ArrayCount(mapvariants.missions); i++) {
         m = mapvariants.missions[i];
         if(balanced_splits[m] > 0) {
             next = i;
