@@ -825,7 +825,7 @@ class BingoDisplay:
     def SetIcon(self):
         try:
             icon_dir = Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
-            sizes = [16, 32, 48, 64, 128]
+            sizes = [16, 32, 48, 64, 128, 256]
             self.win.icon_imgs = [ImageTk.PhotoImage(Image.open(icon_dir / f'icon_{s}.png')) for s in sizes]
             self.win.iconphoto(True, *self.win.icon_imgs)
         except Exception:
