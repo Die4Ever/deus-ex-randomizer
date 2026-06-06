@@ -1170,30 +1170,49 @@ static function GeneralEventData(DXRando dxr, out string j)
         js.static.Add(j, "language", lang);
 }
 
+static function bool ConsiderAugPassive(Augmentation anAug)
+{
+    if(#defined(gmdx)){
+        return anAug.bAlwaysActive;
+    } else if (#defined(vmd)){
+        if (anAug.HotKeyNum <= 0) return true;
+        #ifdef vmd2
+        if (VMDBufferAugmentation(anAug).bSenselessBind) return true;
+        #endif
+        return false;
+    } else {
+        //Normally every aug gets a hotkey
+        return anAug.HotKeyNum <= 0;
+    }
+}
+
 static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
 {
     local Augmentation anAug;
-    local string augId,augName,augInfo;
-    local int level,max;
+    local string augId,augName,augInfo,augLoc;
+    local int level,max,pasAugNum,hotKey;
 
-    anAug = dxr.player.AugmentationSystem.FirstAug;
-    while(anAug != None)
+    for (anAug=dxr.player.AugmentationSystem.FirstAug;anAug!=None;anAug=anAug.next)
     {
-        if (anAug.HotKeyNum <= 0){ //I think if you uninstall an aug it becomes -1?
-            anAug = anAug.next;
-            continue;
+        log("AugData - "$anAug$": "$anAug.bHasIt);
+        if (anAug.bHasIt==False) continue;
+
+        hotKey = anAug.HotKeyNum;
+        if (!ConsiderAugPassive(anAug)){
+            augId = "Aug-"$hotKey;
+        } else {
+            augId = "PAug-"$pasAugNum;
+            pasAugNum += 1;
+            hotKey = -1; //Just to be sure
         }
-        augId = "Aug-"$anAug.HotKeyNum;
         augName = ""$anAug.Class.Name;
+        augLoc  = ""$anAug.AugmentationLocation;
 
         class'DXRAugmentations'.static.GetTrueAugLevels(anAug,level,max);
 
-        augInfo = "{\"name\":\"" $ augName $"\",\"level\":"$level$",\"max\":"$max$"}";
+        augInfo = "{\"name\":\"" $ augName $"\",\"loc\":" $ augLoc $ ",\"key\":" $ hotKey $ ",\"level\":"$level$",\"max\":"$max$"}";
 
         j = j $",\"" $ augId $ "\":" $ augInfo;
-
-
-        anAug = anAug.next;
     }
 
     j = j $ ",\"DrawAugs\":" $ "\"" $ drawAugs $ "\"";
@@ -1203,9 +1222,10 @@ static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
 static function InventoryData(DXRando dxr, bool drawInv, out string j)
 {
     local Inventory item;
-    local string invId,invClass,invInfo,invName;
+    local string invId,invClass,invInfo,invName,invRot;
     local int invNum,invPosX,invPosY,count;
     local #var(DeusExPrefix)Weapon dxw;
+    local bool rot;
 
     item = dxr.player.Inventory;
     invNum=0;
@@ -1218,6 +1238,7 @@ static function InventoryData(DXRando dxr, bool drawInv, out string j)
             invName=Item.ItemName;
             invPosX=Item.invPosX;
             invPosY=Item.invPosY;
+            invRot="false";
             count=0;
             if(Pickup(Item)!=None){ //Pickups can have a count
                 count = Pickup(Item).NumCopies;
@@ -1226,9 +1247,26 @@ static function InventoryData(DXRando dxr, bool drawInv, out string j)
                 if(ClassIsChildOf(dxw.ProjectileClass, class'#var(prefix)ThrownProjectile')){
                     count=dxw.AmmoType.AmmoAmount;
                 }
+                #ifdef vmd2
+                if (dxw!=None && dxw.bRotatedInInventory){
+                    invRot="true";
+                }
+                #elseif gmdxae
+                if (dxw!=None && dxw.bRotated){
+                    invRot="true";
+                }
+                #else if gmdx
+                //RSD also supports rotation, but not the other supported GMDX variants
+                if (dxw!=None){
+                    rot = bool(dxw.GetPropertyText("bRotated"));
+                    if (rot){
+                        invRot="true";
+                    }
+                }
+                #endif
             }
 
-            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\"}";
+            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\",\"rot\":"$invRot$"}";
             j = j $",\"" $ invId $ "\":" $ invInfo;
         }
 

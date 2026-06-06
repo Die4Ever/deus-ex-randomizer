@@ -2131,6 +2131,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(7235,-8823,-5134),40,40);
         bt.bDestroyOthers=False;
 
+        bt = class'BingoTrigger'.static.Create(self,'fire_start',vectm(7699,-8800,-5969));
+
         break;
     //#endregion
     }
@@ -4128,7 +4130,11 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
         case "Supervisor01_Takedown":
             failed[num_failed++] = "Supervisor_Paid";
             return num_failed;
-        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+        case "M08MeetSailor_Played": //This conversation is both the success and fail path.
+            if (dxr.flagbase.GetBool('HelpSailor')==False) {
+                failed[num_failed++] = "HelpSailor_ConvoFlag";
+            }
+            return num_failed;
         case "Sailor_LeavingPawn": //If Vinny leaves, you can't ask him to help
         case "Sailor_Takedown": //If he's taken out, he can't help
             failed[num_failed++] = "HelpSailor_ConvoFlag";
@@ -4188,8 +4194,10 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
                 failed[num_failed++] = "JoeGreene_PlayerDead";
             }
             return num_failed;
-        case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
-            failed[num_failed++] = "M02QuestionedGreen";
+        case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.
+            if (dxr.flagbase.GetBool('M02QuestionedGreen')==False) {
+                failed[num_failed++] = "M02QuestionedGreen";
+            }
             return num_failed;
         case "SandraRenton_LeavingPawn":
             //Sandra is only bLeaveAfterFleeing in mission 8, but only appears here if she didn't leave for the M12 gas station
@@ -5083,6 +5091,7 @@ defaultproperties
     bingo_options(413)=(event="CatchTheNews_singlepeepedtex",desc="Catch the News",max=5,missions=#bit(1,3,4,5,6,10,11))
     bingo_options(414)=(event="A51_Sign_41_singlepeepedtex",desc="Construction Inspector",max=3,missions=#bit(15),do_not_scale=true)
     bingo_options(415)=(event="SignsOfTheEnd_singlepeepedtex",desc="Signs of the End",max=3,missions=#bit(15),do_not_scale=true)
+    bingo_options(416)=(event="fire_start",desc="Fire it up!",max=1,missions=#bit(15))
 
     //Current bingo_options array size is 450.  Keep this at the bottom of the list as a reminder!
 //#endregion

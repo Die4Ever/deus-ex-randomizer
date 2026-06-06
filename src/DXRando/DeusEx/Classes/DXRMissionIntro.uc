@@ -50,16 +50,17 @@ local DXRando dxr;
         flags.SetBool('Intro_Played', False,, 1);
         if( flags.GetInt('Rando_newgameplus_loops') > 0 ) {
             player.bStartNewGameAfterIntro = true;
-#ifdef revision
+
+        #ifndef vanilla
             if (DXRandoGameInfo(Level.Game)!=None){
-                //Revision takes your inventory away in DeusExPlayer StartNewGame,
+                //Revision/GMDX/VMD takes your inventory away in DeusExPlayer StartNewGame,
                 //so steal it and give it to the DXRandoGameInfo for safe keeping
                 DXRandoGameInfo(Level.Game).stolenInventory=player.Inventory;
                 DXRandoGameInfo(Level.Game).stolenAugs=player.AugmentationSystem;
                 player.Inventory=None;
                 player.AugmentationSystem=None;
             }
-#endif
+        #endif
         }
         player.PostIntro();
     }

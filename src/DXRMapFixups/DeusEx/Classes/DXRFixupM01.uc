@@ -56,6 +56,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Female2 shannon;
     local #var(prefix)InformationDevices id;
     local #var(prefix)DatalinkTrigger dlt;
+    local #var(prefix)TerroristCommander leo;
     local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -74,6 +75,11 @@ function PreFirstEntryMapFixes()
     //#region UNATCO Island
     case "01_NYC_UNATCOISLAND":
         FixHarleyFilben();
+
+        //Requesting Fearless Leo
+        foreach AllActors(class'#var(prefix)TerroristCommander', leo) {
+            RemoveFears(leo);
+        }
 
         //Move this Joe Greene article from inside HQ to outside on the island
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0,0),'01_Newspaper06');//Forklift in bunker

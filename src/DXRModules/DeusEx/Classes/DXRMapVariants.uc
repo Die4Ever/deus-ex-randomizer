@@ -1,5 +1,6 @@
 class DXRMapVariants extends DXRBase transient;
 
+var name EndingFlag;
 var int missions[14];
 var string starts[14];
 
@@ -215,6 +216,20 @@ function int GetMirrorMapsSetting()
     return dxr.flags.mirroredmaps;
 }
 
+function string GetEnding()
+{
+    switch (dxr.flagbase.GetInt(EndingFlag)) {
+        case 1:
+            return "99_ENDGAME1";
+        case 2:
+            return "99_ENDGAME2";
+        case 3:
+            return "99_ENDGAME3";
+        default:
+            return "99_ENDGAME4";
+    }
+}
+
 function CheckConfig()
 {
     local int i, slot, tempi, len;
@@ -223,7 +238,12 @@ function CheckConfig()
 
     Super.CheckConfig();
 
-    SetGlobalSeed( "SpeedrunShuffle maps " $ dxr.seed);
+    if (dxr.flags.moresettings.shuffle_missions == 0) {
+        return;
+    }
+
+    SetGlobalSeedNew("SpeedrunShuffle maps");
+  
     len = ArrayCount(starts)-1;
     if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
         starts[9] = starts[10];
@@ -249,30 +269,34 @@ function CheckConfig()
         len = dxr.flags.moresettings.shuffle_missions; // use number of missions instead of estimated duration
     }
     else if(dxr.flags.moresettings.shuffle_missions > 0) {
-        minMinutes = dxr.flags.moresettings.shuffle_missions; // duration in minutes
+        minMinutes = dxr.flags.moresettings.shuffle_missions * 0.9; // duration in minutes
         for(i=0; i<len; i++) {
             if(totalMinutes >= minMinutes) {
                 len = i;
                 break;
             }
-            switch(missions[i]) {
-                case 1: totalMinutes += 9; break;
-                case 6: totalMinutes += 17; break;
-                case 8: totalMinutes += 5; break;
-                case 9: totalMinutes += 13; break;
-                case 14: totalMinutes += 20; break;
-                case 15: totalMinutes += 17; break;
-                default: totalMinutes += 10; break;
-            }
+            totalMinutes += GetMissionParTimeMinutes(missions[i]);
         }
     }
-    starts[len] = "99_ENDGAME4"; // TODO: respect chosen ending
+    starts[len] = GetEnding();
     missions[len] = 99;
     if(dxr.flags.moresettings.shuffle_missions > 0) {
         for(i=0; i<len+1; i++) {
             l("speedshuffle " $ i @ starts[i]);
         }
     }
+}
+
+function int GetMissionParTimeMinutes(int mission) {
+    switch(mission) {
+        case 1: return 8;
+        case 6: return 15;
+        case 8: return 4;
+        case 9: return 12;
+        case 14: return 18;
+        case 15: return 15;
+    }
+    return 9;
 }
 
 simulated function FirstEntry()
@@ -490,6 +514,8 @@ function ExtendedTests()
 
 defaultproperties
 {
+    EndingFlag=DXRando_Ending
+
     starts(0)="01_NYC_UNATCOIsland"
     starts(1)="02_NYC_BatteryPark"
     starts(2)="03_NYC_UNATCOIsland"

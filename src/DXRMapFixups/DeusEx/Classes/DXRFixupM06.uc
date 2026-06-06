@@ -119,6 +119,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ScientistFemale sf;
     local MoverPropTrigger mpt;
     local #var(prefix)AlarmLight al;
+    local #var(prefix)Switch2 sw;
     local int i;
 
     local bool VanillaMaps;
@@ -181,6 +182,13 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
+            //Add an exit button from the barracks in GMDX
+            sw = #var(prefix)Switch2(AddSwitch(vect(1041.5,935,160), rot(0, 0, 0), 'GMDXBarracksDoorDXR'));
+            m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',sw));
+            if (m!=None){
+                button.Event='GMDXBarracksDoorDXR'; //Throw a DXR on there to make sure it's unique...
+                m.Tag=button.Event;
+            }
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
@@ -1018,6 +1026,13 @@ function PreFirstEntryMapFixes()
         //Verified in both vanilla and Revision
         foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(121,-672,1086),vectm(63,-628,1146), bg); //Breakable Corner Mirror
+
+        if (#defined(gmdx)){
+            //In GMDX, there's a pile of boxes near the exit.
+            //prevent them from being randomized, so that you don't end up with something
+            //that can't be moved blocking the exit.
+            MassSetSecretGoalRadius(class'CrateUnbreakableSmall',vectm(-2455,-1734,1650),250,true);
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers

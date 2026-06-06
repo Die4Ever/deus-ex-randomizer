@@ -265,11 +265,11 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local SpecialEvent se;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)SkillAwardTrigger sat;
-    local Dispatcher disp;
     local #var(prefix)FlagTrigger ft;
     local OnceOnlyTrigger oot;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
+    local Dispatcher disp;
     local #var(prefix)MapExit exit;
     local DXRButtonHoverHint buttonHint;
     local int i;
@@ -406,6 +406,10 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
                 }
             }
         }
+
+        // record the ending map for Shuffle mode
+        CreateEndingFlagTrigger('destroy_generator', 1);
+        CreateEndingFlagTrigger('Merge_helios_exit', 2);
 
         //There's a trigger for this at the top of the elevator, but it has collide actors false.
         //Easier to just spawn a new one near the elevator so you can actually hear it before
@@ -786,6 +790,9 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
             }
         }
 
+        // record the ending map for Shuffle mode
+        CreateEndingFlagTrigger('kill_page', 3);
+
         Spawn(class'PlaceholderItem',,, vectm(6103, -6549, -5105));  //Infusion Control Panel
         Spawn(class'PlaceholderItem',,, vectm(5778, -7945, -5554));  //Boxes in front of middle UC
         Spawn(class'PlaceholderItem',,, vectm(5571, -6563, -5554));  //Boxes in front of radiation room
@@ -959,6 +966,17 @@ function PostFirstEntryMapFixes()
     }
 }
 //#endregion
+
+function CreateEndingFlagTrigger(name tag, int ending)
+{
+    local DXRFlagTriggerInt fti;
+
+    fti = Spawn(class'DXRFlagTriggerInt',, tag);
+    fti.SetCollision(false, false, false);
+    fti.flagName = class'DXRMapVariants'.default.EndingFlag;
+    fti.flagValue = ending;
+    fti.flagExpiration = 999;
+}
 
 //#region Timer
 function TimerMapFixes()
