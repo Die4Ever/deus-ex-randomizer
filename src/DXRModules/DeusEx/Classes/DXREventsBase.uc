@@ -1175,11 +1175,11 @@ static function bool ConsiderAugPassive(Augmentation anAug)
     if(#defined(gmdx)){
         return anAug.bAlwaysActive;
     } else if (#defined(vmd)){
-        #ifdef vmd
         if (anAug.HotKeyNum <= 0) return true;
+        #ifdef vmd2
         if (VMDBufferAugmentation(anAug).bSenselessBind) return true;
-        return false;
         #endif
+        return false;
     } else {
         //Normally every aug gets a hotkey
         return anAug.HotKeyNum <= 0;
