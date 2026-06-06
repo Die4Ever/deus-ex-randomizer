@@ -872,6 +872,12 @@ switch(mapname)
                     return s$cr$"(Sector 3 Door)";
             }
             break;
+        case "99_ENDGAME1":
+            return "New Dark Age";
+        case "99_ENDGAME2":
+            return "Benevolent Cybernetic Dictatorship";
+        case "99_ENDGAME3":
+            return "20th Century Capitalism";
         case "99_ENDGAME4":
             return "Dance Party";
     }
