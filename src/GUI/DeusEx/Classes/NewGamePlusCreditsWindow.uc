@@ -49,7 +49,12 @@ function CreateControls()
     winControlText.SetWordWrap(False);
     winControlText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 
-    controlsText =                "Exit: Escape or Double Click|n|n";
+    controlsText =                "Exit: ";
+    if (#defined(vanilla)){
+        controlsText = controlsText $ "Escape or ";
+    }
+    controlsText = controlsText $ "Double Click|n|n";
+
     controlsText = controlsText $ "Pause:             Space Bar|n";
     controlsText = controlsText $ "Accel. Up:         Up Arrow|n";
     controlsText = controlsText $ "Accel. Down:      Down Arrow|n";
@@ -291,6 +296,14 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 			else
 				winControlText.Show();
 			break;
+
+        case IK_Escape:
+            if (!#defined(vanilla)){
+                //Escape still doesn't work outside of vanilla for whatever reason
+                player.PlaySound(Sound'DeusExSounds.Generic.Buzz1');// HACK TODO
+                return True;
+            }
+            break;
 	}
 
 	return False;

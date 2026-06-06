@@ -113,15 +113,14 @@ function Killed( pawn Killer, pawn Other, name damageType )
 
 function SendPlayer( PlayerPawn aPlayer, string URL )
 {
-    if (#defined(revision)){
-        if (stolenInventory!=None){
-            aPlayer.Inventory = stolenInventory;
-            stolenInventory = None;
-        }
-        if (stolenAugs!=None){
-            DeusExPlayer(aPlayer).AugmentationSystem = stolenAugs;
-            stolenAugs = None;
-        }
+    //Give back any stolen inventory or augs
+    if (stolenInventory!=None){
+        aPlayer.Inventory = stolenInventory;
+        stolenInventory = None;
+    }
+    if (stolenAugs!=None){
+        DeusExPlayer(aPlayer).AugmentationSystem = stolenAugs;
+        stolenAugs = None;
     }
 
     Super.SendPlayer(aPlayer,URL);

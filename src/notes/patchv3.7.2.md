@@ -57,6 +57,7 @@
   - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
   - When entering a map for the first time with the password or code to a computer or keypad, the password will be correctly marked as known.
   - GMDX and VMD 2.0 will no longer incorrectly assign a hotkey to passive augs that don't need to be toggled.
+  - Inventory and Augs are no longer completely removed after new game plus.
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
@@ -89,6 +90,7 @@
   - Scopes (Either binoculars or on a weapon) will now properly mark bingo goals.
   - Scopes (Either binoculars or on a weapon) will now look the same as they do in non-randomized Vanilla? Madder!
   - Key location randomization rules for Ocean Lab "Storage" key (Mission 14) will now be properly applied.
+  - Skill Talents are now reset on new game plus.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
