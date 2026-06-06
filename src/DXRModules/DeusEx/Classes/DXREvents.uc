@@ -4130,7 +4130,11 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
         case "Supervisor01_Takedown":
             failed[num_failed++] = "Supervisor_Paid";
             return num_failed;
-        case "M08MeetSailor_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+        case "M08MeetSailor_Played": //This conversation is both the success and fail path.
+            if (dxr.flagbase.GetBool('HelpSailor')==False) {
+                failed[num_failed++] = "HelpSailor_ConvoFlag";
+            }
+            return num_failed;
         case "Sailor_LeavingPawn": //If Vinny leaves, you can't ask him to help
         case "Sailor_Takedown": //If he's taken out, he can't help
             failed[num_failed++] = "HelpSailor_ConvoFlag";
@@ -4190,8 +4194,10 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
                 failed[num_failed++] = "JoeGreene_PlayerDead";
             }
             return num_failed;
-        case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
-            failed[num_failed++] = "M02QuestionedGreen";
+        case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.
+            if (dxr.flagbase.GetBool('M02QuestionedGreen')==False) {
+                failed[num_failed++] = "M02QuestionedGreen";
+            }
             return num_failed;
         case "SandraRenton_LeavingPawn":
             //Sandra is only bLeaveAfterFleeing in mission 8, but only appears here if she didn't leave for the M12 gas station

@@ -234,6 +234,14 @@ function NewGamePlus()
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
+#ifdef vmd2
+    //VMD2: Reset all talents and crafting stuff for the player
+    p.SetupSkillAugmentManager();
+    p.SetupCraftingManager();
+    p.ResetSkillAugments();
+    p.FormatSkillAugmentPointsLeft();
+#endif
+
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
     augsToRemove = newgameplus_num_removed_augs;
     if (augs!=None) {
