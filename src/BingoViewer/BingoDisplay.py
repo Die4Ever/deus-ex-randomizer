@@ -822,6 +822,15 @@ class BingoDisplay:
 
         messagebox.showinfo(title="About",message=msg)
 
+    def SetIcon(self):
+        try:
+            icon_dir = Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
+            sizes = [16, 32, 48, 64, 128]
+            self.win.icon_imgs = [ImageTk.PhotoImage(Image.open(icon_dir / f'icon_{s}.png')) for s in sizes]
+            self.win.iconphoto(True, *self.win.icon_imgs)
+        except Exception:
+            pass
+
     def initDrawnBoard(self):
         self.win = Tk()
         self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
@@ -829,6 +838,8 @@ class BingoDisplay:
         self.win.title(self.title)
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
         self.win.config(bg="black")
+
+        self.SetIcon()
 
         self.showProgressBars = BooleanVar()
         self.showProgressBars.set(self.main.GetProgressBarState())
