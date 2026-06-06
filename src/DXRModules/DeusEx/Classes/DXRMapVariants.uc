@@ -224,10 +224,6 @@ function CheckConfig()
     Super.CheckConfig();
 
     if (dxr.flags.moresettings.shuffle_missions == 0) {
-        for (i = 0; i < ArrayCount(missions); i++) {
-            missions[i] = default.missions[i];
-            starts[i] = default.starts[i];
-        }
         return;
     }
 
