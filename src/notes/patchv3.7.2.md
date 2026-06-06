@@ -7,7 +7,15 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-
+- The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Allowed".
+- Bingo Viewer changes:
+  - Goals can be marked to help you keep track of what line you're aiming for.
+    - Left click to mark a goal
+    - Right click to unmark it
+    - Drag to mark/unmark an entire bingo line
+  - The window no longer locks up temporarily when moved or resized on certain systems.
+  - Font size more accurately scales to best fit the tile size.
+  - The green progress bars now fit to the edges of their tile
 - The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Fixed".
 - NPCs will now react to projectiles regardless of whether they're immune or not if "Glitches for Speedruns" is set to "Allowed"
 - When the "Camera Mode" is set to "Third Person", the camera will now shake when heavy enemies (such as Military Bots) walk near you.
@@ -41,12 +49,15 @@
 - Regular spinning death cameras will continue to spin forever, instead of stopping after 8 seconds (Vanilla and Revision only).
 - When the "Flickering Lights" setting is set to "Epilepsy Safe", lights that flicker *extremely* quickly will now pulse at a slower rate to ensure they don't still look like they're flickering.
 - Leo Gold (the terrorist commander in Mission 1) will now be fearless in all game modes, instead of only when Goal Randomization is enabled.
+- "My Buddy Vinny" and "Play the Detective" bingo goals should no longer occasionally fail and then succeed.  The failure will only happen in a real failure scenario.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
   - Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
   - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
   - When entering a map for the first time with the password or code to a computer or keypad, the password will be correctly marked as known.
+  - GMDX and VMD 2.0 will no longer incorrectly assign a hotkey to passive augs that don't need to be toggled.
+  - Inventory and Augs are no longer completely removed after new game plus.
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
@@ -68,6 +79,7 @@
   - Added an exit button to the Hong Kong Helibase barracks (Mission 6).
   - Smugglers bots in Mission 8 are no longer permanently hostile when Moderate Map Balance changes are enabled.  They will only be hostile if you have not spoken to Smuggler before this mission.
   - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
+  - Upgrades to the EUAS (IFF) aug will actually display on screen (Light level and environmental hazard warnings).
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
@@ -78,6 +90,7 @@
   - Scopes (Either binoculars or on a weapon) will now properly mark bingo goals.
   - Scopes (Either binoculars or on a weapon) will now look the same as they do in non-randomized Vanilla? Madder!
   - Key location randomization rules for Ocean Lab "Storage" key (Mission 14) will now be properly applied.
+  - Skill Talents are now reset on new game plus.
 - New Bingo Goals:
   - "Advertising Works!": Look at enough advertising billboards through the game with binoculars or a scope.
   - "Support Local Business": Look at enough "Old China Hand" signs through Hong Kong with binoculars or a scope.
@@ -94,3 +107,4 @@
 - Some flickering lights that weren't being caught by the "Flickering Lights" setting in GMDX will now also be adjusted.
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
 - If Area 51 is played in Speedrun Shuffle, the endgame cutscene will be the one chosen in that mission.
+- In Speedrun Shuffle mode, missions are now shown in correct order on the splits view and credits screen.

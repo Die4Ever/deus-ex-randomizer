@@ -2,6 +2,7 @@ class HUDSpeedrunSplits expands HUDBaseWindow config(DXRSplits);
 
 var DeusExPlayer    player;
 var DXRStats        stats;
+var DXRMapVariants  mapvariants;
 
 var config int version;
 var config Font textfont;
@@ -166,8 +167,9 @@ function UpdateVisibility()
 
 function InitStats(DXRStats newstats)
 {
-    local int i, t, total, curMission, time;
+    local int i, t, m, total, curMission, time;
     local string msg;
+    local bool isShuffle, isWaltonWare;
 
     stats = newstats;
 
@@ -176,6 +178,10 @@ function InitStats(DXRStats newstats)
         return;
     }
 
+    GetMapVariants();
+    isShuffle = stats.dxr.flags.moresettings.shuffle_missions > 0;
+    isWaltonWare = stats.dxr.flags.IsWaltonWare();
+
     ttitle = ReplaceVariables(title);
     tsubtitle = ReplaceVariables(subtitle);
     tfooter = ReplaceVariables(footer);
@@ -183,6 +189,21 @@ function InitStats(DXRStats newstats)
     if(curMission >= 1 && curMission <= 15) {
         notes = class'DXRInfo'.static.ReplaceText(splitNotes[curMission], "|n", CR());
         notes = ReplaceVariables(notes);
+    }
+
+    for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
+        m = mapvariants.missions[i];
+        if(isShuffle) {
+            PB[m] = mapvariants.GetMissionParTimeMinutes(m) * 600; // tenths of seconds
+            Avgs[m] = PB[m];
+            Golds[m] = PB[m] * 0.75;
+            balanced_splits[m] = PB[m];
+        } else {
+            balanced_splits[m] = BalancedSplit(m);
+        }
+        for(t=i; mapvariants.missions[t] != 99 && t<ArrayCount(mapvariants.missions); t++) {
+            balanced_splits_totals[mapvariants.missions[t]] += balanced_splits[m];
+        }
     }
 
     for(i=1; i<=15; i++) {
@@ -195,12 +216,6 @@ function InitStats(DXRStats newstats)
             else Avgs[i] = Golds[i];
         }
         average_total += Avgs[i];
-    }
-    for(i=1; i<=15; i++) {
-        balanced_splits[i] = BalancedSplit(i);
-        for(t=i; t<ArrayCount(balanced_splits_totals); t++) {
-            balanced_splits_totals[t] += balanced_splits[i];
-        }
     }
 
     total = TotalTime();
@@ -222,14 +237,14 @@ function InitStats(DXRStats newstats)
         return;
     }
 
-    if(curMission == 99 && !stats.dxr.flags.IsWaltonWare() && stats.dxr.flags.moresettings.shuffle_missions <= 0) {
+    if(curMission == 99 && !isWaltonWare && !isShuffle) {
         CompletedRun(total);
     }
     if(curMission > 0 && stats.dxr.flags.newgameplus_loops == 0) {
         last_flagshash = stats.dxr.flags.FlagsHash();
         default.last_flagshash = last_flagshash;
     }
-    SaveConfig();
+    if(!isWaltonWare && !isShuffle) SaveConfig();
 
     if(curMission < 1 || curMission > 15) {
         Hide();
@@ -259,6 +274,14 @@ static function string GetPB()
         total += default.PB[i];
     }
     return class'DXRStats'.static.fmtTimeToString(total, true, false, true);
+}
+
+function DXRMapVariants GetMapVariants()
+{
+    if (mapvariants == None) {
+        mapvariants = DXRMapVariants(stats.dxr.FindModule(class'DXRMapVariants'));
+    }
+    return mapvariants;
 }
 
 function CompletedRun(int total)
@@ -471,18 +494,21 @@ function DrawWaltonWare(GC gc)
 
 function DrawSplits(GC gc, int cur)
 {
-    local int i, prev, prevprev, curTime, next, time, total, prevTotal;
+    local int i, m, prev, prevprev, curTime, next, time, total, prevTotal, tempTotal;
     local string msg, msg2;
     local Color cmpColor;
     local bool bShuffle;
+
+    GetMapVariants();
 
     total = TotalTime();
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
     for(i=1; i<cur; i++) {
-        time = stats.missions_times[i];
-        time += stats.missions_menu_times[i];
+        m = mapvariants.missions[i];
+        time = stats.missions_times[m];
+        time += stats.missions_menu_times[m];
         if(time > 0) {
             prevTotal += time;
             prev = i;
@@ -490,8 +516,9 @@ function DrawSplits(GC gc, int cur)
     }
 
     for(i=prev-1; i>=1; i--) {
-        time = stats.missions_times[i];
-        time += stats.missions_menu_times[i];
+        m = mapvariants.missions[i];
+        time = stats.missions_times[m];
+        time += stats.missions_menu_times[m];
         if(time > 0) {
             prevprev = i;
             break;
@@ -499,7 +526,8 @@ function DrawSplits(GC gc, int cur)
     }
 
     for(i=cur+1; i<=15; i++) {
-        if(balanced_splits[i] > 0) {
+        m = mapvariants.missions[i];
+        if(balanced_splits[m] > 0) {
             next = i;
             break;
         }
@@ -509,19 +537,22 @@ function DrawSplits(GC gc, int cur)
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
     bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
+    tempTotal = 0;
+    for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
+        m = mapvariants.missions[i];
+        tempTotal += stats.missions_times[m];
+        tempTotal += stats.missions_menu_times[m];
 
-    for(i=1; i<ArrayCount(Golds); i++) {
-        // TODO: fix ordering when Speedrun Shuffle
         if(showAllSplits
         || (alwaysShowSplit[i] != 0)
         || (i == prevprev && showPrevprev)
         || (i == prev && showPrev)
         || (i == cur && showCurrentMission)
         || (i == next && showNext)
-        || (i == ArrayCount(Golds)-1 && showPB)
-        || (bShuffle && stats.missions_times[i] > 0) // Speedrun Shuffle always show completed missions
+        || (i == ArrayCount(mapvariants.missions)-1 && showPB)
+        || bShuffle
         ) {
-            y = DrawSplit(gc, i, cur, x, y);
+            y = DrawSplit(gc, m, cur, tempTotal, x, y);
         }
     }
 
@@ -551,9 +582,9 @@ function DrawSplits(GC gc, int cur)
 }
 
 //#region DrawSplit
-function int DrawSplit(GC gc, int mission, int curMission, int x, int y)
+function int DrawSplit(GC gc, int mission, int curMission, int totalTime, int x, int y)
 {
-    local int time, total, i, totalDiff;
+    local int time, i, totalDiff;
     local string sDiff, sTime;
     local Color cmpColor;
 
@@ -566,18 +597,13 @@ function int DrawSplit(GC gc, int mission, int curMission, int x, int y)
         DrawTextLine(gc, MissionName(mission), "", colorText, x, y, sTime);
     }
     else if(time > 0) {
-        // past split
-        for(i=1; i<=mission; i++) {
-            total += stats.missions_times[i];
-            total += stats.missions_menu_times[i];
-        }
-        totalDiff = total - balanced_splits_totals[mission];
+        totalDiff = totalTime - balanced_splits_totals[mission];
         if(balanced_splits_totals[mission] > 0) {
             sDiff = fmtTimeDiff(totalDiff);
         }
 
-        sTime = fmtTime(total);
-        cmpColor = GetCmpColor(total, balanced_splits_totals[mission], time, balanced_splits[mission], 0, Golds[mission]);
+        sTime = fmtTime(totalTime);
+        cmpColor = GetCmpColor(totalTime, balanced_splits_totals[mission], time, balanced_splits[mission], 0, Golds[mission]);
 
         DrawTextLine(gc, MissionName(mission), sDiff, cmpColor, x, y, sTime);
     }

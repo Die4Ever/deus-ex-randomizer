@@ -510,6 +510,25 @@ function string formatMapName(string mapName)
     return class'DXRMapInfo'.static.GetTeleporterName(mapNameOnly,teleName);
 }
 
+function DrawGMDXIFFOverlays(GC gc)
+{
+#ifdef gmdx
+    local int casted;
+    local float visi;
+
+    if (Player.AugmentationSystem.GetAugLevelValue(class'AugIFF') >= 2.0)
+    {
+            visi = Player.AIVisibility(false);
+            casted = (int(visi*300));
+            if (casted > 100)
+                casted = 100;
+            Player.LightLevelDisplay = casted;
+            if (!bDefenseActive && Player.AugmentationSystem.GetAugLevelValue(class'AugIFF') >= 3.0)
+                checkForHazards(gc);
+    }
+#endif
+}
+
 // ----------------------------------------------------------------------
 // DrawTargetAugmentation()
 // RANDO: Changed the targeting reticule to not draw if the crosshairs are hidden
@@ -531,6 +550,8 @@ function DrawTargetAugmentation(GC gc)
     gc.SetFont(Font'DXRFontMenuSmall_DS'); //This font is so much better for everything
 
     SuperDrawTargetAugmentation(gc);
+
+    DrawGMDXIFFOverlays(gc);
 
     // check 500 feet in front of the player
     target = TraceHoverHint(8000);

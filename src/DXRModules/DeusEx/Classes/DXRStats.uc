@@ -554,44 +554,28 @@ function String FormatCreditsTimeStrings(String missionNum, String missionName, 
 function AddMissionTimeTable(CreditsWindow cw)
 {
     local CreditsTimerWindow ctw;
-    local int i, dyingTime, successTime, successMenuTime, menuTime, completeTime;
+    local int i, mission, dyingTime, successTime, successMenuTime, menuTime, completeTime;
     local int dyingTimeWithoutMenusTotal, timeWithoutMenusTotal;
     local int dyingTimeMenusTotal, timeMenusTotal;
-    local string s;
+    local string missionName;
+    local DXRMapVariants mapvariants;
 
     ctw = CreditsTimerWindow(cw.winScroll.NewChild(Class'CreditsTimerWindow'));
+    mapvariants = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
 
     if(dxr.flags.newgameplus_total_time > 0) {
         ctw.AddMissionTime(">", "Previous Loops", fmtTimeToString(dxr.flags.newgameplus_retries_time), fmtTimeToString(dxr.flags.newgameplus_total_time));
     }
 
-    for(i=1; i<=15; i++) {
-        if(i==7 || i==13) continue;
-        switch(i) {
-            case 1: s="Liberty Island"; break;
-            case 2: s="NYC Generator"; break;
-            case 3: s="Airfield"; break;
-            case 4: s="NSF HQ"; break;
-            case 5: s="UNATCO MJ12 Base"; break;
-            case 6: s="Hong Kong"; break;
-            case 8: s="Return to NYC"; break;
-            case 9: s="Superfreighter"; break;
-            case 10: s="Paris Streets"; break;
-            case 11: s="Cathedral"; break;
-            case 12: s="Vandenberg"; break;
-            case 14: s="Ocean Lab"; break;
-            case 15: s="Area 51"; break;
+    i = 0;
+    mission = mapvariants.missions[i];
+    while (mission != 99 && i < ArrayCount(mapvariants.missions)) {
+        missionName = class'DXRMapInfo'.static.GetHumanMissionName(mission);
 
-            default:
-                err("AddMissionTimeTable mission " $ i);
-                s="?";
-                break;
-        }
-
-        successTime = GetMissionTime(i);
-        successMenuTime = GetMissionMenuTime(i);
-        completeTime = GetCompleteMissionTime(i);
-        menuTime = GetCompleteMissionMenuTime(i);
+        successTime = GetMissionTime(mission);
+        successMenuTime = GetMissionMenuTime(mission);
+        completeTime = GetCompleteMissionTime(mission);
+        menuTime = GetCompleteMissionMenuTime(mission);
 
         dyingTimeWithoutMenusTotal += completeTime - successTime;
         timeWithoutMenusTotal += completeTime;
@@ -601,9 +585,10 @@ function AddMissionTimeTable(CreditsWindow cw)
         completeTime += menuTime;
         dyingTime = completeTime - successTime - successMenuTime;
 
-        if(completeTime == 0) continue;
+        ctw.AddMissionTime(string(mission), missionName, fmtTimeToString(dyingTime), fmtTimeToString(completeTime));
 
-        ctw.AddMissionTime(string(i), s, fmtTimeToString(dyingTime), fmtTimeToString(completeTime));
+        i++;
+        mission = mapvariants.missions[i];
     }
 
     ctw.AddMissionTime("----","--------------------------","-------------","-------------");
