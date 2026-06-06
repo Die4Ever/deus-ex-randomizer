@@ -49,6 +49,7 @@
 - Regular spinning death cameras will continue to spin forever, instead of stopping after 8 seconds (Vanilla and Revision only).
 - When the "Flickering Lights" setting is set to "Epilepsy Safe", lights that flicker *extremely* quickly will now pulse at a slower rate to ensure they don't still look like they're flickering.
 - Leo Gold (the terrorist commander in Mission 1) will now be fearless in all game modes, instead of only when Goal Randomization is enabled.
+- "My Buddy Vinny" and "Play the Detective" bingo goals should no longer occasionally fail and then succeed.  The failure will only happen in a real failure scenario.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
