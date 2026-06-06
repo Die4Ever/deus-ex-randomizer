@@ -1170,30 +1170,49 @@ static function GeneralEventData(DXRando dxr, out string j)
         js.static.Add(j, "language", lang);
 }
 
+static function bool ConsiderAugPassive(Augmentation anAug)
+{
+    if(#defined(gmdx)){
+        return anAug.bAlwaysActive;
+    } else if (#defined(vmd)){
+        #ifdef vmd
+        if (anAug.HotKeyNum <= 0) return true;
+        if (VMDBufferAugmentation(anAug).bSenselessBind) return true;
+        return false;
+        #endif
+    } else {
+        //Normally every aug gets a hotkey
+        return anAug.HotKeyNum <= 0;
+    }
+}
+
 static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
 {
     local Augmentation anAug;
-    local string augId,augName,augInfo;
-    local int level,max;
+    local string augId,augName,augInfo,augLoc;
+    local int level,max,pasAugNum,hotKey;
 
-    anAug = dxr.player.AugmentationSystem.FirstAug;
-    while(anAug != None)
+    for (anAug=dxr.player.AugmentationSystem.FirstAug;anAug!=None;anAug=anAug.next)
     {
-        if (anAug.HotKeyNum <= 0){ //I think if you uninstall an aug it becomes -1?
-            anAug = anAug.next;
-            continue;
+        log("AugData - "$anAug$": "$anAug.bHasIt);
+        if (anAug.bHasIt==False) continue;
+
+        hotKey = anAug.HotKeyNum;
+        if (!ConsiderAugPassive(anAug)){
+            augId = "Aug-"$hotKey;
+        } else {
+            augId = "PAug-"$pasAugNum;
+            pasAugNum += 1;
+            hotKey = -1; //Just to be sure
         }
-        augId = "Aug-"$anAug.HotKeyNum;
         augName = ""$anAug.Class.Name;
+        augLoc  = ""$anAug.AugmentationLocation;
 
         class'DXRAugmentations'.static.GetTrueAugLevels(anAug,level,max);
 
-        augInfo = "{\"name\":\"" $ augName $"\",\"level\":"$level$",\"max\":"$max$"}";
+        augInfo = "{\"name\":\"" $ augName $"\",\"loc\":" $ augLoc $ ",\"key\":" $ hotKey $ ",\"level\":"$level$",\"max\":"$max$"}";
 
         j = j $",\"" $ augId $ "\":" $ augInfo;
-
-
-        anAug = anAug.next;
     }
 
     j = j $ ",\"DrawAugs\":" $ "\"" $ drawAugs $ "\"";

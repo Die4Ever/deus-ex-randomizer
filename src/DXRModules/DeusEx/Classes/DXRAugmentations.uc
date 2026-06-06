@@ -944,6 +944,11 @@ static simulated function FixAugHotkeys(PlayerPawn player, bool verbose)
     }
     for( a = am.FirstAug; a != None; a = a.next ) {
         if( !a.bHasIt ) continue;
+#ifdef vmd2
+        if( VMDBufferAugmentation(a)!=None && VMDBufferAugmentation(a).bSenselessBind ) continue; //These augs don't get hotkeys
+#elseif gmdx
+        if (a.bAlwaysActive) continue; //GMDX doesn't give always active augs a hotkey
+#endif
         loc = a.AugmentationLocation;
         if( a.AugmentationLocation == LOC_Default ) continue;
         if (verbose){
