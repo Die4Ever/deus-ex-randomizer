@@ -460,7 +460,7 @@ function Timer()
             ExtinguishFire();
 
             // spew halon gas (duped from FireExtinguisher)
-            rot = ViewRotation;
+            rot = Rotation; //Instead of ViewRotation, since this is a ScriptedPawn who doesn't use ViewRotation
             loc = Vector(rot) * CollisionRadius;
             loc.Z += CollisionHeight * 0.9;
             loc += Location;
