@@ -1489,22 +1489,40 @@ function MakeAllGhosts()
     }
 }
 
-function SwapSpeech(ConSpeech a, ConSpeech b)
+function SwapSpeech(ConEventSpeech a, ConEventSpeech b)
 {
     local int soundID;
     local string subtitle;
+    local Actor speak;
+    local string speakName;
 
-    subtitle = a.speech;
-    soundID = a.soundID;
-    a.speech = b.speech;
-    a.soundID = b.soundID;
-    b.speech = subtitle;
-    b.soundID = soundID;
+    subtitle = a.conSpeech.speech;
+    soundID = a.conSpeech.soundID;
+    a.conSpeech.speech = b.conSpeech.speech;
+    a.conSpeech.soundID = b.conSpeech.soundID;
+    b.conSpeech.speech = subtitle;
+    b.conSpeech.soundID = soundID;
+
+    speak = a.speaker;
+    a.speaker = b.speaker;
+    b.speaker = speak;
+
+    speak = a.speakingTo;
+    a.speakingTo = b.speakingTo;
+    b.speakingTo = speak;
+
+    speakName = a.speakerName;
+    a.speakerName = b.speakerName;
+    b.speakerName = speakName;
+
+    speakName = a.speakingToName;
+    a.speakingToName = b.speakingToName;
+    b.speakingToName = speakName;
 }
 
 function RandomizeDialog()
 {
-    local ConSpeech speech[100];
+    local ConEventSpeech speech[100];
     local ConEventSpeech ces;
     local int i, j, num;
     local string strConName;
@@ -1538,7 +1556,7 @@ function RandomizeDialog()
 
             if (isFemale!=femConv) continue;
         }
-        speech[num++] = ces.conSpeech;
+        speech[num++] = ces;
     }
 
     for(i=0;i<num;i++) {
@@ -1557,14 +1575,14 @@ function RandomizeDialogConversation(Conversation conv)
 {
     local ConEvent co;
     local ConEventSpeech es;
-    local ConSpeech speech[100];
+    local ConEventSpeech speech[100];
     local int i, j, num;
 
     SetSeed("RandomizeDialogConversation "$conv.conName);
     for(co=conv.eventList; co!=None; co=co.nextEvent) {
         es = ConEventSpeech(co);
         if(es==None) continue;
-        speech[num++] = es.conSpeech;
+        speech[num++] = es;
     }
 
     // last thing before release: do this per conversation...
