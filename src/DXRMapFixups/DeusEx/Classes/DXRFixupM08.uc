@@ -668,7 +668,7 @@ function PreFirstEntryMapFixes()
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
 
-            if (#defined(gmdx) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            if (class'DXRMapVariants'.static.IsGMDXMaps(player()) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
                 FixGMDXSmugglerBots();
             }
 

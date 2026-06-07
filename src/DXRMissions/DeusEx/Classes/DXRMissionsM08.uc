@@ -21,7 +21,7 @@ function int InitGoals(int mission, string map)
     bar1 = AddGoalLocation("08_NYC_Bar", "Bar Table", GOAL_TYPE1 | VANILLA_GOAL | SITTING_GOAL, vect(-1689.125122, 337.159912, 63.599533), rot(0,-10144,0));
     bar2 = AddGoalLocation("08_NYC_Bar", "Bar", GOAL_TYPE1 | VANILLA_GOAL, vect(-931.038086, -488.537109, 47.600464), rot(0,9536,0));
     AddMutualExclusion(bar1, bar2);
-    if(!#defined(gmdx)){
+    if(!class'DXRMapVariants'.static.IsGMDXMaps(player())){
         AddGoalLocation("08_NYC_FreeClinic", "Clinic", GOAL_TYPE1 | VANILLA_GOAL, vect(-115, -270, -272.399506), rot(0,31640,0));
         AddGoalLocation("08_NYC_Underground", "Sewers", GOAL_TYPE1, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
     } else {

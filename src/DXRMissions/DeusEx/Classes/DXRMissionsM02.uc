@@ -24,7 +24,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Shanty Town", NORMAL_GOAL, vect(-2970,1840,348), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Behind the cargo", NORMAL_GOAL, vect(58.725319, -446.887207, -405.899323), rot(0, 32768, 0));
-        if (!#defined(gmdx)){
+        if (!class'DXRMapVariants'.static.IsGMDXMaps(player())){
             //Normal
             AddGoalLocation("02_NYC_BATTERYPARK", "By the desk", NORMAL_GOAL, vect(-615.152161, -665.281738, -397.581146), rot(0, -24786, 0));
         } else {

@@ -379,7 +379,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if (#defined(gmdx)){
+        if (class'DXRMapVariants'.static.IsGMDXMaps(player())){
             //Mark some items in inaccessible areas as secret goals so things don't get randomized there
 
             //A balcony near the bridge close to the start of the map

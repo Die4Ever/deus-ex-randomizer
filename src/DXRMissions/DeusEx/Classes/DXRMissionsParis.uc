@@ -28,7 +28,7 @@ function int InitGoals(int mission, string map)
     case "10_PARIS_CLUB":
         AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
         AddGoal("10_PARIS_CLUB", "Nicolette", NORMAL_GOAL, 'NicoletteDuClare0', PHYS_Falling);
-        if (!#defined(gmdx)){
+        if (!class'DXRMapVariants'.static.IsGMDXMaps(player())){
             loc=AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
         } else {
             //GMDX adds a big geometry bench around the table and moves Nicolette to a different spot
@@ -364,7 +364,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     if (g.name=="Templar Computer") {
         g.actors[2].a.SetCollisionSize(160,64);// skillawardtrigger
         g.actors[4].a.SetCollisionSize(1400,180);// DL_gunthernearcomp
-        if (#defined(gmdx)){
+        if (class'DXRMapVariants'.static.IsGMDXMaps(player())){
             //GMDX starts with Gunther out of world until you enter the basement.  Just bring him in regardless.
             #var(prefix)ScriptedPawn(g.actors[1].a).EnterWorld();
         }

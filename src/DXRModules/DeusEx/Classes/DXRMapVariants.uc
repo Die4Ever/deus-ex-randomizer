@@ -198,6 +198,14 @@ static function bool IsRevisionMaps(#var(PlayerPawn) player, optional Bool init)
 #endif
 }
 
+//GMDX maps are basically vanilla, but there are some tweaks that sometimes matter
+static function bool IsGMDXMaps(#var(PlayerPawn) player)
+{
+    if("#var(vanillamaps)"=="2") return true; //vanillamaps 2 is GMDX.  Still basically vanilla, but different
+    //if(#defined(vmd2)) return false; //Maybe it would support them one day?
+    return false;
+}
+
 static function bool IsVanillaMaps(#var(PlayerPawn) player)
 {
     if(#defined(vanillamaps)) return true;
@@ -243,7 +251,7 @@ function CheckConfig()
     }
 
     SetGlobalSeedNew("SpeedrunShuffle maps");
-  
+
     len = ArrayCount(starts)-1;
     if(dxr.flags.moresettings.entrance_rando > 0) { // entrance rando combines 10+11 and 12+14
         starts[9] = starts[10];

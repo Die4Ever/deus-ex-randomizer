@@ -122,7 +122,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Switch2 sw;
     local int i;
 
-    local bool VanillaMaps;
+    local bool VanillaMaps, GMDXMaps;
 
 #ifdef injections
     local #var(prefix)DataCube dc;
@@ -131,6 +131,7 @@ function PreFirstEntryMapFixes()
 #endif
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(dxr.localURL)
     {
@@ -170,7 +171,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if (#defined(gmdx)){
+        if (GMDXMaps){
             foreach AllActors(class'#var(prefix)Button1',button){
                 if (button.Event!='fDoor') continue;
 
@@ -1027,7 +1028,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(121,-672,1086),vectm(63,-628,1146), bg); //Breakable Corner Mirror
 
-        if (#defined(gmdx)){
+        if (GMDXMaps){
             //In GMDX, there's a pile of boxes near the exit.
             //prevent them from being randomized, so that you don't end up with something
             //that can't be moved blocking the exit.

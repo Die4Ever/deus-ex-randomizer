@@ -195,7 +195,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
         }
     }
 
-    if (#defined(gmdx)){
+    if (class'DXRMapVariants'.static.IsGMDXMaps(player())){
         //Area you can see out of window behind vanilla walls
         MassSetSecretGoalBoxAll(vectm(2450,-492,-550), vectm(5646,3727,-200), true);
     }
@@ -512,7 +512,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
 
     UpdateDefaultSecurityComputerPassword("Sector2Security");
 
-    if (#defined(gmdx)){
+    if (class'DXRMapVariants'.static.IsGMDXMaps(player())){
         //Block things from spawning/randomizing in unused rooms around the map
 
         //Big chunk of unused rooms
