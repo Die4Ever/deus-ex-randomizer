@@ -78,6 +78,7 @@ static function Actor SpawnInfoDevice(Actor a, class<Actor> id, Vector loc, Rota
     device.MakeOver(id);
 #endif
 
+    class'DXRActorsBase'.static.SetInfoDeviceTextTag(device,textTag);
     device.textTag = textTag;
 
     return device;
@@ -397,11 +398,19 @@ static function string GetTextTag(#var(prefix)InformationDevices id)
         //Otherwise, generate a text tag for cubes with plaintext instead of TextTag
         if (injectID!=None){
             if (injectID.plaintextTag!=""){
+                //If there's a plaintext tag, use that to identify
                 TextTag=injectID.plaintextTag;
+            } else if (injectID.plaintext==""){
+                //No plaintext tag, and the plaintext is empty (This is a useless datacube)
+                //Give it a unique text tag so we know this was intentional
+                TextTag="DXRBlankDatacube";
             } else {
+                //Generate a unique name from a hash of the plaintext
                 mapname = injectID.GetMapNameStripped();
                 TextTag = mapname$"_"$ class'DXRando'.default.dxr.HashCompat(injectID.plaintext);
             }
+        } else {
+            TextTag="DXRBlankDatacube";
         }
     }
 

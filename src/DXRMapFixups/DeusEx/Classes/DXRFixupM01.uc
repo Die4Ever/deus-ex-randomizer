@@ -197,7 +197,7 @@ function PreFirstEntryMapFixes()
         {
             //Make both Joe Greene articles in HQ the same one
             if (np.textTag=='01_Newspaper06'){
-                np.textTag='01_Newspaper08';
+                SetInfoDeviceTextTag(np,'01_Newspaper08');
             }
         }
 

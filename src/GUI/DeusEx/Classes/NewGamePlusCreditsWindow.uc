@@ -50,7 +50,7 @@ function CreateControls()
     winControlText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 
     controlsText =                "Exit: ";
-    if (#defined(vanilla)){
+    if (#defined(vanilla||revision)){
         controlsText = controlsText $ "Escape or ";
     }
     controlsText = controlsText $ "Double Click|n|n";
@@ -298,7 +298,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 			break;
 
         case IK_Escape:
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla||revision)){
                 //Escape still doesn't work outside of vanilla for whatever reason
                 player.PlaySound(Sound'DeusExSounds.Generic.Buzz1');// HACK TODO
                 return True;

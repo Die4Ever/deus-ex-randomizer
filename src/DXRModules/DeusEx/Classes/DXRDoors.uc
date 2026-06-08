@@ -458,7 +458,7 @@ function SetDoorFixes()
         door_fixes[num_door_fixes].frag = sf(class'Rockchip', BIT_VANILLA);
         num_door_fixes++;
 
-        if (#defined(gmdx)){
+        if (class'DXRMapVariants'.static.IsGMDXMaps(player())){
             // GMDX adds a gate at the side of the cathedral that isn't supposed to open
             // it leads into an area where the floor is non-solid, and the gate itself
             // rotates around its centre, so obviously never intended to be seen opening.

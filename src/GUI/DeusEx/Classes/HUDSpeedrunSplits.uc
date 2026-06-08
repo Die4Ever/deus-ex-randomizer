@@ -505,7 +505,7 @@ function DrawSplits(GC gc, int cur)
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
-    for(i=1; i<cur; i++) {
+    for(i=0; mapvariants.missions[i] != cur; i++) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
         time += stats.missions_menu_times[m];
@@ -515,7 +515,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    for(i=prev-1; i>=1; i--) {
+    for(i=prev-1; i>=0; i--) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
         time += stats.missions_menu_times[m];
@@ -525,7 +525,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    for(i=cur+1; i<=15; i++) {
+    for(i=cur+1; i<ArrayCount(mapvariants.missions); i++) {
         m = mapvariants.missions[i];
         if(balanced_splits[m] > 0) {
             next = i;
@@ -547,7 +547,7 @@ function DrawSplits(GC gc, int cur)
         || (alwaysShowSplit[i] != 0)
         || (i == prevprev && showPrevprev)
         || (i == prev && showPrev)
-        || (i == cur && showCurrentMission)
+        || (m == cur && showCurrentMission)
         || (i == next && showNext)
         || (i == ArrayCount(mapvariants.missions)-1 && showPB)
         || bShuffle
@@ -555,6 +555,8 @@ function DrawSplits(GC gc, int cur)
             y = DrawSplit(gc, m, cur, tempTotal, x, y);
         }
     }
+
+    prev = mapvariants.missions[prev]; // used for colors
 
     //#region current segment time with comparison
     if(showSeg) {

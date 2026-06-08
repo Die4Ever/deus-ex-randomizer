@@ -1517,7 +1517,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, 
     dc = SpawnDatacube(loc,rot,dont_move);
 
     if(dc != None) {
-        dc.textTag = texttag;
+        SetInfoDeviceTextTag(dc,texttag);
     }
     return dc;
 }
@@ -1532,6 +1532,24 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeImage(vector loc, ro
         dc.imageClass = imageClass;
     }
     return dc;
+}
+
+static function SetInfoDeviceTextTag(#var(prefix)InformationDevices id, name textTag, optional name femTextTag, optional string textPackage)
+{
+    if (textPackage == ""){
+        textPackage="DeusExText";
+    }
+
+    id.textPackage=textPackage;
+    id.textTag = textTag;
+
+#ifdef vanilla || vmd || gmdxae
+    if (textPackage=="DeusExText" && femTextTag=='' && textTag!=''){
+        //Update the female text tag as well with the default option
+        femTextTag = class'DXRInfo'.static.StringToName("FemJC"$string(textTag));
+    }
+    id.FemaleTextTag = femTextTag;
+#endif
 }
 
 // used by DXRReplaceActors

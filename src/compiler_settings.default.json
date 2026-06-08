@@ -36,7 +36,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/",
         "preproc_definitions": {
-            "gmdx":1, "gmdxnotae": 1, "singleplayer":1, "mapfixes":1, "flags":1, "prefix":"",
+            "gmdx":1, "gmdxnotae": 1, "singleplayer":1, "mapfixes":1, "flags":1, "prefix":"", "vanillamaps":2,
             "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "GMDXRandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],
@@ -51,7 +51,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX AE Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX AE/",
         "preproc_definitions": {
-            "gmdx":1, "gmdxae":1, "singleplayer":1, "mapfixes":1, "flags":1, "prefix":"",
+            "gmdx":1, "gmdxae":1, "singleplayer":1, "mapfixes":1, "flags":1, "prefix":"", "vanillamaps":2,
             "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "GMDXAERandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],

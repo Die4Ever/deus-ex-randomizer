@@ -379,8 +379,7 @@ function ExtendedTests()
     newpasswords[passStart] = "RANDOM";
 
     test(d != None, "spawned DataCube " $ d );
-    d.TextTag = '12_DXRandoTest01';
-    d.TextPackage = "#var(package)";
+    SetInfoDeviceTextTag(d,'12_DXRandoTest01',,"#var(package)");
 
     bHasPass = InfoDevsHasPass(d);
     testbool(bHasPass, true, d $ " has password DXRando");

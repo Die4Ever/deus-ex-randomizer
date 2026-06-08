@@ -44,6 +44,9 @@ function CheckConfig()
 function vanilla_keys_rules()
 {
     local int i;
+    local bool GMDXMaps;
+
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(dxr.localURL) {
     // #region Vanilla M01
@@ -626,7 +629,7 @@ function vanilla_keys_rules()
 
     // #region Vanilla M15
     case "15_area51_bunker":
-        if (#defined(gmdx)){
+        if (GMDXMaps){
             //Give an area where the tower key is allowed to give the new key
             //in the tunnel under the tower more places to go
             keys_rules[i].item_name = 'Tower';
@@ -665,7 +668,7 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
 
-        if (#defined(gmdx)){
+        if (GMDXMaps){
             //GMDX adds a duplicated room of sleeping pods
 
             //Left, Far

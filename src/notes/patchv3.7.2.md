@@ -50,6 +50,10 @@
 - When the "Flickering Lights" setting is set to "Epilepsy Safe", lights that flicker *extremely* quickly will now pulse at a slower rate to ensure they don't still look like they're flickering.
 - Leo Gold (the terrorist commander in Mission 1) will now be fearless in all game modes, instead of only when Goal Randomization is enabled.
 - "My Buddy Vinny" and "Play the Detective" bingo goals should no longer occasionally fail and then succeed.  The failure will only happen in a real failure scenario.
+- Randomized dialog in the intro and outro will be spoken by the original character speaking the line.
+- Clones spawned from Crowd Control will now shoot fire extinguishers that they use in front of them, instead of in an arbitrary direction.
+- One book in Area 51 Sector 3 (Mission 15) will now be properly switched from Jacob's Shadow to The Man Who Was Thursday for both Male and Female JC (Previously, Female JC would still see Jacob's Shadow).
+- Removed infolink trigger near the exit door of the MJ12 Lab (Mission 5) that referenced an infolink that doesn't exist, which caused an error message to appear.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
@@ -80,6 +84,7 @@
   - Smugglers bots in Mission 8 are no longer permanently hostile when Moderate Map Balance changes are enabled.  They will only be hostile if you have not spoken to Smuggler before this mission.
   - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
   - Upgrades to the EUAS (IFF) aug will actually display on screen (Light level and environmental hazard warnings).
+  - Map tweaks will no longer sometimes unintentionally receive tweaks intended for the Revision versions of the maps.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
@@ -98,6 +103,7 @@
   - "Signs of the End": Look at the signs marking the different endings in Area 51 Sector 4.
   - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
   - "Fire it up!": Use the pipe flame button in the coolant area of Area 51 Sector 4 (Mission 15).
+- The Bingo Viewer now has a window and file icon: a dynamic portrait of Walton Simons.
 </details>
 
 ## Intra-Patch Changes

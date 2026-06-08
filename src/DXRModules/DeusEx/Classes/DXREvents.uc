@@ -2063,7 +2063,7 @@ function SetWatchFlags() {
         RewatchFlag('WaltonBadass_Played');
         foreach AllActors(class'#var(prefix)BookOpen', book) {
             if (book.textTag == '15_Book01'){ //This copy of Jacob's Shadow is also in _BUNKER and _ENTRANCE
-                book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
+                SetInfoDeviceTextTag(book,'15_Book02');  //Put that good Thursday man back where he (probably) belongs
             }
         }
 
@@ -2411,10 +2411,11 @@ simulated function string tweakBingoDescription(string event, string desc)
 simulated function int tweakBingoMax(string event, int max)
 {
     local DXRando dxr;
-    local bool RevisionMaps;
+    local bool RevisionMaps, GMDXMaps;
 
     dxr = class'DXRando'.default.dxr;
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(event){
         case "WanChaiStores":
@@ -2430,7 +2431,7 @@ simulated function int tweakBingoMax(string event, int max)
         case "Disloyal_DestroyDeco":
             if (RevisionMaps){
                 return 9; //Just a lot more flags in Revision
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 return 7; //A different number of more in GMDX
             }
 
@@ -2481,11 +2482,12 @@ simulated function int ScaleBingoGoalMax(string event, int max, int bingoScale, 
 simulated function int tweakBingoMissions(string event, int missions)
 {
     local DXRando dxr;
-    local bool RevisionMaps;
+    local bool RevisionMaps,GMDXMaps;
     local int newMissions;
 
     dxr = class'DXRando'.default.dxr;
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    GMDXMaps     = class'DXRMapVariants'.static.IsGMDXMaps(player());
     newMissions = missions;
 
     switch(event){
@@ -2514,7 +2516,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 // - Sub Base (M14)
                 // - A51 Bunker, Entrance (M15)
                 newMissions = newMissions | #bit(5,10,11,14,15);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Extra in
                 // - 747 (M03)
                 newMissions = newMissions | #bit(3);
@@ -2535,7 +2537,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Extras in
                 // - Paris Streets, Chateau (M10)
                 return #bit(6,10);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Extra in
                 // - Paris Streets (M10)
                 return #bit(6,10);
@@ -2546,7 +2548,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             if (RevisionMaps){
                 //Revision has an extra in the break room of ship lower decks
                 newMissions = newMissions | #bit(9);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //GMDX has one in the lower decks as well
                 newMissions = newMissions | #bit(9);
             }
@@ -2568,7 +2570,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //NONE in:
                 // - Cathedral (M11)
                 return #bit(2,4,6,8,10,14);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Extras in:
                 // - Street, Sewers (M02)
                 // - Mole People (M03)
@@ -2591,7 +2593,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 // - Paris Streets (M10)
                 // - Vandenberg Command (M12)
                 newMissions = newMissions | #bit(2,3,4,5,6,8,10,12);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Extras in
                 // - NYC Streets (M02)
                 // - Airfield Helibase (M03)
@@ -2605,7 +2607,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             if (RevisionMaps){
                 //Extra in Paris Club (M10)
                 newMissions = newMissions | #bit(10);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Extras in:
                 // - Command, Gas (M12)
                 // - Area 51 Surface (M15)
@@ -2616,7 +2618,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             if (RevisionMaps){
                 //Extras in NYC Bar (M02/04/08)
                 newMissions = newMissions | #bit(2,4,8);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Extras in NYC Bar (M02/04/08)
                 newMissions = newMissions | #bit(2,4,8);
             }
@@ -2635,7 +2637,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Extras in NYC Streets (M02)
                 //None in Battery Park (M04)
                 return #bit(2,3,6,10,11,12);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Extras in:
                 // - Smuggler (M08)
                 newMissions = newMissions | #bit(8);
@@ -2685,7 +2687,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             if (RevisionMaps){
                 //Extras in Area 51 Entrance (M15)
                 newMissions = newMissions | #bit(15);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //GMDX adds a door into the (formerly) blocked off bathroom on the surface
                 newMissions = newMissions | #bit(15);
             }
@@ -2701,7 +2703,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Revision has some in missions 1, 3, and 4, but not in mission 5
                 //Just make the mask from scratch instead of trying to adjust
                 newMissions = #bit(1,3,4,6,11,12,14,15);
-            } else if (#defined(gmdx)){
+            } else if (GMDXMaps){
                 //Somehow GMDX (v9, at least) only has rebreathers in Hong Kong???
                 //Tong's Base, Lucky Money, and Level 2 Labs
                 newMissions = #bit(6);
@@ -2713,7 +2715,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             }
             break;
         case "VendingMachineDispense_Candy":
-            if (#defined(gmdx) || RevisionMaps){
+            if (GMDXMaps || RevisionMaps){
                 //GMDX and Revision add some vending machines
                 newMissions = newMissions | #bit(8,12);
             }
@@ -2733,7 +2735,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 // - Command, Tunnels (M12)
                 // - Area 51 Page (M15)
                 newMissions = newMissions | #bit(5,10,11,12,15);
-            }else if (#defined(gmdx)){
+            }else if (GMDXMaps){
                 //Revision removes the one from M08
                 newMissions = #bit(1,2,3,4);
             }
@@ -2741,7 +2743,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "BallisticArmor_Activated":
             //Vanilla is #bit(2,3,4,5,6,8,9,10,11,12,14,15)
             //Revision matches Vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //GMDX adds one on Liberty Island
                 newMissions = newMissions | #bit(1);
             }
@@ -2749,7 +2751,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "HazMatSuit_Activated":
             //Vanilla is #bit(1,4,6,9,10,12,14,15)
             //Revision matches Vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Helibase, UNATCO HQ (M03)
                 // - Sewers (M08)
@@ -2759,7 +2761,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "AdaptiveArmor_Activated":
             //Vanilla is #bit(2,3,4,6,8,9,10,12,14,15)
             //Revision matches Vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Missing armour in M02, M04, M08, M12
                 newMissions = #bit(3,6,9,10,14,15);
             }
@@ -2767,7 +2769,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "Flare_Activated":
             //Vanilla is #bit(1,2,3,4,5,6,8,10,11,12,14,15)
             //Revision matches Vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Ship, Ship Below, Fan (M09)
                 newMissions = newMissions | #bit(9);
@@ -2775,7 +2777,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "TechGoggles_Activated":
             //Vanilla is #bit(1,3,6,10,12,14,15)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Everett, Metro Station (M11)
                 newMissions = newMissions | #bit(11);
@@ -2789,7 +2791,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "ASingleFlask_DestroyDeco":
             //Vanilla is #bit(1,2,3,4,5,6,9,10,11,12,14)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Area 51 Entrance (M15)
                 newMissions = newMissions | #bit(15);
@@ -2801,7 +2803,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "WhyContainIt_DestroyDeco":
             //Vanilla is #bit(12,14)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Area 51 Entrance (M15)
                 newMissions = newMissions | #bit(15);
@@ -2829,7 +2831,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "NotABigFan":
             //Vanilla is #bit(2,3,4,6,8,9,14)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - UNATCO HQ (M01)
                 // - UNATCO HQ (M05)
@@ -2851,7 +2853,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "Dehydrated_DestroyDeco":
             //Vanilla is #bit(1,2,3,4,5,6,8,9,10,11,12,15)
             //Revision matches Vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extra in:
                 // - Ocean Lab (M14)
                 newMissions = newMissions | #bit(14);
@@ -2860,7 +2862,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "Chef_ClassDead":
             //Vanilla is #bit(10,11)
             //Revision matches Vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extra in:
                 // - Ship Upper (M09)
                 newMissions = newMissions | #bit(9);
@@ -2868,7 +2870,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "Karkian_ClassDead":
             //Vanilla is #bit(5,6,14,15)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Paris Streets (M10)
                 // - Vandenberg Tunnels (M12)
@@ -2880,7 +2882,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "Greasel_ClassDead":
             //Vanilla is #bit(5,6,10,14,15)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Sewers (M08)
                 // - Gas Station, Tunnels (M12)
@@ -2892,7 +2894,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "MilitaryBot_ClassTakedown":
             //Vanilla is #bit(4,5,6,9,10,11,12,14)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Area 51 Surface (M15)
                 //Missing in:
@@ -2906,7 +2908,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "WatchDogs_peeptime":
             //Vanilla is #bit(2,5,6,10,12,14)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Liberty Island (M01)
                 // - Airfield, Mole People (M03)
@@ -2919,14 +2921,14 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "SecurityBot2_ClassTakedown":
             //Vanilla is #bit(1,4,5,6,8,9,10,11,12,14,15)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Missing in M14
                 newMissions = #bit(1,4,5,6,8,9,10,11,12,15);
             }
             break;
         case "SecurityBotSmall_ClassTakedown":
             //Vanilla is #bit(1,2,3,4,8,11,15)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - MJ12 Lab (M05)
                 // - Ship Fan (M09)
@@ -2944,7 +2946,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "BurnTrash":
             //Vanilla is #bit(1,2,3,4,6,8,9,10,11,12,14,15)
             //Revision matches vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Liberty Island (M05)
                 newMissions = newMissions | #bit(5);
@@ -2953,7 +2955,7 @@ simulated function int tweakBingoMissions(string event, int missions)
         case "PhoneCall":
             //Vanilla is #bit(2,3,4,5,6,8,9,10)
             //Revision matches vanilla
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 //Extras in:
                 // - Liberty Island, UNATCO HQ (M01)
                 // - Area 51 Surface (M15)
@@ -2964,7 +2966,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             break;
         case "CatchTheNews_singlepeepedtex":
             //Vanilla is #bit(1,3,4,5,6,10,11)
-            if (#defined(gmdx)){
+            if (GMDXMaps){
                 newMissions = newMissions | #bit(2,8,12);
             } else if (RevisionMaps) {
                 //Every mission, apparently
