@@ -3081,8 +3081,13 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
     if (class'DXRVersion'.static.VersionIsStable()) {
         return "";
     } else {
-        //Show the text package + text tag for non-stable versions
-        return fullTag;
+        if ( fullTag =="DeusExText.DXRBlankDatacube" ) {
+            //This tag gets assigned when an information device has no TextTag and no Plaintext
+            return "Blank";
+        } else {
+            //Show the text package + text tag for non-stable versions
+            return fullTag;
+        }
     }
 }
 //#endregion
