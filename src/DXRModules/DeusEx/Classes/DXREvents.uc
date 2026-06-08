@@ -2063,7 +2063,7 @@ function SetWatchFlags() {
         RewatchFlag('WaltonBadass_Played');
         foreach AllActors(class'#var(prefix)BookOpen', book) {
             if (book.textTag == '15_Book01'){ //This copy of Jacob's Shadow is also in _BUNKER and _ENTRANCE
-                book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
+                SetInfoDeviceTextTag(book,'15_Book02');  //Put that good Thursday man back where he (probably) belongs
             }
         }
 

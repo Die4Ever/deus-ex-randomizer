@@ -198,16 +198,14 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
     } else {
         n.bAddToVault = a.bAddToVault;
     }
-    n.TextPackage = a.TextPackage;
-    n.textTag = a.textTag;
+
+    SetInfoDeviceTextTag(n,a.TextTag,,a.TextPackage);
+
     n.imageClass = a.imageClass;
     n.msgNoText = a.msgNoText;
     n.ImageLabel = a.ImageLabel;
     n.AddedToDatavaultLabel = a.AddedToDatavaultLabel;
     n.defaultItemName = a.Default.ItemName;
-#ifdef revision
-    n.TextPackage = a.TextPackage;
-#endif
 
     //Move dynamic lights that might be based on the info device
     foreach a.BasedActors(class'DynamicLight', lt) {

@@ -78,6 +78,7 @@ static function Actor SpawnInfoDevice(Actor a, class<Actor> id, Vector loc, Rota
     device.MakeOver(id);
 #endif
 
+    class'DXRActorsBase'.static.SetInfoDeviceTextTag(device,textTag);
     device.textTag = textTag;
 
     return device;
