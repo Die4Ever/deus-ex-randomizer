@@ -53,6 +53,7 @@
 - Randomized dialog in the intro and outro will be spoken by the original character speaking the line.
 - Clones spawned from Crowd Control will now shoot fire extinguishers that they use in front of them, instead of in an arbitrary direction.
 - One book in Area 51 Sector 3 (Mission 15) will now be properly switched from Jacob's Shadow to The Man Who Was Thursday for both Male and Female JC (Previously, Female JC would still see Jacob's Shadow).
+- Removed infolink trigger near the exit door of the MJ12 Lab (Mission 5) that referenced an infolink that doesn't exist, which caused an error message to appear.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
