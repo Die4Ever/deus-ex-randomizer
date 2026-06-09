@@ -103,7 +103,12 @@ static function float GetDefaultShottime(DeusExWeapon w) {
 }
 
 //A nice convenient function to ensure we enforce rules consistently across projectile types
-simulated function float ProjDamage(float OrigDmg, float ratio, optional float minDmg)
+simulated function float ProjDamage(class<Projectile> p, float ratio, optional float minDmg)
+{
+    return _ProjDamage(GetDefaultProjDamage(p),ratio,minDmg);
+}
+
+simulated function float _ProjDamage(float OrigDmg, float ratio, optional float minDmg)
 {
     if (minDmg <= 0) minDmg = NORMAL_MIN_DMG; //Minimum 2 damage typically
 
@@ -111,6 +116,98 @@ simulated function float ProjDamage(float OrigDmg, float ratio, optional float m
     //Explosions deal (dmg x 2)/(num_ticks), where num_ticks is typically 5.
 
     return FMax(ratio * OrigDmg, minDmg);
+}
+
+//This sucks ass, but we already hardcoded these before, and we modify the default values
+//This is at least a central spot where the determination of what damage to use doesn't
+//get mixed with other logic
+simulated function float GetDefaultProjDamage(class<Projectile> p)
+{
+    switch(p)
+    {
+#ifdef injections
+    case class'DXRDart':
+#endif
+    case class'#var(prefix)Dart':
+        if (#defined(vmd)){
+            return 20.0;
+        } else if(class'MenuChoice_BalanceItems'.static.IsEnabled()){
+            return 17.0;
+        } else {
+            return 15.0;
+        }
+
+    case class'#var(prefix)DartFlare':
+        if (#defined(vmd)){
+            return 20.0;
+        } else {
+            return 5.0;
+        }
+
+    case class'#var(prefix)DartPoison':
+        return 5.0;
+
+    case class'#var(prefix)PlasmaBolt':
+    case class'PlasmaBoltFixTicks':
+        return 18.0;
+
+    case class'#var(prefix)Rocket':
+    // fix both just in case a normal Rocket is fired somehow?
+    case class'RocketFixTicks':// no break
+        return 300.0;
+
+    case class'#var(prefix)RocketWP':
+        return 300.0;
+
+    case class'#var(prefix)HECannister20mm':
+        return 150.0;
+
+    case class'HECannisterFixTicks':
+        // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
+        return 180.0;
+
+    case class'#var(prefix)LAM':
+        return 500.0;
+
+    case class'#var(prefix)RocketLAW':
+        return 1000.0;
+
+    case class'#var(prefix)GreaselSpit':
+    case class'#var(prefix)GraySpit':
+        return 8.0;
+
+    case class'#var(prefix)RocketMini':
+        return 50.0;
+
+#ifdef vmd
+    case class'PlasmaBoltMini':// (used by PS20): Does 30 damage stock, with smaller radius. Fired in pairs.
+        return 30.0;
+
+    case class'RocketEMP':// Does 800 damage base, in WP-esque expanded radius.
+        return 800.0;
+#endif
+
+#ifdef vmd2
+    case class'TaserSlug':
+        return 24.0;
+
+    case class'SierraRocket':
+        return 400.0;
+
+    case class'ObliteratorRocket':
+        return 25.0;
+
+    case class'ObliteratorRocketWP':
+        return 25.0;
+
+    case class'TartarusFireball':
+        return 3.0;
+#endif
+
+    }
+
+    err("GetDefProjDamage() could not find projectile "$p);
+    return p.Default.Damage;
 }
 
 simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)
@@ -125,48 +222,48 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
     case class'DXRDart':
 #endif
     case class'#var(prefix)Dart':
-        if(#defined(vmd)) p.default.Damage = ProjDamage(20.0,ratio);
+        if(#defined(vmd)) p.default.Damage = ProjDamage(p,ratio);
 #ifdef injections
         else if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
             p = class'DXRDart';
             d = p;
-            p.default.Damage = ProjDamage(17.0,ratio);
+            p.default.Damage = ProjDamage(p,ratio);
         }
 #endif
-        else p.default.Damage = ProjDamage(15.0, ratio);
+        else p.default.Damage = ProjDamage(p, ratio);
         break;
 
     case class'#var(prefix)DartFlare':
         #ifdef vmd
-        p.default.Damage = ProjDamage(20.0, ratio);
+        p.default.Damage = ProjDamage(p, ratio);
         break;
         #endif
     case class'#var(prefix)DartPoison':
-        p.default.Damage = ProjDamage(5.0, ratio);
+        p.default.Damage = ProjDamage(p, ratio);
         break;
 
     // plasma, don't worry about PS40 because that gets handled in its own class
     case class'#var(prefix)PlasmaBolt':
     case class'PlasmaBoltFixTicks':
         f = 18.0;
-        p.default.Damage = ProjDamage(f, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
 #ifndef hx
-        class'#var(prefix)PlasmaBolt'.default.mpDamage = ProjDamage(f, ratio, 5);
-        class'PlasmaBoltFixTicks'.default.mpDamage = ProjDamage(f, ratio, 5);
+        class'#var(prefix)PlasmaBolt'.default.mpDamage = ProjDamage(class'#var(prefix)PlasmaBolt', ratio, 5);
+        class'PlasmaBoltFixTicks'.default.mpDamage = ProjDamage(class'PlasmaBoltFixTicks', ratio, 5);
 #endif
         p = class'PlasmaBoltFixTicks';
         d = p;
-        p.default.Damage = ProjDamage(f, ratio, EXPLOSIVE_MIN_DMG);
-        w.HitDamage = ProjDamage(f, ratio, EXPLOSIVE_MIN_DMG);// write back the weapon damage
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+        w.HitDamage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);// write back the weapon damage
         break;
 
     case class'#var(prefix)Rocket':
         // fix both just in case a normal Rocket is fired somehow?
-        p.default.Damage = ProjDamage(300.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         p = class'RocketFixTicks';
         d = p;
     case class'RocketFixTicks':// no break
-        p.default.Damage = ProjDamage(300.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
             p = class'#var(prefix)Rocket';
             d = p;
@@ -174,16 +271,16 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         break;
 
     case class'#var(prefix)RocketWP':
-        p.default.Damage = ProjDamage(300.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         break;
 
     case class'#var(prefix)HECannister20mm':
-        p.default.Damage = ProjDamage(150.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         p = class'HECannisterFixTicks';
         d = p;
     case class'HECannisterFixTicks':// no break
         // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
-        p.default.Damage = ProjDamage(180.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
             p = class'#var(prefix)HECannister20mm';
             d = p;
@@ -197,20 +294,20 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         break;
 
     case class'#var(prefix)LAM':
-        p.default.Damage = ProjDamage(500.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         break;
 
     case class'#var(prefix)RocketLAW':
-        p.default.Damage = ProjDamage(1000.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         break;
 
     case class'#var(prefix)GreaselSpit':
     case class'#var(prefix)GraySpit':
-        p.default.Damage = ProjDamage(8.0, ratio);
+        p.default.Damage = ProjDamage(p, ratio);
         break;
 
     case class'#var(prefix)RocketMini':
-        p.default.Damage = ProjDamage(50.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         break;
 
     #ifdef vmd
@@ -218,11 +315,34 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         return false;
 
     case class'PlasmaBoltMini':// (used by PS20): Does 30 damage stock, with smaller radius. Fired in pairs.
-        p.default.Damage = ProjDamage(30.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         break;
     case class'RocketEMP':// Does 800 damage base, in WP-esque expanded radius.
-        p.default.Damage = ProjDamage(800.0, ratio, EXPLOSIVE_MIN_DMG);
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         break;
+    #endif
+
+    #ifdef vmd2
+    case class'TaserSlug':
+        p.default.Damage = ProjDamage(p, ratio);
+        break;
+
+    case class'SierraRocket':
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+        break;
+
+    case class'ObliteratorRocket':
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+        break;
+
+    case class'ObliteratorRocketWP':
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+        break;
+
+    case class'TartarusFireball':
+        p.default.Damage = ProjDamage(p, ratio);
+        break;
+
     #endif
 
     case class'#var(prefix)GasGrenade':
@@ -234,29 +354,9 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         return false;
 
     default:
-        switch(p.name) { // TODO: move VMD 2.00 classes to above
-        #ifdef vmd
-        case 'TaserSlug':// Does 24 damage, and is very dart-like.
-            p.default.Damage = ProjDamage(24.0, ratio);
-            break;
-        case 'SierraRocket':// Does 400 damage in a mere 288 radius. Needs lock-on by enemies to be fired. Sticks to player and beeps before detonating.
-            p.default.Damage = ProjDamage(400.0, ratio, EXPLOSIVE_MIN_DMG);
-            break;
-        case 'ObliteratorRocket':// Does 25 damage in 96 blast radius. Fired in clusters.
-            p.default.Damage = ProjDamage(25.0, ratio, EXPLOSIVE_MIN_DMG);
-            break;
-        case 'ObliteratorRocketWP':// Does 25 damage in 256 blast radius. Also fired in clusters.
-            p.default.Damage = ProjDamage(25.0, ratio, EXPLOSIVE_MIN_DMG);
-            break;
-        case 'TartarusFireball':// Does 3 damage with high velocity, high rate of fire, and tiny draw scale.
-            p.default.Damage = ProjDamage(3.0, ratio);
-            break;
-        #endif
-        default:
-            warning("RandoProjectile("$w$") didn't set damage for projectile "$p$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", p.default.Damage: "$p.default.Damage);
-            return false;
-        }
-        break; // break of default for classes
+        warning("RandoProjectile("$w$") didn't set damage for projectile "$p$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", p.default.Damage: "$p.default.Damage);
+        return false;
+        break;
     }
 
     return true;
