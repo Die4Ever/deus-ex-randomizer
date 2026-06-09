@@ -86,6 +86,7 @@
   - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
   - Upgrades to the EUAS (IFF) aug will actually display on screen (Light level and environmental hazard warnings).
   - Map tweaks will no longer sometimes unintentionally receive tweaks intended for the Revision versions of the maps.
+  - Weapons with alternate ammo types that fire projectiles (like the mini crossbow) will have their firing rate randomized based on the original firing rate.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.

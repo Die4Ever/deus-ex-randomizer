@@ -92,7 +92,12 @@ simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
 static function float GetDefaultShottime(DeusExWeapon w) {
     // HACK: changing ammo types is awkward because there's no array for ShotTime, technically a nerf to the crossbow?
     if(/*w.default.ProjectileClass == None &&*/ w.ProjectileClass != None && (w.AmmoNames[1] != None || w.AmmoNames[2] != None)) {
-        return 1;// ShotTime of 1 is hardcoded when switching ammo to something with a projectile
+        #ifdef gmdx
+            //GMDX actually sets the shot time to the default of the weapon when switching!  Surprising!
+            return w.Default.ShotTime;
+        #else
+            return 1;// ShotTime of 1 is hardcoded when switching ammo to something with a projectile
+        #endif
     }
     return w.default.ShotTime;
 }
@@ -248,7 +253,7 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
             break;
         #endif
         default:
-            warning("RandoWeapon("$w$") didn't set damage for projectile "$p$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", p.default.Damage: "$p.default.Damage);
+            warning("RandoProjectile("$w$") didn't set damage for projectile "$p$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", p.default.Damage: "$p.default.Damage);
             return false;
         }
         break; // break of default for classes
