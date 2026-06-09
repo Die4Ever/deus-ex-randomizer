@@ -531,7 +531,7 @@ function BalanceJailbreak()
     local DXRLoadouts loadout;
     local int i, num;
     local float r;
-    local Inventory nextItem;
+    local Inventory nextItem, movedItem;
     local SpawnPoint SP;
     local #var(PlayerPawn) p;
     local vector itemLocations[50];
@@ -543,7 +543,10 @@ function BalanceJailbreak()
     local DynamicLight dl;
     local #var(prefix)Toilet jailToilet;
     local Pickup origPickup;
-    local vector toiletLoc;
+    local vector toiletLoc,loc;
+    local string itemManifest;
+    local Inventory movedItems[50];
+    local int numMoved;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -583,7 +586,7 @@ function BalanceJailbreak()
                     nextItem = Spawn(origPickup.class,,,toiletLoc); //Spawned in the right location, but MoveNextItemTo will apply everything else
                 }
 
-                MoveNextItemTo(nextItem,toiletLoc,'player_prison_pocket');
+                MoveNextItemTo(nextItem,toiletLoc,'player_prison_pocket', movedItem);
             }
         }
 
@@ -665,10 +668,16 @@ function BalanceJailbreak()
             }
         }
 
+        itemManifest="";
         nextItem = p.Inventory;
-        while(nextItem != None)
-            for(i=0; i<num; i++)
-                nextItem = MoveNextItemTo(nextItem, itemLocations[i], 'player_inv');
+        while(nextItem != None){
+            for(i=0; i<num; i++){
+                nextItem = MoveNextItemTo(nextItem, itemLocations[i], 'player_inv', movedItem);
+                if (movedItem!=None){
+                    movedItems[numMoved++]=movedItem;
+                }
+            }
+        }
 
         #ifdef locdebug
         if("#var(locdebug)"~="JailItemLocations") {
@@ -685,6 +694,17 @@ function BalanceJailbreak()
             dlt.Destroy();
         }
     }
+
+    if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+        itemManifest = GeneratePrisonManifestFullText(movedItems,numMoved);
+        if (VanillaMaps){
+            loc = vect(-2075,1130,-140);
+        } else {
+            loc = vect(-2155,1300,-140);
+        }
+        SpawnDatacubePlaintext(loc,rot(0,0,0),itemManifest,"DXRPrisonManifest",true);
+    }
+
 
     //Freebie Weapon
     //Don't try to move this to DXRMissions
@@ -750,3 +770,73 @@ function BalanceJailbreak()
     }
 }
 //#endregion
+
+function string GeneratePrisonManifestFullText(Inventory movedItems[50], int numMoved)
+{
+    local string manifest, itemList;
+    local int i;
+
+    manifest =            "Prisoner Manifest|n";
+    manifest = manifest $ "Name: " $ player().TruePlayerName;
+    if (player().TruePlayerName!=player().Default.TruePlayerName){
+        manifest = manifest $ " (JC Denton)";
+    }
+    manifest = manifest $ "|n";
+    manifest = manifest $ "|n";
+
+    itemList = "";
+    for (i=0;i<numMoved;i++){
+        itemList = itemList $ GeneratePrisonManifestLine(movedItems[i],movedItems);
+    }
+
+    if (itemList!=""){
+        manifest = manifest $ "Personal Belongings:|n";
+
+        //Player had some items removed
+        manifest = manifest $ itemList;
+
+        //Strip the final newline off of the list
+        manifest = Left(manifest,Len(manifest)-2);
+    } else {
+        //Prison Pocket, or you had no equipment somehow?
+        manifest = manifest $ "Prisoner had no belongings to confiscate...";
+    }
+
+    return manifest;
+}
+
+function string GeneratePrisonManifestLine(Inventory item, out Inventory movedItems[50])
+{
+    local string line;
+    local Pickup p;
+    local int i, count;
+
+    if (item==None) return "";
+
+    line = " ~ "$item.ItemName;
+
+    count = 0;
+
+    p = Pickup(item);
+    if (p!=None){
+        if (p.bCanHaveMultipleCopies==False){
+            for (i=0;i<ArrayCount(movedItems);i++){
+                if(movedItems[i].class!=item.class) continue;
+                count=count+1;
+                movedItems[i]=None; //Clear out all other copies of the same class
+            }
+        } else if (p.NumCopies > 1){
+            count = p.numCopies;
+        }
+    } else if (WeaponIsAmmo(item.class)) {
+        count = Weapon(item).PickupAmmoCount;
+    }
+
+    if (count > 1){
+        line = line $ " x " $ count;
+    }
+
+    line = line $"|n";
+
+    return line;
+}

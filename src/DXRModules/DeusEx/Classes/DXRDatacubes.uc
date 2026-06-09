@@ -2900,6 +2900,9 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
         case "DeusExText.UCControlRoomPassword":
             return "UC Control Room Code";
 
+        case "DeusExText.DXRPrisonManifest":
+            return "Prisoner Manifest";
+
         case "#var(package).RepairbotNearby":
             return "Repair Bot Nearby";
 

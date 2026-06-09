@@ -488,7 +488,7 @@ static function bool WeaponIsModded(Inventory i)
     return false;
 }
 
-function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
+function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag, out Inventory movedItem)
 {
     // code similar to Revision Mission05.uc
     local Inventory nextItem;
@@ -499,7 +499,10 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None || MemConUnit(item) != None))
         item = item.Inventory;
 
-    if(item == None) return None;
+    if(item == None) {
+        movedItem = None;
+        return None;
+    }
 
     nextItem = item.Inventory;
     player = #var(PlayerPawn)(item.owner);
@@ -523,9 +526,10 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     l("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
 
     // restore any ammo amounts for a weapon to default; Y|y: except for grenades
-    if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade'))
+    if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade') && !item.IsA('WeaponShuriken'))
         Weapon(item).PickupAmmoCount = Weapon(item).Default.PickupAmmoCount;
 
+    movedItem = item;
     return nextItem;
 }
 
