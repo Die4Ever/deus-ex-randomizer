@@ -223,6 +223,8 @@ function PopulateAccountList()
     }
 #endif
 
+    userRowIndex=-1;
+
     //Clear the list out first, just in case
     lstAccounts.DeleteAllRows();
 
@@ -244,13 +246,16 @@ function PopulateAccountList()
             lstAccounts.AddRow(username$";"$password);
         }
 
-        if(known)
+        //Select the first account we know the password for
+        if(known && userRowIndex==-1)
             userRowIndex = compIndex;
     }
 
-    // Select the row that matches the current user
-    rowId = lstAccounts.IndexToRowId(userRowIndex);
-    lstAccounts.SetRow(rowId, True);
+    if (userRowIndex!=-1){
+        // Select the row that matches the current user
+        rowId = lstAccounts.IndexToRowId(userRowIndex);
+        lstAccounts.SetRow(rowId, True);
+    }
 }
 
 defaultproperties
