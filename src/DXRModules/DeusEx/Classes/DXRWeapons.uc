@@ -131,6 +131,14 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
     case class'#var(prefix)Dart':
         if (#defined(vmd)){
             return 20.0;
+        } else if (#defined(revision)){
+            if (UsingShifterOrBioMod()){
+                return 18.0;
+            } else {
+                return 10.0;
+            }
+        } else if (#defined(gmdx)){
+            return 20.0;
         } else if(class'MenuChoice_BalanceItems'.static.IsEnabled()){
             return 17.0;
         } else {
@@ -140,44 +148,105 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
     case class'#var(prefix)DartFlare':
         if (#defined(vmd)){
             return 20.0;
+        } else if (#defined(revision)){
+            if (UsingShifterOrBioMod()){
+                return 2.5;
+            } else {
+                return 10.0;
+            }
+        } else if (#defined(gmdx)){
+            return 7.0;
         } else {
             return 5.0;
         }
 
     case class'#var(prefix)DartPoison':
-        return 5.0;
+        if (#defined(gmdx)){
+            return 13.0;
+        } else {
+            return 5.0;
+        }
 
     case class'#var(prefix)PlasmaBolt':
     case class'PlasmaBoltFixTicks':
-        return 18.0;
+        if (#defined(vmd)){
+            return 25.0;
+        } else if (#defined(revision)){
+            if (UsingShifterOrBioMod()){
+                return 40.0;
+            } else {
+                return 20.0;
+            }
+        } else if (#defined(gmdx)){
+            return 20.0;
+        } else {
+            //This is rebalanced from the vanilla 8 damage (when bugged, 40 was intended)
+            return 18.0;
+        }
 
     case class'#var(prefix)Rocket':
     // fix both just in case a normal Rocket is fired somehow?
     case class'RocketFixTicks':// no break
-        return 300.0;
+        if (#defined(gmdx)){
+            return 200.0;
+        } else {
+            return 300.0;
+        }
 
     case class'#var(prefix)RocketWP':
-        return 300.0;
+        if (#defined(gmdx)){
+            return 60.0;
+        } else {
+            return 300.0;
+        }
 
     case class'#var(prefix)HECannister20mm':
-        return 150.0;
+        if (#defined(gmdx)){
+            return 200.0;
+        } else {
+            return 150.0;
+        }
 
     case class'HECannisterFixTicks':
         // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
-        return 180.0;
+        if (#defined(gmdx)){
+            //Just keep the increased GMDX damage
+            return 200.0;
+        } else {
+            return 180.0;
+        }
 
     case class'#var(prefix)LAM':
-        return 500.0;
+        if (#defined(gmdx)){
+            return 400.0;
+        } else if (#defined(vmd2)){
+            return 200.0;
+        } else {
+            return 500.0;
+        }
 
     case class'#var(prefix)RocketLAW':
+        //Everyone agrees!
         return 1000.0;
 
     case class'#var(prefix)GreaselSpit':
-    case class'#var(prefix)GraySpit':
+        //Oh my god, even more agreement!
         return 8.0;
 
+    case class'#var(prefix)GraySpit':
+        //Chaos reigns once again
+        if (#defined(gmdx)){
+            return 20.0;
+        } else {
+            return 8.0;
+        }
+
     case class'#var(prefix)RocketMini':
-        return 50.0;
+        if (#defined(gmdx)){
+            return 60.0;
+        } else {
+            return 50.0;
+        }
 
 #ifdef vmd
     case class'PlasmaBoltMini':// (used by PS20): Does 30 damage stock, with smaller radius. Fired in pairs.
@@ -202,6 +271,13 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
 
     case class'TartarusFireball':
         return 3.0;
+#endif
+
+#ifdef gmdx
+
+    case class'DartTaser':
+        return 15.0;
+
 #endif
 
     }
@@ -234,10 +310,8 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         break;
 
     case class'#var(prefix)DartFlare':
-        #ifdef vmd
         p.default.Damage = ProjDamage(p, ratio);
         break;
-        #endif
     case class'#var(prefix)DartPoison':
         p.default.Damage = ProjDamage(p, ratio);
         break;
@@ -342,7 +416,16 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
     case class'TartarusFireball':
         p.default.Damage = ProjDamage(p, ratio);
         break;
+    #endif
 
+    #ifdef gmdx
+    case class'DartTaser':
+        p.default.Damage = ProjDamage(p, ratio);
+        break;
+
+    case class'RubberBullet':
+        //Don't try to randomize these, they do hardcoded damage on Bump
+        return false;
     #endif
 
     case class'#var(prefix)GasGrenade':

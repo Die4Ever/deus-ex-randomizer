@@ -63,6 +63,7 @@
   - When entering a map for the first time with the password or code to a computer or keypad, the password will be correctly marked as known.
   - GMDX and VMD 2.0 will no longer incorrectly assign a hotkey to passive augs that don't need to be toggled.
   - Inventory and Augs are no longer completely removed after new game plus.
+  - Projectile damage will now be randomized based on the default damage in the particular version of the game you are randomizing, instead of always being based on vanilla damage stats.
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
