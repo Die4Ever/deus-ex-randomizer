@@ -609,27 +609,6 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
 
 }
 
-function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
-{
-    local ConEventTrigger e;
-    local RepairConObjTransferTrigger rt;
-    local string tagName;
-
-    tagName="ConEventTransferObjectRepair"$c.conName; //Append the bindname to the end
-
-    e = NewConEventTrigger(c,prev,StringToName(tagName));
-
-    //Make sure the Repair Triggers actually exist
-    foreach AllActors(class'RepairConObjTransferTrigger',rt,e.triggerTag){break;}
-    if (rt==None){
-        rt=Spawn(class'RepairConObjTransferTrigger',,e.triggerTag);
-        rt.conName = c.conName;
-        rt.AddPackage("#var(package)"); //Add our package to the list of possibilities
-    }
-
-    return e;
-}
-
 function ConEventTransferObject AddTransfer(Conversation c, ConEvent prev, class<Inventory> item)
 {
     local ConEventTransferObject e;

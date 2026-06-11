@@ -2,6 +2,12 @@ class DXRReplaceActors extends DXRActorsBase transient;
 
 var DXRReplacedActors replacements;
 
+struct ItemReplacement
+{
+    var string replace;
+    var string with;
+};
+
 function PostFirstEntry()
 {
     Super.PostFirstEntry();
@@ -9,6 +15,50 @@ function PostFirstEntry()
     PopulateReplacedActors();
 
     ReplaceActors();
+}
+
+function PostAnyEntry()
+{
+    Super.PostAnyEntry();
+
+    ReplaceActorTransfersInConversations();
+}
+
+//Look for references to certain actor types in conversation item transfers
+//and switch them to a new type
+function ReplaceActorTransfersInConversations()
+{
+    local int numSwaps, i;
+    local ItemReplacement swapItems[5];
+    local ConEventTransferObject ceto;
+
+#ifdef gmdx
+    swapItems[numSwaps].replace="WeaponGEPGun";
+    swapItems[numSwaps].with="#var(package).GMDXGepGun";
+    numSwaps++;
+#endif
+
+    if (numSwaps==0) return; //Nothing to do
+
+    //Find which conversations have relevant transfers
+    foreach AllObjects(class'ConEventTransferObject',ceto){
+        if (ceto.objectName=="") continue; //Probably not a thing, but just in case
+        for(i=0;i<ArrayCount(swapItems);i++){
+            if (swapItems[i].replace=="") continue;
+            if (Caps(ceto.objectName)!=Caps(swapItems[i].replace)) continue;
+
+            //Swap out the object name
+            ceto.objectName = swapItems[i].with;
+
+            //Stick a repair at the start of the conversation
+            AddTransferRepairTrigger(ceto.Conversation,None);
+        }
+    }
+
+
+
+
+
 }
 
 function PopulateReplacedActors()
@@ -168,6 +218,10 @@ function class<inventory> ReplaceClassName(class<inventory> inv)
 #ifdef hx
         case class'#var(prefix)Binoculars':
             return class'DXRBinoculars';
+#endif
+#ifdef gmdx
+        case class'WeaponGEPGun':
+            return class'GMDXGEPGun';
 #endif
         default:
             return inv;

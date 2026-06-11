@@ -90,6 +90,7 @@
   - Map tweaks will no longer sometimes unintentionally receive tweaks intended for the Revision versions of the maps.
   - Weapons with alternate ammo types that fire projectiles (like the mini crossbow) will have their firing rate randomized based on the original firing rate.
   - The police boat in Battery Park (Mission 2) is now easier to highlight and speak to.  This makes it easier to take the boat back to HQ after destroying the generator.
+  - GEP guns that were received from conversations or from crates will no longer float inside of you after moving to a new level.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
