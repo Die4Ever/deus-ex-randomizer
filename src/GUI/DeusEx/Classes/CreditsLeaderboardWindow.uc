@@ -1,6 +1,9 @@
 class CreditsLeaderboardWindow extends Window;
 
 var DXRStats stats;
+var int numRuns;
+
+const LEADERBOARD_LINE_HEIGHT = 25;
 
 event InitWindow()
 {
@@ -12,10 +15,28 @@ function InitStats(DXRStats newstats)
     stats = newstats;
 }
 
+function ResizeLeaderboardWindow()
+{
+    local int newWinHeight, newNumRuns;
+
+    if (stats==None) return;
+
+    newNumRuns=stats.GetNumLeaderboardRuns();
+    if (numRuns==newNumRuns) return;
+
+    numRuns = newNumRuns;
+    newWinHeight = (stats.GetNumLeaderboardRuns() + 1) * LEADERBOARD_LINE_HEIGHT; //25 per line, don't forget the header
+
+    SetSize(default.width, newWinHeight);
+}
+
 event DrawWindow(GC gc)
 {
     local color c;
     local int yPos;
+
+
+    ResizeLeaderboardWindow();
 
     c.R = 255;
     c.G = 255;

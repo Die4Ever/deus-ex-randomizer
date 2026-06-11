@@ -550,4 +550,5 @@ defaultproperties
     missions(10)=12
     missions(11)=14
     missions(12)=15
+    missions(13)=99
 }
