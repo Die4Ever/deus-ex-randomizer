@@ -28,6 +28,7 @@ var bool         bShowPatrolPaths;
 var bool         bShowTextures;
 var bool         bShowConvoInfo;
 var bool         bShowOverlap;
+var bool         bShowComputerAccts;
 
 var Color        patrolColours[14];
 
@@ -264,6 +265,16 @@ function bool AreOverlappedVisible()
 function ShowOverlapping(bool bShow)
 {
     bShowOverlap = bShow;
+}
+
+function bool AreComputerAcctsVisible()
+{
+    return bShowComputerAccts;
+}
+
+function ShowComputerAccts(bool bShow)
+{
+    bShowComputerAccts = bShow;
 }
 
 
@@ -1144,6 +1155,25 @@ function DrawWindow(GC gc)
                 foreach trackActor.RadiusActors(class'Actor',otherActor,Max(trackActor.CollisionHeight,trackActor.CollisionRadius)*2){
                     if (class'DXRActorsBase'.static.ActorOverlappingOther(otherActor,trackActor)==False) continue;
                     str = str $ "  "$ otherActor.Name $CR();
+                }
+            }
+            //#endregion
+
+            //#region Show Computer Accounts
+            if (bShowComputerAccts){
+                str = str $ "|c197f91"; // #197f91
+                if (#var(prefix)Computers(trackActor)!=None){
+                    str = str $ "Computer Accounts:"$CR();
+                    for (i=0;i<ArrayCount(#var(prefix)Computers(trackActor).userList);i++){
+                        if (#var(prefix)Computers(trackActor).userList[i].userName=="") continue;
+                        str = str $ #var(prefix)Computers(trackActor).userList[i].userName $ " - " $ #var(prefix)Computers(trackActor).userList[i].password $" ("$#var(prefix)Computers(trackActor).userList[i].accessLevel$")"$CR();
+                    }
+                } else if (ATM(trackActor)!=None){ //HXATM is covered in the Computers case above, so this is specifically just ATM (Which isn't a subclass of Computers)
+                    str = str $ "ATM Accounts:"$CR();
+                    for (i=0;i<ArrayCount(ATM(trackActor).userList);i++){
+                        if (ATM(trackActor).userList[i].accountNumber=="") continue;
+                        str = str $ ATM(trackActor).userList[i].accountNumber $ " - " $ ATM(trackActor).userList[i].PIN $" ("$ATM(trackActor).userList[i].balance$")"$CR();
+                    }
                 }
             }
             //#endregion

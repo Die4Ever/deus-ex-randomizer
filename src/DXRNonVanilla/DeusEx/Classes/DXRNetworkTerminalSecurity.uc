@@ -126,6 +126,6 @@ event InitWindow()
 function ComputerHacked()
 {
     Super.ComputerHacked();
-
+    CloseKnownAccountsWindow();
     class'DXREvents'.static.MarkBingo("ComputerHacked");
 }

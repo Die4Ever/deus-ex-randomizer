@@ -895,6 +895,10 @@ function ReplaceComputerPersonal(#var(prefix)ComputerPersonal a)
 
     ReplaceComputers(a,n);
 
+#ifdef gmdx
+    n.secLevel = a.secLevel;
+#endif
+
     a.Destroy();
 }
 
@@ -915,6 +919,10 @@ function ReplaceComputerSecurity(#var(prefix)ComputerSecurity a)
         n.Views[i].turretTag=a.Views[i].turretTag;
         n.Views[i].doorTag=a.Views[i].doorTag;
     }
+
+#ifdef gmdx
+    n.secLevel = a.secLevel;
+#endif
 
     a.Destroy();
 }
@@ -943,6 +951,10 @@ function ReplaceATM(#var(prefix)ATM a)
     if (pass!=None){
         pass.UpdateKnownPasswords(n);
     }
+
+#ifdef gmdx
+    n.ATMSecLevel = a.ATMSecLevel;
+#endif
 
     n.lockoutDelay=a.lockoutDelay;
 
