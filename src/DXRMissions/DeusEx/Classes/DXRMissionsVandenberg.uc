@@ -46,7 +46,7 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
-        AddActorLocation(loc, 1, vect(6300, 7800, -3061.458740), rot(0,-27976,0));
+        AddActorLocation(loc, 1, vect(6436.471680,7621.873535,-3061.458740), rot(0,-27976,0));
         //AddMutualExclusion(front_gate_start, loc); // starting at the front gate and then exiting at the front gate is a LOT of walking
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5046.039063, -2050.704102), rot(0,-19840,0));
@@ -365,12 +365,21 @@ function MissionTimer()
 
 function AnyEntry()
 {
+    local #var(DeusExPrefix)Mover dxm;
     Super.AnyEntry();
 
     switch(dxr.localURL) {
     case "12_VANDENBERG_CMD":
         UpdateGoalWithRandoInfo('FindJock', "Jock could be anywhere around the Command Center.");
         UpdateGoalWithRandoInfo('ActivatePower', "The keypads can be anywhere around the Command Center.");
+
+        if (dxr.flags.settings.goals > 0 && dxr.flagbase.GetBool('GaryHostageBriefing_played')) {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'comhqdoor') {
+                dxm.DoOpen();
+                dxr.flagbase.SetBool('DL_TonyScared_played', true);
+            }
+        }
+
         break;
     case "14_OCEANLAB_SILO":
         UpdateGoalWithRandoInfo('MeetJock', "Jock could be anywhere around the silo.");

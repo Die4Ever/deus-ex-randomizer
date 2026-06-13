@@ -130,5 +130,5 @@
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
 - If Area 51 is played in Speedrun Shuffle, the endgame cutscene will be the one chosen in that mission.
 - In Speedrun Shuffle mode, missions are now shown in correct order on the splits view and credits screen.
-- In Speedrun Shuffle mode, the Vandenberg Command Comms door will now open once you've completed the Computer map.
+- When goals rando is enabled, the Vandenberg Command Comms door will now open once you've completed the Computer map.
 - Slightly tweaked Speedrun Shuffle par times.

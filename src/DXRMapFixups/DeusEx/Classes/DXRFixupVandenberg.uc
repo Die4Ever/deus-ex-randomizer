@@ -1198,13 +1198,6 @@ function AnyEntryMapFixes()
             RemoveGoalFromCon('ActivatePower', 'MeetCarlaBrown');
         }
 
-        if (dxr.flags.moresettings.shuffle_missions > 0 && dxr.flagbase.GetBool('GaryHostageBriefing_played')) {
-            foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'comhqdoor') {
-                dxm.DoOpen();
-                dxr.flagbase.SetBool('DL_TonyScared_played', true);
-            }
-        }
-
         // timer to count the MJ12 Bots
         SetTimer(1, True);
 
