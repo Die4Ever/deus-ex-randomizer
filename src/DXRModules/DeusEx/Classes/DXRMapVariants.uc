@@ -277,13 +277,13 @@ function CheckConfig()
         len = dxr.flags.moresettings.shuffle_missions; // use number of missions instead of estimated duration
     }
     else if(dxr.flags.moresettings.shuffle_missions > 0) {
-        minMinutes = dxr.flags.moresettings.shuffle_missions * 0.9; // duration in minutes
+        minMinutes = dxr.flags.moresettings.shuffle_missions * 0.85; // duration in minutes
         for(i=0; i<len; i++) {
             if(totalMinutes >= minMinutes) {
                 len = i;
                 break;
             }
-            totalMinutes += GetMissionParTimeMinutes(missions[i]);
+            totalMinutes += GetMissionParTimeMinutes(missions[i], i);
         }
     }
     starts[len] = GetEnding();
@@ -295,16 +295,22 @@ function CheckConfig()
     }
 }
 
-function int GetMissionParTimeMinutes(int mission) {
+function int GetMissionParTimeMinutes(int mission, int index) {
+    local float mult;
+    if(index == 0) mult = 1.1;
+    else mult = 1;
+
     switch(mission) {
-        case 1: return 8;
-        case 6: return 15;
-        case 8: return 4;
-        case 9: return 12;
-        case 14: return 18;
-        case 15: return 15;
+        case 1: return 8 * mult;
+        case 3: return 12 * mult;
+        case 6: return 15 * mult;
+        case 8: return 4 * mult;
+        case 9: return 12 * mult;
+        case 10: return 7 * mult;
+        case 14: return 18 * mult;
+        case 15: return 15 * mult;
     }
-    return 9;
+    return 9 * mult;
 }
 
 simulated function FirstEntry()
