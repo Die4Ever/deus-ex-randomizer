@@ -119,6 +119,7 @@
   - "Fire it up!": Use the pipe flame button in the coolant area of Area 51 Sector 4 (Mission 15).
 - The Bingo Viewer now has a window and file icon: a dynamic portrait of Walton Simons.
 - Tracer Tong's randomized location at Vandenberg Command Front Gate is now closer to the vending machine, to better balance the speedrun.
+- Re-added the Autosaves-Only mode. This was previously removed in favor of Limited Saves and Fixed Saves.
 </details>
 
 ## Intra-Patch Changes
