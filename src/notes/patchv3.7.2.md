@@ -56,6 +56,7 @@
 - Removed infolink trigger near the exit door of the MJ12 Lab (Mission 5) that referenced an infolink that doesn't exist, which caused an error message to appear.
 - When Moderate Map Balance Changes are enabled, a prisoner manifest will be left on the desk in the Mission 5 jail, listing the items that were taken away from you.
 - When using Password Assistance, the Known Accounts window will automatically select the first account in the list that you know the password to, instead of the last account.
+-The conversation with the hostages in the Battery Park subway station (Mission 2) will no longer start as you approach them.  Instead, you need to actually interact with them for the conversation to begin.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.

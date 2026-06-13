@@ -1353,6 +1353,16 @@ function bool RemoveGoalFromCon(name goalName, name convname, optional int which
     return false;
 }
 
+function ConversationFrobOnly(Conversation c)
+{
+    info("ConversationFrobOnly "$c);
+    if( c == None ) return;
+
+    c.bInvokeBump = false;
+    c.bInvokeSight = false;
+    c.bInvokeRadius = false;
+}
+
 static function string GetActorName(Actor a)
 {
     local #var(PlayerPawn) player;

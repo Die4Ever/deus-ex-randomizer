@@ -731,6 +731,15 @@ function AnyEntryMapFixes()
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
         break;
+
+    case "02_NYC_BATTERYPARK":
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Only talk to the hostages if you actually frob them
+            ConversationFrobOnly(GetConversation('SubHostageMaleEscape'));
+            ConversationFrobOnly(GetConversation('SubHostageFemaleEscape'));
+            GetConversation('SubHostageMaleBarks').AddFlagRef('SubHostageEscapePlayed',true); //So that the barks don't take precedence over the above conversations
+            GetConversation('SubHostageFemaleBarks').AddFlagRef('SubHostageEscapePlayed',true); //So that the barks don't take precedence over the above conversations
+        }
     }
 }
 //#endregion

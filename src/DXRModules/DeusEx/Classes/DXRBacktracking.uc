@@ -869,16 +869,6 @@ function DXRTeleporterHoverHint RebindExitHoverHint(name ExitTag, Actor a)
     return hoverHint;
 }
 
-function ConversationFrobOnly(Conversation c)
-{
-    info("ConversationFrobOnly "$c);
-    if( c == None ) return;
-
-    c.bInvokeBump = false;
-    c.bInvokeSight = false;
-    c.bInvokeRadius = false;
-}
-
 function SetDestination(Actor p, string destURL, name dest_actor_name, optional string tag, optional int yaw)
 {
     local DXRMapVariants maps;
