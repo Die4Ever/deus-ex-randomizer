@@ -122,6 +122,7 @@
 - The Bingo Viewer now has a window and file icon: a dynamic portrait of Walton Simons.
 - Tracer Tong's randomized location at Vandenberg Command Front Gate is now closer to the vending machine, to better balance the speedrun.
 - Re-added the Autosaves-Only mode. This was previously removed in favor of Limited Saves and Fixed Saves.
+- Utility bots now have a smarter retry when they fail to spawn, potentially improving races/tournaments.
 </details>
 
 ## Intra-Patch Changes
