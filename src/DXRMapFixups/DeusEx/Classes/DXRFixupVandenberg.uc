@@ -76,9 +76,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AutoTurret turret;
     local #var(prefix)SkillAwardTrigger sat;
 
-    local bool VanillaMaps;
+    local bool VanillaMaps, GMDXMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(dxr.localURL)
     {
@@ -218,15 +219,19 @@ function PreFirstEntryMapFixes()
             //Backtracking button next to security door 3
             AddSwitch( vect(-396.634888, 2295, -2542.310547), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
 
-            //Swap the beam triggers that set off this turret to LaserTrigger for clarity
-            foreach AllActors(class'#var(prefix)BeamTrigger',bt){
-                if (bt.Tag=='Turret_beam'){
-                    lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
-                    lt.TriggerType=bt.TriggerType;
-                    lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
-                    lt.bDynamicLight = bt.bDynamicLight;
-                    lt.bIsOn = bt.bIsOn;
-                    bt.Destroy();
+            if(#defined(injections)){
+                //Swap the beam triggers that set off this turret to LaserTrigger for clarity
+                //Can only be done with injections, since LaserTrigger won't trigger the event
+                //like a BeamTrigger does.
+                foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+                    if (bt.Tag=='Turret_beam'){
+                        lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
+                        lt.TriggerType=bt.TriggerType;
+                        lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
+                        lt.bDynamicLight = bt.bDynamicLight;
+                        lt.bIsOn = bt.bIsOn;
+                        bt.Destroy();
+                    }
                 }
             }
 
@@ -267,9 +272,11 @@ function PreFirstEntryMapFixes()
             dynt.SetCollisionSize(30,15);
             dynt.SetDestination("12_vandenberg_cmd",,"commstat");
 
-            if (VanillaMaps){
+            if (GMDXMaps){
+                dynt = Spawn(class'DynamicTeleporter',,,vectm(1070,1415,-2300)); //End
+            } else if (VanillaMaps){
                 dynt = Spawn(class'DynamicTeleporter',,,vectm(398,1164,-2356)); //End
-            } else {
+            } else { //RevisionMaps
                 dynt = Spawn(class'DynamicTeleporter',,,vectm(3366,1164,-2356)); //End
             }
             dynt.SetCollisionSize(30,15);

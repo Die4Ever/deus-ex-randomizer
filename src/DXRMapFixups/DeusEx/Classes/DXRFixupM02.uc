@@ -44,6 +44,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)SecurityBot3 bot;
     local #var(prefix)ControlPanel cp;
     local #var(prefix)LaserTrigger lt;
+    local BlockAll ba;
     local int i;
 #ifdef revision
     local JockHelicopter jockheli;
@@ -118,6 +119,7 @@ function PreFirstEntryMapFixes()
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
             fg.ActiveArea=2000;
+
         } else {
             //Revision maps
             s = AddSwitch( vect(480,-809,-350), rot(0, -16384, 0), 'AmbrosiaGate');  //Switch to open the gate near the vanilla ambrosia location from inside
@@ -136,6 +138,17 @@ function PreFirstEntryMapFixes()
             b.BindName = "NYPoliceBoat";
             b.ConBindEvents();
             class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
+
+            if (class'DXRMapVariants'.static.isGMDXMaps(player())){
+                //GMDX throws BlockAll's around the policeboat to try to more closely match the boat collision, I guess
+                foreach b.RadiusActors(class'BlockAll', ba,250){
+                    ba.SetCollision(False,False,False);
+                }
+
+                //And they also reduce the collision size
+                b.SetCollisionSize(b.Default.CollisionRadius,b.Default.CollisionHeight);
+            }
+
         }
 
         break;
@@ -718,6 +731,15 @@ function AnyEntryMapFixes()
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
         break;
+
+    case "02_NYC_BATTERYPARK":
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Only talk to the hostages if you actually frob them
+            ConversationFrobOnly(GetConversation('SubHostageMaleEscape'));
+            ConversationFrobOnly(GetConversation('SubHostageFemaleEscape'));
+            GetConversation('SubHostageMaleBarks').AddFlagRef('SubHostageEscapePlayed',true); //So that the barks don't take precedence over the above conversations
+            GetConversation('SubHostageFemaleBarks').AddFlagRef('SubHostageEscapePlayed',true); //So that the barks don't take precedence over the above conversations
+        }
     }
 }
 //#endregion

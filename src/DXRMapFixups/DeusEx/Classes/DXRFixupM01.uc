@@ -161,7 +161,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-4433.66,3103.38,-65)); //Concrete gate support at UNATCO HQ
         Spawn(class'PlaceholderItem',,, vectm(-4834.4,3667,-105)); //Bench in front of UNATCO
         Spawn(class'PlaceholderItem',,, vectm(-2991,5328.5,-131)); //Medbot crate near starting dock
-        Spawn(class'PlaceholderItem',,, vectm(7670,737.7,-130)); //Medbot crate near Harley
+        Spawn(class'PlaceholderItem',,, vectm(7670,737.7,-120)); //Medbot crate near Harley
         Spawn(class'PlaceholderItem',,, vectm(8981,26.9,-64)); //Boxes out front of bunker
         Spawn(class'PlaceholderItem',,, vectm(1750.75,275.7,-117.7)); //Near display of Statue torch
         Spawn(class'PlaceholderItem',,, vectm(5830.8,-344,539)); //Near statue head

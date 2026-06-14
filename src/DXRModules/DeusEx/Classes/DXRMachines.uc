@@ -555,7 +555,7 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, i
     local Actor a;
     local #var(prefix)InformationDevices id;
 
-    a = SpawnNewActor(c, false);
+    a = _SpawnBot(c);
     if( a == None ) return None;
 
     // spawn with large collision to ensure enough space, then slightly shrink after to make them easier to get around
@@ -598,14 +598,22 @@ function Actor _SpawnNewActor(class<Actor> c, bool jitter, vector target, float 
     return a;
 }
 
-function Actor SpawnNewActor(class<Actor> c, bool jitter, optional vector target, optional float mindist, optional float maxdist)
+function Actor _SpawnBot(class<Actor> c)
 {
     local Actor a;
-    local int i;
+    local int i, k;
+    local vector target;
+    local float maxdist;
 
-    for(i=0; i<20; i++) {
-        a = _SpawnNewActor(c, jitter, target, mindist, maxdist);
-        if( a != None ) return a;
+    for(i=0; i < 4; i++) {
+        target = GetRandomPosition();
+        maxdist = 256;
+
+        for(k=0; k < 5; k++) {
+            a = _SpawnNewActor(c, true, target, 0, maxdist);
+            if( a != None ) return a;
+            maxdist *= 1.2;
+        }
     }
 
     return a;

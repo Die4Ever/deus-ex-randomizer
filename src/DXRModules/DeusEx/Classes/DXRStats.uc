@@ -585,7 +585,9 @@ function AddMissionTimeTable(CreditsWindow cw)
         completeTime += menuTime;
         dyingTime = completeTime - successTime - successMenuTime;
 
-        ctw.AddMissionTime(string(mission), missionName, fmtTimeToString(dyingTime), fmtTimeToString(completeTime));
+        if(completeTime > 0){ //Only show missions that you actually spent time in
+            ctw.AddMissionTime(string(mission), missionName, fmtTimeToString(dyingTime), fmtTimeToString(completeTime));
+        }
 
         i++;
         mission = mapvariants.missions[i];
@@ -672,6 +674,15 @@ function DrawLeaderboard(GC gc)
         gc.DrawText(450,yPos,100,50, runs[i].flagshash);
         gc.DrawText(550,yPos,100,50, runs[i].playthrough_id);
     }
+}
+
+function int GetNumLeaderboardRuns()
+{
+    local int i;
+
+    for(i=0; i<ArrayCount(runs) && runs[i].name!=""; i++){}
+
+    return i;
 }
 
 static function CheckLeaderboard(DXRando dxr, Json j)

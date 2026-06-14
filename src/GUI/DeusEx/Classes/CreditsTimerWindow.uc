@@ -10,6 +10,8 @@ struct MissionTimeInfo
 
 var MissionTimeInfo mission_times[20];
 
+const TIME_LINE_HEIGHT = 25;
+
 event InitWindow()
 {
     SetSize(default.width, default.height);
@@ -19,12 +21,19 @@ function AddMissionTime(string missionNum, string missionName, string dyingTime,
 {
     local int i;
     i=0;
-    while(mission_times[i].MissionName!=""){i++;};
+    while(mission_times[i].MissionName!="" && i < ArrayCount(mission_times)){i++;};
+
+    if (i>=ArrayCount(mission_times)){
+        log("Not enough space in CreditsTimerWindow for "$missionNum$" "$missionName);
+        return;
+    }
 
     mission_times[i].MissionNum = missionNum;
     mission_times[i].MissionName = missionName;
     mission_times[i].DyingTime = dyingTime;
     mission_times[i].CompleteTime = completeTime;
+
+    SetSize(default.width, TIME_LINE_HEIGHT * (i+1+1)); //i+1 lines of times, plus one for the header line
 }
 
 event DrawWindow(GC gc)
@@ -43,7 +52,7 @@ event DrawWindow(GC gc)
     gc.DrawText(235,yPos,150,50,"Retries Time");
     gc.DrawText(350,yPos,100,50,"Time");
 
-    while(mission_times[i].MissionName!=""){
+    while(mission_times[i].MissionName!="" && i < ArrayCount(mission_times)){ //Please don't go past the end of the mission_times array...
         yPos = (i+1) * 25;
         gc.SetFont(Font'DXRFontConversationLarge');
         gc.DrawText(0,yPos,100,50,mission_times[i].MissionNum);
@@ -60,5 +69,5 @@ event DrawWindow(GC gc)
 defaultproperties
 {
     width=450
-    height=450
+    height=500
 }

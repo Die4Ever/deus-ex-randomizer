@@ -905,14 +905,18 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        //Swap BeamTriggers to LaserTrigger, since these lasers set off an alarm
-        foreach AllActors(class'#var(prefix)BeamTrigger',bt){
-            lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
-            lt.TriggerType=bt.TriggerType;
-            lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
-            lt.bDynamicLight = bt.bDynamicLight;
-            lt.bIsOn = bt.bIsOn;
-            bt.Destroy();
+        if(#defined(injections)){
+            //Swap BeamTriggers to LaserTrigger, since these lasers set off an alarm
+            //Can only be done with injections, since LaserTrigger won't trigger the event
+            //like a BeamTrigger does.
+            foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+                lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
+                lt.TriggerType=bt.TriggerType;
+                lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
+                lt.bDynamicLight = bt.bDynamicLight;
+                lt.bIsOn = bt.bIsOn;
+                bt.Destroy();
+            }
         }
 
         foreach AllActors(class'#var(prefix)MJ12Commando', commando) {

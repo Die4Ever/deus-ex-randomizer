@@ -194,7 +194,7 @@ function InitStats(DXRStats newstats)
     for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
         m = mapvariants.missions[i];
         if(isShuffle) {
-            PB[m] = mapvariants.GetMissionParTimeMinutes(m) * 600; // tenths of seconds
+            PB[m] = mapvariants.GetMissionParTimeMinutes(m, i) * 600; // tenths of seconds
             Avgs[m] = PB[m];
             Golds[m] = PB[m] * 0.75;
             balanced_splits[m] = PB[m];

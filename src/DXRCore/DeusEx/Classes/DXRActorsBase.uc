@@ -488,7 +488,7 @@ static function bool WeaponIsModded(Inventory i)
     return false;
 }
 
-function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
+function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag, out Inventory movedItem)
 {
     // code similar to Revision Mission05.uc
     local Inventory nextItem;
@@ -499,7 +499,10 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None || MemConUnit(item) != None))
         item = item.Inventory;
 
-    if(item == None) return None;
+    if(item == None) {
+        movedItem = None;
+        return None;
+    }
 
     nextItem = item.Inventory;
     player = #var(PlayerPawn)(item.owner);
@@ -523,9 +526,10 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     l("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
 
     // restore any ammo amounts for a weapon to default; Y|y: except for grenades
-    if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade'))
+    if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade') && !item.IsA('WeaponShuriken'))
         Weapon(item).PickupAmmoCount = Weapon(item).Default.PickupAmmoCount;
 
+    movedItem = item;
     return nextItem;
 }
 
@@ -1195,6 +1199,27 @@ static function ConEventTrigger NewConEventTrigger(Conversation c, ConEvent prev
     return e;
 }
 
+function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
+{
+    local ConEventTrigger e;
+    local RepairConObjTransferTrigger rt;
+    local string tagName;
+
+    tagName="ConEventTransferObjectRepair"$c.conName; //Append the bindname to the end
+
+    e = NewConEventTrigger(c,prev,StringToName(tagName));
+
+    //Make sure the Repair Triggers actually exist
+    foreach AllActors(class'RepairConObjTransferTrigger',rt,e.triggerTag){break;}
+    if (rt==None){
+        rt=Spawn(class'RepairConObjTransferTrigger',,e.triggerTag);
+        rt.conName = c.conName;
+        rt.AddPackage("#var(package)"); //Add our package to the list of possibilities
+    }
+
+    return e;
+}
+
 static function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
 {
     e.conversation = c;
@@ -1326,6 +1351,16 @@ function bool RemoveGoalFromCon(name goalName, name convname, optional int which
     }
 
     return false;
+}
+
+function ConversationFrobOnly(Conversation c)
+{
+    info("ConversationFrobOnly "$c);
+    if( c == None ) return;
+
+    c.bInvokeBump = false;
+    c.bInvokeSight = false;
+    c.bInvokeRadius = false;
 }
 
 static function string GetActorName(Actor a)

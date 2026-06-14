@@ -31,6 +31,12 @@ event DrawWindow(GC gc)
             return;
     }
 
+#ifdef gmdx
+    if (Player.bGEPzoomActive){
+        return;  //Simply don't draw the scope when gep zooming
+    }
+#endif
+
     // Figure out where to put everything
     if (bBinocs)
         scopeWidth  = 512;

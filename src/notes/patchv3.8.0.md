@@ -54,6 +54,9 @@
 - Clones spawned from Crowd Control will now shoot fire extinguishers that they use in front of them, instead of in an arbitrary direction.
 - One book in Area 51 Sector 3 (Mission 15) will now be properly switched from Jacob's Shadow to The Man Who Was Thursday for both Male and Female JC (Previously, Female JC would still see Jacob's Shadow).
 - Removed infolink trigger near the exit door of the MJ12 Lab (Mission 5) that referenced an infolink that doesn't exist, which caused an error message to appear.
+- When Moderate Map Balance Changes are enabled, a prisoner manifest will be left on the desk in the Mission 5 jail, listing the items that were taken away from you.
+- When using Password Assistance, the Known Accounts window will automatically select the first account in the list that you know the password to, instead of the last account.
+- The conversation with the hostages in the Battery Park subway station (Mission 2) will no longer start as you approach them.  Instead, you need to actually interact with them for the conversation to begin.
 - Non-Vanilla fixes and improvements:
   - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
@@ -62,6 +65,9 @@
   - When entering a map for the first time with the password or code to a computer or keypad, the password will be correctly marked as known.
   - GMDX and VMD 2.0 will no longer incorrectly assign a hotkey to passive augs that don't need to be toggled.
   - Inventory and Augs are no longer completely removed after new game plus.
+  - Projectile damage will now be randomized based on the default damage in the particular version of the game you are randomizing, instead of always being based on vanilla damage stats.
+  - The "Known Accounts" window will now close when you finish hacking a security computer.
+  - BeamTriggers (blue lasers) will no longer be replaced with LaserTriggers (red lasers), in Hong Kong Level 2 Labs (Mission 6) or Vandenberg Tunnels (Mission 12)
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
@@ -85,6 +91,16 @@
   - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
   - Upgrades to the EUAS (IFF) aug will actually display on screen (Light level and environmental hazard warnings).
   - Map tweaks will no longer sometimes unintentionally receive tweaks intended for the Revision versions of the maps.
+  - Weapons with alternate ammo types that fire projectiles (like the mini crossbow) will have their firing rate randomized based on the original firing rate.
+  - The police boat in Battery Park (Mission 2) is now easier to highlight and speak to.  This makes it easier to take the boat back to HQ after destroying the generator.
+  - GEP guns that were received from conversations or from crates will no longer float inside of you after moving to a new level.
+  - Fixes when using the scope on the GEP gun:
+    - The regular scope overlay will no longer be drawn over top of the rocket view.
+    - The scope will close after each shot, even if you have multiple shots in the clip.
+    - The GEP gun will not force a reload after every scoped shot if you have multiple shots in a clip.
+    - The FOV of the game will not get stuck in a zoomed in state after firing a scoped GEP shot with "Weapon Auto Reload" disabled.
+  - Computers will maintain their original security levels (determining whether or not you are allowed to hack them without a NUKE virus).
+  - Teleporter to exit Vandenberg Tunnels (Mission 12) is now placed in the correct location.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
@@ -104,6 +120,9 @@
   - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
   - "Fire it up!": Use the pipe flame button in the coolant area of Area 51 Sector 4 (Mission 15).
 - The Bingo Viewer now has a window and file icon: a dynamic portrait of Walton Simons.
+- Tracer Tong's randomized location at Vandenberg Command Front Gate is now closer to the vending machine, to better balance the speedrun.
+- Re-added the Autosaves-Only mode. This was previously removed in favor of Limited Saves and Fixed Saves.
+- Utility bots now have a smarter retry when they fail to spawn, potentially improving races/tournaments.
 </details>
 
 ## Intra-Patch Changes
@@ -114,3 +133,5 @@
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
 - If Area 51 is played in Speedrun Shuffle, the endgame cutscene will be the one chosen in that mission.
 - In Speedrun Shuffle mode, missions are now shown in correct order on the splits view and credits screen.
+- When goals rando is enabled, the Vandenberg Command Comms door will now open once you've completed the Computer map.
+- Slightly tweaked Speedrun Shuffle par times.

@@ -705,6 +705,15 @@ function bool InGame() {
     return True;
 }
 
+function bool UsingShifterOrBioMod()
+{
+    #ifdef revision
+        return (player().UsingBiomod() || player().UsingShifter());
+    #else
+        return false;
+    #endif
+}
+
 simulated function AddDXRCredits(CreditsWindow cw)
 {
 }
