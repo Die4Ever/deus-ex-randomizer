@@ -76,9 +76,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AutoTurret turret;
     local #var(prefix)SkillAwardTrigger sat;
 
-    local bool VanillaMaps;
+    local bool VanillaMaps, GMDXMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(dxr.localURL)
     {
@@ -267,9 +268,11 @@ function PreFirstEntryMapFixes()
             dynt.SetCollisionSize(30,15);
             dynt.SetDestination("12_vandenberg_cmd",,"commstat");
 
-            if (VanillaMaps){
+            if (GMDXMaps){
+                dynt = Spawn(class'DynamicTeleporter',,,vectm(1070,1415,-2300)); //End
+            } else if (VanillaMaps){
                 dynt = Spawn(class'DynamicTeleporter',,,vectm(398,1164,-2356)); //End
-            } else {
+            } else { //RevisionMaps
                 dynt = Spawn(class'DynamicTeleporter',,,vectm(3366,1164,-2356)); //End
             }
             dynt.SetCollisionSize(30,15);
