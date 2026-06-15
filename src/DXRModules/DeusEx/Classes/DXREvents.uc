@@ -3055,6 +3055,11 @@ function float PeepTexDistance(name texName){
         case 'A51_Sign_41':     //UC Control room sign
             return 500.0; //The posters are relatively small, and not very close
 
+        case 'News_A01':        //White Woman News
+        case 'Stoc_A01':        //White Man News
+        case 'Stoc_B01':        //Chinese Woman News
+            return 500.0; //In vanilla, there's only one per map anyway, but in at least GMDX, there are some dupes
+
         //Advertisements
         case 'bigtops':         //Big Top Cigarettes
         case 'BigTopsCig_sign': //Big Top Cigarettes
