@@ -102,12 +102,14 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerPublic compublic;
     local #var(DeusExPrefix)Mover dxm;
     local DXRSimpleTrigger st;
-    local bool VanillaMaps;
+    local #var(prefix)LaserTrigger lt;
+    local bool VanillaMaps, GMDXMaps;
     local #var(PlayerPawn) p;
     local int height,rad;
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
+    GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(p);
 
     switch (dxr.localURL)
     {
@@ -227,6 +229,21 @@ function PreFirstEntryMapFixes()
         class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
         AddActor(class'PoolTableResetButton',vect(1060.3,468,227),rot(-1600,32768,0));
         AddActor(class'PoolTableResetButton',vect(1060.3,719,227),rot(-1600,32768,0));
+
+        if (GMDXMaps){
+            //GMDX attaches LaserTriggers to the two patrolling robots just before the actual helibase
+            //these normally would get naturally destroyed by the robot exploding, but that's not
+            //guaranteed if they were to end up attached to a person that got killed by a regular
+            //gunshot.  Just remove them for now, so there aren't stray lasers sitting around.
+            //If we really wanted to maintain this, we could make a custom LaserTrigger that is destroyed
+            //when it loses its base (aka the thing it's attached to dies).
+            if(dxr.flags.settings.enemiesshuffled>0){ //Only remove them if we're shuffling enemies
+                foreach AllActors(class'#var(prefix)LaserTrigger', lt){
+                    if (lt.AttachTag!='SecurityBot3a' && lt.AttachTag!='SecurityBot3b') continue;
+                    lt.Destroy();
+                }
+            }
+        }
 
         class'FakeMirrorInfo'.static.Create(self,vectm(1256,1035,122),vectm(1055,1055,70)); //Men's Bathroom Mirror
         class'FakeMirrorInfo'.static.Create(self,vectm(1256,699,122),vectm(1055,710,70)); //Women's Bathroom Mirror

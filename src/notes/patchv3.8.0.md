@@ -101,6 +101,7 @@
     - The FOV of the game will not get stuck in a zoomed in state after firing a scoped GEP shot with "Weapon Auto Reload" disabled.
   - Computers will maintain their original security levels (determining whether or not you are allowed to hack them without a NUKE virus).
   - Teleporter to exit Vandenberg Tunnels (Mission 12) is now placed in the correct location.
+  - Removed lasers that were originally attached to patrolling robots just before the Airfield Helibase (Mission 3) that got left floating in the air after enemy locations were randomized.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
