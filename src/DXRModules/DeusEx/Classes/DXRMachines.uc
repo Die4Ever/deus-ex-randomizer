@@ -622,12 +622,21 @@ function Actor _SpawnBot(class<Actor> c)
 function DestroyMedbotDoors()
 {
     local #var(DeusExPrefix)Mover m;
+    local bool GMDXMaps;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
+        GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
         foreach AllActors(class'#var(DeusExPrefix)Mover', m) {
-            if(m.name == 'DeusExMover0' || m.name == 'DeusExMover2') {
-                DestroyMover(m);
+            if (!GMDXMaps){
+                if(m.name == 'DeusExMover0' || m.name == 'DeusExMover2') {
+                    DestroyMover(m);
+                }
+            } else {
+                //Different names for the movers in GMDX
+                if(m.name == 'DeusExMover19' || m.name == 'DeusExMover2') {
+                    DestroyMover(m);
+                }
             }
         }
         break;

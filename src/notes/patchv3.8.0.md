@@ -102,6 +102,8 @@
   - Computers will maintain their original security levels (determining whether or not you are allowed to hack them without a NUKE virus).
   - Teleporter to exit Vandenberg Tunnels (Mission 12) is now placed in the correct location.
   - Removed lasers that were originally attached to patrolling robots just before the Airfield Helibase (Mission 3) that got left floating in the air after enemy locations were randomized.
+  - Doors on medbot crates on Liberty Island (Mission 1) are removed properly when medical bots are randomized.
+  - Gate near the top of the dock on Liberty Island (Mission 1) is now opened as appropriate (basically always).
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.

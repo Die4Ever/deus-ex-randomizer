@@ -57,6 +57,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)InformationDevices id;
     local #var(prefix)DatalinkTrigger dlt;
     local #var(prefix)TerroristCommander leo;
+#ifdef gmdxnotae
+    local SpecialCaseTrigger sct;
+#endif
     local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -149,6 +152,20 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+#ifdef gmdxnotae
+        foreach AllActors(class'SpecialCaseTrigger', sct, 'PaulRunningToPlayer'){
+            //Find this SpecialCaseTrigger and just run it right away
+            //It's marked as bTriggerOnlyOnce, but that actually only works for Touch,
+            //so just delete it after we trigger it.
+            //This does stuff like deleting some pawn(s?), opening the gate near the dock,
+            //and turning on some lights.  Why is this in a trigger and not just the
+            //mission script?  This thing sucks, lol
+            //This particular trigger is basically meant to run right away anyway, so here we go...
+            sct.Trigger(self,Player());
+            sct.Destroy();
+        }
+#endif
 
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
