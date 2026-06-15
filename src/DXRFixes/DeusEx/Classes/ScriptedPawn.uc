@@ -511,6 +511,45 @@ function int HeadDamageMult()
     return 8;// 8x gives vanilla damage
 }
 
+function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
+                            Vector offset, Name damageType)
+{
+    local int   actualDamage;
+    local float headOffsetZ, headOffsetY, armOffset;
+
+    if(!class'MenuChoice_BalanceEtc'.static.IsEnabled()) return Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
+
+    actualDamage = Damage;
+
+    // calculate our hit extents
+    headOffsetZ = CollisionHeight * 0.7;
+    headOffsetY = CollisionRadius * 0.3;
+    armOffset   = CollisionRadius * 0.35;
+
+    // DXRando: flip the if/else if statements so behind damage takes priority over bStunned, distance check is the old 64 - (usual radius/2) + actual radius for both
+
+    // if the pawn is hit from behind at point-blank range, he is killed instantly
+    if (offset.x < 0 && instigatedBy != None && VSize(instigatedBy.Location - Location) < 24 + CollisionRadius + instigatedBy.CollisionRadius)
+            actualDamage  *= 10;
+    // if the pawn is stunned, damage is 4X
+    else if (bStunned)
+        actualDamage *= 4;
+
+    actualDamage = Level.Game.ReduceDamage(actualDamage, DamageType, self, instigatedBy);
+
+    if (ReducedDamageType == 'All') //God mode
+        actualDamage = 0;
+    else if (Inventory != None) //then check if carrying armor
+        actualDamage = Inventory.ReduceDamage(actualDamage, DamageType, HitLocation);
+
+    // gas, EMP and nanovirus do no damage
+    if (damageType == 'TearGas' || damageType == 'EMP' || damageType == 'NanoVirus')
+        actualDamage = 0;
+
+    return actualDamage;
+
+}
+
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
     if ((damageType == 'TearGas' || damageType == 'HalonGas')

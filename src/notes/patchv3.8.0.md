@@ -123,6 +123,7 @@
 - Tracer Tong's randomized location at Vandenberg Command Front Gate is now closer to the vending machine, to better balance the speedrun.
 - Re-added the Autosaves-Only mode. This was previously removed in favor of Limited Saves and Fixed Saves.
 - Utility bots now have a smarter retry when they fail to spawn, potentially improving races/tournaments.
+- Stunned pawns (rubbing their eyes from gas, or shaking from taser) will now receive back attacks for the full 10x damage. (Except for Zero Rando or Balance Changes disabled.)
 </details>
 
 ## Intra-Patch Changes
