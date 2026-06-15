@@ -587,7 +587,7 @@ function SetDoorFixes()
         break;
     }
 
-    if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.MajorEnabled())
+    if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.AllEnabled())
         return;
 
     //#region major door fix

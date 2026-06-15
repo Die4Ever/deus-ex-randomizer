@@ -20,7 +20,7 @@ function PostFirstEntryMapFixes()
             }
         }
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             foreach AllActors(class'BlockPlayer', bp) {
                 if(bp.Group == 'waterblock') {
                     bp.bBlockPlayers = false;

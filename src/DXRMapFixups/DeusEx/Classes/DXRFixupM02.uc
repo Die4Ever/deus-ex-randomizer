@@ -73,11 +73,11 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
             if( d.Name == 'DeusExMover19' ) {
                 d.Tag = 'ControlRoomDoor';
-                if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) d.KeyIDNeeded = 'ControlRoomDoor'; // if we aren't spawning the key, don't make it show the "Key Unacquired" text
+                if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) d.KeyIDNeeded = 'ControlRoomDoor'; // if we aren't spawning the key, don't make it show the "Key Unacquired" text
             }
         }
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 342));
             k.KeyID = 'ControlRoomDoor';
             k.Description = "Control Room Door Key";
@@ -90,7 +90,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if(dxr.flags.settings.goals>0 || class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(dxr.flags.settings.goals>0 || class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(636.035339, -1050.083496, -135.789780));
             k.KeyID = 'KioskDoors';
             k.Description = "Kiosk door key";
@@ -298,7 +298,7 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1334,-1404,64),,'Shitting');
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             // this map is too hard
             SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(-1890,1840,1775)); //Rooftop apartment hall
             SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(700,850,1175)); //Apartment top floor

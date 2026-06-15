@@ -203,7 +203,7 @@ function PreFirstEntryMapFixes()
                 anna.AgitationDecayRate = 0;
             }
 
-            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
                 k = Spawn(class'#var(prefix)NanoKey',,, vectm(420,195,333));
                 k.KeyID = 'UNOfficeDoorKey';
                 k.Description = "UNATCO Office Door Key";

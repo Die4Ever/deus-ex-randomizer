@@ -157,7 +157,7 @@ function PreFirstEntryMapFixes()
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
             }
 
-            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
                 key.KeyID = 'CrackRoom';
                 key.Description = "'Ton Hotel, North Room Key";
@@ -189,7 +189,7 @@ function PreFirstEntryMapFixes()
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
             }
 
-            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
                 key.KeyID = 'Hotelroom1'; //CrackRoom doesn't exist in Revision M04 - doesn't hurt to add a key to a different room instead
                 key.Description = "'Ton Hotel, South Room Key";
@@ -222,7 +222,7 @@ function PreFirstEntryMapFixes()
 
     //#region NSF HQ
     case "04_NYC_NSFHQ":
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             foreach AllActors(class'#var(prefix)AutoTurret', turret) {
                 turret.Event = '';
                 turret.Destroy();
@@ -259,7 +259,7 @@ function PreFirstEntryMapFixes()
             door.KeyIDNeeded='BasementDoor';
         }
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             k = #var(prefix)Karkian(Spawnm(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0)));
             k.BindName="NSFMinotaur";
             k.bImportant = true;
@@ -408,7 +408,7 @@ function PreFirstEntryMapFixes()
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             key.KeyID = 'JaimeClosetKey';
             key.Description = "MedLab Closet Key Code";

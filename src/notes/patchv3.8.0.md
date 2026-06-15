@@ -124,6 +124,8 @@
 - Re-added the Autosaves-Only mode. This was previously removed in favor of Limited Saves and Fixed Saves.
 - Utility bots now have a smarter retry when they fail to spawn, potentially improving races/tournaments.
 - Stunned pawns (rubbing their eyes from gas, or shaking from taser) will now receive back attacks for the full 10x damage. (Except for Zero Rando or Balance Changes disabled.)
+- Moderate map balance changes are now enabled by default for Zero Rando Plus.
+- Area 51 Page UC enemy spawner reduction no longer applies to Zero Rando Plus, Rando Lite, or Rando Medium.
 </details>
 
 ## Intra-Patch Changes

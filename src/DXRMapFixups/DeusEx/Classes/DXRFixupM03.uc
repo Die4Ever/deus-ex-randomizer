@@ -183,7 +183,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled() &&
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled() &&
            class'DXRBacktracking'.static.bSillyChoppers()) {
             //Only stop the platforms from falling if you're in a game mode that requires backtracking
             foreach AllActors(class'Trigger', t) {
@@ -598,7 +598,7 @@ function PreFirstEntryMapFixes()
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             k.KeyID = 'JaimeClosetKey';
             k.Description = "MedLab Closet Key Code";
@@ -879,7 +879,7 @@ function AddBatteryParkReturnJock()
     local InterpolateTrigger it;
 
     if(dxr.flags.IsWaltonWare()==false) return; //Only add this helicopter in WaltonWare
-    if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()==false) return; //Major map changes required
+    if(class'MenuChoice_BalanceMaps'.static.AllEnabled()==false) return; //Major map changes required
 
     jock = #var(prefix)BlackHelicopter(AddActor(class'#var(prefix)BlackHelicopter',vect(-1130,-4020,375),rot(0,27720,0)));
     jock.BindName="Jock";
@@ -920,7 +920,7 @@ function BringReturnJockIn()
     local #var(prefix)BlackHelicopter jock;
 
     if(dxr.flags.IsWaltonWare()==false) return; //Only add this helicopter in WaltonWare
-    if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()==false) return; //Major map changes required
+    if(class'MenuChoice_BalanceMaps'.static.AllEnabled()==false) return; //Major map changes required
 
     if(!dxr.flagbase.GetBool('DXRBatteryParkM03JockEntered') &&
        (dxr.flagbase.GetBool('MeetLebedev_Played') || dxr.flagbase.GetBool('JuanLebedev_Dead')))
@@ -940,7 +940,7 @@ function FixAnnaAmbush()
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)ThrownProjectile p;
 
-    if(!class'MenuChoice_BalanceMaps'.static.MajorEnabled()) return;
+    if(!class'MenuChoice_BalanceMaps'.static.AllEnabled()) return;
 
     foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {break;}
 

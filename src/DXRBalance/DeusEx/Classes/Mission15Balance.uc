@@ -18,7 +18,7 @@ function Timer()
 
 function BeginPlay()
 {
-    if(class'MenuChoice_BalanceMaps'.static.IsEnabled()) {
+    if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
         spawnData[1].SpawnTag = 'dummy';
         spawnData[4].SpawnTag = 'dummy';
         spawnData[6].SpawnTag = 'dummy';
