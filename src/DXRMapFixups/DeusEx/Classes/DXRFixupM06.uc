@@ -187,8 +187,7 @@ function PreFirstEntryMapFixes()
             sw = #var(prefix)Switch2(AddSwitch(vect(1041.5,935,160), rot(0, 0, 0), 'GMDXBarracksDoorDXR'));
             m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',sw));
             if (m!=None){
-                button.Event='GMDXBarracksDoorDXR'; //Throw a DXR on there to make sure it's unique...
-                m.Tag=button.Event;
+                m.Tag=sw.Event;
             }
         }
 
