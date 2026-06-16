@@ -107,6 +107,8 @@
   - Trying to send the signal at NSF HQ (Mission 4) without aligning the dishes first will cause Paul to call you and tell you the dishes need to be aligned first.
   - Successfully sending the signal at NSF HQ (Mission 4) when goal randomization is enabled will cause Walton Simons to immediately call you and make the troopers hostile.
   - A random wooden pallet on Liberty Island (Mission 1) can no longer be highlighted like a door.
+  - Datacube added with the Lucky Money (Mission 6) security computer login details will no longer be able to randomize into the locked store/apartment off the side of the mall.
+  - Freezer door in the Lucky Money (Mission 6) is properly attached to the button added inside the freezer as well as the security computer on the meeting room desk.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.

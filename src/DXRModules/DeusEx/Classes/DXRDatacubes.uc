@@ -52,6 +52,9 @@ function CheckConfig()
 function vanilla_datacubes_rules()
 {
     local int i;
+    local bool GMDXMaps;
+
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(dxr.localURL) {
     //#region V: M01
@@ -438,7 +441,7 @@ function vanilla_datacubes_rules()
         //Don't allow in the Quickstop
         datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-169,254,-305);
-        datacubes_rules[i].max_pos = vect(443,650,-170);
+        datacubes_rules[i].max_pos = vect(550,650,-170);
         datacubes_rules[i].allow = false;
         i++;
 
@@ -456,6 +459,24 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        if (GMDXMaps){
+            //GMDX adds a shop/house off the side of the mall that is heavily locked
+            //Main part of the house
+            datacubes_rules[i].item_name = 'LuckyMoneyPassword';
+            datacubes_rules[i].min_pos = vect(81,-225,-161);
+            datacubes_rules[i].max_pos = vect(1278,-1406,-318);
+            datacubes_rules[i].allow = false;
+            i++;
+
+            //Kitchen
+            datacubes_rules[i].item_name = 'LuckyMoneyPassword';
+            datacubes_rules[i].min_pos = vect(55,-622,-195);
+            datacubes_rules[i].max_pos = vect(-195,-1050,-380);
+            datacubes_rules[i].allow = false;
+            i++;
+        }
+
+        //Allow anywhere else
         datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
