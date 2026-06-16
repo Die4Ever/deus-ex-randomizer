@@ -60,7 +60,7 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
-    local bool VanillaMaps;
+    local bool VanillaMaps, GMDXMaps;
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
@@ -77,6 +77,7 @@ function PreFirstEntryMapFixes()
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
+    GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(p);
 
     switch (dxr.localURL)
     {
@@ -316,7 +317,29 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
-        if (VanillaMaps){
+        if (GMDXMaps){
+            if(dxr.flags.settings.goals > 0) {
+                //Make sure that sending the signal instantly makes everyone hate you, then triggers the Walt infolink
+                AddDelayEvent('SendingSignal','UNATCOHatesPlayer',0.5);
+            }
+
+            //GMDX already handles *not* sending the signal if the dishes aren't aligned, but it doesn't play the
+            //"Hey, the dishes aren't aligned, dipshit" infolink if you send the signal early.  Make that work.
+            ft = Spawn(class'#var(prefix)FlagTrigger');
+            ft.FlagName='CanSendSignal';
+            ft.flagValue=False;
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.Tag='SendIt';
+            ft.Event='SignalSendFailed';
+            ft.SetCollision(false,false,false);
+
+            dt = Spawn(class'#var(prefix)DatalinkTrigger');
+            dt.datalinkTag='DL_PaulGoodJob'; //Not so good a job, it seems
+            dt.Tag='SignalSendFailed';
+            dt.SetCollision(false,false,false);
+
+        } else if (VanillaMaps){
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
                 if(dxr.flags.settings.goals > 0) {

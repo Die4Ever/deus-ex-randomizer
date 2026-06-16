@@ -78,18 +78,24 @@ function CheckConfig()
 
 function SetDoorFixes()
 {
-    local bool VanillaMaps;
+    local bool VanillaMaps, GMDXMaps;
 
     if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.MinorEnabled())
         return;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(dxr.player);
+    GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(dxr.player);
 
     // TODO: determine which fragment changes are also good for Revision. also add any Revision-specific fragment changes
     //#region minor door fix
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
-        if (VanillaMaps) {
+        if (GMDXMaps){
+            //DeusExMover14, this is just a pallet, inexplicably a mover that is highlightable and frobbable, not breakable
+            door_fixes[num_door_fixes].location = vectm(3296,-4768,-16);
+            door_fixes[num_door_fixes].highlight = SB_False;
+            num_door_fixes++;
+        } else if (VanillaMaps) {
             // these old pre-milenial buildings are riddled with ventilation shafts and maintenance tunnels and this one has a metal grate
             door_fixes[num_door_fixes].location = vectm(2528.0, -752.0, -80.0);
             door_fixes[num_door_fixes].frag = sf(class'MetalFragment', BIT_VANILLA);

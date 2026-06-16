@@ -104,6 +104,9 @@
   - Removed lasers that were originally attached to patrolling robots just before the Airfield Helibase (Mission 3) that got left floating in the air after enemy locations were randomized.
   - Doors on medbot crates on Liberty Island (Mission 1) are removed properly when medical bots are randomized.
   - Gate near the top of the dock on Liberty Island (Mission 1) is now opened as appropriate (basically always).
+  - Trying to send the signal at NSF HQ (Mission 4) without aligning the dishes first will cause Paul to call you and tell you the dishes need to be aligned first.
+  - Successfully sending the signal at NSF HQ (Mission 4) when goal randomization is enabled will cause Walton Simons to immediately call you and make the troopers hostile.
+  - A random wooden pallet on Liberty Island (Mission 1) can no longer be highlighted like a door.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
