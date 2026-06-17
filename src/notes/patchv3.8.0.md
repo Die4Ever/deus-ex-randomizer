@@ -69,6 +69,7 @@
   - Projectile damage will now be randomized based on the default damage in the particular version of the game you are randomizing, instead of always being based on vanilla damage stats.
   - The "Known Accounts" window will now close when you finish hacking a security computer.
   - BeamTriggers (blue lasers) will no longer be replaced with LaserTriggers (red lasers), in Hong Kong Level 2 Labs (Mission 6) or Vandenberg Tunnels (Mission 12)
+  - Cloned NPCs that start the level out of the world such as the hotel raid (Mission 4) or the MJ12 ambush (Mission 8) should now be able to be given randomized weapons.
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.

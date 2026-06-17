@@ -424,8 +424,18 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
 static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int amount)
 {
     local inventory item;
+    local ScriptedPawn sp;
+    local vector spawnLoc;
 
-    item = p.Spawn(iclass, p);
+    spawnLoc = p.Location;
+    sp = ScriptedPawn(p);
+    if (sp!=None && sp.bInWorld==False){
+        //This helps for non-vanilla (at least GMDX) where
+        //these spawns seem to fail for out-of-world clones
+        spawnLoc = sp.WorldPosition;
+    }
+
+    item = p.Spawn(iclass, p,,spawnLoc);
     if( item == None ) return None;
     if(DeusExPickup(item)!=None && amount > 0) {
         DeusExPickup(item).NumCopies = amount;
