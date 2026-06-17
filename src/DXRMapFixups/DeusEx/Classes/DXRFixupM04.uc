@@ -369,6 +369,11 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if (VanillaMaps){
+            //Make sure we don't shuffle items beyond the teleporter
+            MassSetSecretGoalBoxAll(vectm(814,-3102,200),vectm(-2397,-2087,-10),true);
+        }
+
 
         Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
         class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
