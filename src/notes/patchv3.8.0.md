@@ -111,6 +111,7 @@
   - A random wooden pallet on Liberty Island (Mission 1) can no longer be highlighted like a door.
   - Datacube added with the Lucky Money (Mission 6) security computer login details will no longer be able to randomize into the locked store/apartment off the side of the mall.
   - Freezer door in the Lucky Money (Mission 6) is properly attached to the button added inside the freezer as well as the security computer on the meeting room desk.
+  - UNATCO Troops in the streets of Mission 8 will now start out of the world and will appear as riot cops die (This matches the vanilla behaviour of this mission).
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
