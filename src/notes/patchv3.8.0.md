@@ -24,10 +24,10 @@
 - Weapons with alternate ammo types that fire projectiles (like the mini crossbow) will have their firing rate randomized based on the original firing rate.
 - GEP guns that were received from conversations or from crates will no longer float inside of you after moving to a new level.
 - Fixes when using the scope on the GEP gun:
-- The regular scope overlay will no longer be drawn over top of the rocket view.
-- The scope will close after each shot, even if you have multiple shots in the clip.
-- The GEP gun will not force a reload after every scoped shot if you have multiple shots in a clip.
-- The FOV of the game will not get stuck in a zoomed in state after firing a scoped GEP shot with "Weapon Auto Reload" disabled.
+  - The regular scope overlay will no longer be drawn over top of the rocket view.
+  - The scope will close after each shot, even if you have multiple shots in the clip.
+  - The GEP gun will not force a reload after every scoped shot if you have multiple shots in a clip.
+  - The FOV of the game will not get stuck in a zoomed in state after firing a scoped GEP shot with "Weapon Auto Reload" disabled.
 - Computers will maintain their original security levels (determining whether or not you are allowed to hack them without a NUKE virus).
 - GMDX Map Fixes:
   - The first conversation with Paul (Mission 1) is no longer skipped.  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
