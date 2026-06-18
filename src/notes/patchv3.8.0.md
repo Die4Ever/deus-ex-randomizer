@@ -48,6 +48,7 @@
   - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
   - Teleporter to exit Vandenberg Tunnels (Mission 12) is now placed in the correct location.
   - Tiffany Savage is now fearless, so she won't try to run out into an active firefight while you try to save her (Mission 12).
+  - The "Jump!  You can make it!" infolink in Area 51 has a larger radius (to match the size in vanilla, making it more likely to play when you're on top of the vent).
 </details>
 
 ## Minor Changes
