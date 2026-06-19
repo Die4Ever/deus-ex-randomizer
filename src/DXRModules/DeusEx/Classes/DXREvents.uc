@@ -474,13 +474,11 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -558,14 +556,6 @@ function SetWatchFlags() {
         WatchFlag('M02QuestionedGreen');
         WatchFlag('MeetJoeGreen2_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when questioning Greene
         WatchLeavingPawn("JoeGreene");
-        if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
-            bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
-            bt.bDestroyOthers = false;
-        }
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan'); //From Doctor1 or Doctor2, who are both bLeaveAfterFleeing
@@ -624,9 +614,6 @@ function SetWatchFlags() {
         bt.bDestroyOthers = false;
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-19.620102, -866.462830, -403.896912),60,40);
         bt.bDestroyOthers = false;
-        if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2048,1111,680),30,10);  //Only one in Revision
-        }
         break;
     //#endregion
 
@@ -655,13 +642,11 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -698,7 +683,6 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         WatchFlag('OverhearLebedev_Played');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(1432,-177,136),20,10);
 
         break;
     case "03_NYC_HANGAR":
@@ -740,14 +724,6 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('M04GreenAdvice_Played');
         //WatchLeavingPawn("HarleyFilben"); //Currently no Harley-related goals here, I think?
-        if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
-            bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
-            bt.bDestroyOthers = false;
-        }
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -785,14 +761,12 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(960,234,297),350,60,class'#var(prefix)JuanLebedevCarcass');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(220,4,280),300,40,class'#var(prefix)JuanLebedevCarcass');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -897,13 +871,11 @@ function SetWatchFlags() {
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -960,11 +932,6 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
 
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1856,2060,-305),20,10); //Front Door
-        bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1856,2553,-305),20,10); //Kitchen Door
-        bt.bDestroyOthers=false;
-
 
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
@@ -997,7 +964,6 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),180,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1024,-790,-231),20,10);
 
         foreach AllActors(class'#var(prefix)Poolball',ball){
             if (ball.Region.Zone.ZoneGroundFriction>1){
@@ -1049,15 +1015,6 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
         class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-100,-1215,147),20,10); //Main Floor
-        bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
-        bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(927,-958,1295),20,10); //Over Jock's elevator
-        bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(830,-1020,1270),20,10); //Next to Jock's elevator
-        bt.bDestroyOthers=false;
-
 
         break;
 
@@ -1129,7 +1086,6 @@ function SetWatchFlags() {
             }
         }
         class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1832,-81,536),20,10);
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
             switch(dxm.Name) {
@@ -1178,14 +1134,8 @@ function SetWatchFlags() {
 
     case "06_HONGKONG_VERSALIFE":
         WatchFlag('Supervisor_Paid');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(207,575,-15),20,10);
         break;
     case "06_HONGKONG_WANCHAI_GARAGE":
-        if (RevisionMaps){
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-572,-463,-23),20,10);
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-572,-335,-23),20,10);
-        }
         break;
     //#endregion
 
@@ -1220,14 +1170,6 @@ function SetWatchFlags() {
         WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
         WatchLeavingPawn("SandraRenton");
         WatchLeavingPawn("Sailor"); //Vinny
-        if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
-            bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
-            bt.bDestroyOthers = false;
-        }
 
         break;
     case "08_NYC_HOTEL":
@@ -1366,7 +1308,6 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker2');
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-993,-60,-80),40,20);
 
         bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(-2888,-1208,-448)); //Bilge Pumps
 
@@ -1451,11 +1392,6 @@ function SetWatchFlags() {
             AddWatchedActor(bg,"InCaseOfEmergency");
             break;
         }
-
-        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(487,-1935,-475),24,14); //Near exit
-        bt.bDestroyOthers = false;
-        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(328,-1935,-475),24,14); //Near Exit
-        bt.bDestroyOthers = false;
 
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
@@ -1559,23 +1495,6 @@ function SetWatchFlags() {
         RewatchFlag('KnowsGuntherKillphrase');
 
         MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
-
-        if (RevisionMaps){
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2016,785,144),40,20);  //Actual Front Door
-            bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(255,-305,80),40,10);  //Front Door
-            bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2140,-528,-56),20,10);  //Back Door
-            bt.bDestroyOthers = false;
-
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2064,595,144),40,20);  //Actual Front Door
-            bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(290,-32,128),40,20);  //Front Door
-            bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2140,-528,-72),20,10);  //Back Door
-            bt.bDestroyOthers = false;
-        }
 
         break;
     case "10_PARIS_CHATEAU":
@@ -1721,36 +1640,6 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
-
-        //"Sortie" signs - pa_TrainSign_A
-        if (RevisionMaps){
-            //Revision has both pa_TrainSign_a and some new blue texture that's near the actual train (Literally named "sortie")
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(367.681,-2655.554,462.918),24,14); //Near exit
-            bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(527.871,-2656.112,462.918),24,14); //Near Exit
-            bt.bDestroyOthers = false;
-
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2175,-180),40,16); //Big wide sign, these ones destroy each other
-            bt.Tag = 'EmergencyExitWideSign';
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2130,-180),40,16); //Big wide sign, these ones destroy each other
-            bt.Tag = 'EmergencyExitWideSign';
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2080,-180),40,16); //Big wide sign, these ones destroy each other
-            bt.Tag = 'EmergencyExitWideSign';
-
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(1344.3,2116.7,-160),36,12); //Near Train
-            bt.bDestroyOthers = false;
-        } else {
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-591.76,-657.527,35.829),34,10);
-            bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2032.307,-576.207,-380.829),34,10);
-            bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2027.90,939.477,-938.886),34,10);
-            bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1040.066,1472.132,-876.936),34,10);
-            bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-587.698,1466.590,-891.960),34,10);
-            bt.bDestroyOthers = false;
-        }
 
         if (!RevisionMaps){
             //Not present in Revision
@@ -3037,6 +2926,14 @@ function bool PeepableTexture(name texName)
         case 'pa_kiosquead_b':  //Red and White Lines (I don't know what this is, kind of looks like a chess piece?)
         case 'pa_TrainSign_C':  //"RATP"
             return true;
+
+        case 'pa_TrainSign_a': //"Sortie" French exit sign (Paris Metro station)
+        case 'Sortie':         //Revision-only "Sortie" sign in Paris Metro Station
+        case 'Exitsign_a': //Red "Exit" sign with silver casing
+        case 'Exitsign_b': //Red "Exit" sign with black casing
+        case 'Exitsign_c': //Green "Exit" sign
+            return true;
+
         default:
             return false; //We hates it
     }
@@ -3080,6 +2977,14 @@ function float PeepTexDistance(name texName){
         case 'pa_kiosquead_b':  //Red and White Lines (I don't know what this is, kind of looks like a chess piece?)
         case 'pa_TrainSign_C':  //"RATP"
             return 500.0; //Don't go too crazy on the distance checks
+
+        case 'pa_TrainSign_a': //"Sortie" French exit sign (Paris Metro station)
+        case 'Sortie':         //Revision-only "Sortie" sign in Paris Metro Station
+        case 'Exitsign_a': //Red "Exit" sign with silver casing
+        case 'Exitsign_b': //Red "Exit" sign with black casing
+        case 'Exitsign_c': //Green "Exit" sign
+            return 100.0;
+
     }
     return 9999999.999;
 }
@@ -3967,6 +3872,12 @@ function string RemapBingoEvent(string eventname)
             _MarkBingo("SignsOfTheEnd_singlepeepedtex");
             return eventname;
 
+        case "pa_TrainSign_a_singlepeepedtex": //"Sortie" French exit sign (Paris Metro station)
+        case "Sortie_singlepeepedtex":         //Revision-only "Sortie" sign in Paris Metro Station
+        case "Exitsign_a_singlepeepedtex": //Red "Exit" sign with silver casing
+        case "Exitsign_b_singlepeepedtex": //Red "Exit" sign with black casing
+        case "Exitsign_c_singlepeepedtex": //Green "Exit" sign
+            return "EmergencyExit_peeped";
 
         default:
             return eventname;
