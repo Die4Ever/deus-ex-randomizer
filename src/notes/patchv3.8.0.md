@@ -93,6 +93,8 @@
 - Randomly moved autoturrets are more likely to successfully move to their new location.
 - Randomly added autoturrets are more likely to successfully spawn in their intended location.
 - Shadows will no longer sometimes be left behind on the ground after NPC locations are randomized.
+- A large number of bingo goals can now be recompleted if a new bingo board is generated.
+- A large number of bingo goals will now be immediately marked as failed if a new bingo board is generated and the goal is unable to be completed (Such as when entering a new mission in Mean Bingo Machine, or using the New Board button mid-game).
 - General Map Fixes:
   - Leo Gold (the terrorist commander in Mission 1) will now be fearless in all game modes, instead of only when Goal Randomization is enabled.
   - The conversation with the hostages in the Battery Park subway station (Mission 2) will no longer start as you approach them.  Instead, you need to actually interact with them for the conversation to begin.

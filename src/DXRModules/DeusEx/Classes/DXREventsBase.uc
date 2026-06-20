@@ -53,6 +53,7 @@ function float PeepTexDistance(name texName);
 static function int GetBingoFailedEvents(string eventname, out string failed[10]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
+function CheckBingoPrerequisites(string eventname);
 
 //#region Watched Actors
 function AddWatchedActor(Actor a,String eventName)
@@ -240,9 +241,13 @@ function MarkBingoFailedPrerequisites()
                     MarkBingoAsFailed(event);
                     continue;
                 }
+            } else if (InStr(event,"_Played")!=-1){
+                //If it's a conversation play flag, fail if it's already been played
+                FailBingoIfFlagValue(event,StringToName(event),True);
             }
 
             //Could also check with a more specific function for any other particular prerequisites for non-kill goals
+            CheckBingoPrerequisites(event);
         }
     }
 }
@@ -266,7 +271,7 @@ function bool IsSpecificTakedownBingoGoalAlreadyDead(string event)
     local name flagname;
     local int underscore;
 
-    underscore = InStr(event,"_"); //Find the first underscore so we can split left of it
+    underscore = FindLast(event,"_"); //Find the last underscore so we can split left of it
     if (underscore==-1) return false; //There wasn't an underscore, so idk wtf
     deadname = Left(event,underscore); //Grab the bindname from before the underscore
     deadname = deadname$"_Dead"; //The _Dead flag will cover both dead and unconscious cases
@@ -274,6 +279,13 @@ function bool IsSpecificTakedownBingoGoalAlreadyDead(string event)
     flagname = StringToName(deadname);
 
     return dxr.flagbase.GetBool(flagname);
+}
+
+function FailBingoIfFlagValue(string event, name flagname, bool flagval)
+{
+    if (dxr.flagbase.GetBool(flagname)==flagval){
+        MarkBingoAsFailed(event);
+    }
 }
 
 static function bool IsBingoGoalAvailableLater(string bingoEvent)

@@ -2,7 +2,7 @@ class BingoFrobber extends #var(DeusExPrefix)Decoration;
 
 var string bingoEvent;
 var string frobMsg;
-var bool used;
+var bool used, bOnlyOnce;
 
 replication
 {
@@ -24,7 +24,7 @@ function Frob(actor Frobber, Inventory frobWith)
 
     Super.Frob(Frobber, frobWith);
 
-    if (used) return;
+    if (bOnlyOnce && used) return;
 
     if (frobMsg!=""){
         p=#var(PlayerPawn)(Frobber);
@@ -65,6 +65,7 @@ defaultproperties
     CollisionRadius=40
     CollisionHeight=40
     frobMsg=""
+    bOnlyOnce=True
 #ifdef hx
     ItemName="Bingo Object"
 #else
