@@ -29,6 +29,7 @@
   - The GEP gun will not force a reload after every scoped shot if you have multiple shots in a clip.
   - The FOV of the game will not get stuck in a zoomed in state after firing a scoped GEP shot with "Weapon Auto Reload" disabled.
 - Computers will maintain their original security levels (determining whether or not you are allowed to hack them without a NUKE virus).
+- All payphones can now be interacted with like a regular phone (Primarily for bingo purposes).
 - GMDX Map Fixes:
   - The first conversation with Paul (Mission 1) is no longer skipped.  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
   - Doors on medbot crates on Liberty Island (Mission 1) are removed properly when medical bots are randomized.

@@ -64,7 +64,7 @@ function WatchActors()
 //#endregion
 
 //#region Phone Triggers
-function AddPhoneTriggers(bool isRevision)
+function AddPhoneTriggers(bool isRevision, bool isGmdx)
 {
     local #var(prefix)Phone p;
     local #var(prefix)WHPhone wp;
@@ -91,7 +91,6 @@ function AddPhoneTriggers(bool isRevision)
             p = Spawn(class'PayPhone',,,vectm(3651, -1763.33, -430.23)); //Near bus stop (Tipped over)
             p = Spawn(class'PayPhone',,,vectm(1952.04, 2508.99, -432.5)); //Near Osgoode and Son's
             p = Spawn(class'PayPhone',,,vectm(1599.67, 2508.99, -432.5)); //Near Osgoode and Son's
-            //break;
         } else {
             p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
             p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
@@ -109,6 +108,10 @@ function AddPhoneTriggers(bool isRevision)
             p = Spawn(class'PayPhone',,,vectm(1597.67, 2509, -431)); //Near Osgoode and Son's
         } else {
             p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
+            if (isGmdx){
+                //GMDX adds a second payphone near Osgoode & Sons in M04 specifically
+                p = Spawn(class'PayPhone',,,vectm(1117,1904,-430)); //Near Osgoode and Son's
+            }
             p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
         }
         break;
@@ -131,6 +134,9 @@ function AddPhoneTriggers(bool isRevision)
         if (isRevision){
             p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.8, 75)); //Near the bathroom
             p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.4, 75)); //Near the bathroom
+        } else if (isGmdx){
+            //GMDX adds it's own payphones in this version of the bar, no need to add anything
+            //Those phones should already work for triggers below
         } else{
             p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
         }
@@ -140,6 +146,8 @@ function AddPhoneTriggers(bool isRevision)
             p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.8, 75)); //Near the bathroom
             p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.4, 75)); //Near the bathroom
             p = Spawn(class'PayPhone',,,vectm(-2667.1, -40.4, 75)); //Near the bathroom
+        } else if (isGmdx){
+            //The phones are out of order in GMDX
         } else{
             p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
         }
@@ -149,6 +157,8 @@ function AddPhoneTriggers(bool isRevision)
             p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.1, 74)); //Near the bathroom
             p = Spawn(class'PayPhone',,,vectm(-2667.1, -40.83, 74)); //Near the bathroom
             p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.66, 74)); //Near the bathroom
+        } else if (isGmdx){
+            //The phones are out of order in GMDX
         } else{
             p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
         }
@@ -156,10 +166,13 @@ function AddPhoneTriggers(bool isRevision)
 
     case "02_NYC_FREECLINIC":
     case "08_NYC_FREECLINIC":
-        if (!isRevision){
-            p = Spawn(class'PayPhone',,,vectm(-215,752,-254));  //In the front lobby
-        } else {
+        if (isRevision){
             p = Spawn(class'PayPhone',,,vectm(-203.12, 752.87,-251.78));  //In the front lobby
+        } else if (isGmdx){
+            //GMDX adds it's own payphones in the clinic, no need to add anything
+            //Those phones should already work for triggers below
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(-215,752,-254));  //In the front lobby
         }
         break;
 
@@ -223,11 +236,25 @@ function AddPhoneTriggers(bool isRevision)
             p = Spawn(class'PayPhone',,,vectm(974.99, -2504.94, -553));
             //There might be two missing here, but I couldn't find them
         }
+        break;
+    case "10_PARIS_CLUB":
+        if (isGmdx){ //GMDX has payphones near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-901,-1102,-132));
+            p = Spawn(class'PayPhone',,,vectm(-825,-1102,-132));
+        }
+        break;
     case "11_PARIS_UNDERGROUND":
         if (isRevision){
             p = Spawn(class'PayPhone',,,vectm(620.99, 304.67, 15.75));
             p = Spawn(class'PayPhone',,,vectm(617, 464.96, 15.75));
+        } else if (isGmdx){
+            //GMDX adds four phones down near the tracks
+            p = Spawn(class'PayPhone',,,vectm(-940,1679,-1018));
+            p = Spawn(class'PayPhone',,,vectm(-940,1743,-1018));
+            p = Spawn(class'PayPhone',,,vectm(-940,1807,-1018));
+            p = Spawn(class'PayPhone',,,vectm(-940,1871,-1018));
         }
+        break;
     }
     i=0;
 
@@ -319,16 +346,17 @@ function SetWatchFlags() {
     local DXRRaceCheckPoint checkPoint;
     local OnceOnlyTrigger oot;
 
-    local bool RevisionMaps;
+    local bool RevisionMaps, GMDXMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    GMDXMaps     = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     //For debugging purposes - can probably remove later
     l("SetWatchFlags: Setting flag watches and bingo locations based on Revision maps? "$RevisionMaps);
 
     //General checks
     WatchActors();
-    AddPhoneTriggers(RevisionMaps);
+    AddPhoneTriggers(RevisionMaps,GMDXMaps);
 
     switch(dxr.localURL) {
     //#region Training
