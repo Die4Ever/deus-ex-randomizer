@@ -1221,6 +1221,9 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
         s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
         s = s$"  ~ One free space at the center of the board|n";
+        s = s$"  ~ Be careful when dealing with unique characters who don't have a goal on the|n";
+        s = s$"    board!  They might pop up again in another board in the future, so don't|n";
+        s = s$"    lock yourself out!|n";
         s = s$"|n";
         s = s$"Can YOU outsmart the Mean Bingo Machine?";
         return s;
@@ -1230,6 +1233,9 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
         s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
         s = s$"  ~ One free space at the center of the board|n";
+        s = s$"  ~ Be careful when dealing with unique characters who don't have a goal on the|n";
+        s = s$"    board!  They might pop up again in another board in the future, so don't|n";
+        s = s$"    lock yourself out!|n";
         s = s$"|n";
         s = s$"A good starting point for new DXRando bingo players.";
         return s;
