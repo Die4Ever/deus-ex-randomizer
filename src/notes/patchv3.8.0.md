@@ -167,3 +167,4 @@
 - When goals rando is enabled, the Vandenberg Command Comms door will now open once you've completed the Computer map.
 - Slightly tweaked Speedrun Shuffle par times.
 - "Catch the News" bingo goal is more lenient, allowing multiple TVs to be watched in the same map (Vanilla only ever has one TV per map, other mods sometimes have multiple).
+- Added preset for Speedrun Shuffle.
