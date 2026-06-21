@@ -580,11 +580,13 @@ function SetWatchFlags() {
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
         WatchFlag('MaleHostageRescued_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
+        bt.bTriggerOnceOnly=False;
 
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
-        class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
+        bt = class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
+        bt.bTriggerOnceOnly=False;
         break;
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
@@ -637,8 +639,11 @@ function SetWatchFlags() {
     case "02_NYC_SMUG":
         WatchFlag('MeetSmuggler_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
+
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
+        bt.bTriggerOnceOnly=False;
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
             AddWatchedActor(dxm,"BrokenMirror");
@@ -683,6 +688,7 @@ function SetWatchFlags() {
         WatchFlag('MolePeopleSlaughtered');
         bt = class'BingoTrigger'.static.Create(self,'surrender',vectm(0,0,0));
         bt = class'BingoTrigger'.static.CrouchCreate(self,'MolePeopleWater',vectm(0,-528,48),60,40);
+        bt.bTriggerOnceOnly=False;
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
@@ -786,9 +792,11 @@ function SetWatchFlags() {
         WatchFlag('FamilySquabbleWrapUpGilbertDead_Played');
         WatchFlag('M04PlayerLikesUNATCO_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
+        bt.bTriggerOnceOnly=False;
         break;
     case "04_NYC_UNDERGROUND":
-        class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
+        bt = class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
+        bt.bTriggerOnceOnly=False;
         break;
     case "04_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
@@ -801,8 +809,11 @@ function SetWatchFlags() {
     case "04_NYC_SMUG":
         WatchFlag('M04MeetSmuggler_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
+
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
+        bt.bTriggerOnceOnly=False;
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
             AddWatchedActor(dxm,"BrokenMirror");
@@ -903,6 +914,7 @@ function SetWatchFlags() {
             AddDelayEvent('BeastDoorOpened','KarkianDoorsBingo',0.1); //This event gets set in DXRFixupM05, not default
         }
         bt = class'BingoTrigger'.static.Create(self,'KarkianDoorsBingo',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'field002'){
             dxm.Event='SuspensionCrate';
@@ -932,6 +944,7 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'BrowserHistoryCleared',cp.Location);
+        bt.bTriggerOnceOnly=False;
 
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
@@ -982,7 +995,8 @@ function SetWatchFlags() {
             fTrigger.SetCollisionSize(500, 160);
         }
 
-        class'BingoFrobber'.static.Create(self,"Boat Equipment",'BoatEngineRoom',vectm(2304.4,3154.4,-365),30,35,"You checked the power levels");
+        bf = class'BingoFrobber'.static.Create(self,"Boat Equipment",'BoatEngineRoom',vectm(2304.4,3154.4,-365),30,35,"You checked the power levels");
+        bf.bOnlyOnce=False;
 
         foreach AllActors(class'#var(prefix)LowerClassMale',lcm,'CanalDrugDealer'){
             break;
@@ -1075,6 +1089,7 @@ function SetWatchFlags() {
 
         closestToilet.Event='JocksToilet';
         bt = class'BingoTrigger'.static.Create(self,'JocksToilet',closestToilet.Location);
+        bt.bTriggerOnceOnly=False;
 
         foreach AllActors(class'#var(prefix)Maid',maid){
             maid.bImportant = True;
@@ -1148,20 +1163,23 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-337.2,1826,40),40,100);
         bt.bTriggerOnceOnly=False;
 
-        class'BingoTrigger'.static.ProxCreate(self,'MakeSoup',vectm(-1760,448,-180),100,80,class'#var(DeusExPrefix)Carcass',3);
+       bt = class'BingoTrigger'.static.ProxCreate(self,'MakeSoup',vectm(-1760,448,-180),100,80,class'#var(DeusExPrefix)Carcass',3);
+       bt.bTriggerOnceOnly=False;
 
         WatchFlag('PaulToTong');
 
         break;
     case "06_HONGKONG_HELIBASE":
         bt = class'BingoTrigger'.static.Create(self,'purge',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
 
         foreach AllActors(class'#var(prefix)Trigger',trig){
             if (trig.classProximityType==class'#var(prefix)Basketball'){
                 break;
             }
         }
-        class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
+        bt = class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
+        bt.bTriggerOnceOnly=False;
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
             switch(dxm.Name) {
@@ -1233,8 +1251,11 @@ function SetWatchFlags() {
         WatchFlag('M08SmugglerConvos_Played');
         WatchFlag('M08SmugglerNotWarned');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
+
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
+        bt.bTriggerOnceOnly=False;
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
             AddWatchedActor(dxm,"BrokenMirror");
@@ -1251,9 +1272,11 @@ function SetWatchFlags() {
 
         break;
     case "08_NYC_HOTEL":
-        class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40); //Top of elevator
+        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40); //Top of elevator
+        bt.bTriggerOnceOnly=False;
         if (RevisionMaps){
-            class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(315,-2200,500),150,40); //Top of stairs
+            bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(315,-2200,500),150,40); //Top of stairs
+            bt.bTriggerOnceOnly=False;
         }
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('HelpSailor');
@@ -1263,7 +1286,8 @@ function SetWatchFlags() {
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('HelpSailor');
         WatchFlag('M08MeetSailor_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when talking to Vinny
-        class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
+        bt = class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
+        bt.bTriggerOnceOnly=False;
         break;
     case "08_NYC_FREECLINIC":
         WatchFlag('GreenKnowsAboutDowd');
@@ -1346,6 +1370,7 @@ function SetWatchFlags() {
     case "09_NYC_SHIP":
         bt = class'BingoTrigger'.static.Create(self,'CraneControls',vectm(3264,-1211,1222));
         bt.Tag = 'Crane';
+        bt.bTriggerOnceOnly=False;
 
         bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(1880,0,1425),100,40);  //The crane that goes over the bridge
         bt.bDestroyOthers=False;
@@ -1412,8 +1437,10 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker2');
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
+        bt.bTriggerOnceOnly=False;
 
         bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(-2888,-1208,-448)); //Bilge Pumps
+        bt.bTriggerOnceOnly=False;
 
         //Weld Points
         bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(100,0,100));
@@ -1442,6 +1469,7 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'EngineeringBridge',vectm(-254,241,-432));
         bt.Tag = 'Bridge';
+        bt.bTriggerOnceOnly=False;
 
         break;
     case "09_NYC_GRAVEYARD":
@@ -1466,6 +1494,7 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'roof_elevator',vect(0,0,0));
+        bt.bTriggerOnceOnly=False;
 
         break;
     case "10_PARIS_CATACOMBS":
@@ -1479,6 +1508,8 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'WarehouseEntered',vectm(-580.607361,-2248.497803,-551.895874),200,160);
+        bt.bTriggerOnceOnly=False;
+
         bt = class'BingoTrigger'.static.Create(self,'roof_elevator',vect(0,0,0));
 
         if (!RevisionMaps){
@@ -1602,7 +1633,6 @@ function SetWatchFlags() {
 
         break;
     case "10_PARIS_CHATEAU":
-        WatchFlag('ChateauInComputerRoom');
         WatchFlag('ChateauInBethsRoom');
         WatchFlag('ChateauInNicolettesRoom');
 
@@ -1624,9 +1654,20 @@ function SetWatchFlags() {
         MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         bt = class'BingoTrigger'.static.Create(self,'nico_fireplace',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
+
         bt = class'BingoTrigger'.static.Create(self,'dumbwaiter',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
+
+        foreach AllActors(class'#var(prefix)FlagTrigger',fTrigger){
+            if (fTrigger.FlagName!='ChateauInComputerRoom') continue;
+            bt = class'BingoTrigger'.static.Create(self,'ChateauInComputerRoom',fTrigger.Location,fTrigger.CollisionRadius,fTrigger.CollisionHeight);
+            bt.bTriggerOnceOnly=False;
+            break;
+        }
 
         bt = class'BingoTrigger'.static.Create(self,'BethsPainting',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
             if (dxm.Name=='DeusExMover8'){
                 dxm.Event='BethsPainting';
@@ -1671,7 +1712,8 @@ function SetWatchFlags() {
         MarkBingo("AimeeLeMerchantLived", true); //Mark in all non-Catacombs maps for entrance rando support
 
         if (RevisionMaps){
-            class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
+            bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
+            bt.bTriggerOnceOnly=False;
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3811,-3200,-64),20,15,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3869,-4256,-64),20,15,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3387,-3233,-7.9),50,40,class'#var(prefix)ChefCarcass');
@@ -1680,7 +1722,8 @@ function SetWatchFlags() {
             bt = class'BingoTrigger'.static.CrouchCreate(self,'IOnceKnelt',vectm(3650,-1090,265),450,40);
             bt.bTriggerOnceOnly=False;
         } else {
-            class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
+            bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
+            bt.bTriggerOnceOnly=False;
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(2019,-2256,-704),20,15,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(1578,-2286,-647),50,40,class'#var(prefix)ChefCarcass');
@@ -1689,9 +1732,12 @@ function SetWatchFlags() {
             bt.bTriggerOnceOnly=False;
         }
         bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
+        bt.bTriggerOnceOnly=False;
 
         bt = class'BingoTrigger'.static.Create(self,'CathedralDisplayCase',vectm(-6335,305,-565),40,40);
+        bt.bTriggerOnceOnly=False;
         bt = class'BingoTrigger'.static.Create(self,'CathedralDisplayCase',vectm(-6428,305,-565),40,40);
+        bt.bTriggerOnceOnly=False;
 
 
         foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
@@ -1748,6 +1794,7 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
+        bt.bTriggerOnceOnly=False;
 
         if (!RevisionMaps){
             //Not present in Revision
@@ -1811,7 +1858,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'VandenbergShaft',vectm(1442.694580,1303.784180,-1755),110,10);
         bt.bTriggerOnceOnly=False;
 
-        class'BingoTrigger'.static.ShootCreate(self,'VandenbergAntenna',vectm(1800,2590,395),40,40);
+        bt = class'BingoTrigger'.static.ShootCreate(self,'VandenbergAntenna',vectm(1800,2590,395),40,40);
+        bt.bTriggerOnceOnly=False;
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergHazLab',vectm(0,0,0));
         bt.bUntrigger=True;
@@ -1980,10 +2028,12 @@ function SetWatchFlags() {
 
         //Same location in Revision and Vanilla
         bt = class'BingoTrigger'.static.Create(self,'OceanLabShed',vectm(618.923523,4063.243896,-391.901031),160,40);
+        bt.bTriggerOnceOnly=False;
 
         //Put a shootable bingo trigger on every satellite dish in the level.  In Revision, this includes an extra tower with dishes
         foreach AllActors(class'#var(prefix)SatelliteDish', satDish) {
-            class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',satDish.Location,satDish.CollisionRadius+5,satDish.CollisionHeight+5);
+            bt = class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',satDish.Location,satDish.CollisionRadius+5,satDish.CollisionHeight+5);
+            bt.bTriggerOnceOnly=False;
         }
         break;
     //#endregion
@@ -2031,6 +2081,7 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'A51CommBuildingBasement',vectm(984,2788,-750),100,40);
+        bt.bTriggerOnceOnly=false;
 
         break;
     case "15_AREA51_ENTRANCE":
@@ -2096,6 +2147,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-1413),250,40);
 
         bt = class'BingoTrigger'.static.Create(self,'A51ExplosiveLocker',vectm(-5845,-385,-1485),150,40);
+        bt.bTriggerOnceOnly=false;
 
         foreach AllActors(class'WaterZone', water) {
             if (RevisionMaps && water.Name=='WaterZone3'){ //Revision has a second tank
@@ -2105,6 +2157,7 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'A51SeparationSwim',vectm(0,0,0));
+        bt.bTriggerOnceOnly=false;
 
         bt = class'BingoTrigger'.static.Create(self,'forks',vectm(0,0,0));
         bt.bingoEvent="ForkliftCertified";
@@ -4197,6 +4250,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
             return num_failed;
         case "LeMerchant_Takedown":
             failed[num_failed++] = "MerchantPurchaseBind_lemerchant";
+            //intentional fallthrough
         case "Aimee_Takedown":
             failed[num_failed++] = "AimeeLeMerchantLived";
             return num_failed;
@@ -4263,6 +4317,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
         case "ParkBum1_Takedown":
             failed[num_failed++] = "M02BumSong_Convo";
             return num_failed;
+        case "M08WarnedSmuggler":
+            failed[num_failed++] = "SmugglerDied";
+            return num_failed;
     }
 
     return num_failed;
@@ -4273,8 +4330,10 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
 //This is checked when generating a new board.  Kind of the inverse of the GetBingoFailedEvents above,
 //but we don't necessarily have the context of all the events for that function.  Most importantly,
 //here we won't have the context of people who have died that aren't bImportant.
-function CheckBingoPrerequisites(string eventname)
+function CheckBingoPrerequisites(string eventname, int eMax)
 {
+    local int num;
+
     switch(eventname){
     case "MerchantPurchaseBind_DXRNPCs1":
         FailBingoIfFlagValue(eventname, 'DXRNPCs1_Dead', true);
@@ -4348,10 +4407,6 @@ function CheckBingoPrerequisites(string eventname)
         }
         break;
 
-    case "ShipPowerCut":
-        FailBingoIfFlagValue(eventname, 'ShipPowerCut', true); //Already repaired
-        break;
-
     case "JockSecondStory":
         FailBingoIfFlagValue(eventname, 'JockSecondStory', true); //Already heard it
         FailBingoIfFlagValue(eventname, 'GeneratorBlown', true); //He's gone now
@@ -4416,34 +4471,9 @@ function CheckBingoPrerequisites(string eventname)
         }
         break;
 
-    case "DeBeersDead":
-        //This isn't the standard Dead flag naming format, so gotta actually check this one
-        FailBingoIfFlagValue(eventname, 'DeBeersDead', true); //If he's already dead...
-        break;
-
-    case "BoughtClinicPlan":
-        FailBingoIfFlagValue(eventname, 'BoughtClinicPlan', true);
-        break;
-
-    case "Canal_Bartender_Question4":
-        FailBingoIfFlagValue(eventname, 'Canal_Bartender_Question4', true);
-        break;
-
-    case "M06BartenderQuestion3":
-        FailBingoIfFlagValue(eventname, 'M06BartenderQuestion3', true);
-        break;
-
-    case "NSFSignalSent":
-        FailBingoIfFlagValue(eventname, 'NSFSignalSent', true);
-        break;
-
     case "surrender":
         FailBingoIfFlagValue(eventname, 'TerroristLeader_Dead', true); //Killed him
         FailBingoIfFlagValue(eventname, 'M03MeetTerroristLeader', true); //Or already made him surrender
-        break;
-
-    case "MolePeopleSlaughtered":
-        FailBingoIfFlagValue(eventname, 'MolePeopleSlaughtered', true);
         break;
 
     case "LeoToTheBar":
@@ -4452,14 +4482,177 @@ function CheckBingoPrerequisites(string eventname)
         }
         break;
 
-    case "M06BoughtVersaLife":
-        FailBingoIfFlagValue(eventname, 'M06BoughtVersaLife', true);
-        break;
-
     case "KnowsGuntherKillphrase":
         if (dxr.dxInfo.missionNumber > 5){
             FailBingoIfFlagValue(eventname, 'JaimeLeftBehind', false); //Can't learn the killphrase if you didn't leave Jaime behind
         }
+        break;
+
+    case "GaveRentonGun":
+        FailBingoIfFlagValue(eventname, 'GaveRentonGun', true); //If you actually gave him a gun
+        FailBingoIfFlagValue(eventname, 'InterruptFamilySquabble_Played', true); //If you had the conversation, regardless of giving him a gun or not
+        FailBingoIfFlagValue(eventname, 'GilbertRenton_Dead', true); //Can't give him a gun if he's dead
+        FailBingoIfFlagValue(eventname, 'SandraRenton_Dead', true); //There's no squabble if Sandra's dead
+        FailBingoIfFlagValue(eventname, 'JoJoFine_Dead', true); //He doesn't need a gun if JoJo's dead
+        break;
+
+    case "M07ChenSecondGive_Played":
+        if (dxr.flagbase.GetBool('M07GordonSecondGive_Played')==False){
+            //If you haven't gotten the second bottle from Gordon yet, Gordon needs to still be alive
+            //(Since he can die at the Lucky Money for whatever reason)
+            FailBingoIfFlagValue(eventname, 'GordonQuick_Dead', true);
+        }
+        break;
+
+    case "GotHelicopterInfo":
+        FailBingoIfFlagValue(eventname, 'Ray_Dead', true);
+        break;
+
+    case "SubwayHostagesSaved":
+        FailBingoIfFlagValue(eventname, 'SubHostageFemale_Dead', true);
+        FailBingoIfFlagValue(eventname, 'SubHostageMale_Dead', true);
+        break;
+
+    case "HotelHostagesSaved":
+        FailBingoIfFlagValue(eventname, 'FemaleHostage_Dead', true);
+        FailBingoIfFlagValue(eventname, 'MaleHostage_Dead', true);
+        break;
+
+    case "M06PaidJunkie":
+        FailBingoIfFlagValue(eventname, 'M06MeetJunkie_Played', true);
+        break;
+
+    case "StolenAmbrosia":
+        num=0; //How many barrels are left
+        if (dxr.flagbase.GetBool('AmbrosiaTagged')==False) num+=1;
+        if (dxr.flagbase.GetBool('BoatDocksAmbrosia')==False) num+=1;
+        if (dxr.flagbase.GetBool('HelicopterBaseAmbrosia')==False) num+=1;
+        if (dxr.flagbase.GetBool('747Ambrosia')==False) num+=1;
+
+        //Fail if there aren't enough barrels left to finish the goal,
+        if (num < eMax) MarkBingoAsFailed(eventname);
+
+        break;
+
+    case "NicoletteHouseTour_VariousPlayed":
+        num=0; //How many tour locations are left
+        if (dxr.flagbase.GetBool('NicoletteInUnderground_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('NicoletteInUnderground2_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('NicoletteInStudy_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('NicoletteInLivingRoom_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('NicoletteInKeyRoom_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('NicoletteInGarden_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('NicoletteInGarden2_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('NicoletteInBethsRoom_Played')==False) num+=1;
+
+        //Fail if there aren't enough locations left to finish the goal,
+        if (num < eMax) MarkBingoAsFailed(eventname);
+
+        break;
+
+    case "InterviewLocals_VariousPlayed":
+        num=0; //How many interviews are left
+        if (dxr.flagbase.GetBool('MeetClinicOlderBum_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('MeetWindowBum_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('JordanSheaConvos_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('WorkerGivesInfo_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('MaleHostageRescued_Played')==False) num+=1;
+        if (dxr.flagbase.GetBool('M02SallyDone')==False) num+=1;
+
+        //Fail if there aren't enough people left to finish the goal,
+        if (num < eMax) MarkBingoAsFailed(eventname);
+
+        break;
+
+    case "Set_flag_helios":
+        FailBingoIfFlagValue(eventname, 'HeliosFree', true);
+        break;
+
+    case "coolant_switch":
+        FailBingoIfFlagValue(eventname, 'coolantcut', true);
+        break;
+
+    case "CanalDrugDeal":
+        FailBingoIfFlagValue(eventname, 'Overhear_Canal_Thug1_Played', true);
+        break;
+
+    case "SmugglerDied":
+        FailBingoIfFlagValue(eventname, 'M08WarnedSmuggler', true);
+        break;
+
+    case "GaveDowdAmbrosia":
+        FailBingoIfFlagValue(eventname, 'M09MeetStantonDowd_Played', true);
+        break;
+
+    case "MaggieLived":
+        FailBingoIfFlagValue(eventname, 'MaggieChow_Dead', true);
+        break;
+
+    case "AimeeLeMerchantLived":
+        FailBingoIfFlagValue(eventname, 'Aimee_Dead', true);
+        FailBingoIfFlagValue(eventname, 'LeMerchant_Dead', true);
+        break;
+
+    case "LebedevLived":
+        FailBingoIfFlagValue(eventname, 'JuanLebedev_Dead', true);
+        if (dxr.flagbase.GetBool('MeetLebedev_Played')){
+            //Only require Anna to be killed if you're resetting the board after talking to Lebedev
+            //I guess this could result in a bad state if you reset the board after talking to him,
+            //but before dealing with Anna.  Just don't do that, ok?
+            FailBingoIfFlagValue(eventname, 'M03PlayerKilledAnna', false);
+        }
+        break;
+
+    case "SavedPaul":
+        FailBingoIfFlagValue(eventname, 'PaulDenton_Dead', true);
+        break;
+
+    case "nsfwander":
+        FailBingoIfFlagValue(eventname, 'Miguel_Dead', true);
+        break;
+
+    case "AnnaKilledLebedev":
+        FailBingoIfFlagValue(eventname, 'PlayerKilledLebedev', true);
+        break;
+
+    case "PlayerKilledLebedev":
+        FailBingoIfFlagValue(eventname, 'AnnaKilledLebedev', true);
+        break;
+
+    case "AnnaKillswitch":
+        FailBingoIfFlagValue(eventname, 'AnnaNavarre_Dead', true);
+        break;
+
+
+
+    case "SimonsAssassination":
+    case "MostWarehouseTroopsDead":
+    case "ShipPowerCut":
+    case "DeBeersDead":
+    case "BoughtClinicPlan":
+    case "Canal_Bartender_Question4":
+    case "M06BartenderQuestion3":
+    case "MolePeopleSlaughtered":
+    case "NSFSignalSent":
+    case "FreshWaterOpened":
+    case "FoundScientistBody":
+    case "M06BoughtVersaLife":
+    case "JoshFed":
+    case "M02BillyDone":
+    case "M10EnteredBakery":
+    case "Have_Evidence":
+    case "Have_ROM":
+    case "VL_Got_Schematic":
+    case "VL_UC_Destroyed":
+    case "LouisBerates":
+    case "templar_upload":
+    case "HeliosBorn":
+    case "schematic_downloaded":
+    case "missile_launched":
+    case "blast_door_open":
+    case "JockBlewUp":
+        //Standard cases where we just can't repeat the goal, and the goal is the flagname that actually matters
+        FailBingoIfFlagValue(eventname, StringToName(eventname), true);
         break;
 
     }

@@ -53,7 +53,7 @@ function float PeepTexDistance(name texName);
 static function int GetBingoFailedEvents(string eventname, out string failed[10]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
-function CheckBingoPrerequisites(string eventname);
+function CheckBingoPrerequisites(string eventname, int eMax);
 
 //#region Watched Actors
 function AddWatchedActor(Actor a,String eventName)
@@ -247,7 +247,7 @@ function MarkBingoFailedPrerequisites()
             }
 
             //Could also check with a more specific function for any other particular prerequisites for non-kill goals
-            CheckBingoPrerequisites(event);
+            CheckBingoPrerequisites(event,max);
         }
     }
 }
