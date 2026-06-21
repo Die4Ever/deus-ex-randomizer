@@ -1,40 +1,73 @@
 ## Major Changes
 
 - New game mode: Speedrun Shuffle!  This is the same as Speedrun Mode, but you only play a few missions, in random order.
+- Significant fixes and improvements to GMDXv9 Randomizer!
+- Fixes to support Vanilla? Madder! 2.0
+
+## GMDXv9 Changes
+<details>
+<summary>Click to expand GMDX Changes</summary>
+
+- Enable "Flickering Lights" setting
+- Enabled "Goal Textures" setting to allow adjusting the textures on some randomized goal computers for better visibility.
+- Augbots will now properly show with their blue skin and will glow red by default.
+- Medical Bots will now properly count their number of uses.
+- The window for recharging at a Repair Bot now properly updates the bio energy bar immediately.
+- The value of the Stealth skill is now shown in a more interpretable format (based on your walk speed).
+- More useful descriptions of the randomized values of the "EMSP" (Dash) and "Energy Transference" augs are now shown.
+- Beheaded corpses that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
+- Scripted grenades that get thrown into vents will not be set off by Aggressive Defense System before being thrown.
+- Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
+- Hardcore settings become unlocked when you finish the game.
+- Upgrades to the EUAS (IFF) aug will actually display on screen (Light level and environmental hazard warnings).
+- Map tweaks will no longer sometimes unintentionally receive tweaks intended for the Revision versions of the maps.
+- Weapons with alternate ammo types that fire projectiles (like the mini crossbow) will have their firing rate randomized based on the original firing rate.
+- GEP guns that were received from conversations or from crates will no longer float inside of you after moving to a new level.
+- Fixes when using the scope on the GEP gun:
+  - The regular scope overlay will no longer be drawn over top of the rocket view.
+  - The scope will close after each shot, even if you have multiple shots in the clip.
+  - The GEP gun will not force a reload after every scoped shot if you have multiple shots in a clip.
+  - The FOV of the game will not get stuck in a zoomed in state after firing a scoped GEP shot with "Weapon Auto Reload" disabled.
+- Computers will maintain their original security levels (determining whether or not you are allowed to hack them without a NUKE virus).
+- All payphones can now be interacted with like a regular phone (Primarily for bingo purposes).
+- GMDX Map Fixes:
+  - The first conversation with Paul (Mission 1) is no longer skipped.  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
+  - Doors on medbot crates on Liberty Island (Mission 1) are removed properly when medical bots are randomized.
+  - Gate near the top of the dock on Liberty Island (Mission 1) is now opened as appropriate (basically always).
+  - A random wooden pallet on Liberty Island (Mission 1) can no longer be highlighted like a door.
+  - The police boat in Battery Park (Mission 2) is now easier to highlight and speak to.  This makes it easier to take the boat back to HQ after destroying the generator.
+  - Removed lasers that were originally attached to patrolling robots just before the Airfield Helibase (Mission 3) that got left floating in the air after enemy locations were randomized.
+  - Trying to send the signal at NSF HQ (Mission 4) without aligning the dishes first will cause Paul to call you and tell you the dishes need to be aligned first.
+  - Successfully sending the signal at NSF HQ (Mission 4) when goal randomization is enabled will cause Walton Simons to immediately call you and make the troopers hostile.
+  - The button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
+  - Added an exit button to the Hong Kong Helibase barracks (Mission 6).
+  - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
+  - Datacube added with the Lucky Money (Mission 6) security computer login details will no longer be able to randomize into the locked store/apartment off the side of the mall.
+  - Freezer door in the Lucky Money (Mission 6) is properly attached to the button added inside the freezer as well as the security computer on the meeting room desk.
+  - UNATCO Troops in the streets of Mission 8 will now start out of the world and will appear as riot cops die (This matches the vanilla behaviour of this mission).
+  - Smugglers bots in Mission 8 are no longer permanently hostile when Moderate Map Balance changes are enabled.  They will only be hostile if you have not spoken to Smuggler before this mission.
+  - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
+  - Teleporter to exit Vandenberg Tunnels (Mission 12) is now placed in the correct location.
+  - Tiffany Savage is now fearless, so she won't try to run out into an active firefight while you try to save her (Mission 12).
+  - The "Jump!  You can make it!" infolink in Area 51 has a larger radius (to match the size in vanilla, making it more likely to play when you're on top of the vent).
+</details>
 
 ## Minor Changes
 
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-- The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Allowed".
-- Bingo Viewer changes:
-  - Goals can be marked to help you keep track of what line you're aiming for.
-    - Left click to mark a goal
-    - Right click to unmark it
-    - Drag to mark/unmark an entire bingo line
-  - The window no longer locks up temporarily when moved or resized on certain systems.
-  - Font size more accurately scales to best fit the tile size.
-  - The green progress bars now fit to the edges of their tile
-- The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Fixed".
 - NPCs will now react to projectiles regardless of whether they're immune or not if "Glitches for Speedruns" is set to "Allowed"
 - When the "Camera Mode" is set to "Third Person", the camera will now shake when heavy enemies (such as Military Bots) walk near you.
 - More interesting camera angles when talking to The Merchant (or Le Merchant).
-- Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
 - "Use x Rebreathers" bingo goal will only be available in Mission 3 when Entrance Randomization is enabled.
 - "Invert Mouse" Crowd Control effect will now properly restore your mouse controls if you load a save made during the effect after the effect ends.
 - Teleporters between maps will now properly show whether the destination map is mirrored or not (The arrow in the icon will point left for mirrored maps, or right for normal maps).
 - The Crowd Control setting in the Randomizer Setup or Advanced Settings pages will now be automatically enabled if Crowd Control connects to the game while in those menus.
-- The instant death zone in the fan shaft on the surface of Area 51 (Mission 15) will always be gone after loading a game if the fan was destroyed.  This was a bug that popped up intermittently, related to specific save timing after destroying the fan.
 - Barrels will no longer play their push sound forever after being pushed once.
-- "Experimental Subject Cells" Key in the Versalife Level 1 Labs (Mission 6) will no longer randomize into the locked cabinet in the lab.
-- "UC Shutdown Code" datacube in the Versalife Level 1 Labs (Mission 6) will no longer randomize into any locked areas.
-- Tong will no longer tell you that you've found one of the weld points if you've already destroyed one (Mission 9).
 - Crowd Control effects will no longer sometimes set off grenades planted by the player.
 - Randomly spawned "SecurityBot4" (The treaded bot with yellow shoulders) will now use a modified texture with gray shoulders instead.  In GMDX, this helps to distinguish these bots from the similar looking ones that have rockets and can cloak.
 - "Flickering Lights" setting now prevents electricity emitters from flickering as well.
-- More locations for items to be randomized around Maggie's and Jock's apartments (Mission 6).
-- The datacube with Maggie's birthday is guaranteed to be in her apartment (Mission 6)
 - Bingo goals that require using a ranged weapon to shoot something will no longer be given when using loadouts that don't allow any ranged weapons to be used.
 - Bingo goals that require looking at an image will be marked as soon as the image is viewed, instead of when the window is closed.  This also fixes an issue where sometimes the image wouldn't get marked as viewed, depending on how the window was closed.
 - The "New Image" icon in the list on the "Images" menu will disappear when you click off of the image to another one.
@@ -48,17 +81,37 @@
   - "Show Killer (Kill Cam)": When you die, the camera will follow the person who killed you.
 - Regular spinning death cameras will continue to spin forever, instead of stopping after 8 seconds (Vanilla and Revision only).
 - When the "Flickering Lights" setting is set to "Epilepsy Safe", lights that flicker *extremely* quickly will now pulse at a slower rate to ensure they don't still look like they're flickering.
-- Leo Gold (the terrorist commander in Mission 1) will now be fearless in all game modes, instead of only when Goal Randomization is enabled.
 - "My Buddy Vinny" and "Play the Detective" bingo goals should no longer occasionally fail and then succeed.  The failure will only happen in a real failure scenario.
 - Randomized dialog in the intro and outro will be spoken by the original character speaking the line.
 - Clones spawned from Crowd Control will now shoot fire extinguishers that they use in front of them, instead of in an arbitrary direction.
-- One book in Area 51 Sector 3 (Mission 15) will now be properly switched from Jacob's Shadow to The Man Who Was Thursday for both Male and Female JC (Previously, Female JC would still see Jacob's Shadow).
-- Removed infolink trigger near the exit door of the MJ12 Lab (Mission 5) that referenced an infolink that doesn't exist, which caused an error message to appear.
-- When Moderate Map Balance Changes are enabled, a prisoner manifest will be left on the desk in the Mission 5 jail, listing the items that were taken away from you.
 - When using Password Assistance, the Known Accounts window will automatically select the first account in the list that you know the password to, instead of the last account.
-- The conversation with the hostages in the Battery Park subway station (Mission 2) will no longer start as you approach them.  Instead, you need to actually interact with them for the conversation to begin.
+- Tracer Tong's randomized location at Vandenberg Command Front Gate is now closer to the vending machine, to better balance the speedrun.
+- Re-added the Autosaves-Only mode. This was previously removed in favor of Limited Saves and Fixed Saves.
+- Utility bots now have a smarter retry when they fail to spawn, potentially improving races/tournaments.
+- Stunned pawns (rubbing their eyes from gas, or shaking from taser) will now receive back attacks for the full 10x damage. (Except for Zero Rando or Balance Changes disabled.)
+- Moderate map balance changes are now enabled by default for Zero Rando Plus.
+- Randomly moved autoturrets are more likely to successfully move to their new location.
+- Randomly added autoturrets are more likely to successfully spawn in their intended location.
+- Shadows will no longer sometimes be left behind on the ground after NPC locations are randomized.
+- A large number of bingo goals can now be recompleted if a new bingo board is generated.
+- A large number of bingo goals will now be immediately marked as failed if a new bingo board is generated and the goal is unable to be completed (Such as when entering a new mission in Mean Bingo Machine, or using the New Board button mid-game).
+- General Map Fixes:
+  - Leo Gold (the terrorist commander in Mission 1) will now be fearless in all game modes, instead of only when Goal Randomization is enabled.
+  - The conversation with the hostages in the Battery Park subway station (Mission 2) will no longer start as you approach them.  Instead, you need to actually interact with them for the conversation to begin.
+  - The level transition from Airfield to the Hangar (Mission 3) is no longer able to be used from the outside of the bridge when "Glitches for Speedruns" are set to "Allowed".
+  - Sam Carter only gives you one case of shotgun shells instead of 3 in Mission 4.
+  - Items beyond the teleporter at NSF HQ (Mission 4) will no longer be randomized.
+  - When Moderate Map Balance Changes are enabled, a prisoner manifest will be left on the desk in the Mission 5 jail, listing the items that were taken away from you.
+  - Removed infolink trigger near the exit door of the MJ12 Lab (Mission 5) that referenced an infolink that doesn't exist, which caused an error message to appear.
+  - More locations for items to be randomized around Maggie's and Jock's apartments (Mission 6).
+  - The datacube with Maggie's birthday is guaranteed to be in her apartment (Mission 6).
+  - "Experimental Subject Cells" Key in the Versalife Level 1 Labs (Mission 6) will no longer randomize into the locked cabinet in the lab.
+  - "UC Shutdown Code" datacube in the Versalife Level 1 Labs (Mission 6) will no longer randomize into any locked areas.
+  - Tong will no longer tell you that you've found one of the weld points if you've already destroyed one (Mission 9).
+  - The instant death zone in the fan shaft on the surface of Area 51 (Mission 15) will always be gone after loading a game if the fan was destroyed.  This was a bug that popped up intermittently, related to specific save timing after destroying the fan.
+  - One book in Area 51 Sector 3 (Mission 15) will now be properly switched from Jacob's Shadow to The Man Who Was Thursday for both Male and Female JC (Previously, Female JC would still see Jacob's Shadow).
+  - Area 51 Page UC enemy spawner reduction no longer applies to Zero Rando Plus, Rando Lite, or Rando Medium (Mission 15).
 - Non-Vanilla fixes and improvements:
-  - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
   - A large number of bingo goals have had their available missions adjusted in GMDX and Revision to match which missions they can actually be completed in.
   - Non-Vanilla mods can now use the fully enhanced Randomizer "Show Classes" window in the "Legend" cheat window.
   - Non-Vanilla mods now get an "open doors" symbol in elevators with an "open door" button.
@@ -67,40 +120,12 @@
   - Inventory and Augs are no longer completely removed after new game plus.
   - Projectile damage will now be randomized based on the default damage in the particular version of the game you are randomizing, instead of always being based on vanilla damage stats.
   - The "Known Accounts" window will now close when you finish hacking a security computer.
+  - When playing a mod that uses Confix (Such as GMDX or Vanilla? Madder!), Harley talk to you after finishing Mission 1 if you didn't talk to him or Paul before finishing the mission.
+  - Cloned NPCs that start the level out of the world such as the hotel raid (Mission 4) or the MJ12 ambush (Mission 8) should now be able to be given randomized weapons.
   - BeamTriggers (blue lasers) will no longer be replaced with LaserTriggers (red lasers), in Hong Kong Level 2 Labs (Mission 6) or Vandenberg Tunnels (Mission 12)
 - Revision fixes and improvements:
   - Revision can no longer change the "Gameplay Style" to "Vanilla" by cycling through the options backwards.
   - Revision now shows more useful descriptions of the randomized values of the "Life Leech", "Radiation Discharge", "Auto-Counter", and "AimBot" augs.
-- GMDX fixes and improvements:
-  - Enable "Flickering Lights" setting
-  - Enabled "Goal Textures" setting to allow adjusting the textures on some randomized goal computers for better visibility.
-  - Augbots will now properly show with their blue skin and will glow red by default.
-  - Medical Bots will now properly count their number of uses.
-  - The window for recharging at a Repair Bot now properly updates the bio energy bar immediately.
-  - The first conversation with Paul (Mission 1) is no longer skipped.  Instead, the option to get the free weapon from him is stitched out of the conversation (like in Vanilla Rando), and you can still speak with him to get the map of the island.
-  - The value of the Stealth skill is now shown in a more interpretable format (based on your walk speed).
-  - More useful descriptions of the randomized values of the "EMSP" (Dash) and "Energy Transference" augs are now shown.
-  - The button behind the Flight Deck door in the Hong Kong Helibase (Mission 6) now actually opens the flight deck door instead of a vent in the barracks.
-  - Beheaded corpses that are trying to zombify will no longer cause error messages, but will also no longer try to be reanimated.  Zombie rules say that if the head is gone, they can't come back.
-  - Scripted grenades that get thrown into vents will not be set off by Aggressive Defense System before being thrown.
-  - Some inaccessible items in the Paris Cathedral (Mission 11) will no longer be randomized.
-  - Minor randomized goal location adjustments to account for items or geometry in GMDX maps that aren't present in vanilla maps.
-  - Hardcore settings become unlocked when you finish the game.
-  - Added an exit button to the Hong Kong Helibase barracks (Mission 6).
-  - Smugglers bots in Mission 8 are no longer permanently hostile when Moderate Map Balance changes are enabled.  They will only be hostile if you have not spoken to Smuggler before this mission.
-  - Boxes near the end of Versalife Level 2 Labs (Mission 6) will no longer be randomized to prevent softlocks when unmovable items are randomized into those locations.
-  - Upgrades to the EUAS (IFF) aug will actually display on screen (Light level and environmental hazard warnings).
-  - Map tweaks will no longer sometimes unintentionally receive tweaks intended for the Revision versions of the maps.
-  - Weapons with alternate ammo types that fire projectiles (like the mini crossbow) will have their firing rate randomized based on the original firing rate.
-  - The police boat in Battery Park (Mission 2) is now easier to highlight and speak to.  This makes it easier to take the boat back to HQ after destroying the generator.
-  - GEP guns that were received from conversations or from crates will no longer float inside of you after moving to a new level.
-  - Fixes when using the scope on the GEP gun:
-    - The regular scope overlay will no longer be drawn over top of the rocket view.
-    - The scope will close after each shot, even if you have multiple shots in the clip.
-    - The GEP gun will not force a reload after every scoped shot if you have multiple shots in a clip.
-    - The FOV of the game will not get stuck in a zoomed in state after firing a scoped GEP shot with "Weapon Auto Reload" disabled.
-  - Computers will maintain their original security levels (determining whether or not you are allowed to hack them without a NUKE virus).
-  - Teleporter to exit Vandenberg Tunnels (Mission 12) is now placed in the correct location.
 - Vanilla? Madder! 2.0 fixes and improvements
   - Objects will no longer be sometimes left without collision when they are replaced by the Randomizer.
   - The conversation in the intro will actually start playing.
@@ -119,10 +144,15 @@
   - "Signs of the End": Look at the signs marking the different endings in Area 51 Sector 4.
   - "Construction Inspector": Look at the UC Control signs in Area 51 Sector 4.
   - "Fire it up!": Use the pipe flame button in the coolant area of Area 51 Sector 4 (Mission 15).
-- The Bingo Viewer now has a window and file icon: a dynamic portrait of Walton Simons.
-- Tracer Tong's randomized location at Vandenberg Command Front Gate is now closer to the vending machine, to better balance the speedrun.
-- Re-added the Autosaves-Only mode. This was previously removed in favor of Limited Saves and Fixed Saves.
-- Utility bots now have a smarter retry when they fail to spawn, potentially improving races/tournaments.
+- Bingo Viewer changes:
+  - Goals can be marked to help you keep track of what line you're aiming for.
+    - Left click to mark a goal
+    - Right click to unmark a goal
+    - Drag to mark/unmark an entire bingo line
+  - The window no longer locks up temporarily when moved or resized on certain systems.
+  - Font size more accurately scales to best fit the tile size.
+  - The green progress bars now fit to the edges of their tile
+  - The Bingo Viewer now has a window and file icon: a dynamic portrait of Walton Simons.
 </details>
 
 ## Intra-Patch Changes
@@ -132,6 +162,9 @@
 - Some flickering lights that weren't being caught by the "Flickering Lights" setting in GMDX will now also be adjusted.
 - Full Game Shuffle now correctly gives you all 13 missions instead of just 12.
 - If Area 51 is played in Speedrun Shuffle, the endgame cutscene will be the one chosen in that mission.
+- Speedrun Shuffle gets increased skill points throughout Area 51.
 - In Speedrun Shuffle mode, missions are now shown in correct order on the splits view and credits screen.
 - When goals rando is enabled, the Vandenberg Command Comms door will now open once you've completed the Computer map.
 - Slightly tweaked Speedrun Shuffle par times.
+- "Catch the News" bingo goal is more lenient, allowing multiple TVs to be watched in the same map (Vanilla only ever has one TV per map, other mods sometimes have multiple).
+- Added preset for Speedrun Shuffle.

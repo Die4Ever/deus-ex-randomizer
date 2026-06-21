@@ -426,7 +426,7 @@ simulated function InitHints()
                 AddHint("The locations of the generator, computer, and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
                 AddHint("The Email Computer contains a hint about the generator location.", "Make sure to read your emails!");
             }
-            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
                 AddHint("There are lots of enemies here!", "Look for thermoptic camo to help.");
                 AddHint("There are lots of enemies here!", "Look for ballistic armor to help.");
                 AddHint("There are lots of enemies here!", "Look for fire extinguishers to stun enemies.");
@@ -453,7 +453,7 @@ simulated function InitHints()
             }
             break;
         case "03_NYC_747":
-            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) AddHint("Anna will no longer trigger a LAM", "while she's allied to you!");
+            if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) AddHint("Anna will no longer trigger a LAM", "while she's allied to you!");
             break;
         }
         break;

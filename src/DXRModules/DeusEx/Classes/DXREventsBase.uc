@@ -53,6 +53,7 @@ function float PeepTexDistance(name texName);
 static function int GetBingoFailedEvents(string eventname, out string failed[10]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
+function CheckBingoPrerequisites(string eventname, int eMax);
 
 //#region Watched Actors
 function AddWatchedActor(Actor a,String eventName)
@@ -214,6 +215,77 @@ function MarkBingoFailedGeneric()
     if (curMission == 98) return;
     data = class'PlayerDataItem'.static.GiveItem(player());
     data.CheckForExpiredBingoGoals(dxr, curMission);
+}
+
+//Check to see if a goal on a newly generate board had any prerequisites that will cause the goal to be impossible
+function MarkBingoFailedPrerequisites()
+{
+    local PlayerDataItem data;
+    local int x,y;
+    local string event;
+    local int progress,max;
+    local int curMission;
+
+    curMission = dxr.dxInfo.missionNumber;
+
+    if (curMission == 98) return;
+    data = class'PlayerDataItem'.static.GiveItem(player());
+
+    for (x=0;x<5;x++){
+        for (y=0;y<5;y++){
+            data.GetBingoSpot(x,y,event,,progress,max);
+
+            //If the goal is one that requires you to kill/knockout/takedown a specific person, fail the goal immediately
+            if (BingoGoalNeedsSpecificTakedown(event)){
+                if (IsSpecificTakedownBingoGoalAlreadyDead(event)){
+                    MarkBingoAsFailed(event);
+                    continue;
+                }
+            } else if (InStr(event,"_Played")!=-1){
+                //If it's a conversation play flag, fail if it's already been played
+                FailBingoIfFlagValue(event,StringToName(event),True);
+            }
+
+            //Could also check with a more specific function for any other particular prerequisites for non-kill goals
+            CheckBingoPrerequisites(event,max);
+        }
+    }
+}
+
+function bool BingoGoalNeedsSpecificTakedown(string event)
+{
+    //These checks all cover the mission specific variants (like _DeadM03)
+    //This does not cover the "class" variants, because it's mostly for
+    if (InStr(event,"_Dead")!=-1) return true;
+    if (InStr(event,"_Unconscious")!=-1) return true;
+    if (InStr(event,"_Takedown")!=-1) return true;
+    if (InStr(event,"_PlayerUnconscious")!=-1) return true;
+    if (InStr(event,"_PlayerDead")!=-1) return true;
+    if (InStr(event,"_PlayerTakedown")!=-1) return true;
+    return false;
+}
+
+function bool IsSpecificTakedownBingoGoalAlreadyDead(string event)
+{
+    local string deadname;
+    local name flagname;
+    local int underscore;
+
+    underscore = FindLast(event,"_"); //Find the last underscore so we can split left of it
+    if (underscore==-1) return false; //There wasn't an underscore, so idk wtf
+    deadname = Left(event,underscore); //Grab the bindname from before the underscore
+    deadname = deadname$"_Dead"; //The _Dead flag will cover both dead and unconscious cases
+
+    flagname = StringToName(deadname);
+
+    return dxr.flagbase.GetBool(flagname);
+}
+
+function FailBingoIfFlagValue(string event, name flagname, bool flagval)
+{
+    if (dxr.flagbase.GetBool(flagname)==flagval){
+        MarkBingoAsFailed(event);
+    }
 }
 
 static function bool IsBingoGoalAvailableLater(string bingoEvent)
@@ -1607,6 +1679,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     //Make sure any impossible goals are marked as failed
     MarkBingoFailedSpecial();
     MarkBingoFailedGeneric();
+    MarkBingoFailedPrerequisites();
 
     // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();

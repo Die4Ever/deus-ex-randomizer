@@ -187,8 +187,7 @@ function PreFirstEntryMapFixes()
             sw = #var(prefix)Switch2(AddSwitch(vect(1041.5,935,160), rot(0, 0, 0), 'GMDXBarracksDoorDXR'));
             m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',sw));
             if (m!=None){
-                button.Event='GMDXBarracksDoorDXR'; //Throw a DXR on there to make sure it's unique...
-                m.Tag=button.Event;
+                m.Tag=sw.Event;
             }
         }
 
@@ -639,17 +638,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        foreach AllActors(class'#var(DeusExPrefix)Mover',m){
-            if (m.Region.Zone.ZoneGroundFriction < 8) {
-                //Less than default friction should be the freezer
-                m.Tag='FreezerDoor';
-                if(dxr.flags.settings.doorsdestructible >= 90) { // this door can be rough in speedruns
-                    m.bBreakable = true;
-                    m.minDamageThreshold = 40;
-                    m.doorStrength = 0.5;
-                }
-            }
-        }
+        //Add the freezer door to the security computer on the meeting room desk
         foreach AllActors(class'#var(prefix)ComputerSecurity',cs){
             if (cs.UserList[0].UserName=="LUCKYMONEY"){
                 cs.Views[2].doorTag='FreezerDoor';
@@ -664,7 +653,17 @@ function PreFirstEntryMapFixes()
         }
 
         //A switch inside the freezer to open it back up... just in case
-        AddSwitch( vect(-1560.144409,-3166.475098,-315.504028), rot(0,16408,0), 'FreezerDoor');
+        sw= #var(prefix)Switch2(AddSwitch( vect(-1560.144409,-3166.475098,-315.504028), rot(0,16408,0), 'FreezerDoor'));
+        m = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',sw));
+
+        if (m!=None){
+            m.Tag='FreezerDoor';
+            if(dxr.flags.settings.doorsdestructible >= 90) { // this door can be rough in speedruns
+                m.bBreakable = true;
+                m.minDamageThreshold = 40;
+                m.doorStrength = 0.5;
+            }
+        }
 
         class'PoolTableManager'.static.CreatePoolTableManagers(self);
         AddActor(class'PoolTableResetButton',vect(-802.5,-2563.3,10),rot(0,16384,0));

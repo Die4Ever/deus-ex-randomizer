@@ -249,6 +249,12 @@ function bool BindPresets()
         StartPreset();
         return true;
     }
+    if(dxr.rando_beaten >= 3 && PresetButton("Speedrun Shuffle (Beta)", f.GameModeHelpText(f.SpeedShuffle))) {
+        f.gamemode = f.SpeedShuffle;
+        f.loadout = 16; // speed enhancement
+        StartPreset();
+        return true;
+    }
 
     s = f.GameModeHelpText(f.HalloweenMode);
     i = InStr(s, "|n|nBe warned");// remove the warning about fixed limited saves

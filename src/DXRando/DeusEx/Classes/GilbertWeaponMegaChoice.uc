@@ -45,7 +45,7 @@ function GenerateWeaponChoice()
                         stealthChoice = choiceIter;
                     } else if (InStr(choiceIter.choiceText,"have my pistol")!=-1){
                         pistolChoice = choiceIter;
-                    } else if (InStr(choiceIter.choiceText,"have my knife")!=-1){
+                    } else if (InStr(choiceIter.choiceText,"have my knife")!=-1){ //Confix removes the option to give Gilbert a knife, so this won't be found
                         knifeChoice = choiceIter;
                     } else if (InStr(choiceIter.choiceText,"have my mini-crossbow")!=-1){
                         crossbowChoice = choiceIter;
@@ -63,6 +63,8 @@ function GenerateWeaponChoice()
     if (insertPoint==None ||
         sawedOffChoice==None || stealthChoice==None || pistolChoice==None ||
         knifeChoice==None || crossbowChoice==None || noHelpChoice==None){
+        //Mods using Confix will always fall in here, since there is no knife option
+        //But they should already handle this, so it's not important
 
         log("ERROR: GilbertWeaponMegaChoice failed to find all conversation options!  Is there a conversation altering mod installed?");
         log("insertPoint: "$insertPoint);

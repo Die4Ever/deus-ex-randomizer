@@ -418,10 +418,231 @@ function TimerMapFixes()
             }
         }
 
+        if (#defined(gmdxnotae)){
+            GMDXUnatcoTroopTimerChecks();
+        }
+
         break;
     }
 }
 //#endregion
+
+//A dupe of the vanilla spawning logic, which is commented out
+//in the GMDX Mission08 mission script.
+//Brings in both original troops and any clones
+function GMDXUnatcoTroopTimerChecks()
+{
+    local RiotCop cop;
+    local UNATCOTroop troop;
+    local #var(prefix)ScriptedPawn sp;
+    local int count;
+
+    // spawn reinforcements as cops are killed
+    if (!dxr.flagbase.GetBool('MS_UnhideTroop1'))
+    {
+        count = 0;
+        foreach AllActors(class'RiotCop', cop, 'Cop1')
+            count++;
+
+        if (count == 0)
+        {
+            //foreach AllActors(class'UNATCOTroop', troop, 'troop1')
+            //    troop.EnterWorld();
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                switch(sp.Tag){
+                    case 'troop1':
+                    case 'troop1_clone':
+                        sp.EnterWorld();
+                        break;
+                }
+            }
+
+            dxr.flagbase.SetBool('MS_UnhideTroop1', True,, 9);
+        }
+    }
+    if (!dxr.flagbase.GetBool('MS_UnhideTroop2'))
+    {
+        count = 0;
+        foreach AllActors(class'RiotCop', cop, 'Cop2')
+            count++;
+
+        if (count == 0)
+        {
+            //foreach AllActors(class'UNATCOTroop', troop, 'troop2')
+            //    troop.EnterWorld();
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                switch(sp.Tag){
+                    case 'troop2':
+                    case 'troop2_clone':
+                        sp.EnterWorld();
+                        break;
+                }
+            }
+
+            dxr.flagbase.SetBool('MS_UnhideTroop2', True,, 9);
+        }
+    }
+    if (!dxr.flagbase.GetBool('MS_UnhideTroop3'))
+    {
+        count = 0;
+        foreach AllActors(class'RiotCop', cop, 'Cop3')
+            count++;
+
+        if (count == 0)
+        {
+            //foreach AllActors(class'UNATCOTroop', troop, 'troop3')
+            //    troop.EnterWorld();
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                switch(sp.Tag){
+                    case 'troop3':
+                    case 'troop3_clone':
+                        sp.EnterWorld();
+                        break;
+                }
+            }
+
+            dxr.flagbase.SetBool('MS_UnhideTroop3', True,, 9);
+        }
+    }
+    if (!dxr.flagbase.GetBool('MS_UnhideTroop4'))
+    {
+        count = 0;
+        foreach AllActors(class'RiotCop', cop, 'Cop4')
+            count++;
+
+        if (count == 0)
+        {
+            //foreach AllActors(class'UNATCOTroop', troop, 'troop4')
+            //    troop.EnterWorld();
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                switch(sp.Tag){
+                    case 'troop4':
+                    case 'troop4_clone':
+                        sp.EnterWorld();
+                        break;
+                }
+            }
+
+            dxr.flagbase.SetBool('MS_UnhideTroop4', True,, 9);
+        }
+    }
+    if (!dxr.flagbase.GetBool('MS_UnhideTroop5'))
+    {
+        count = 0;
+        foreach AllActors(class'RiotCop', cop, 'Cop5')
+            count++;
+
+        if (count == 0)
+        {
+            //foreach AllActors(class'UNATCOTroop', troop, 'troop5')
+            //    troop.EnterWorld();
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                switch(sp.Tag){
+                    case 'troop5':
+                    case 'troop5_clone':
+                        sp.EnterWorld();
+                        break;
+                }
+            }
+
+            dxr.flagbase.SetBool('MS_UnhideTroop5', True,, 9);
+        }
+    }
+    if (!dxr.flagbase.GetBool('MS_UnhideTroop6'))
+    {
+        count = 0;
+        foreach AllActors(class'RiotCop', cop, 'Cop6')
+            count++;
+
+        if (count == 0)
+        {
+            //foreach AllActors(class'UNATCOTroop', troop, 'troop6')
+            //    troop.EnterWorld();
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                switch(sp.Tag){
+                    case 'troop6':
+                    case 'troop6_clone':
+                        sp.EnterWorld();
+                        break;
+                }
+            }
+
+            dxr.flagbase.SetBool('MS_UnhideTroop6', True,, 9);
+        }
+    }
+}
+
+//GMDXv9 just sticks all the UNATCO guys into a pile near the
+//basketball court, which sucks for that as a random start location.
+//Move them back to where they were in vanilla and throw them out of
+//world, so that they spawn in as you kill riot cops, like vanilla.
+function GMDXInitUnatcoTroopLocations()
+{
+    local int troopGroup[5];
+    local UNATCOTroop troop;
+    local int i;
+    local vector groupLoc[2];
+
+    foreach AllActors(class'UNATCOTroop',troop){
+        i=-1;
+        switch (troop.Tag){
+            case 'troop1':
+                groupLoc[0]=vectm(-2189.358643,-121.666634,-439.463501);
+                groupLoc[1]=vectm(-2166.745850,-184.898239,-439.463593);
+                i = 0;
+                break;
+            case 'troop2':
+                groupLoc[0]=vectm(1250.246338,-2782.366943,-439.463593);
+                groupLoc[1]=vectm(1314.120728,-2762.695801,-439.463593);
+                i = 1;
+                break;
+            case 'troop3':
+                groupLoc[0]=vectm(-968.075439,-2133.654053,-439.463593);
+                groupLoc[1]=vectm(-1059.733398,-2128.914307,-439.463593);
+                i = 2;
+                break;
+            case 'troop4':
+                groupLoc[0]=vectm(2134.842041,955.861084,-439.463593);
+                groupLoc[1]=vectm(2129.507080,872.361023,-439.463593);
+                i = 3;
+                break;
+            case 'troop5':
+                groupLoc[0]=vectm(-2641.368896,1566.562012,-454.205292);
+                groupLoc[1]=vectm(-2643.181885,1649.113647,-451.688416);
+                i = 4;
+                break;
+        }
+
+        if (i!=-1){
+            troop.SetLocation(groupLoc[troopGroup[i]]);
+
+            if (troopGroup[i]==0){
+                troopGroup[i]=1;
+            }
+        }
+    }
+}
+
+//This has to be done later than PreFirstEntry, otherwise the game locks up
+function SendGMDXUNATCOTroopsOutOfWorld(#var(prefix)ScriptedPawn sp)
+{
+    switch(sp.Tag){
+        case 'troop1':
+        case 'troop1_clone':
+        case 'troop2':
+        case 'troop2_clone':
+        case 'troop3':
+        case 'troop3_clone':
+        case 'troop4':
+        case 'troop4_clone':
+        case 'troop5':
+        case 'troop5_clone':
+        case 'troop6':
+        case 'troop6_clone':
+            sp.LeaveWorld();
+            break;
+    }
+}
 
 //#region Pre First Entry
 function PreFirstEntryMapFixes()
@@ -481,6 +702,10 @@ function PreFirstEntryMapFixes()
                 ChangeInitialAlliance(pawn,'Player',-1,true);
                 pawn.bInWorld=false;
                 pawn.InitializePawn();
+            }
+
+            if (#defined(gmdxnotae)){
+                GMDXInitUnatcoTroopLocations();
             }
 
             // fix alliances
@@ -863,6 +1088,9 @@ function PostFirstEntryMapFixes()
                 //Make sure the troopers are running to the reinforcement points
                 foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
                     SetUNATCOTargetOrders(sp);
+                    if (#defined(gmdxnotae)){
+                        SendGMDXUNATCOTroopsOutOfWorld(sp);
+                    }
                 }
 
                 //A point for the MJ12 Attack Force to run to (the stairs of Osgoode & Sons)

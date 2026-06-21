@@ -424,8 +424,18 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
 static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int amount)
 {
     local inventory item;
+    local ScriptedPawn sp;
+    local vector spawnLoc;
 
-    item = p.Spawn(iclass, p);
+    spawnLoc = p.Location;
+    sp = ScriptedPawn(p);
+    if (sp!=None && sp.bInWorld==False){
+        //This helps for non-vanilla (at least GMDX) where
+        //these spawns seem to fail for out-of-world clones
+        spawnLoc = sp.WorldPosition;
+    }
+
+    item = p.Spawn(iclass, p,,spawnLoc);
     if( item == None ) return None;
     if(DeusExPickup(item)!=None && amount > 0) {
         DeusExPickup(item).NumCopies = amount;
@@ -861,7 +871,34 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders, optional bool f
     RebaseInventory(a);
     RebaseInventory(b);
 
+    //Move the shadow of scripted pawns
+    RebaseShadow(a);
+    RebaseShadow(b);
+
     return true;
+}
+
+//Logic borrowed from the Shadow class itself
+function RebaseShadow(Actor a)
+{
+    local Vector loc;
+    local ScriptedPawn sp;
+
+    sp = ScriptedPawn(a);
+
+    if (sp==None) return;
+    if (sp.bHasShadow==false) return;
+    if (sp.Shadow==None) return;
+    if (Shadow(sp.Shadow)==None) return;
+    if (Shadow(sp.Shadow).bHasDecal==false) return;
+
+    sp.Shadow.DetachDecal();
+
+    //Put it in the same spot the regular spawn logic would put it
+    loc = sp.Location-vect(0,0,1)*sp.CollisionHeight;
+
+    sp.Shadow.SetLocation(loc);
+    sp.Shadow.AttachDecal(32,vect(0.1,0.1,0));
 }
 
 function RebaseInventory(Actor a)

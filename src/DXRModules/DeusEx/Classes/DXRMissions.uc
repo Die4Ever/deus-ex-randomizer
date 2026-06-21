@@ -971,6 +971,8 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
             sp.SetLocation(sp.Location+vect(0,0,20000));
         }
         else a.bCollideWorld = true;
+
+        RebaseShadow(sp); //Make sure the actor has their shadow
     }
     else if ( v != None ) {
 #ifndef hx

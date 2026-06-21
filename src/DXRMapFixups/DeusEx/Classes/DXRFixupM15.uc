@@ -81,6 +81,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     local Vector loc;
     local #var(prefix)Fan1 fan;
     local #var(prefix)WaltonSimons ws;
+    local float rad, height;
 
     //Make it only possible to turn the power on, make it impossible to turn the power off again
     foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
@@ -189,7 +190,18 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
             loc = dlt.Location;
             loc.z -= 100.0;
             dlt.SetLocation(loc);
-            dlt.SetCollisionSize(dlt.CollisionRadius, dlt.CollisionHeight + 100.0);
+
+            rad = dlt.CollisionRadius;
+            height = dlt.CollisionHeight+100.0;
+            if (#defined(gmdx)){
+                //Put the radius back to default, instead of the smaller 40
+                rad = dlt.Default.CollisionRadius;
+
+                //Maybe we should remove the tag from the DLT too in GMDX
+                //so it doesn't play if you destroy the hatch from afar?
+                //dlt.Tag='';
+            }
+            dlt.SetCollisionSize(rad, height);
 
             break;
         }
@@ -843,7 +855,6 @@ function PreFirstEntryMapFixes()
         PreFirstEntryMapFixes_Page(isVanilla);
         break;
     }
-
 }
 //#endregion
 
@@ -953,6 +964,7 @@ function AnyEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)Keypad k;
+    local #var(prefix)SkillAwardTrigger sat;
 
     switch(dxr.localURL) {
     case "15_area51_final":
@@ -963,6 +975,12 @@ function PostFirstEntryMapFixes()
             }
         }
         break;
+    }
+
+    if(dxr.flags.moresettings.shuffle_missions > 0) {
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger', sat) {
+            sat.skillPointsAdded = max(200, sat.skillPointsAdded);
+        }
     }
 }
 //#endregion

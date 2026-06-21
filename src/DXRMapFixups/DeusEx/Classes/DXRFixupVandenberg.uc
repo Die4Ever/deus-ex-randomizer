@@ -750,6 +750,13 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
                 tiffany.GroundSpeed = 180;
                 tiffany.walkAnimMult = 1;
+                if(#defined(gmdx)){
+                    //For whatever reason, Tiffany will flee at the drop of the hat in GMDX
+                    //Just make her fearless, because it sucks for her to die because she
+                    //can't keep herself under control for just a minute.
+                    //AE already does this by default, but it shouldn't hurt to just do it again.
+                    RemoveFears(tiffany);
+                }
             }
         }
 

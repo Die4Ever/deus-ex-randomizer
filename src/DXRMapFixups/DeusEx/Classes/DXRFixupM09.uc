@@ -157,7 +157,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(2152,701,519)); //Ship bunkbed
         Spawn(class'PlaceholderItem',,, vectm(3000.4,511.28,526.4)); //Ship fume extractor
         Spawn(class'PlaceholderItem',,, vectm(1243,-2106,-432)); //Shipyard break room table
-        Spawn(class'PlaceholderItem',,, vectm(2517.303467,-1384.390381,-250.690430)); //Shipyard showers locker 1
+        Spawn(class'PlaceholderItem',,, vectm(2517.303467,-1384.390381,-245.690430)); //Shipyard showers locker 1
         Spawn(class'PlaceholderItem',,, vectm(2474.926270,-1385.917603,-250.689545)); //Shipyard showers locker 2
         Spawn(class'PlaceholderItem',,, vectm(2431.561279,-1385.172363,-250.690308)); //Shipyard showers locker 3
         Spawn(class'PlaceholderItem',,, vectm(2354.278809,-1383.854980,-250.689301)); //Shipyard showers locker 5

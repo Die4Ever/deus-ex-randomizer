@@ -60,7 +60,7 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
-    local bool VanillaMaps;
+    local bool VanillaMaps, GMDXMaps;
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
@@ -77,6 +77,7 @@ function PreFirstEntryMapFixes()
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
+    GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(p);
 
     switch (dxr.localURL)
     {
@@ -157,7 +158,7 @@ function PreFirstEntryMapFixes()
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
             }
 
-            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
                 key.KeyID = 'CrackRoom';
                 key.Description = "'Ton Hotel, North Room Key";
@@ -189,7 +190,7 @@ function PreFirstEntryMapFixes()
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
             }
 
-            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
                 key.KeyID = 'Hotelroom1'; //CrackRoom doesn't exist in Revision M04 - doesn't hurt to add a key to a different room instead
                 key.Description = "'Ton Hotel, South Room Key";
@@ -222,7 +223,7 @@ function PreFirstEntryMapFixes()
 
     //#region NSF HQ
     case "04_NYC_NSFHQ":
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             foreach AllActors(class'#var(prefix)AutoTurret', turret) {
                 turret.Event = '';
                 turret.Destroy();
@@ -259,7 +260,7 @@ function PreFirstEntryMapFixes()
             door.KeyIDNeeded='BasementDoor';
         }
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             k = #var(prefix)Karkian(Spawnm(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0)));
             k.BindName="NSFMinotaur";
             k.bImportant = true;
@@ -316,7 +317,29 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
-        if (VanillaMaps){
+        if (GMDXMaps){
+            if(dxr.flags.settings.goals > 0) {
+                //Make sure that sending the signal instantly makes everyone hate you, then triggers the Walt infolink
+                AddDelayEvent('SendingSignal','UNATCOHatesPlayer',0.5);
+            }
+
+            //GMDX already handles *not* sending the signal if the dishes aren't aligned, but it doesn't play the
+            //"Hey, the dishes aren't aligned, dipshit" infolink if you send the signal early.  Make that work.
+            ft = Spawn(class'#var(prefix)FlagTrigger');
+            ft.FlagName='CanSendSignal';
+            ft.flagValue=False;
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.Tag='SendIt';
+            ft.Event='SignalSendFailed';
+            ft.SetCollision(false,false,false);
+
+            dt = Spawn(class'#var(prefix)DatalinkTrigger');
+            dt.datalinkTag='DL_PaulGoodJob'; //Not so good a job, it seems
+            dt.Tag='SignalSendFailed';
+            dt.SetCollision(false,false,false);
+
+        } else if (VanillaMaps){
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
                 if(dxr.flags.settings.goals > 0) {
@@ -344,6 +367,11 @@ function PreFirstEntryMapFixes()
                 }
                 break;
             }
+        }
+
+        if (VanillaMaps){
+            //Make sure we don't shuffle items beyond the teleporter
+            MassSetSecretGoalBoxAll(vectm(814,-3102,200),vectm(-2397,-2087,-10),true);
         }
 
 
@@ -408,7 +436,7 @@ function PreFirstEntryMapFixes()
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.AllEnabled()) {
             key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             key.KeyID = 'JaimeClosetKey';
             key.Description = "MedLab Closet Key Code";

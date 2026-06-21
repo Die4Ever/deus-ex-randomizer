@@ -114,15 +114,31 @@ function MoveTurret(#var(prefix)AutoTurret t, vector loc)
     local Vector v1, v2;
     local Rotator rot, intendedRot;
     local vector origLoc;
+    local int attempts;
+    local bool rc;
 
     origLoc = loc;
 
-    if( ! GetTurretLocation(loc, rotation) ) {
-        warning("MoveTurret failed to GetTurretLocation at "$loc);
+    rc=False;
+    for (attempts=0;attempts<3 && rc==False;attempts++){
+        loc = origLoc;
+        if( ! GetTurretLocation(loc, rotation) ) {
+            warning("MoveTurret failed to GetTurretLocation at "$loc$", attempt "$attempts);
+            continue;
+        }
+
+        rc = t.SetLocation(loc);
+        if (rc==False){
+            warning("MoveTurret failed to move turret "$t$" to "$loc$" (Attempt "$attempts$")");
+        }
+    }
+
+    if (rc==False){
+        //If the move fails, don't do anything further, just give up
+        warning("MoveTurret failed to find valid location for "$t$" after "$attempts$" attempts");
         return;
     }
 
-    t.SetLocation(loc);
     t.SetRotation(rotation);
 
     //to move AutoTurretGun, copied from AutoTurret.uc PreBeginPlay()
@@ -164,23 +180,31 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc, bool small)
     local class<#var(prefix)AutoTurret> turretClass;
     local rotator rotation, intendedRot;
     local vector origLoc;
+    local int attempts;
 
     origLoc = loc;
-
-    if( ! GetTurretLocation(loc, rotation) ) {
-        warning("SpawnTurret failed to GetTurretLocation at "$loc);
-        return None;
-    }
 
     if (small){
         turretClass=class'#var(injectsprefix)AutoTurretSmall';
     } else {
         turretClass=class'#var(prefix)AutoTurret';
     }
-    t = Spawn(turretClass,,, loc, rotation);
+
+    for (attempts=0;attempts<3 && t==None;attempts++){
+        loc = origLoc;
+        if( ! GetTurretLocation(loc, rotation) ) {
+            warning("SpawnTurret failed to GetTurretLocation at "$loc$", attempt "$attempts);
+            continue;
+        }
+
+        t = Spawn(turretClass,,, loc, rotation);
+        if (t==None){
+            warning("SpawnTurret failed at "$loc$" (Attempt "$attempts$")");
+        }
+    }
 
     if( t == None ) {
-        warning("SpawnTurret failed at "$loc);
+        warning("SpawnTurret failed at "$origLoc$" after "$attempts$" attempts");
         return None;
     }
     t.Tag = t.Name;
@@ -622,12 +646,21 @@ function Actor _SpawnBot(class<Actor> c)
 function DestroyMedbotDoors()
 {
     local #var(DeusExPrefix)Mover m;
+    local bool GMDXMaps;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
+        GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
         foreach AllActors(class'#var(DeusExPrefix)Mover', m) {
-            if(m.name == 'DeusExMover0' || m.name == 'DeusExMover2') {
-                DestroyMover(m);
+            if (!GMDXMaps){
+                if(m.name == 'DeusExMover0' || m.name == 'DeusExMover2') {
+                    DestroyMover(m);
+                }
+            } else {
+                //Different names for the movers in GMDX
+                if(m.name == 'DeusExMover19' || m.name == 'DeusExMover2') {
+                    DestroyMover(m);
+                }
             }
         }
         break;

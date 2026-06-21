@@ -1,26 +1,31 @@
 class MenuChoice_BalanceMaps extends MenuChoice_BalanceEtc;
 
 static function bool MinorEnabled()
-{
+{// enabled even in Zero Rando Pure by default
     return default.value>0;
 }
 
 static function bool ModerateEnabled()
-{
-    return (default.value>2) || (default.value==1 && !class'DXRFlags'.default.bZeroRando);
+{// moderate changes, enabled in Zero Rando Plus and above
+    return (default.value>2) || (default.value==1 && !class'DXRFlags'.default.bZeroRandoPure);
 }
 
-static function bool MajorEnabled()
-{
+static function bool AllEnabled()
+{// major, enabled in Rando Lite and above
     return (default.value>3) || (default.value==1 && !class'DXRFlags'.default.bReducedRando);
 }
 
 static function int EnabledLevel()
-{
+{// use for flags hash, and endgame credits display
     if(default.value != 1) return default.value;
-    if(class'DXRFlags'.default.bZeroRando) return 2;
+    if(class'DXRFlags'.default.bZeroRandoPure) return 2;
     if(class'DXRFlags'.default.bReducedRando) return 3;
     return 4;
+}
+
+static function bool IsEnabled()
+{// just don't use IsEnabled
+    return AllEnabled();
 }
 
 defaultproperties
