@@ -855,7 +855,6 @@ function PreFirstEntryMapFixes()
         PreFirstEntryMapFixes_Page(isVanilla);
         break;
     }
-
 }
 //#endregion
 
@@ -965,6 +964,7 @@ function AnyEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)Keypad k;
+    local #var(prefix)SkillAwardTrigger sat;
 
     switch(dxr.localURL) {
     case "15_area51_final":
@@ -975,6 +975,12 @@ function PostFirstEntryMapFixes()
             }
         }
         break;
+    }
+
+    if(dxr.flags.moresettings.shuffle_missions > 0) {
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger', sat) {
+            sat.skillPointsAdded = max(200, sat.skillPointsAdded);
+        }
     }
 }
 //#endregion
