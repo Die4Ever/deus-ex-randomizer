@@ -53,7 +53,7 @@ function float PeepTexDistance(name texName);
 static function int GetBingoFailedEvents(string eventname, out string failed[10]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
-function CheckBingoPrerequisites(string eventname, int eMax);
+function CheckBingoPrerequisites(string eventname, int eMax, int end_mission);
 
 //#region Watched Actors
 function AddWatchedActor(Actor a,String eventName)
@@ -218,7 +218,7 @@ function MarkBingoFailedGeneric()
 }
 
 //Check to see if a goal on a newly generate board had any prerequisites that will cause the goal to be impossible
-function MarkBingoFailedPrerequisites()
+function MarkBingoFailedPrerequisites(int end_mission)
 {
     local PlayerDataItem data;
     local int x,y;
@@ -247,7 +247,7 @@ function MarkBingoFailedPrerequisites()
             }
 
             //Could also check with a more specific function for any other particular prerequisites for non-kill goals
-            CheckBingoPrerequisites(event,max);
+            CheckBingoPrerequisites(event,max,end_mission);
         }
     }
 }
@@ -1679,7 +1679,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     //Make sure any impossible goals are marked as failed
     MarkBingoFailedSpecial();
     MarkBingoFailedGeneric();
-    MarkBingoFailedPrerequisites();
+    MarkBingoFailedPrerequisites(end_mission);
 
     // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();

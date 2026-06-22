@@ -4330,7 +4330,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
 //This is checked when generating a new board.  Kind of the inverse of the GetBingoFailedEvents above,
 //but we don't necessarily have the context of all the events for that function.  Most importantly,
 //here we won't have the context of people who have died that aren't bImportant.
-function CheckBingoPrerequisites(string eventname, int eMax)
+function CheckBingoPrerequisites(string eventname, int eMax, int end_mission)
 {
     local int num;
 
@@ -4621,6 +4621,14 @@ function CheckBingoPrerequisites(string eventname, int eMax)
 
     case "AnnaKillswitch":
         FailBingoIfFlagValue(eventname, 'AnnaNavarre_Dead', true);
+        break;
+
+    case "SandraRenton_PlayerTakedown":
+        if (dxr.dxInfo.missionNumber == 8 && end_mission < 12){ //If you don't have a chance to see Sandra again...
+            FailBingoIfFlagValue(eventname, 'SandraWentToCalifornia', true); //Can't kill her in mission 8 if she went to California
+        } else if (dxr.dxInfo.missionNumber > 8){
+            FailBingoIfFlagValue(eventname, 'SandraWentToCalifornia', false); //Can't kill her after mission 8 unless she went to California
+        }
         break;
 
 
