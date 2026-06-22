@@ -10,3 +10,32 @@ simulated function Tick(float deltaTime)
     Super.Tick(deltaTime);
     bCanTrack = oldbCanTrack;
 }
+
+function RenderPortal(canvas Canvas)
+{
+    local bool portalRejected, oldCanvasFlipFlop;
+    local rotator rdif;
+    local vector rloc;
+
+
+    if (player.bGepProjectileInFlight){
+        rdif=player.aGEPProjectile.Rotation;
+        rloc=player.aGEPProjectile.Location+(Rocket(player.aGEPProjectile).PortalOffset>>rdif);
+    } else {
+        rloc=player.Location+CalcDrawOffset();
+        rdif=player.ViewRotation;
+    }
+
+    if (player.FastTrace(rloc)==False){
+        portalRejected = true;
+        oldCanvasFlipFlop = bFlipFlopCanvas;
+        bFlipFlopCanvas = true;
+    }
+
+    //When bFlipFlopCanvas==false, draws the portal
+    Super.RenderPortal(Canvas);
+
+    if (portalRejected){
+        bFlipFlopCanvas = oldCanvasFlipFlop;
+    }
+}

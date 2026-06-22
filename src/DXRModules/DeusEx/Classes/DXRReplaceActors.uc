@@ -32,7 +32,7 @@ function ReplaceActorTransfersInConversations()
     local ItemReplacement swapItems[5];
     local ConEventTransferObject ceto;
 
-#ifdef gmdx
+#ifdef gmdxnotae
     swapItems[numSwaps].replace="WeaponGEPGun";
     swapItems[numSwaps].with="#var(package).GMDXGepGun";
     numSwaps++;
@@ -192,11 +192,11 @@ function ReplaceActors()
         else if( #var(prefix)AlarmUnit(a) != None ) {
             ReplaceAlarmUnit(#var(prefix)AlarmUnit(a));
         }
-#ifdef gmdx
+#ifdef gmdxnotae
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
         }
-        else if( ScriptedGrenadeTrigger(a) != None && !#defined(gmdxae)) {
+        else if( ScriptedGrenadeTrigger(a) != None ) {
             //These are being replaced to fix ADS triggering the scripted grenades
             //GMDX: AE already fixes this in a reasonable way, so no need to replace there
             ReplaceScriptedGrenadeTrigger(ScriptedGrenadeTrigger(a));
@@ -219,7 +219,7 @@ function class<inventory> ReplaceClassName(class<inventory> inv)
         case class'#var(prefix)Binoculars':
             return class'DXRBinoculars';
 #endif
-#ifdef gmdx
+#ifdef gmdxnotae
         case class'WeaponGEPGun':
             return class'GMDXGEPGun';
 #endif
@@ -427,7 +427,7 @@ function ReplaceGEPGun(WeaponGEPGUN a)
 #endif
 }
 
-#ifdef gmdx
+#ifdef gmdxnotae
 function ReplaceScriptedGrenadeTrigger(ScriptedGrenadeTrigger a)
 {
     local DXRScriptedGrenadeTrigger n;
