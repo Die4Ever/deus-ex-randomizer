@@ -2765,7 +2765,7 @@ function PercolateBeltItem(int posStart, int posEnd)
 //Is the Location of a inside the collision cylinder of other?
 //Note that this does mean there still can be some overlap, we're
 //just making sure the center of the object is outside the collision radius
-static function bool ActorOverlappingOther(Actor a, Actor other, optional float slopFactor)
+static function bool ActorOverlappingOther(Actor a, Actor other, optional float slopFactor, optional bool allowHidden)
 {
     local vector vA,vOther;
 
@@ -2775,7 +2775,7 @@ static function bool ActorOverlappingOther(Actor a, Actor other, optional float 
 
     if (a==None || other==None) return false; //Can't overlap nothing
     if (a==other) return false; //Can't overlap yourself
-    if (a.bHidden || other.bHidden) return false;  //Hidden objects can't overlap
+    if (!allowHidden && (a.bHidden || other.bHidden)) return false;  //Hidden objects can't overlap
 
     if (a.Location.Z > (other.Location.Z + (other.CollisionHeight*slopFactor))) return false; //Above the other
     if (a.Location.Z < (other.Location.Z - (other.CollisionHeight*slopFactor))) return false; //Below the other
