@@ -182,10 +182,13 @@ function SetupEventFastForward()
             nextAction = SetupEventCheckPersona( ConEventCheckPersona(currentEvent), nextLabel );
             break;
 
+        case ET_Speech: //Don't actually play any more of the speech, but still run past them
+            nextAction = EA_NextEvent;
+            break;
+
         case ET_Trade: //Moved (This isn't real though???)
         case ET_Random: //Moved
         case ET_Choice: //Moved
-        case ET_Speech: //Moved (We don't play any more speech)
         case ET_End:
             //player.ClientMessage("Fast Forward ending conversation");
             nextAction = SetupEventEnd( ConEventEnd(currentEvent), nextLabel );
@@ -312,7 +315,9 @@ function FastForward()
 function TerminateConversation(optional bool bContinueSpeech, optional bool bNoPlayedFlag)
 {
     if (!fastForwarding){
-        if (displayMode == DM_FirstPerson && currentEvent!=None && currentEvent.EventType!=ET_End){
+        if ((displayMode == DM_FirstPerson || displayMode == DM_ThirdPerson) &&
+            currentEvent!=None &&
+            currentEvent.EventType!=ET_End){
             //Save these to reuse once the fast forward is finished
             savedContinueSpeech = bContinueSpeech;
             savedNoPlayedFlag = bNoPlayedFlag;
