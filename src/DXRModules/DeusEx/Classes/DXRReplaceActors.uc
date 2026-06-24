@@ -416,7 +416,7 @@ function ReplaceBinoculars(#var(prefix)Binoculars a)
 
 function ReplaceGEPGun(WeaponGEPGUN a)
 {
-#ifndef hx
+#ifdef gmdx
     local GMDXGepGun n;
     n = GMDXGepGun(SpawnReplacement(a, class'GMDXGepGun'));
     if(n == None)

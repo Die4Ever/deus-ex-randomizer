@@ -1,3 +1,4 @@
+#compileif gmdx
 class GMDXGepGun extends WeaponGEPGun;
 // fix for https://github.com/Die4Ever/deus-ex-randomizer/issues/227
 
