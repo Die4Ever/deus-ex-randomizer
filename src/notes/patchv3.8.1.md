@@ -13,4 +13,5 @@
   - GMDX: Using a scope on the GEP Gun will no longer allow you to see through walls.
   - GMDX: Items won't randomize onto the apartment balconies at NSF HQ (Mission 4).
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
+  - GMDX: Keypad to access Tim's closet in Vandenberg Command (Mission 12) now works again alongside the escape button inside.
 </details>
