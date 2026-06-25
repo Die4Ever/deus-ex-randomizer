@@ -788,11 +788,13 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
                 }
             }
             else if(LevelInfo(target) != None || Brush(target) != None) {
-                if(bFirstTarget && dm==None) {
-                    smallestTargetDist = VSize(Location-HitLoc);
-                    smallestTarget = Level;
+                if (class'MenuChoice_FixGlitches'.default.enabled){ //GLITCHFIX-09  /  GLITCHFIX-15
+                    if(bFirstTarget && dm==None) {
+                        smallestTargetDist = VSize(Location-HitLoc);
+                        smallestTarget = Level;
+                    }
+                    minSize = -1; // don't allow any actors after this, but do allow Movers
                 }
-                minSize = -1; // don't allow any actors after this, but do allow Movers
             }
         }
     }
