@@ -935,8 +935,9 @@ function FixUNATCOCarterCloset()
         min_pos = vectm(818,-1454,510);
         max_pos = vectm(1390,-785,-65);
     }
-    MassSetSecretGoalBox(class'Inventory', min_pos, max_pos, true);
-    MassSetSecretGoalBox(class'#var(DeusExPrefix)Decoration', min_pos, max_pos, true);
+
+    //Don't shuffle anything inside, and don't spawn anything in there either
+    MassSetSecretGoalBoxAll(min_pos, max_pos, true);
 
 }
 

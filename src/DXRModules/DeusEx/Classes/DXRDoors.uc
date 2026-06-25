@@ -111,6 +111,25 @@ function SetDoorFixes()
     case "01_NYC_UNATCOHQ":
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
+        // Scott's normally undefeatable door by the entrance
+        door_fixes[num_door_fixes].tag = 'cannotopen';
+        door_fixes[num_door_fixes].frag = sf(class'MetalFragment', BIT_VANILLA);
+        num_door_fixes++;
+
+        // armory door
+        // make it unbreakable, since nothing will be randomized inside it
+        door_fixes[num_door_fixes].breakable = SB_False;
+        door_fixes[num_door_fixes].pickable = SB_False;
+        door_fixes[num_door_fixes].highlight = SB_True;
+        if (VanillaMaps) {
+            door_fixes[num_door_fixes].location = vectm(816.0, -1184.0, 0.0);
+            door_fixes[num_door_fixes].frag = sf(class'MetalFragment', BIT_VANILLA);
+        } else {
+            //Revision
+            door_fixes[num_door_fixes].location = vectm(800.0, -1360.0, -8.0);
+        }
+        num_door_fixes++;
+        break;
     case "05_NYC_UNATCOHQ":
         // Scott's normally undefeatable door by the entrance
         door_fixes[num_door_fixes].tag = 'cannotopen';
