@@ -1929,6 +1929,9 @@ function AddBingoScreen(CreditsWindow cw)
 
 function AddDXRCredits(CreditsWindow cw)
 {
+    //Don't draw a bingo board if bingo is disabled
+    if (class'MenuChoice_ShowBingoBoard'.static.IsEnabled()==False) return;
+
     cw.PrintLn();
     cw.PrintHeader("Bingo");
     AddBingoScreen(cw);

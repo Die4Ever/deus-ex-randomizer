@@ -10,6 +10,7 @@
   - "Make Soup" bingo goal properly detects bodies that spawn already inside the hot tub (For example, if zombies resurrect in the water and then are killed again).
   - If a third person conversation is interrupted, it will attempt to play through as much of the remainder of the conversation as possible.  This helps avoid some situations where a conversation that would normally end with the speaker becoming hostile might be left in a friendly state if the conversation is interrupted.
   - UNATCO HQ armory door is permanently locked and unbreakable until Mission 5.
+  - New option added to show or hide the bingo board.  Zero Rando and Zero Rando Plus will hide the board by default to avoid spoilers.
   - GMDX: Using a scope on the GEP Gun will no longer allow you to see through walls.
   - GMDX: Items won't randomize onto the apartment balconies at NSF HQ (Mission 4).
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.

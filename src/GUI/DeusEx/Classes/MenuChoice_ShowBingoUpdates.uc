@@ -2,6 +2,7 @@ class MenuChoice_ShowBingoUpdates extends DXRMenuUIChoiceInt;
 
 static function bool MessagesEnabled(DXRFlags f)
 {
+    if(class'MenuChoice_ShowBingoBoard'.static.IsEnabled()==false) return false;
     if(f.IsHordeMode()) return false;
     return (default.value==2) ||
            (default.value==3) ||
@@ -11,6 +12,7 @@ static function bool MessagesEnabled(DXRFlags f)
 
 static function bool SoundsEnabled(DXRFlags f)
 {
+    if(class'MenuChoice_ShowBingoBoard'.static.IsEnabled()==false) return false;
     if(f.IsHordeMode()) return false;
     return (default.value==2) ||
            (default.value==4) ||

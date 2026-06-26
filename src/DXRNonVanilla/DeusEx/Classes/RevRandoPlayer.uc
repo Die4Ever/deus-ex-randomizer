@@ -1576,7 +1576,12 @@ exec function ShowBingoWindow()
       return;
    }
 
-	InvokeUIScreen(Class'PersonaScreenBingo');
+   if (class'MenuChoice_ShowBingoBoard'.static.IsEnabled()==False){
+      ClientMessage("Bingo screen disabled");
+      return;
+   }
+
+    InvokeUIScreen(Class'PersonaScreenBingo');
 }
 
 exec function ToggleAutorun()

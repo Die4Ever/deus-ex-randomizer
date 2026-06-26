@@ -13,6 +13,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_OpenMastodon');
 
     CreateChoice(class'MenuChoice_ShowNews');
+    CreateChoice(class'MenuChoice_ShowBingoBoard');
     CreateChoice(class'MenuChoice_ShowBingoUpdates');
 
     CreateChoice(class'MenuChoice_ToggleMemes');
