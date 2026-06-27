@@ -40,7 +40,6 @@
   - Keypad to access Tim's closet in Vandenberg Command (Mission 12) now works again alongside the escape button inside.
   - Bingo goals will be updated appropriately when consuming foods with left click (straight from the world).
   - Scramble grenades will now toggle your augs randomly.
-  - Larger heals are now more balanced across the body, instead of focusing on one limb at a time.
   - Scope Blackout and Scope Scale options are now available.
   - "Death Cam" options are now available for GMDX.
   - Crowd Control "Wine-Glazed Bullets" effect now available
