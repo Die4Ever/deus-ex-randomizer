@@ -13,7 +13,11 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_SaveDuringInfolinks');
     CreateChoice(class'MenuChoice_AutosaveCombat');
     CreateChoice(class'MenuChoice_ShowKeys');
+#endif
+#ifdef hascustomplayer
     CreateChoice(class'MenuChoice_AutoWeaponMods');
+#endif
+#ifdef vanilla
     CreateChoice(class'MenuChoice_AutoLaser');
     CreateChoice(class'MenuChoice_DecoPickupBehaviour');
     CreateChoice(class'MenuChoice_LootActionUseless');
@@ -29,7 +33,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_FixGlitches');
     CreateChoice(class'MenuChoice_NewGamePlus');
     CreateChoice(class'MenuChoice_ShowNewSeed');
-#ifdef vanilla||revision
+#ifdef hascustomplayer
     CreateChoice(class'MenuChoice_LockBelt');
 #endif
 

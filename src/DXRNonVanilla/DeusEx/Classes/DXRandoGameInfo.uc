@@ -38,7 +38,7 @@ function DXRando GetDXR()
 function bool ApproveClass( class<playerpawn> SpawnClass)
 {
     log("DXRandoGameInfo ApproveClass "$SpawnClass);
-    #ifdef revision
+    #ifdef hascustomplayer
     if (SpawnClass==class'#var(PlayerPawn)') return true;
     #endif
     return false;
@@ -46,7 +46,7 @@ function bool ApproveClass( class<playerpawn> SpawnClass)
 
 event playerpawn Login(string Portal, string Options, out string Error, class<playerpawn> SpawnClass)
 {
-    #ifdef revision
+    #ifdef hascustomplayer
     SpawnClass=class'#var(PlayerPawn)'; //Force the player to the rando player class
     #endif
 
@@ -250,6 +250,35 @@ exec function RSummon(string ClassName)
 
     foreach AllActors(class'#var(PlayerPawn)',p){
         p.Summon(ClassName);
+    }
+}
+
+exec function FindLoc()
+{
+    local Inventory LocFinder;
+    local #var(PlayerPawn) p;
+
+    foreach AllActors(class'#var(PlayerPawn)',p){break;}
+
+    LocFinder = class'DXRActorsBase'.static.GiveItem(p, class'WeaponLocFinder');
+    p.PutInHand(LocFinder);
+}
+
+exec function ForceCC(string effect)
+{
+    local DXRCrowdControl cc;
+    local string params[5];
+    local #var(PlayerPawn) p;
+
+    foreach AllActors(class'#var(PlayerPawn)',p){break;}
+
+    cc = DXRCrowdControl(class'DXRCrowdControl'.static.Find());
+
+    if (cc!=None && cc.link!=None && cc.link.ccEffects!=None){
+        params[0]="1"; //This is usually a quantity
+        cc.link.ccEffects.doCrowdControlEvent(effect,params,p.TruePlayerName,0,30);
+    } else {
+        p.ClientMessage("Crowd Control not active");
     }
 }
 

@@ -152,7 +152,7 @@ function BindControls(optional string action)
     NewMenuItem("Camera Mode", "What camera mode should be used");
     EnumOption("First Person", 0, f.moresettings.camera_mode,GetCameraModeHelpText(0));
     EnumOption("Third Person", 1, f.moresettings.camera_mode,GetCameraModeHelpText(1));
-    if(#defined(vanilla || revision)) {
+    if(#defined(hascustomplayer)) {
         EnumOption("Fixed Camera", 2, f.moresettings.camera_mode,GetCameraModeHelpText(2));
     }
 

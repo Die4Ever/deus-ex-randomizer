@@ -22,9 +22,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_ShowDeathHints');
     CreateChoice(class'MenuChoice_JCGenderSkin');
 
-    if(#defined(vanilla)){
-        CreateChoice(class'MenuChoice_MeasureUnits');
-    }
+    CreateChoice(class'MenuChoice_MeasureUnits'); //Units will always be visible on at least the Speedrun splits
 }
 
 

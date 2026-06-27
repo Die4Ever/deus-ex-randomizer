@@ -494,6 +494,11 @@ static function bool WeaponIsModded(Inventory i)
     if (w.ModAccurateRange!=w.Default.ModAccurateRange){return true;} //Range
     if (w.ModRecoilStrength!=w.Default.ModRecoilStrength){return true;} //Recoil
     if (w.ModReloadTime!=w.Default.ModReloadTime){return true;} //Reload
+#ifdef gmdx
+    if (w.ModShotTime!=w.Default.ModShotTime){return true;} //Rate of Fire
+    if (w.ModDamage!=w.Default.ModDamage){return true;} //Damage
+    if (w.bFullAuto!=w.Default.bFullAuto){return true;} //Full Auto
+#endif
 
     return false;
 }

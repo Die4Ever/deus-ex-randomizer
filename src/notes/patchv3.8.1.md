@@ -1,6 +1,21 @@
 ## Major Changes
 
 
+## GMDX Major Changes
+  - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.
+
+<details>
+<summary>Click to expand GMDX Major Changes</summary>
+
+  - Fixed Camera option now available.
+  - Third Person camera option now shows over the shoulder instead of looking at JC's butt.
+  - Assistive aiming laser now available for non-first-person camera modes.
+  - Larger heals are now more balanced across the body, instead of focusing on one limb at a time.
+  - Automatic Weapon Mod Apply now available.  Right click a weapon mod while holding a weapon that can have that mod applied to it to instantly apply that mod to the weapon.
+
+  </details>
+
+
 ## Minor Changes
 
 <details>
@@ -11,8 +26,29 @@
   - If a third person conversation is interrupted, it will attempt to play through as much of the remainder of the conversation as possible.  This helps avoid some situations where a conversation that would normally end with the speaker becoming hostile might be left in a friendly state if the conversation is interrupted.
   - UNATCO HQ armory door is permanently locked and unbreakable until Mission 5.
   - New option added to show or hide the bingo board.  Zero Rando and Zero Rando Plus will hide the board by default to avoid spoilers.
-  - GMDX: Using a scope on the GEP Gun will no longer allow you to see through walls.
-  - GMDX: Items won't randomize onto the apartment balconies at NSF HQ (Mission 4).
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
-  - GMDX: Keypad to access Tim's closet in Vandenberg Command (Mission 12) now works again alongside the escape button inside.
+
+</details>
+
+## GMDX Minor Changes
+
+<details>
+<summary>Click to expand Minor Changes</summary>
+
+  - Using a scope on the GEP Gun will no longer allow you to see through walls.
+  - Items won't randomize onto the apartment balconies at NSF HQ (Mission 4).
+  - Keypad to access Tim's closet in Vandenberg Command (Mission 12) now works again alongside the escape button inside.
+  - Bingo goals will be updated appropriately when consuming foods with left click (straight from the world).
+  - Scramble grenades will now toggle your augs randomly.
+  - Larger heals are now more balanced across the body, instead of focusing on one limb at a time.
+  - Scope Blackout and Scope Scale options are now available.
+  - "Death Cam" options are now available for GMDX.
+  - Crowd Control "Wine-Glazed Bullets" effect now available
+  - Crowd Control camera effects now available (Resident Evil mode, Barrel Roll, Sideways, Upside Down, Doom Mode)
+  - Crowd Control damage effects now available (Double Damage, Half Damage)
+  - Fire damage now ticks less frequently to make it slightly more survivable.
+  - Additional colour schemes for HUD and Menus.
+  - It is no longer possible to interact with certain objects through walls (such as switches).
+  - Weapons are now correctly marked as "Modified" if they have Rate of Fire, Damage, or Full Auto mods applied.
+
 </details>

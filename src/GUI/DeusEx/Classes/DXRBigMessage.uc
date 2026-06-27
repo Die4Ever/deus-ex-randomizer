@@ -74,7 +74,7 @@ event DrawWindow(GC gc)
 
     // this prevents DeusExPlayer Dying state PlayerCalcView() from timing out
     // Camera spin logic has been overridden in some mods, so no need for this
-    if (!#defined(vanilla||revision)){
+    if (!#defined(hascustomplayer)){
         if(Player.Level.Timeseconds - player.FrobTime > 7.9) {
             player.FrobTime = Player.Level.Timeseconds - 7.9;
         }

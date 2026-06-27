@@ -5,6 +5,11 @@ static function bool IsKillCam()
     return default.value==3;
 }
 
+static function bool IsDefaultCam()
+{
+    return default.value==0;
+}
+
 static function bool IsOverheadCam()
 {
     return default.value==0 || default.value==1 || default.value==2;

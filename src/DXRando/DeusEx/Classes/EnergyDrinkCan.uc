@@ -20,7 +20,7 @@ state Activated
 
         if(player == None) return;
 
-    #ifdef injections
+    #ifdef hascustomplayer
         i = player._HealPlayer(2, false, false);
         message = "Healed "$ i $" point";
         if(i != 1)

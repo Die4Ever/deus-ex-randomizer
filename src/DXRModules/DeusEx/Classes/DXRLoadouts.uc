@@ -170,7 +170,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
             AddStartAug(class'AugInfraVision');
             AddAugAllow(class'AugVision');
         #endif
-        #ifdef injections || revision || vmd
+        #ifdef hascustomplayer || vmd
             AddAugAllow(class'AugJump');
         #endif
         AddAugBan(class'#var(prefix)AugSpeed');
@@ -215,7 +215,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
             AddStartAug(class'AugInfraVision');
             AddAugAllow(class'AugVision');
         #endif
-        #ifdef injections || revision || vmd
+        #ifdef hascustomplayer || vmd
             AddAugAllow(class'AugJump');
         #endif
         AddAugBan(class'#var(prefix)AugSpeed');
@@ -471,7 +471,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region The Three Leg Augs
-    #ifdef injections || revision || vmd
+    #ifdef hascustomplayer || vmd
     case 15:
         name = "The Three Leg Augs";
         if(get_name) return name;
@@ -494,7 +494,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Speedrun
-    #ifdef injections || revision || vmd
+    #ifdef hascustomplayer || vmd
     case 16:
         name = "Speed Enhancement";
         if(get_name) return name;
@@ -572,7 +572,7 @@ function string LoadoutHelpText(int loadout)
     local string helpText;
     local string normalAugs;
 
-    if(#bool(injections || revision || vmd)) {
+    if(#bool(hascustomplayer || vmd)) {
         normalAugs = "You start with the Running Enhancement augmentation, and the Speed Enhancement and Jump Enhancement augs are also available.";
     } else {
         normalAugs = "You start with the Speed Enhancement augmentation.";
@@ -591,7 +591,7 @@ function string LoadoutHelpText(int loadout)
         else
             helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
         helpText = helpText $ "Speed Enhancement augmentation is banned.";
-        if(#bool(injections || revision || vmd))
+        if(#bool(hascustomplayer || vmd))
             helpText = helpText $ "  Running Enhancement and Jump Enhancement augs are available.";
         return helpText;
     case 2:
@@ -602,7 +602,7 @@ function string LoadoutHelpText(int loadout)
         else
             helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
         helpText = helpText $ "Speed Enhancement augmentation is banned.";
-        if(#bool(injections || revision || vmd))
+        if(#bool(hascustomplayer || vmd))
             helpText = helpText $ "  Running Enhancement and Jump Enhancement augs are available.";
         return helpText;
     case 3:
@@ -672,7 +672,7 @@ function string LoadoutHelpText(int loadout)
 
 function AddStandardAugSet()
 {
-#ifdef injections || revision || vmd
+#ifdef hascustomplayer || vmd
     if(dxr.flags.IsHalloweenMode()) {
         AddStartAug(class'#var(prefix)AugStealth');
     }

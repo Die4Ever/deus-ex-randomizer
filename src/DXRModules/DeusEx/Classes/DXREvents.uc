@@ -5474,12 +5474,12 @@ defaultproperties
     bingo_options(354)=(event="EmergencyExit_peeped",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=#bit(1,2,3,4,5,6,8,9,10,11))
     bingo_options(355)=(event="Ex51_VariousDead",desc="Ex-51",desc_singular="Ex-51",max=6,missions=#bit(12))
     bingo_options(356)=(event="ReadText_JoyOfCooking",desc="The Joy of Cooking",max=1,missions=#bit(6,10))
-#ifdef injections || revision
+#ifdef hascustomplayer
     bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=#bit(1,2,3,6,9,10,11,12,14,15))
 #endif
     bingo_options(358)=(event="UtilityBot_ClassTakedown",desc="Take down %s Utility Bots",desc_singular="Take down a Utility Bot",max=3)
     bingo_options(359)=(event="M06HeliSafe",desc="HeliSafe",max=2,missions=#bit(6),do_not_scale=true)
-#ifdef injections || revision
+#ifdef hascustomplayer
     bingo_options(360)=(event="JustAFleshWound",desc="Just a flesh wound",max=1)
     bingo_options(361)=(event="LostLimbs",desc="Why are we here?  Just to suffer?",desc_singular="Why are we here?  Just to suffer?",max=10)
 #endif

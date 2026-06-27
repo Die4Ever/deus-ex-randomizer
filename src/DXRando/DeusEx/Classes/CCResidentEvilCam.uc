@@ -174,7 +174,7 @@ function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
 
     aimTarget = player;
     if (DeusExRootWindow(player.rootWindow).scopeView.bViewVisible){
-#ifdef vanilla||revision
+#ifdef hascustomplayer
         if (#var(PlayerPawn)(player).aimLaser.HitActor!=None) {
             aimTarget = #var(PlayerPawn)(player).aimLaser.HitActor;
             player.DesiredFOV = Player.Default.DefaultFOV;
@@ -189,7 +189,7 @@ function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
         //In a conversation, look at the person who is talking, instead of always at JC
         aimTarget = player.conPlay.currentSpeaker;
     } else if (class'MenuChoice_DeathCam'.Static.IsKillCam() && player.GetStateName()=='Dying') {
-        if (#defined(vanilla||revision)){
+        if (#defined(hascustomplayer)){
             if (GetKiller(player)!=None){
                 aimTarget=GetKiller(player);
             }

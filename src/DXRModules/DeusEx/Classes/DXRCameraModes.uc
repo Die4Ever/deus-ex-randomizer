@@ -167,7 +167,7 @@ function SetThirdPersonCamera()
 
 function SetFixedCamera()
 {
-    if(#defined(vanilla || revision)){
+    if(#defined(hascustomplayer)){
         player().bBehindView=False;
         player().bCrosshairVisible=False;
         player().Style= STY_Normal;

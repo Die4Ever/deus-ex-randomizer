@@ -1,5 +1,5 @@
 class DXRAimLaserEmitter extends LaserEmitter;
-#compileif injections || revision
+#compileif hascustomplayer
 
 //Mostly copied from LaserEmitter, but modified so it doesn't even try to reflect the laser
 function CalcTrace(float deltaTime)
