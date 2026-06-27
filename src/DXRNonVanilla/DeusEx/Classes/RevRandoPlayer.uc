@@ -748,6 +748,8 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
             }
         } else {
             if(DeathMarker(target) != None) {
+                if (InHand!=None) continue; //Don't highlight DeathMarkers if you've got something in hand
+                if (CarriedDecoration!=None) continue; //Don't highlight DeathMarkers if you've got something in hand
                 if(dm == None && target.CollisionRadius < minSize) {
                     dm = DeathMarker(target);
                     if(bFirstTarget) smallestTargetDist = VSize(Location-HitLoc);
