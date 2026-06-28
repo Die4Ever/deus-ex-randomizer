@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[110]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[114]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 var int Recents[20];
 var int recent_pointer;
@@ -758,6 +758,26 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'SkongCogworkDancers';
             duration = 5.5;
             message="You played Cogwork Dancers from Hollow Knight: Silksong";
+            break;
+        case 110:
+            SelectedSound = sound'MessengerMelodyBreakCurse';
+            duration = 5.75;
+            message="You played A Melody to Break the Curse from The Messenger";
+            break;
+        case 111:
+            SelectedSound = sound'DeltaruneWorldRevolving';
+            duration = 12.25;
+            message="You played The World Revolving from Deltarune";
+            break;
+        case 112:
+            SelectedSound = sound'StarfoxMainTheme';
+            duration = 8.0;
+            message="You played the Main Theme from Star Fox";
+            break;
+        case 113:
+            SelectedSound = sound'FZeroMuteCity';
+            duration = 9.75;
+            message="You played Mute City from F-Zero";
             break;
         default:
             SelectedSound = None;

@@ -27,6 +27,7 @@
   - UNATCO HQ armory door is permanently locked and unbreakable until Mission 5.
   - New option added to show or hide the bingo board.  Zero Rando and Zero Rando Plus will hide the board by default to avoid spoilers.
   - Death Markers won't highlight if you have something in your hands.
+  - Prison manifest with the list of equipment taken away from you (Mission 5) will now properly appear on mirrored maps.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
 
 </details>
@@ -50,5 +51,7 @@
   - Additional colour schemes for HUD and Menus.
   - It is no longer possible to interact with certain objects through walls (such as switches).
   - Weapons are now correctly marked as "Modified" if they have Rate of Fire, Damage, or Full Auto mods applied.
+  - Added ShowBingoWindow exec function to GMDXRandoPlayer so it can be manually bound to a hotkey.
+    - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
 
 </details>
