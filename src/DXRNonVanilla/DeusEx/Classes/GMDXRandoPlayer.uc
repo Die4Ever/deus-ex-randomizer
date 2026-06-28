@@ -562,7 +562,6 @@ function int _HealPart(out int points, out int amt, int max, optional int partMa
     //Torso and Head can increase their max health, so use a leg as the default...
 
     if (partMax==0) partMax = default.HealthLegRight;
-    else ClientMessage("PartMax: "$partMax);
 
     max = Min(amt, max);
 

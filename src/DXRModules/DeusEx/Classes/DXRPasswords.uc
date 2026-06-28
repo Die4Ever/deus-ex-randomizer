@@ -81,6 +81,9 @@ function CheckConfig()
     not_passwords[i++] = "USER NAME";
     not_passwords[i++] = "user permissions";
     not_passwords[i++] = "user access";
+    if (#defined(gmdx)){
+        not_passwords[i++] = "unknown"; //GMDX adds a computer to Smuggler with password "unknown"
+    }
 
 
     for(i=i;i<ArrayCount(not_passwords);i++) {

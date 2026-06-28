@@ -54,5 +54,6 @@
   - Weapons are now correctly marked as "Modified" if they have Rate of Fire, Damage, or Full Auto mods applied.
   - Added ShowBingoWindow exec function to GMDXRandoPlayer so it can be manually bound to a hotkey.
     - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
+  - The password will no longer be unintentionally learned for the security computer in Smuggler's lair (Missions 2, 4, and 8).
 
 </details>
