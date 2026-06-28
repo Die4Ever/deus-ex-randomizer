@@ -17,17 +17,19 @@ function RenderPortal(canvas Canvas)
     local bool portalRejected, oldCanvasFlipFlop;
     local rotator rdif;
     local vector rloc;
-
+    local Actor traceActor;
 
     if (player.bGepProjectileInFlight){
         rdif=player.aGEPProjectile.Rotation;
         rloc=player.aGEPProjectile.Location+(Rocket(player.aGEPProjectile).PortalOffset>>rdif);
+        traceActor=player.aGEPProjectile;
     } else {
         rloc=player.Location+CalcDrawOffset();
         rdif=player.ViewRotation;
+        traceActor=player;
     }
 
-    if (player.FastTrace(rloc)==False){
+    if (traceActor.FastTrace(rloc)==False){
         portalRejected = true;
         oldCanvasFlipFlop = bFlipFlopCanvas;
         bFlipFlopCanvas = true;
