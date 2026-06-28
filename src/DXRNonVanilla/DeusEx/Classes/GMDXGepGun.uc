@@ -19,7 +19,7 @@ function RenderPortal(canvas Canvas)
     local vector rloc;
     local Actor traceActor;
 
-    if (player.bGepProjectileInFlight){
+    if (player.bGepProjectileInFlight && player.aGEPProjectile!=None){
         rdif=player.aGEPProjectile.Rotation;
         rloc=player.aGEPProjectile.Location+(Rocket(player.aGEPProjectile).PortalOffset>>rdif);
         traceActor=player.aGEPProjectile;
