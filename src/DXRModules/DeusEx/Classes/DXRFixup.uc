@@ -1236,7 +1236,7 @@ function ScaleZoneDamage()
 
     if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) return;
 
-#ifdef injections
+#ifdef hascustomplayer
     foreach AllActors(class'ZoneInfo',z){
         if (z.bPainZone){
             f = player().CombatDifficultyMultEnviro();
