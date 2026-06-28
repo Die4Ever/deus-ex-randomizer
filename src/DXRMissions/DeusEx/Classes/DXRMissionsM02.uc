@@ -249,12 +249,25 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)InterpolateTrigger it;
+    local #var(prefix)OrdersTrigger ot;
     local #var(DeusExPrefix)Mover dxm;
     local bool RevisionMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
+
+        if (#defined(gmdx)){
+            //There's normally a trigger right where you spawn that makes Anna walk to you.
+            //That trigger hits a dispatcher that hits the orderstrigger, but we'll get rid
+            //of the OrdersTrigger first.
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'oty'){
+                ot.Event=''; //Clear it first...
+                ot.Tag='';
+                ot.Destroy();
+            }
+        }
+
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
             anna.SetOrders('Standing');
             anna.SetLocation( vectm(1082.845703, 1807.538818, 335.101776) );
