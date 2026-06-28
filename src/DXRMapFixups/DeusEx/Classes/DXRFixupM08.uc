@@ -418,7 +418,7 @@ function TimerMapFixes()
             }
         }
 
-        if (#defined(gmdxnotae)){
+        if (#defined(gmdxnotae) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             GMDXUnatcoTroopTimerChecks();
         }
 
@@ -702,10 +702,10 @@ function PreFirstEntryMapFixes()
                 ChangeInitialAlliance(pawn,'Player',-1,true);
                 pawn.bInWorld=false;
                 pawn.InitializePawn();
-            }
 
-            if (#defined(gmdxnotae)){
-                GMDXInitUnatcoTroopLocations();
+                if (#defined(gmdxnotae)){
+                    GMDXInitUnatcoTroopLocations();
+                }
             }
 
             // fix alliances
