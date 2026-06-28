@@ -38,6 +38,7 @@
 <summary>Click to expand Minor Changes</summary>
 
   - Using a scope on the GEP Gun will no longer allow you to see through walls.
+  - GEP Gun scope issues will now be fixed for WP rockets, and regular rockets are fixed when playing with Item Balance disabled (such as in Zero Rando).
   - Items won't randomize onto the apartment balconies at NSF HQ (Mission 4).
   - Keypad to access Tim's closet in Vandenberg Command (Mission 12) now works again alongside the escape button inside.
   - Bingo goals will be updated appropriately when consuming foods with left click (straight from the world).

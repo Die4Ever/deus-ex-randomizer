@@ -184,8 +184,11 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
             return 18.0;
         }
 
+#ifdef gmdxnotae
+    case class'GMDXRocket':
+#endif
     case class'#var(prefix)Rocket':
-    // fix both just in case a normal Rocket is fired somehow?
+    // fix both just in case a normal Rocket is fired somehow (like in zero rando)
     case class'RocketFixTicks':// no break
         if (#defined(gmdx)){
             return 200.0;
@@ -193,6 +196,9 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
             return 300.0;
         }
 
+#ifdef gmdxnotae
+    case class'GMDXRocketWP':
+#endif
     case class'#var(prefix)RocketWP':
         if (#defined(gmdx)){
             return 60.0;
@@ -331,21 +337,37 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         w.HitDamage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);// write back the weapon damage
         break;
 
+#ifdef gmdxnotae
+    case class'GMDXRocket':
+        //Gets fired when BalanceItems is Disabled in GMDX
+        //This version of the rocket fixes scope issues in GMDX
+#endif
     case class'#var(prefix)Rocket':
-        // fix both just in case a normal Rocket is fired somehow?
+        // Gets fired when BalanceItems is Disabled (outside of GMDX)
         p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         p = class'RocketFixTicks';
         d = p;
     case class'RocketFixTicks':// no break
         p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
+            #ifdef gmdxnotae
+            p = class'GMDXRocket';
+            #else
             p = class'#var(prefix)Rocket';
+            #endif
             d = p;
         }
         break;
 
     case class'#var(prefix)RocketWP':
         p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+#ifdef gmdxnotae
+        p = class'GMDXRocketWP';
+        d = p;
+    case class'GMDXRocketWP':
+        //This version of the rocket fixes scope issues in GMDX
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+#endif
         break;
 
     case class'#var(prefix)HECannister20mm':
