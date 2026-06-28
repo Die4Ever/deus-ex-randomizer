@@ -30,8 +30,15 @@ function UpdateButtonStatus()
 
 function SetTitle(String newTitle)
 {
+    local string modName;
+
     if(class'DXRFlags'.default.bZeroRando) {
-        winTitle.SetTitle("Deus Ex Zero Rando");
+        modName = "Deus Ex";
+        if      (#defined(gmdx))     modName = "GMDX";
+        else if (#defined(revision)) modName = "Revision";
+        else if (#defined(vmd)) modName = "VMD";
+
+        winTitle.SetTitle(modName$" Zero Rando");
         return;
     }
     bTickEnabled = true;
