@@ -29,6 +29,9 @@
   - Death Markers won't highlight if you have something in your hands.
   - Prison manifest with the list of equipment taken away from you (Mission 5) will now properly appear on mirrored maps.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
+  - VMD: Some items that were placed decoratively (like weapons) in Revision maps will now be able to be picked up.
+  - VMD: In Revision maps, Jock's name won't be randomized.
+  - VMD: Certain randomized goals (Such as the generator in Mission 2) will no longer be moved out of the world.
 
 </details>
 

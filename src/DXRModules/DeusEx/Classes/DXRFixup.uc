@@ -976,7 +976,7 @@ function FixSamCarter()
 
 function FixRevisionJock()
 {
-#ifdef revision
+#ifdef revision||vmd2
     local JockHelicopter jock;
     foreach AllActors(class'JockHelicopter',jock){
         jock.bImportant=true;
@@ -986,8 +986,9 @@ function FixRevisionJock()
 
 function FixRevisionDecorativeInventory()
 {
-#ifdef revision
     local Inventory i;
+
+    if (class'DXRMapVariants'.static.IsRevisionMaps(player())==False) return;
 
     foreach AllActors(class'Inventory',i){
         if (i.CollisionRadius==0 && i.CollisionHeight==0){
@@ -995,7 +996,6 @@ function FixRevisionDecorativeInventory()
             i.SetCollisionSize(i.default.CollisionRadius,i.default.CollisionHeight);
         }
     }
-#endif
 }
 
 function FixCleanerBot()

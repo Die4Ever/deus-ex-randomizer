@@ -919,6 +919,25 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 }
 
+function bool CheckVMDRebuilding(Actor a)
+{
+#ifdef vmd2
+    local VMDLadderPointAdder lpa;
+    //local int i;
+
+    foreach AllActors(class'VMDLadderPointAdder',lpa){
+        /*
+        //Getter coming next VMD patch that should work like this
+        for (i=0;i<ArrayCount(lpa.CollisionHoes);i++){
+            if (lpa.GetCollisionHoe(i)==a) return true;
+        }
+        */
+        return lpa.bRebuilding;
+    }
+#endif
+    return false;
+}
+
 function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 {
     local #var(prefix)ScriptedPawn sp;
@@ -933,6 +952,15 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         offset = GetRotationOffset(a.class);
         rotation = rotm(rotation.pitch, rotation.yaw, rotation.roll, offset);
     }
+
+#ifdef vmd2
+    //VMD moves Movers up 10000 while it's rebuilding paths
+    //If we're unlucky, we could be moving goals in the
+    //middle of the rebuild process.  Handle that nicely.
+    if (Mover(a)!=None && CheckVMDRebuilding(a)){
+        loc = loc + vect(0,0,10000);
+    }
+#endif
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
