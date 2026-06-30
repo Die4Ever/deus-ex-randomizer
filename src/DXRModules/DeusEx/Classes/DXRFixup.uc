@@ -977,8 +977,10 @@ function FixSamCarter()
 function FixRevisionJock()
 {
 #ifdef revision||vmd2
-    local JockHelicopter jock;
-    foreach AllActors(class'JockHelicopter',jock){
+    //Have to be a bit more cautious here, since VMD2 might not have Revision files installed
+    local Robot jock; //The Revision "JockHelicopter" subclasses from Robot
+    foreach AllActors(class'Robot',jock){
+        if (jock.class.name != 'JockHelicopter') continue;
         jock.bImportant=true;
     }
 #endif
