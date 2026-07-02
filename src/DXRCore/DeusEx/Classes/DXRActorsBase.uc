@@ -1990,15 +1990,24 @@ function MassSetSecretGoalRadius(class<Actor> classToFind, vector loc, float rad
     }
 }
 
-function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
+function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis, optional float maxRange){
     local Actor thing,nearestThing;
+    local float thisRange,nearestRange;
 
-    foreach AllActors(nearestClass,thing) {
+    if (maxRange==0.0){
+        maxRange = 999999;
+    }
+
+    foreach nearThis.RadiusActors(nearestClass,thing,maxRange) {
+        thisRange = VSize(nearThis.Location-thing.Location);
+
         if (nearestThing==None){
             nearestThing = thing;
+            nearestRange = VSize(nearThis.Location-nearestThing.Location);
         } else {
-            if ((VSize(nearThis.Location-thing.Location)) < (VSize(nearThis.Location-nearestThing.Location))){
+            if (thisRange < nearestRange){
                 nearestThing = thing;
+                nearestRange = VSize(nearThis.Location-nearestThing.Location);
             }
         }
     }

@@ -385,9 +385,11 @@ function PreFirstEntryMapFixes_Final(bool isVanilla, bool isGmdx)
         foreach AllActors(class'DeusExMover', d, 'Generator_panel'){break;}
 
         //Find the flag trigger near it and disconnect it
-        ft = #var(prefix)FlagTrigger(findNearestToActor(class'#var(prefix)FlagTrigger',d));
-        ft.Event = '';
-        ft.Destroy();
+        ft = #var(prefix)FlagTrigger(findNearestToActor(class'#var(prefix)FlagTrigger',d,100.0));
+        if (ft!=None){
+            ft.Event = '';
+            ft.Destroy();
+        }
     }
 
     if (isVanilla) {
