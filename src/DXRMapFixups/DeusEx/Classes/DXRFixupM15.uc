@@ -269,7 +269,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 //#endregion
 
 //#region PreFirst Final
-function PreFirstEntryMapFixes_Final(bool isVanilla)
+function PreFirstEntryMapFixes_Final(bool isVanilla, bool isGmdx)
 {
     local DeusExMover d;
     local #var(prefix)Switch1 s;
@@ -373,6 +373,21 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
 
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", s.Location, s.CollisionRadius+5, s.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(s);
+    }
+
+    if (isGmdx){
+        //GMDX inexplicably adds a second flag trigger to open the panel over the first generator button for the Tong ending
+        //If you cross the room fast enough, you hit the first trigger, which starts opening the panel, then you hit the second
+        //trigger, which causes it to close again.  Just get rid of the second trigger, because it does nothing positive, as far
+        //as I can tell...
+
+        //Find the panel
+        foreach AllActors(class'DeusExMover', d, 'Generator_panel'){break;}
+
+        //Find the flag trigger near it and disconnect it
+        ft = #var(prefix)FlagTrigger(findNearestToActor(class'#var(prefix)FlagTrigger',d));
+        ft.Event = '';
+        ft.Destroy();
     }
 
     if (isVanilla) {
@@ -833,9 +848,10 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
 //#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
-    local bool isVanilla;
+    local bool isVanilla, isGmdx;
 
     isVanilla = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    isGmdx    = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(dxr.localURL)
     {
@@ -844,7 +860,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "15_AREA51_FINAL":
-        PreFirstEntryMapFixes_Final(isVanilla);
+        PreFirstEntryMapFixes_Final(isVanilla, isGmdx);
         break;
 
     case "15_AREA51_ENTRANCE":
