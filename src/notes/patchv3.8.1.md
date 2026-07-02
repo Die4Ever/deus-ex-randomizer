@@ -12,6 +12,7 @@
   - Assistive aiming laser now available for non-first-person camera modes.
   - Larger heals are now more balanced across the body, instead of focusing on one limb at a time.
   - Automatic Weapon Mod Apply now available.  Right click a weapon mod while holding a weapon that can have that mod applied to it to instantly apply that mod to the weapon.
+  - It is no longer possible to softlock yourself out of the Tong ending if you move across the Reactor lab control room too fast after activating the reactors.
 
   </details>
 
@@ -60,7 +61,6 @@
   - The password will no longer be unintentionally learned for the security computer in Smuggler's lair (Missions 2, 4, and 8).
   - Anna Navarre will no longer slowly walk towards you in Battery Park (Mission 2) when goal randomization is enabled.
   - Locations of UNATCO Troops when returning to New York (Mission 8) will not be adjusted in Zero Rando.
-  - It is no longer possible to softlock yourself out of the Tong ending if you move across the Reactor lab control room too fast after activating the reactors.
   - Acceleration will no longer be maintained when activating Spy Drone (Which caused you to slowly move while controlling the drone).
   - Movement speed reductions will now be based on your selected maximum health instead of fixed health values assuming a maximum health of 100.
 
