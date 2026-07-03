@@ -208,11 +208,11 @@ static function bool IsGMDXMaps(#var(PlayerPawn) player)
 
 static function bool IsVanillaMaps(#var(PlayerPawn) player)
 {
-    if(#defined(vanillamaps)) return true;
-    if(#defined(revision)) return !IsRevisionMaps(player);
 #ifdef vmd2
     return class'DeusEx.VMDStaticFunctions'.Static.GetIntendedMapStyle(player)==0;
 #endif
+    if(#defined(vanillamaps)) return true;
+    if(#defined(revision)) return !IsRevisionMaps(player);
     return false;
 }
 

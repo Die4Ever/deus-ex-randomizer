@@ -30,16 +30,13 @@
   - Death Markers won't highlight if you have something in your hands.
   - Prison manifest with the list of equipment taken away from you (Mission 5) will now properly appear on mirrored maps.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
-  - VMD: Some items that were placed decoratively (like weapons) in Revision maps will now be able to be picked up.
-  - VMD: In Revision maps, Jock's name won't be randomized.
-  - VMD: Certain randomized goals (Such as the generator in Mission 2) will no longer be moved out of the world.
 
 </details>
 
 ## GMDX Minor Changes
 
 <details>
-<summary>Click to expand Minor Changes</summary>
+<summary>Click to expand GMDX Minor Changes</summary>
 
   - Using a scope on the GEP Gun will no longer allow you to see through walls.
   - GEP Gun scope issues will now be fixed for WP rockets, and regular rockets are fixed when playing with Item Balance disabled (such as in Zero Rando).
@@ -63,5 +60,20 @@
   - Locations of UNATCO Troops when returning to New York (Mission 8) will not be adjusted in Zero Rando.
   - Acceleration will no longer be maintained when activating Spy Drone (Which caused you to slowly move while controlling the drone).
   - Movement speed reductions will now be based on your selected maximum health instead of fixed health values assuming a maximum health of 100.
+
+</details>
+
+## VMD Minor Changes
+
+<details>
+<summary>Click to expand VMD Minor Changes</summary>
+
+  - Some items that were placed decoratively (like weapons) in Revision maps will now be able to be picked up.
+  - In Revision maps, Jock's name won't be randomized.
+  - Certain randomized goals (Such as the generator in Mission 2) will no longer be moved out of the world.
+  - Jock will appear as expected after speaking to Stanton Dowd in Mission 8 when playing on Revision maps.
+  - The subway keypad in Mission 4 on Revision maps will be able to be interacted with after the raid.
+  - Many small tweaks for Revision maps will properly be applied, instead of applying some Vanilla map tweaks to the Revision maps.
+  - Exit teleporter at the end of the Vandenberg Tunnels (Mission 12) will be placed in the correct location on Revision maps.
 
 </details>

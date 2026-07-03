@@ -714,7 +714,7 @@ function AnyEntryMapFixes()
 {
     local FordSchick ford;
     local #var(prefix)AnnaNavarre anna;
-#ifdef revision
+#ifdef revision||vmd2
     local DXRKeypad k;
 #endif
     local bool RevisionMaps;
@@ -850,7 +850,7 @@ function AnyEntryMapFixes()
         break;
 
     case "04_NYC_STREET":
-#ifdef revision
+#ifdef revision||vmd2
         if( dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') && RevisionMaps )
         {
             foreach AllActors(class'DXRKeypad',k,'SubKeypad'){
