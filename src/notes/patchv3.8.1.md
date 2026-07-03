@@ -76,5 +76,6 @@
   - The subway keypad in Mission 4 on Revision maps will be able to be interacted with after the raid.
   - Many small tweaks for Revision maps will properly be applied, instead of applying some Vanilla map tweaks to the Revision maps.
   - Exit teleporter at the end of the Vandenberg Tunnels (Mission 12) will be placed in the correct location on Revision maps.
+  - Phones in Revision maps will work for making phone calls for bingo.
 
 </details>

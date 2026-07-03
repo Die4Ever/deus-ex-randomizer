@@ -68,9 +68,7 @@ function AddPhoneTriggers(bool isRevision, bool isGmdx)
 {
     local #var(prefix)Phone p;
     local #var(prefix)WHPhone wp;
-#ifdef revision
-    local RevPhone rp;
-#endif
+    local ElectronicDevices rp;
     local int i;
 
     //Spawn invisible phones for the payphones
@@ -278,18 +276,21 @@ function AddPhoneTriggers(bool isRevision, bool isGmdx)
                 break;
         }
     }
-#ifdef revision
-    foreach AllActors(class'RevPhone',rp){
-        switch(rp.BindName){
-            case "AI_phonecall_paris01":
-                break; //Covered by the Icarus call flag - IcarusCalls_Played
-            default:
-                CreatePhoneTrigger(rp,i);
-                i++;
-                break;
+
+    if(#defined(revision||vmd2)){
+        //Can't directly reference RevPhone in VMD, since the Revision packages are optional
+        foreach AllActors(class'ElectronicDevices',rp){
+            if (rp.class.name!='RevPhone') continue;
+            switch(rp.BindName){
+                case "AI_phonecall_paris01":
+                    break; //Covered by the Icarus call flag - IcarusCalls_Played
+                default:
+                    CreatePhoneTrigger(rp,i);
+                    i++;
+                    break;
+            }
         }
     }
-#endif
 }
 
 function CreatePhoneTrigger(Actor phone, int num)
