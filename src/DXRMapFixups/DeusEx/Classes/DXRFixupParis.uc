@@ -68,6 +68,10 @@ function PreFirstEntryMapFixes()
                     dt.DamageType='Fell';
                 }
             }
+
+            //Prevent things from spawning outside the gates
+            MassSetSecretGoalBox(class'NavigationPoint', vectm(1810,-3260,-60), vectm(885,3580,-275), true);
+            MassSetSecretGoalBox(class'NavigationPoint', vectm(-1825,-3550,-60), vectm(-2550,3580,-275), true);
         }
 
         break;
