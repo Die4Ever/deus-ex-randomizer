@@ -86,7 +86,72 @@ simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
     w.AccurateRange = int(f);
     f = w.default.BaseAccuracy * (rngf()+0.5);
     w.BaseAccuracy = f;*/
+
+    //Now that things have been randomized, stick the weapon mods back on
+    //Make sure this happens last
+    ReapplyWeaponMods(w);
+
     ReapplySeed(oldseed);
+}
+
+//Logic stolen from the weapon mod classes to apply each modifier
+simulated function ReapplyWeaponMods(DeusExWeapon w)
+{
+    local int i;
+
+    if (w==None) return;
+
+    if (w.HasReloadMod() && w.Default.ReloadTime==w.ReloadTime){
+        w.ReloadTime    += (w.Default.ReloadTime * w.ModReloadTime);
+        if (w.ReloadTime < 0.0)
+            w.ReloadTime = 0.0;
+    }
+
+    if (w.HasAccuracyMod() && w.Default.BaseAccuracy==w.BaseAccuracy){
+        if (w.BaseAccuracy == 0.0)
+            w.BaseAccuracy    -= w.ModBaseAccuracy;
+        else
+            w.BaseAccuracy    -= (w.Default.BaseAccuracy * w.ModBaseAccuracy);
+    }
+
+    if (w.HasClipMod() && w.Default.ReloadCount==w.ReloadCount){
+        i = Float(w.Default.ReloadCount) * w.ModReloadCount;
+
+        if (i<1)
+            i=1;
+
+        w.ReloadCount += i;
+    }
+
+    if (w.HasRangeMod() && w.Default.AccurateRange==w.AccurateRange){
+        w.AccurateRange    += (w.Default.AccurateRange * w.ModAccurateRange);
+        if (#defined(injections)){
+            w.MaxRange     += (w.Default.maxRange * w.ModAccurateRange);
+        }
+    }
+
+    if (w.HasRecoilMod() && w.Default.recoilStrength==w.recoilStrength){
+        w.recoilStrength    += (w.Default.recoilStrength * w.ModRecoilStrength);
+        if (w.recoilStrength < 0.0)
+            w.recoilStrength = 0.0;
+
+    }
+
+    //GMDX
+#ifdef gmdx
+    if (w.HasDAMMod() && w.Default.HitDamage==w.HitDamage){
+        //ModDamage
+        //This doesn't actually change HitDamage
+        //I guess that gets applied at damage time?
+    }
+
+    if (w.HasROFMod() && w.Default.ShotTime==w.ShotTime){
+        w.ShotTime += (w.Default.ShotTime * w.ModShotTime);
+        if (w.ShotTime < 0.0)
+            w.ShotTime = 0.0;
+    }
+#endif
+
 }
 
 static function float GetDefaultShottime(DeusExWeapon w) {
