@@ -29,7 +29,9 @@
   - New option added to show or hide the bingo board.  Zero Rando and Zero Rando Plus will hide the board by default to avoid spoilers.
   - Death Markers won't highlight if you have something in your hands.
   - Prison manifest with the list of equipment taken away from you (Mission 5) will now properly appear on mirrored maps.
-  - Bots and The Merchant will no longer be able to spawn on the far side of the walls/gates in Denfert-Rochereau (Paris, Mission 10).
+  - Bots and The Merchant will no longer be able to spawn in the following locations:
+    - On the far side of the walls/gates in Denfert-Rochereau (Paris, Mission 10).
+    - In the small room with a desk before the construction area in the Ocean Lab (Mission 14).
   - Certain weapon mods applied to weapons will no longer be lost when loading save games or traveling to new levels.
   - Randomly spawned medbots and repair bots should no longer spawn in (or over) the water.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
