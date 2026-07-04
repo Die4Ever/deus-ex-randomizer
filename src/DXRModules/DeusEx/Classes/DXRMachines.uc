@@ -629,15 +629,24 @@ function Actor _SpawnBot(class<Actor> c)
     local vector target;
     local float maxdist;
 
-    for(i=0; i < 4; i++) {
+    for(i=0; i < 20; i++) {
         target = GetRandomPosition();
         maxdist = 256;
 
+        /*
+        //Applying jitter to bot spawns makes it very easy for them to fall into the water
+        //when jitter was being applied, it was 4 outer loops (above), and 5 inner loops (below)
         for(k=0; k < 5; k++) {
             a = _SpawnNewActor(c, true, target, 0, maxdist);
             if( a != None ) return a;
             maxdist *= 1.2;
         }
+        */
+
+        //Spawn without applying jitter
+        a = _SpawnNewActor(c, false, target, 0, maxdist);
+        if( a != None ) return a;
+
     }
 
     return a;

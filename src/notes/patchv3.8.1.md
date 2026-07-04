@@ -31,6 +31,7 @@
   - Prison manifest with the list of equipment taken away from you (Mission 5) will now properly appear on mirrored maps.
   - Bots and The Merchant will no longer be able to spawn on the far side of the walls/gates in Denfert-Rochereau (Paris, Mission 10).
   - Certain weapon mods applied to weapons will no longer be lost when loading save games or traveling to new levels.
+  - Randomly spawned medbots and repair bots should no longer spawn in (or over) the water.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
 
 </details>
