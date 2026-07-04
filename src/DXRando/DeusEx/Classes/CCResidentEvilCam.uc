@@ -207,12 +207,10 @@ function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
         //Aim at the cockpit
         aimLoc += vect(0,-150,0) << aimTarget.Rotation;
     }
-#ifdef revision
-    else if (JockHelicopter(aimTarget)!=None) {
+    else if (aimTarget.class.name=='JockHelicopter') {
         //Aim at the cockpit
         aimLoc += vect(0,-150,0) << aimTarget.Rotation;
     }
-#endif
 
     return aimTarget;
 

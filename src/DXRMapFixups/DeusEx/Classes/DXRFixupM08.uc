@@ -652,9 +652,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
-#ifdef revision
-    local JockHelicopter jockheli;
-#endif
+    local Robot jockheli;
     local OnceOnlyTrigger oot;
     local #var(DeusExPrefix)Mover d;
     local DXRHoverHint hoverHint;
@@ -760,11 +758,9 @@ function PreFirstEntryMapFixes()
                 hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
                 hoverHint.SetBaseActor(jock);
             } else {
-            #ifdef revision
-                foreach AllActors(class'JockHelicopter',jockheli){break;}
+                foreach AllActors(class'Robot',jockheli,'CopterExit'){break;}
                 hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
                 hoverHint.SetBaseActor(jockheli);
-            #endif
             }
 
             if (#defined(vanilla)) {

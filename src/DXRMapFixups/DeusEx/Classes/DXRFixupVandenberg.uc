@@ -49,9 +49,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local #var(prefix)TracerTong tong;
-#ifdef revision
-    local JockHelicopter jockheli;
-#endif
+    local Robot jockheli;
     local DXRHoverHint hoverHint;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)Robot bot;
@@ -348,12 +346,10 @@ function PreFirstEntryMapFixes()
             AddSwitch( vect(540,3890,-370), rot(0, 16384, 0), 'ShedDoor');
 
             //Add teleporter hint text to Jock
-            #ifdef revision
             foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
-            foreach AllActors(class'JockHelicopter',jockheli,'BlackHelicopter'){break;}
+            foreach AllActors(class'Robot',jockheli,'BlackHelicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jockheli);
-            #endif
 
             Spawn(class'PlaceholderItem',,, vectm(718,3913,-355)); //Shed
             Spawn(class'PlaceholderItem',,, vectm(723,3972,-355)); //Shed
@@ -804,12 +800,10 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
         } else {
             //Add teleporter hint text to Jock
-            #ifdef revision
             foreach AllActors(class'#var(prefix)MapExit',exit,'exit'){break;}
-            foreach AllActors(class'JockHelicopter',jockheli,'Heli'){break;}
+            foreach AllActors(class'Robot',jockheli,'Heli'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jockheli);
-            #endif
 
             class'PlaceholderEnemy'.static.Create(self,vectm(886,1044,-930));
 
