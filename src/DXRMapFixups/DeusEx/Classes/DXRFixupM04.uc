@@ -567,10 +567,13 @@ function PreFirstEntryMapFixes()
             AddActor(class'PoolTableResetButton',vect(-1700,-389.3,50),rot(0,16384,0));
         }
 
-        if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
-            Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
-        } else {
-            Spawnm(class'BarDancerBoring',,,vect(-1440,340,48),rot(0,-16348,0));
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //No bar dancer in Zero Rando pure
+            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
+            } else {
+                Spawnm(class'BarDancerBoring',,,vect(-1440,340,48),rot(0,-16348,0));
+            }
         }
 
         if (!#defined(revision)){ //Lyla is already fixed in RevisionPawns

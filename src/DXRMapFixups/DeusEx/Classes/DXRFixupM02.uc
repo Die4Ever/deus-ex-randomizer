@@ -460,10 +460,13 @@ function PreFirstEntryMapFixes()
             AddActor(class'PoolTableResetButton',vect(-1700,-389.3,50),rot(0,16384,0));
         }
 
-        if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
-            Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
-        } else {
-            Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //No bar dancer in Zero Rando pure
+            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
+            } else {
+                Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
+            }
         }
 
         foreach AllActors(class'#var(prefix)Jock', actualJock) {

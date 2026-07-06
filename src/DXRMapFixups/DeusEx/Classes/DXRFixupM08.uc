@@ -871,10 +871,13 @@ function PreFirstEntryMapFixes()
             }
 
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
-            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
-                Spawnm(class'BarDancer',,,vect(-2150,-500,48),rot(0,0,0));
-            } else {
-                Spawnm(class'BarDancerBoring',,,vect(-2150,-500,48),rot(0,0,0));
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+                //No bar dancer in Zero Rando pure
+                if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                    Spawnm(class'BarDancer',,,vect(-2150,-500,48),rot(0,0,0));
+                } else {
+                    Spawnm(class'BarDancerBoring',,,vect(-2150,-500,48),rot(0,0,0));
+                }
             }
 
             break;

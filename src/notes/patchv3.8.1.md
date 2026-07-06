@@ -34,6 +34,7 @@
     - In the small room with a desk before the construction area in the Ocean Lab (Mission 14).
   - Certain weapon mods applied to weapons will no longer be lost when loading save games or traveling to new levels.
   - Randomly spawned medbots and repair bots should no longer spawn in (or over) the water.
+  - The dancing guy in the Underworld Bar (Mission 2/4/8) will no longer appear in Zero Rando.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
 
 </details>
