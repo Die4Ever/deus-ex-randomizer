@@ -935,8 +935,9 @@ function FixUNATCOCarterCloset()
         min_pos = vectm(818,-1454,510);
         max_pos = vectm(1390,-785,-65);
     }
-    MassSetSecretGoalBox(class'Inventory', min_pos, max_pos, true);
-    MassSetSecretGoalBox(class'#var(DeusExPrefix)Decoration', min_pos, max_pos, true);
+
+    //Don't shuffle anything inside, and don't spawn anything in there either
+    MassSetSecretGoalBoxAll(min_pos, max_pos, true);
 
 }
 
@@ -975,9 +976,11 @@ function FixSamCarter()
 
 function FixRevisionJock()
 {
-#ifdef revision
-    local JockHelicopter jock;
-    foreach AllActors(class'JockHelicopter',jock){
+#ifdef revision||vmd2
+    //Have to be a bit more cautious here, since VMD2 might not have Revision files installed
+    local Robot jock; //The Revision "JockHelicopter" subclasses from Robot
+    foreach AllActors(class'Robot',jock){
+        if (jock.class.name != 'JockHelicopter') continue;
         jock.bImportant=true;
     }
 #endif
@@ -985,8 +988,9 @@ function FixRevisionJock()
 
 function FixRevisionDecorativeInventory()
 {
-#ifdef revision
     local Inventory i;
+
+    if (class'DXRMapVariants'.static.IsRevisionMaps(player())==False) return;
 
     foreach AllActors(class'Inventory',i){
         if (i.CollisionRadius==0 && i.CollisionHeight==0){
@@ -994,7 +998,6 @@ function FixRevisionDecorativeInventory()
             i.SetCollisionSize(i.default.CollisionRadius,i.default.CollisionHeight);
         }
     }
-#endif
 }
 
 function FixCleanerBot()
@@ -1235,7 +1238,7 @@ function ScaleZoneDamage()
 
     if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) return;
 
-#ifdef injections
+#ifdef hascustomplayer
     foreach AllActors(class'ZoneInfo',z){
         if (z.bPainZone){
             f = player().CombatDifficultyMultEnviro();

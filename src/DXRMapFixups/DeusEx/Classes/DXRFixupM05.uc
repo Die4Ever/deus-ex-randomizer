@@ -698,9 +698,9 @@ function BalanceJailbreak()
     if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
         itemManifest = GeneratePrisonManifestFullText(movedItems,numMoved);
         if (VanillaMaps){
-            loc = vect(-2075,1130,-140);
+            loc = vectm(-2075,1130,-140);
         } else {
-            loc = vect(-2155,1300,-140);
+            loc = vectm(-2155,1300,-140);
         }
         SpawnDatacubePlaintext(loc,rot(0,0,0),itemManifest,"DXRPrisonManifest",true);
     }

@@ -63,6 +63,11 @@ function Timer()
                 DoBingoThing();
             }
         }
+    } else if (TriggerType==TT_ClassProximity){
+        //In case of things spawning inside the trigger radius
+        if (GetSelfTouchCount()>0){
+            DoBingoThing();
+        }
     }
 }
 
@@ -82,7 +87,8 @@ function int GetSelfTouchCount()
 
     count = 0;
 
-    foreach TouchingActors(ClassProximityType, a){
+    foreach RadiusActors(ClassProximityType,a,Max(CollisionHeight,CollisionRadius)*2){
+        if (class'DXRActorsBase'.static.ActorOverlappingOther(a,self,,true)==False) continue;
         count++;
     }
 
@@ -173,6 +179,7 @@ function MakeClassProximityTrigger(class<Actor> className)
 {
     TriggerType=TT_ClassProximity;
     ClassProximityType=className;
+    SetTimer(1.0,True);
 }
 
 function MakePeepable()

@@ -1199,6 +1199,8 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
     foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
     {
         if(DeathMarker(target) != None) {
+            if (InHand!=None) continue; //Don't highlight DeathMarkers if you've got something in hand
+            if (CarriedDecoration!=None) continue; //Don't highlight DeathMarkers if you've got something in hand
             if(dm == None && target.CollisionRadius < minSize) {
                 dm = DeathMarker(target);
                 if(bFirstTarget) smallestTargetDist = VSize(Location-HitLoc);
@@ -1908,7 +1910,12 @@ exec function ShowBingoWindow()
       return;
    }
 
-	InvokeUIScreen(Class'PersonaScreenBingo');
+   if (class'MenuChoice_ShowBingoBoard'.static.IsEnabled()==False){
+      ClientMessage("Bingo screen disabled");
+      return;
+   }
+
+    InvokeUIScreen(Class'PersonaScreenBingo');
 }
 
 exec function ActivateAllAutoAugs()

@@ -807,7 +807,7 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
         else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).AmmoName != Class'DeusEx.AmmoNone' )
             strInfo = Inventory(frobTarget).itemName $ " (" $ Weapon(frobTarget).PickupAmmoCount $ ")";
-#ifdef injections||revision
+#ifdef hascustomplayer
         else if (frobTarget.IsA('ChargedPickup') && #var(PlayerPawn)(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ " (Left Click to Activate)";
         else if (#var(PlayerPawn)(player).CanInstantLeftClick(DeusExPickup(frobTarget)))

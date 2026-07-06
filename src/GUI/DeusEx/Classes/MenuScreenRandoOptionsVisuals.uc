@@ -26,7 +26,7 @@ function CreateChoices()
     if (#defined(vanilla||revision||gmdx)){
         CreateChoice(class'MenuChoice_GoalTextures');
     }
-    if (#defined(vanilla||revision)){
+    if (!#defined(vmd)){ //Everything uses the DXRScopeView except VMD
         CreateChoice(class'MenuChoice_ScopeBlackout');
         CreateChoice(class'MenuChoice_ScopeScaling');
     }
@@ -35,7 +35,7 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_TextureSmoothing');
         CreateChoice(class'MenuChoice_AutoLamps');
     }
-    if (#defined(vanilla||revision)){
+    if (#defined(hascustomplayer)){
         CreateChoice(class'MenuChoice_DeathCam');
     }
     CreateChoice(class'MenuChoice_ToggleFashion');

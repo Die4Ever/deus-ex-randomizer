@@ -46,9 +46,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local BlockAll ba;
     local int i;
-#ifdef revision
-    local JockHelicopter jockheli;
-#endif
+    local Robot jockheli;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -214,12 +212,10 @@ function PreFirstEntryMapFixes()
             //Revision
 
             //Add teleporter hint text to Jock
-            #ifdef revision
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
-            foreach AllActors(class'JockHelicopter',jockheli){break;}
+            foreach AllActors(class'Robot',jockheli,'Helicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jockheli);
-            #endif
 
         }
 
@@ -464,10 +460,13 @@ function PreFirstEntryMapFixes()
             AddActor(class'PoolTableResetButton',vect(-1700,-389.3,50),rot(0,16384,0));
         }
 
-        if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
-            Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
-        } else {
-            Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //No bar dancer in Zero Rando pure
+            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
+            } else {
+                Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
+            }
         }
 
         foreach AllActors(class'#var(prefix)Jock', actualJock) {

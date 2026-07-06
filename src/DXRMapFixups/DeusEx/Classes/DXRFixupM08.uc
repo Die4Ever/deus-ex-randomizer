@@ -418,7 +418,7 @@ function TimerMapFixes()
             }
         }
 
-        if (#defined(gmdxnotae)){
+        if (#defined(gmdxnotae) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             GMDXUnatcoTroopTimerChecks();
         }
 
@@ -652,9 +652,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
-#ifdef revision
-    local JockHelicopter jockheli;
-#endif
+    local Robot jockheli;
     local OnceOnlyTrigger oot;
     local #var(DeusExPrefix)Mover d;
     local DXRHoverHint hoverHint;
@@ -702,10 +700,10 @@ function PreFirstEntryMapFixes()
                 ChangeInitialAlliance(pawn,'Player',-1,true);
                 pawn.bInWorld=false;
                 pawn.InitializePawn();
-            }
 
-            if (#defined(gmdxnotae)){
-                GMDXInitUnatcoTroopLocations();
+                if (#defined(gmdxnotae)){
+                    GMDXInitUnatcoTroopLocations();
+                }
             }
 
             // fix alliances
@@ -760,11 +758,9 @@ function PreFirstEntryMapFixes()
                 hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
                 hoverHint.SetBaseActor(jock);
             } else {
-            #ifdef revision
-                foreach AllActors(class'JockHelicopter',jockheli){break;}
+                foreach AllActors(class'Robot',jockheli,'CopterExit'){break;}
                 hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
                 hoverHint.SetBaseActor(jockheli);
-            #endif
             }
 
             if (#defined(vanilla)) {
@@ -875,10 +871,13 @@ function PreFirstEntryMapFixes()
             }
 
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
-            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
-                Spawnm(class'BarDancer',,,vect(-2150,-500,48),rot(0,0,0));
-            } else {
-                Spawnm(class'BarDancerBoring',,,vect(-2150,-500,48),rot(0,0,0));
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+                //No bar dancer in Zero Rando pure
+                if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                    Spawnm(class'BarDancer',,,vect(-2150,-500,48),rot(0,0,0));
+                } else {
+                    Spawnm(class'BarDancerBoring',,,vect(-2150,-500,48),rot(0,0,0));
+                }
             }
 
             break;

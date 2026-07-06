@@ -68,9 +68,7 @@ function AddPhoneTriggers(bool isRevision, bool isGmdx)
 {
     local #var(prefix)Phone p;
     local #var(prefix)WHPhone wp;
-#ifdef revision
-    local RevPhone rp;
-#endif
+    local ElectronicDevices rp;
     local int i;
 
     //Spawn invisible phones for the payphones
@@ -278,18 +276,21 @@ function AddPhoneTriggers(bool isRevision, bool isGmdx)
                 break;
         }
     }
-#ifdef revision
-    foreach AllActors(class'RevPhone',rp){
-        switch(rp.BindName){
-            case "AI_phonecall_paris01":
-                break; //Covered by the Icarus call flag - IcarusCalls_Played
-            default:
-                CreatePhoneTrigger(rp,i);
-                i++;
-                break;
+
+    if(#defined(revision||vmd2)){
+        //Can't directly reference RevPhone in VMD, since the Revision packages are optional
+        foreach AllActors(class'ElectronicDevices',rp){
+            if (rp.class.name!='RevPhone') continue;
+            switch(rp.BindName){
+                case "AI_phonecall_paris01":
+                    break; //Covered by the Icarus call flag - IcarusCalls_Played
+                default:
+                    CreatePhoneTrigger(rp,i);
+                    i++;
+                    break;
+            }
         }
     }
-#endif
 }
 
 function CreatePhoneTrigger(Actor phone, int num)
@@ -4330,7 +4331,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[10]
 //This is checked when generating a new board.  Kind of the inverse of the GetBingoFailedEvents above,
 //but we don't necessarily have the context of all the events for that function.  Most importantly,
 //here we won't have the context of people who have died that aren't bImportant.
-function CheckBingoPrerequisites(string eventname, int eMax)
+function CheckBingoPrerequisites(string eventname, int eMax, int end_mission)
 {
     local int num;
 
@@ -4621,6 +4622,14 @@ function CheckBingoPrerequisites(string eventname, int eMax)
 
     case "AnnaKillswitch":
         FailBingoIfFlagValue(eventname, 'AnnaNavarre_Dead', true);
+        break;
+
+    case "SandraRenton_PlayerTakedown":
+        if (dxr.dxInfo.missionNumber == 8 && end_mission < 12){ //If you don't have a chance to see Sandra again...
+            FailBingoIfFlagValue(eventname, 'SandraWentToCalifornia', true); //Can't kill her in mission 8 if she went to California
+        } else if (dxr.dxInfo.missionNumber > 8){
+            FailBingoIfFlagValue(eventname, 'SandraWentToCalifornia', false); //Can't kill her after mission 8 unless she went to California
+        }
         break;
 
 
@@ -5466,12 +5475,12 @@ defaultproperties
     bingo_options(354)=(event="EmergencyExit_peeped",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=#bit(1,2,3,4,5,6,8,9,10,11))
     bingo_options(355)=(event="Ex51_VariousDead",desc="Ex-51",desc_singular="Ex-51",max=6,missions=#bit(12))
     bingo_options(356)=(event="ReadText_JoyOfCooking",desc="The Joy of Cooking",max=1,missions=#bit(6,10))
-#ifdef injections || revision
+#ifdef hascustomplayer
     bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=#bit(1,2,3,6,9,10,11,12,14,15))
 #endif
     bingo_options(358)=(event="UtilityBot_ClassTakedown",desc="Take down %s Utility Bots",desc_singular="Take down a Utility Bot",max=3)
     bingo_options(359)=(event="M06HeliSafe",desc="HeliSafe",max=2,missions=#bit(6),do_not_scale=true)
-#ifdef injections || revision
+#ifdef hascustomplayer
     bingo_options(360)=(event="JustAFleshWound",desc="Just a flesh wound",max=1)
     bingo_options(361)=(event="LostLimbs",desc="Why are we here?  Just to suffer?",desc_singular="Why are we here?  Just to suffer?",max=10)
 #endif

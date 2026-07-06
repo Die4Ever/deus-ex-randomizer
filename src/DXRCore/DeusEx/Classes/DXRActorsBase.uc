@@ -494,6 +494,11 @@ static function bool WeaponIsModded(Inventory i)
     if (w.ModAccurateRange!=w.Default.ModAccurateRange){return true;} //Range
     if (w.ModRecoilStrength!=w.Default.ModRecoilStrength){return true;} //Recoil
     if (w.ModReloadTime!=w.Default.ModReloadTime){return true;} //Reload
+#ifdef gmdx
+    if (w.ModShotTime!=w.Default.ModShotTime){return true;} //Rate of Fire
+    if (w.ModDamage!=w.Default.ModDamage){return true;} //Damage
+    if (w.bFullAuto!=w.Default.bFullAuto){return true;} //Full Auto
+#endif
 
     return false;
 }
@@ -1985,15 +1990,24 @@ function MassSetSecretGoalRadius(class<Actor> classToFind, vector loc, float rad
     }
 }
 
-function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
+function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis, optional float maxRange){
     local Actor thing,nearestThing;
+    local float thisRange,nearestRange;
 
-    foreach AllActors(nearestClass,thing) {
+    if (maxRange==0.0){
+        maxRange = 999999;
+    }
+
+    foreach nearThis.RadiusActors(nearestClass,thing,maxRange) {
+        thisRange = VSize(nearThis.Location-thing.Location);
+
         if (nearestThing==None){
             nearestThing = thing;
+            nearestRange = VSize(nearThis.Location-nearestThing.Location);
         } else {
-            if ((VSize(nearThis.Location-thing.Location)) < (VSize(nearThis.Location-nearestThing.Location))){
+            if (thisRange < nearestRange){
                 nearestThing = thing;
+                nearestRange = VSize(nearThis.Location-nearestThing.Location);
             }
         }
     }
@@ -2765,7 +2779,7 @@ function PercolateBeltItem(int posStart, int posEnd)
 //Is the Location of a inside the collision cylinder of other?
 //Note that this does mean there still can be some overlap, we're
 //just making sure the center of the object is outside the collision radius
-static function bool ActorOverlappingOther(Actor a, Actor other, optional float slopFactor)
+static function bool ActorOverlappingOther(Actor a, Actor other, optional float slopFactor, optional bool allowHidden)
 {
     local vector vA,vOther;
 
@@ -2775,7 +2789,7 @@ static function bool ActorOverlappingOther(Actor a, Actor other, optional float 
 
     if (a==None || other==None) return false; //Can't overlap nothing
     if (a==other) return false; //Can't overlap yourself
-    if (a.bHidden || other.bHidden) return false;  //Hidden objects can't overlap
+    if (!allowHidden && (a.bHidden || other.bHidden)) return false;  //Hidden objects can't overlap
 
     if (a.Location.Z > (other.Location.Z + (other.CollisionHeight*slopFactor))) return false; //Above the other
     if (a.Location.Z < (other.Location.Z - (other.CollisionHeight*slopFactor))) return false; //Below the other

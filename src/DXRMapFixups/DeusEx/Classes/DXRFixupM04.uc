@@ -373,6 +373,10 @@ function PreFirstEntryMapFixes()
             //Make sure we don't shuffle items beyond the teleporter
             MassSetSecretGoalBoxAll(vectm(814,-3102,200),vectm(-2397,-2087,-10),true);
         }
+        if (GMDXMaps){
+            //Don't shuffle anything onto the GMDX apartment balconies
+            MassSetSecretGoalBoxAll(vectm(143,-1253,1270),vectm(1427,-335,310),true);
+        }
 
 
         Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
@@ -563,10 +567,13 @@ function PreFirstEntryMapFixes()
             AddActor(class'PoolTableResetButton',vect(-1700,-389.3,50),rot(0,16384,0));
         }
 
-        if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
-            Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
-        } else {
-            Spawnm(class'BarDancerBoring',,,vect(-1440,340,48),rot(0,-16348,0));
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //No bar dancer in Zero Rando pure
+            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
+            } else {
+                Spawnm(class'BarDancerBoring',,,vect(-1440,340,48),rot(0,-16348,0));
+            }
         }
 
         if (!#defined(revision)){ //Lyla is already fixed in RevisionPawns
@@ -710,7 +717,7 @@ function AnyEntryMapFixes()
 {
     local FordSchick ford;
     local #var(prefix)AnnaNavarre anna;
-#ifdef revision
+#ifdef revision||vmd2
     local DXRKeypad k;
 #endif
     local bool RevisionMaps;
@@ -846,7 +853,7 @@ function AnyEntryMapFixes()
         break;
 
     case "04_NYC_STREET":
-#ifdef revision
+#ifdef revision||vmd2
         if( dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') && RevisionMaps )
         {
             foreach AllActors(class'DXRKeypad',k,'SubKeypad'){

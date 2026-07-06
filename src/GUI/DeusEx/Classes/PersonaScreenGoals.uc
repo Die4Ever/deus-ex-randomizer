@@ -40,10 +40,12 @@ function CreateControls()
     chkConfirmNoteDeletion.Hide();
     bConfirmNoteDeletes = class'MenuChoice_ConfirmNoteDelete'.default.enabled;
 
-    btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
-    btnBingo.SetButtonText("|&Bingo");
-    btnBingo.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 13, 179);
-    btnBingo.SetSensitivity(true);
+    if (class'MenuChoice_ShowBingoBoard'.static.IsEnabled()){
+        btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
+        btnBingo.SetButtonText("|&Bingo");
+        btnBingo.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 13, 179);
+        btnBingo.SetSensitivity(true);
+    }
 
     CreateKeysAndDatacubesButtons();
 

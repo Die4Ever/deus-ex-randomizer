@@ -374,6 +374,16 @@ function CheckHelmet(ScriptedPawn p)
             if(chance_single(visor_chance)) {
                 p.Texture = Texture'DeusExCharacters.Skins.VisorTex1';
             }
+
+            //Update other mods that track if pawns have helmets
+            #ifdef gmdx
+            p.bHasHelmet=True;
+            #elseif vmd
+            if (VMDBufferPawn(p)!=None){
+                //Would normally get updated by CheckForHelmets()
+                VMDBufferPawn(p).bHasHelmet=True;
+            }
+            #endif
         }
         break;
     default:
@@ -383,6 +393,17 @@ function CheckHelmet(ScriptedPawn p)
             p.MultiSkins[5] = Texture'DeusExItems.Skins.GrayMaskTex';
             p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
             p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+
+            //Update other mods that track if pawns have helmets
+            #ifdef gmdx
+            p.bHasHelmet=False;
+            #elseif vmd
+            if (VMDBufferPawn(p)!=None){
+                //Would normally get updated by CheckForHelmets()
+                VMDBufferPawn(p).bHasHelmet=False;
+            }
+            #endif
+
         } else if(chance_single(visor_chance)) {
             p.Texture = Texture'DeusExCharacters.Skins.VisorTex1';
             if(p.MultiSkins[6]==Texture'DeusExCharacters.Skins.MJ12TroopTex4'){

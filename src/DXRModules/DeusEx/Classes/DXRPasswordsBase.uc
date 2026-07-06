@@ -534,6 +534,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     if( note.HasPassword(newpassword))
     {
         MarkPasswordKnown(newpassword);
+        info("found note (TextTag: "$note.textTag$") with newpassword " $ newpassword $ " in note");
         return false;
     }
 
@@ -543,6 +544,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
 
     if( PassInStr( note.text, newpassword ) != -1 ) {
         MarkPasswordKnown(newpassword);
+        info("found note (TextTag: "$note.textTag$") with newpassword " $ newpassword $ " in text");
 #ifdef injections
         note.SetNewPassword(newpassword);
 #endif
@@ -552,8 +554,10 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     if( PassInStr( note.text, oldpassword ) == -1 ) return false;
 
     MarkPasswordKnown(newpassword);
-    if(oldpassword == newpassword)
+    if(oldpassword == newpassword){
+        info("found note (TextTag: "$note.textTag$") with password " $ oldpassword $ " (Password not changed)");
         return false;
+    }
 
     updated++;
     info("found note (TextTag: "$note.textTag$") with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);

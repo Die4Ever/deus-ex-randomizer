@@ -274,7 +274,7 @@ function PeriodicUpdates()
         StopCrowdControlEvent("radioactive",true);
     }
 
-#ifdef vanilla
+#ifdef hascustomplayer
     if (isTimerActive('cc_DoomMode')){
         Player().bDoomMode=True;
     } else {
@@ -1459,7 +1459,7 @@ function floorIsLava() {
 
     if (
         ( player().Base.IsA('LevelInfo') || player().Base.IsA('Mover') )
-#ifdef vanilla || revision
+#ifdef hascustomplayer
         && player().bOnLadder==False
 #endif
     ) {
@@ -3362,7 +3362,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         // dmg_double and dmg_half require changes inside the player class
         case "dmg_double":
-            if (!#defined(vanilla) && !#defined(revision)){
+            if (!#defined(hascustomplayer)){
                 PlayerMessage("Double Damage effect unavailable in this mod");
                 return NotAvail;
             }
@@ -3377,7 +3377,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "dmg_half":
-            if (!#defined(vanilla) && !#defined(revision)){
+            if (!#defined(hascustomplayer)){
                 PlayerMessage("Half Damage effect unavailable in this mod");
                 return NotAvail;
             }
@@ -3391,7 +3391,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "flipped":
-            if (!#defined(vanilla) && !#defined(revision)){
+            if (!#defined(hascustomplayer)){
                 //Changes in player class
                 PlayerMessage("Flipped effect unavailable in this mod");
                 return NotAvail;
@@ -3414,7 +3414,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return Success;
 
         case "limp_neck":
-            if (!#defined(vanilla) && !#defined(revision)){
+            if (!#defined(hascustomplayer)){
                 //Changes in player class
                 PlayerMessage("Limp Neck effect unavailable in this mod");
                 return NotAvail;
@@ -3436,7 +3436,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return Success;
 
         case "barrel_roll":
-            if (!#defined(vanilla) && !#defined(revision)){
+            if (!#defined(hascustomplayer)){
                 //Changes in player class
                 PlayerMessage("Barrel Roll effect unavailable in this mod");
                 return NotAvail;
@@ -3589,7 +3589,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             break;
         case "resident_evil":
-            if (!#defined(vanilla) && !#defined(revision)){
+            if (!#defined(hascustomplayer)){
                 //Changes in player class
                 PlayerMessage("Resident Evil effect unavailable in this mod");
                 return NotAvail;
@@ -3636,7 +3636,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             break;
         case "doom_mode":
-            if (!#defined(vanilla)){
+            if (!#defined(hascustomplayer)){
                 //Changes in player class
                 PlayerMessage("Doom Mode effect unavailable in this mod");
                 return NotAvail;
@@ -3684,7 +3684,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             break;
         case "wine_bullets":
-            if (!#defined(vanilla) && !#defined(revision)){
+            if (!#defined(hascustomplayer)){
                 PlayerMessage("Wine Bullets effect unavailable in this mod");
                 return NotAvail;
             }

@@ -49,9 +49,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local #var(prefix)TracerTong tong;
-#ifdef revision
-    local JockHelicopter jockheli;
-#endif
+    local Robot jockheli;
     local DXRHoverHint hoverHint;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)Robot bot;
@@ -348,12 +346,10 @@ function PreFirstEntryMapFixes()
             AddSwitch( vect(540,3890,-370), rot(0, 16384, 0), 'ShedDoor');
 
             //Add teleporter hint text to Jock
-            #ifdef revision
             foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
-            foreach AllActors(class'JockHelicopter',jockheli,'BlackHelicopter'){break;}
+            foreach AllActors(class'Robot',jockheli,'BlackHelicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jockheli);
-            #endif
 
             Spawn(class'PlaceholderItem',,, vectm(718,3913,-355)); //Shed
             Spawn(class'PlaceholderItem',,, vectm(723,3972,-355)); //Shed
@@ -422,6 +418,9 @@ function PreFirstEntryMapFixes()
 
         //Past the teleporter into UC (Same location in vanilla and Revision)
         MassSetSecretGoalBox(class'NavigationPoint', vectm(380,4015,-4000), vectm(1053,3697,-4254), true);
+
+        //In the zappy room with the desk before the construction zone (Same location in vanilla and Revision)
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(4410,800,-1675), vectm(3900,135,-1360), true);
 
         if (VanillaMaps){
             if(!#defined(vmd))// button to open the door heading towards the ladder in the water
@@ -804,12 +803,10 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
         } else {
             //Add teleporter hint text to Jock
-            #ifdef revision
             foreach AllActors(class'#var(prefix)MapExit',exit,'exit'){break;}
-            foreach AllActors(class'JockHelicopter',jockheli,'Heli'){break;}
+            foreach AllActors(class'Robot',jockheli,'Heli'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jockheli);
-            #endif
 
             class'PlaceholderEnemy'.static.Create(self,vectm(886,1044,-930));
 
@@ -835,8 +832,12 @@ function VandenbergCmdFixTimsDoor()
         foreach AllActors(class'#var(DeusExPrefix)Mover',door){
             if (door.Name=='DeusExMover28'){
                 door.KeyIDNeeded='TimsClosetKey';
-                door.Tag = 'TimsDoor';
-                AddSwitch( vect(-1782.48,1597.85,-1969), rot(0, 0, 0), 'TimsDoor');
+                if (#defined(gmdx)){
+                    door.Tag = 'In'; //great name (This is the original tag, GMDX adds a keypad that uses this, so keep it the same)
+                } else {
+                    door.Tag = 'TimsDoor';
+                }
+                AddSwitch( vect(-1782.48,1597.85,-1969), rot(0, 0, 0), door.Tag);
             }
         }
 
@@ -845,6 +846,14 @@ function VandenbergCmdFixTimsDoor()
         key.Description="Tim's Closet Key";
         key.SkinColor=SC_Level3;
         key.MultiSkins[0] = Texture'NanoKeyTex3';
+
+        if (#defined(gmdx)){
+            //Get rid of the original key for the closet, so we can just use the same rules for placement as vanilla
+            foreach AllActors(class'#var(prefix)NanoKey',key){
+                if (key.KeyID!='monte_key') continue;
+                key.Destroy();
+            }
+        }
     }
 }
 

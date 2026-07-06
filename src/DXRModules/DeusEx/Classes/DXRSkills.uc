@@ -196,7 +196,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         return shortDisplay $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
-        if(#bool(vanilla) || #bool(revision)) {
+        if(#bool(hascustomplayer)) {
             if(class'MenuChoice_BalanceSkills'.static.IsDisabled())
                 word = "Damage Reduction|n            (HazMat/Armor)";
             else
@@ -216,7 +216,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         case 3: r = "|n    Master:    "; break;
         }
 
-        if(#bool(vanilla) || #bool(revision)) {
+        if(#bool(hascustomplayer)) {
             if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
                 shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
                 r = r $ PadString(shortDisplay,3,,true) $ p $ " / "; // passive is * 1.1 + 0.3

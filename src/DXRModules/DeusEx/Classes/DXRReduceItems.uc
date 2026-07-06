@@ -319,6 +319,7 @@ function int ApplyItemMult(int count, float mult)
 function _ReduceWeaponAmmo(Weapon w, float mult)
 {
     if( w.AmmoName == None || w.PickupAmmoCount <= 0 ) return;
+    if( w.AmmoName == class'AmmoNone' ) return;
     // don't reduce weapon PickupAmmoCount owned by Robots? does this matter?
     if(#var(prefix)Robot(w.Owner) != None) return;
     if( w.bIsSecretGoal ) return;
@@ -337,6 +338,7 @@ function _ReduceAmmo(Ammo a, float mult)
     // don't reduce ammo owned by pawns
     if( a.AmmoAmount <= 0 || CarriedItem(a) ) return;
     if( a.bIsSecretGoal ) return;
+    if( AmmoNone(a)!=None) return;
 
     mult *= _GetItemMult(_item_reductions, a.class);
     mult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
@@ -507,6 +509,7 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
     percent = Clamp(percent, 10, 1000);
 
     foreach AllActors(class'Ammo', a) {
+        if( AmmoNone(a)!=None ) continue; //Don't do anything to AmmoNone
         if( ! a.IsA(type.name) ) continue;
 
         f = float(percent) / 100.0;

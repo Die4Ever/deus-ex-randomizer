@@ -37,7 +37,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/",
         "preproc_definitions": {
             "gmdx":1, "gmdxnotae": 1, "singleplayer":1, "mapfixes":1, "flags":1, "prefix":"", "vanillamaps":2,
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "GMDXRandomizer", "injectsprefix": "DXR", "allfeatures": false
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"GMDXRandoPlayer", "flagvarprefix": "", "package": "GMDXRandomizer", "injectsprefix": "DXR", "allfeatures": false, "hascustomplayer":1
         },
         "mods_paths": [ "./" ],
         "packages": [ "GMDXRandomizer" ],
@@ -45,7 +45,7 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
+        "blacklist": [ "DXRVanilla", "HXRandomizer", "DXRBalance", "DXRFixes" ]
     },
     "gmdxae": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX AE Backup/",
@@ -60,7 +60,7 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
+        "blacklist": [ "DXRVanilla", "HXRandomizer", "DXRBalance", "DXRFixes" ]
     },
     "revision": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
@@ -75,7 +75,7 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
+        "blacklist": [ "DXRVanilla", "HXRandomizer", "DXRBalance", "DXRFixes" ]
     },
     "vmd": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
@@ -90,7 +90,7 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
+        "blacklist": [ "DXRVanilla", "HXRandomizer", "DXRBalance", "DXRFixes" ]
     },
     "vmd2": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
@@ -105,6 +105,6 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
+        "blacklist": [ "DXRVanilla", "HXRandomizer", "DXRBalance", "DXRFixes" ]
     }
 }

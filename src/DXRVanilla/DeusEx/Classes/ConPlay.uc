@@ -182,10 +182,13 @@ function SetupEventFastForward()
             nextAction = SetupEventCheckPersona( ConEventCheckPersona(currentEvent), nextLabel );
             break;
 
+        case ET_Speech: //Don't actually play any more of the speech, but still run past them
+            nextAction = EA_NextEvent;
+            break;
+
         case ET_Trade: //Moved (This isn't real though???)
         case ET_Random: //Moved
         case ET_Choice: //Moved
-        case ET_Speech: //Moved (We don't play any more speech)
         case ET_End:
             //player.ClientMessage("Fast Forward ending conversation");
             nextAction = SetupEventEnd( ConEventEnd(currentEvent), nextLabel );
@@ -308,11 +311,29 @@ function FastForward()
     SetupEventFastForward();
 }
 
+function bool ShouldFastForwardConvType()
+{
+    if (displayMode==DM_FirstPerson){
+        //There aren't really any beneficial bugs that you might want from
+        //not fast forwarding first person conversations, so always allow
+        //them to fast forward
+        return true;
+    } else if (displayMode==DM_ThirdPerson){
+        //You might want to retain the original behaviour when conversations
+        //don't always play through, so make this dependent on the balance
+        //option (In case you want to prevent Walt from going hostile)
+        return class'MenuChoice_BalanceEtc'.static.IsEnabled();
+    }
+    return false;
+}
+
 //Fast forward if appropriate, otherwise terminate as normal
 function TerminateConversation(optional bool bContinueSpeech, optional bool bNoPlayedFlag)
 {
     if (!fastForwarding){
-        if (displayMode == DM_FirstPerson && currentEvent!=None && currentEvent.EventType!=ET_End){
+        if ((ShouldFastForwardConvType()) &&
+            currentEvent!=None &&
+            currentEvent.EventType!=ET_End){
             //Save these to reuse once the fast forward is finished
             savedContinueSpeech = bContinueSpeech;
             savedNoPlayedFlag = bNoPlayedFlag;

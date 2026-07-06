@@ -86,7 +86,72 @@ simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
     w.AccurateRange = int(f);
     f = w.default.BaseAccuracy * (rngf()+0.5);
     w.BaseAccuracy = f;*/
+
+    //Now that things have been randomized, stick the weapon mods back on
+    //Make sure this happens last
+    ReapplyWeaponMods(w);
+
     ReapplySeed(oldseed);
+}
+
+//Logic stolen from the weapon mod classes to apply each modifier
+simulated function ReapplyWeaponMods(DeusExWeapon w)
+{
+    local int i;
+
+    if (w==None) return;
+
+    if (w.HasReloadMod() && w.Default.ReloadTime==w.ReloadTime){
+        w.ReloadTime    += (w.Default.ReloadTime * w.ModReloadTime);
+        if (w.ReloadTime < 0.0)
+            w.ReloadTime = 0.0;
+    }
+
+    if (w.HasAccuracyMod() && w.Default.BaseAccuracy==w.BaseAccuracy){
+        if (w.BaseAccuracy == 0.0)
+            w.BaseAccuracy    -= w.ModBaseAccuracy;
+        else
+            w.BaseAccuracy    -= (w.Default.BaseAccuracy * w.ModBaseAccuracy);
+    }
+
+    if (w.HasClipMod() && w.Default.ReloadCount==w.ReloadCount){
+        i = Float(w.Default.ReloadCount) * w.ModReloadCount;
+
+        if (i<1)
+            i=1;
+
+        w.ReloadCount += i;
+    }
+
+    if (w.HasRangeMod() && w.Default.AccurateRange==w.AccurateRange){
+        w.AccurateRange    += (w.Default.AccurateRange * w.ModAccurateRange);
+        if (#defined(injections)){
+            w.MaxRange     += (w.Default.maxRange * w.ModAccurateRange);
+        }
+    }
+
+    if (w.HasRecoilMod() && w.Default.recoilStrength==w.recoilStrength){
+        w.recoilStrength    += (w.Default.recoilStrength * w.ModRecoilStrength);
+        if (w.recoilStrength < 0.0)
+            w.recoilStrength = 0.0;
+
+    }
+
+    //GMDX
+#ifdef gmdx
+    if (w.HasDAMMod() && w.Default.HitDamage==w.HitDamage){
+        //ModDamage
+        //This doesn't actually change HitDamage
+        //I guess that gets applied at damage time?
+    }
+
+    if (w.HasROFMod() && w.Default.ShotTime==w.ShotTime){
+        w.ShotTime += (w.Default.ShotTime * w.ModShotTime);
+        if (w.ShotTime < 0.0)
+            w.ShotTime = 0.0;
+    }
+#endif
+
 }
 
 static function float GetDefaultShottime(DeusExWeapon w) {
@@ -184,8 +249,11 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
             return 18.0;
         }
 
+#ifdef gmdxnotae
+    case class'GMDXRocket':
+#endif
     case class'#var(prefix)Rocket':
-    // fix both just in case a normal Rocket is fired somehow?
+    // fix both just in case a normal Rocket is fired somehow (like in zero rando)
     case class'RocketFixTicks':// no break
         if (#defined(gmdx)){
             return 200.0;
@@ -193,6 +261,9 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
             return 300.0;
         }
 
+#ifdef gmdxnotae
+    case class'GMDXRocketWP':
+#endif
     case class'#var(prefix)RocketWP':
         if (#defined(gmdx)){
             return 60.0;
@@ -331,21 +402,37 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         w.HitDamage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);// write back the weapon damage
         break;
 
+#ifdef gmdxnotae
+    case class'GMDXRocket':
+        //Gets fired when BalanceItems is Disabled in GMDX
+        //This version of the rocket fixes scope issues in GMDX
+#endif
     case class'#var(prefix)Rocket':
-        // fix both just in case a normal Rocket is fired somehow?
+        // Gets fired when BalanceItems is Disabled (outside of GMDX)
         p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         p = class'RocketFixTicks';
         d = p;
     case class'RocketFixTicks':// no break
         p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
         if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
+            #ifdef gmdxnotae
+            p = class'GMDXRocket';
+            #else
             p = class'#var(prefix)Rocket';
+            #endif
             d = p;
         }
         break;
 
     case class'#var(prefix)RocketWP':
         p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+#ifdef gmdxnotae
+        p = class'GMDXRocketWP';
+        d = p;
+    case class'GMDXRocketWP':
+        //This version of the rocket fixes scope issues in GMDX
+        p.default.Damage = ProjDamage(p, ratio, EXPLOSIVE_MIN_DMG);
+#endif
         break;
 
     case class'#var(prefix)HECannister20mm':

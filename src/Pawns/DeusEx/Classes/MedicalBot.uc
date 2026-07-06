@@ -15,7 +15,7 @@ replication
         numUses;
 }
 
-#ifdef gmdx
+#ifdef gmdxae
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
@@ -49,7 +49,7 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
     local int healedPoints, uses;
     local string msg;
 
-#ifdef injections||revision
+#ifdef hascustomplayer
     // vanilla HealPlayer but with a different client message
     if (#var(PlayerPawn)(PlayerToHeal) != None) {
         healedPoints = #var(PlayerPawn)(PlayerToHeal)._HealPlayer(healAmount);
@@ -77,7 +77,8 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
 
         PlayerToHeal.ClientMessage(msg);
     }
-#elseif gmdx
+#elseif gmdxae
+    //GMDX:AE will almost certainly get a custom player class before release, but this covers our ass just in case
     uses = healMaxTimes;
     healedPoints = Super.HealPlayer(PlayerToHeal);
     healMaxTimes = uses-1; //GMDX bot use limiting is based on CombatDifficulty, so use our own logic instead
@@ -111,10 +112,10 @@ simulated function int GetRemainingUses()
     if (augsOnly)
         return 0;
     else
-        if (!#defined(gmdx)){
+        if (!#defined(gmdxae)){
             return (GetMaxUses() - numUses);
         } else {
-            #ifdef gmdx
+            #ifdef gmdxae
             return healMaxTimes;
             #endif
         }
