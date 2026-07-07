@@ -19,12 +19,7 @@ function CheckConfig()
     not_passwords[i++] = "captain Zhao";
     not_passwords[i++] = "the captain";
     not_passwords[i++] = "Brooklyn Naval Shipyard";
-    not_passwords[i++] = "Simons is no better";
-    not_passwords[i++] = "Simons, FEMA";
-    not_passwords[i++] = "Walton Simons";
-    not_passwords[i++] = "SIMONS WENT";
-    not_passwords[i++] = "REPORT TO SIMONS";
-    not_passwords[i++] = "Simons has";
+    not_passwords[i++] = "Simons"; //His name comes up a lot, and there's only one datacube that actually has the password (09_Datacube11)
     not_passwords[i++] = "Bob Page";
     not_passwords[i++] = "MJ12";
     not_passwords[i++] = "Majestic 12";
@@ -44,10 +39,7 @@ function CheckConfig()
     not_passwords[i++] = "little .22 pistol";
     not_passwords[i++] = "human target-practis";
     not_passwords[i++] = "research campus";
-    not_passwords[i++] = "But tell Simons";
     not_passwords[i++] = "Captain Hernandez";
-    not_passwords[i++] = "information linking Simons";
-    not_passwords[i++] = "Which Simons has a";
     not_passwords[i++] = "Brooklyn Bridge Station access is through";
     not_passwords[i++] = "Manhattan and Brooklyn";
     not_passwords[i++] = "Brooklyn Naval Yards";
@@ -81,29 +73,29 @@ function CheckConfig()
     i++;
 
     yes_passwords[i].map = "09_NYC_DOCKYARD";
-    yes_passwords[i].password = "SIMONS";
-    yes_passwords[i].search_for = "PASSWORD: SIMONS";
+    yes_passwords[i].password = "Simons";
+    yes_passwords[i].search_for = "Password: Simons"; //In 09_Datacube11
     i++;
 
     //Fixups will cover these password replacements if balance changes are enabled
     //These ones are funny because we change the passwords to unique ones.
     if( !(class'MenuChoice_BalanceMaps'.static.ModerateEnabled() || class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts()) ){
-        //QUEENSTOWER security computer password is updated with balance changes
+        //QUEENSTOWER security computer password is updated with balance changes (06_Datacube20)
         yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
-        yes_passwords[i].search_for = "PASSWORD SECURITY";
+        yes_passwords[i].search_for = "password SECURITY";
         yes_passwords[i].password = "SECURITY";
         i++;
 
-        //MJ12 security computer password is updated with balance changes
+        //MJ12 security computer password is updated with balance changes (06_Datacube11)
         yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
-        yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
+        yes_passwords[i].search_for = "password has been reset to the default MJ12 and SECURITY";
         yes_passwords[i].password = "SECURITY";
         i++;
 
-        //USFEMA security computer password is updated with balance changes
+        //USFEMA security computer password is updated with balance changes (09_Datacube12)
         yes_passwords[i].map = "09_NYC_DOCKYARD";
-        yes_passwords[i].search_for =  "PASSWORD IS \"SECURITY\"";
-        yes_passwords[i].password = "SECURITY";
+        yes_passwords[i].search_for =  "password is \"Security\"";
+        yes_passwords[i].password = "Security";
         i++;
     }
 
@@ -127,6 +119,7 @@ function CheckConfig()
 
 function FirstEntry()
 {
+    AddYesPasswords(dxr.flags.settings.passwordsrandomized);
     if(dxr.flags.settings.passwordsrandomized != 0)
         FixCodes(dxr.flags.settings.passwordsrandomized);// run this first so our manual logic takes precedence
     Super.FirstEntry();
@@ -225,18 +218,23 @@ function FixMolePeoplePhoneboothCode()
     ReplacePassword("M-O-L-E",SpellOutWord(newWord));
 }
 
-function FixCodes(int mode)
+function AddYesPasswords(int mode)
 {
     local string newpassword;
-    // local string replacement;
     local int i;
 
     for(i=0; i<ArrayCount(yes_passwords); i++) {
         if( yes_passwords[i].map != dxr.localURL ) continue;
         newpassword = GeneratePassword(yes_passwords[i].password,mode);
         //replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, false);
-        ReplacePassword(yes_passwords[i].search_for, newpassword );
+        ReplacePassword(yes_passwords[i].password, newpassword, yes_passwords[i].search_for);
     }
+
+}
+
+function FixCodes(int mode)
+{
+    local string newpassword;
 
     switch(dxr.localURL) {
         case "02_NYC_HOTEL":
@@ -298,6 +296,26 @@ function ChangeKeypadPasscode(#var(prefix)Keypad k, bool rando)
         Super.ChangeKeypadPasscode(k, rando);
 }
 
+function String GetDayNumSuffix(int day)
+{
+    //Could probably do some logic and stuff, but this is just easier
+    switch(day){
+        case 1:
+        case 21:
+        case 31:
+            return "st";
+        case 2:
+        case 22:
+            return "nd";
+        case 3:
+        case 23:
+            return "rd";
+        default:
+            return "th";
+    }
+    return "";
+}
+
 function FixMaggieChowBday(#var(prefix)Keypad k)
 {
     local string oldpassword, newpassword;
@@ -331,7 +349,7 @@ function FixMaggieChowBday(#var(prefix)Keypad k)
     ReplacePassword(oldpassword, newpassword);
     k.validCode = newpassword;
 
-    newpassword = months[month-1] @ day;
+    newpassword = months[month-1] @ day $ GetDayNumSuffix(day);
     ReplacePassword("July 18th", newpassword);
 }
 

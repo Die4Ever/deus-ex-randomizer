@@ -1629,17 +1629,18 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
 {
     local DXRPasswords passwords;
     local #var(prefix)ComputerSecurity comp;
-    local string notePassword,finalpassword;
+    local string notePassword,finalpassword,origpassword;
 
+    origpassword = class'#var(prefix)ComputerSecurity'.Default.UserList[0].Password;
     if( class'MenuChoice_BalanceMaps'.static.ModerateEnabled() || class'MenuChoice_PasswordAutofill'.static.ShowKnownAccounts() ) {
         foreach AllActors(class'#var(prefix)ComputerSecurity',comp){
-            if (comp.UserList[0].Password==comp.Default.UserList[0].Password){
+            if (comp.UserList[0].Password==origpassword){
                 comp.UserList[0].Password = newpass;
             }
         }
         notePassword = newpass;
     } else {
-        notePassword = class'#var(prefix)ComputerSecurity'.Default.UserList[0].Password;
+        notePassword = origpassword;
     }
 
     if (noteReplacement!=""){
@@ -1647,7 +1648,7 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
         if(passwords != None) {
             //GeneratePassword will return the original password if password rando is disabled
             finalpassword = passwords.GeneratePassword(notePassword,dxr.flags.settings.passwordsrandomized);
-            passwords.ReplacePassword(noteReplacement, finalpassword);
+            passwords.ReplacePassword(origpassword, finalpassword, noteReplacement);
         }
     }
 
