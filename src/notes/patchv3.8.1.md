@@ -37,6 +37,7 @@
   - The dancing guy in the Underworld Bar (Mission 2/4/8) will no longer appear in Zero Rando.
   - Some passwords that would not be learned properly when password randomization was disabled (eg. Zero Rando) will now be learned.
   - Some passwords will get replaced in their original text in a more clean fashion (just replacing the password instead of a whole phrase).
+  - Trash paper that spawns from destroyed barrels and trash cans won't be on fire if spawned in water.  This prevents a crash when destroying burning barrels that are floating in water.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
 
 </details>
