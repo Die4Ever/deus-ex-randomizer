@@ -2728,6 +2728,22 @@ function ReduceHelicopterDelay(name dispTag, optional int idx, optional float ne
     }
 }
 
+function AttachMoverTag(DeusExDecoration d)
+{
+    local Mover M;
+
+    if (d.moverTag=='') return;
+
+    //Copied from DeusExDecoration::BeginPlay
+    foreach AllActors(class'Mover', M, d.moverTag)
+    {
+        d.SetBase(M);
+        d.SetPhysics(PHYS_None);
+        d.bInvincible = True;
+        d.bCollideWorld = False;
+    }
+}
+
 
 //This makes life easier and more consistent when starting infolinks from code.
 //Don't use either of the functions below directly!

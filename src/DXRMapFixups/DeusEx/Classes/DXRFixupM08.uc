@@ -938,7 +938,7 @@ function PreFirstEntryMapFixes()
             if (VanillaMaps) {
                 foreach RadiusActors(class'#var(prefix)Switch1', s1, 0.1, vectm(-59.050560, -1450.105591, 17.855021)) {
                     s1.moverTag = 'elevatorbutton';
-                    s1.BeginPlay();
+                    AttachMoverTag(s1);
                     break;
                 }
             }
