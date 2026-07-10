@@ -1,6 +1,8 @@
 ## Major Changes
 
 - New game mode: Speedrun Shuffle!  This is the same as Speedrun Mode, but you only play a few missions, in random order.
+  - You will get a selection of about 3 to 5 missions, targeting a playtime of under 1 hour. Look at the splits to see which missions you drew, and see if you can beat the par time!
+  - We will be starting a tournament for Speedrun Shuffle in July! Keep an eye on our [YouTube](https://www.youtube.com/@die4ever2005) and/or [Discord](https://mods4ever.com/discord)!
 - Significant fixes and improvements to GMDXv9 Randomizer!
 - Fixes to support Vanilla? Madder! 2.0
 

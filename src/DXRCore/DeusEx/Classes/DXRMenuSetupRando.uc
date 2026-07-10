@@ -158,7 +158,8 @@ function BindControls(optional string action)
 
     NewMenuItem("Splits Overlay", "Splits and total game time overlay");
     EnumOption("Don't Show", 0, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
-    EnumOption("Show", 1, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
+    EnumOption("Show and Save", 1, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
+    EnumOption("Show and Don't Save", 2, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
 
 #ifdef vanilla
     NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
