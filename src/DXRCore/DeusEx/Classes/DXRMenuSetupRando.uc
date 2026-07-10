@@ -1,7 +1,7 @@
 class DXRMenuSetupRando extends DXRMenuBase;
 
 var float combatDifficulty;
-var int gamemode_enum, starting_locations, goals_rando;
+var int gamemode_enum, starting_locations, goals_rando, splits_overlay;
 var bool showMode, showLoadout, showAutosave, showCrowdControl, showOnlineFeatures, showMirroredMaps;
 
 var string SplitsBtnTitle, SplitsBtnMessage;
@@ -156,7 +156,7 @@ function BindControls(optional string action)
         EnumOption("Fixed Camera", 2, f.moresettings.camera_mode,GetCameraModeHelpText(2));
     }
 
-    NewMenuItem("Splits Overlay", "Splits and total game time overlay");
+    splits_overlay = NewMenuItem("Splits Overlay", "Splits and total game time overlay");
     EnumOption("Don't Show", 0, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
     EnumOption("Show and Save", 1, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
     EnumOption("Show and Don't Save", 2, f.moresettings.splits_overlay,GetGenericHelpText("splitsoverlay"));
@@ -469,6 +469,15 @@ function BindControls(optional string action)
             SaveSetup();
             break;
     }
+}
+
+function ClickEnum(int iEnum, bool rightClick)
+{
+    if(iEnum == splits_overlay) {
+        OpenEnumList(iEnum);
+        return;
+    }
+    Super.ClickEnum(iEnum, rightClick);
 }
 
 function CreateBasicOptions(DXRFlags f)
