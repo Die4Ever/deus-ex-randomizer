@@ -16,6 +16,7 @@ var YesPassword yes_passwords[64];
 
 var travel string oldpasswords[100];
 var travel string newpasswords[100];
+var travel string replacephrases[100];
 var travel int passStart;
 var travel int passEnd;
 var transient int updated;
@@ -76,7 +77,7 @@ simulated function UpdateGoalsAndNotes(DeusExGoal first_goal, DeusExNote first_n
         tnote = note.next;
         for (i=0; i<ArrayCount(oldpasswords); i++)
         {
-            UpdateNote(note, oldpasswords[i], newpasswords[i]);
+            UpdateNote(note, oldpasswords[i], newpasswords[i], replacephrases[i]);
         }
         note = tnote;
     }
@@ -90,6 +91,7 @@ simulated function UpdateGoalsAndNotes(DeusExGoal first_goal, DeusExNote first_n
 simulated function ProcessString(out string str, optional out string updated_passwords[16], optional bool conversation)
 {
     local int i, j;
+
     for(j=0; j<ArrayCount(updated_passwords); j++) {
         if( updated_passwords[j] == "" ) break;
     }
@@ -98,7 +100,8 @@ simulated function ProcessString(out string str, optional out string updated_pas
         if( conversation && ( oldpasswords[i] == "SECURITY" || oldpasswords[i] == "TARGET" || oldpasswords[i] == "RESEARCH") ) {// HACK
             continue;
         }
-        if( UpdateString(str, oldpasswords[i], newpasswords[i]) ) {
+        if (oldpasswords[i]=="") continue;
+        if( UpdateString(str, oldpasswords[i], newpasswords[i], replacephrases[i]) ) {
             if( j >= ArrayCount(updated_passwords) ) {
                 warning("ProcessString "$oldpasswords[i]$" to "$newpasswords[i]$", j >= ArrayCount(updated_passwords)");
                 j=0;
@@ -108,11 +111,14 @@ simulated function ProcessString(out string str, optional out string updated_pas
     }
 }
 
-simulated function bool UpdateString(out string str, string oldpassword, string newpassword)
+simulated function bool UpdateString(out string str, string oldpassword, string newpassword, string replacephrase)
 {
+    local string newphrase;
+
     if( oldpassword == "" ) return false;
     if( str == "") return false;
-    if( PassInStr( str, oldpassword ) == -1 ) return false;
+    if (replacephrase=="") replacephrase=oldpassword;
+    if( PassInStr( str, replacephrase ) == -1 ) return false;
 
     if(Caps(oldpassword) == Caps(newpassword)) //Compare them case insensitively
         return false;
@@ -121,7 +127,10 @@ simulated function bool UpdateString(out string str, string oldpassword, string 
     //l(str);
     //l("---");
 
-    str = ReplaceText( str, oldpassword, newpassword, true );
+    newphrase = ReplaceText(replacephrase,oldpassword,newpassword,true);
+
+
+    str = ReplaceText( str, replacephrase, newphrase, true );
 
     return true;
 }
@@ -294,14 +303,19 @@ function ChangeATMPIN(#var(prefix)ATM a, int i, bool rando)
     ReplacePassword(oldpassword, newpassword);
 }
 
-function ReplacePassword(string oldpassword, string newpassword)
+function ReplacePassword(string oldpassword, string newpassword, optional string replacephrase)
 { // do I even need passStart?
 #ifndef hx
     local #var(PlayerPawn) p;
 #endif
 
+    if (replacephrase==""){
+        replacephrase=oldpassword;
+    }
+
     oldpasswords[passEnd] = oldpassword;
     newpasswords[passEnd] = newpassword;
+    replacephrases[passEnd] = replacephrase;
     passEnd = (passEnd+1) % ArrayCount(oldpasswords);
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
     info("replaced password \"" $ oldpassword $ "\" with \"" $ newpassword $ "\", passEnd is " $ passEnd $", passStart is " $ passStart);
@@ -318,10 +332,10 @@ function ReplacePassword(string oldpassword, string newpassword)
     }
 
 #ifdef hx
-    UpdateAllNotes(HXGameInfo(Level.Game).FirstNote, oldpassword, newpassword);
+    UpdateAllNotes(HXGameInfo(Level.Game).FirstNote, oldpassword, newpassword, replacephrase);
 #else
     foreach AllActors(class'#var(PlayerPawn)', p) {
-        UpdateAllNotes(p.FirstNote, oldpassword, newpassword);
+        UpdateAllNotes(p.FirstNote, oldpassword, newpassword, replacephrase);
     }
 #endif
 }
@@ -508,27 +522,33 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
 }
 
 
-simulated function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpassword)
+simulated function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpassword, string replacephrase)
 {
     local DeusExNote tnote;
     while( note != None )
     {
         tnote = note.next;
-        UpdateNote(note, oldpassword, newpassword);
+        UpdateNote(note, oldpassword, newpassword, replacephrase);
         note = tnote;
     }
 }
 
 
-simulated function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
+simulated function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword, string replacephrase)
 {
 #ifdef hx
     local HXPlayerPawn p;
 #endif
+    local string newphrase;
 
     if( oldpassword == "" ) return false;
     if( note.bUserNote && player().CombatDifficulty > 0 ) return false;
     if( note.text == "") return false;
+
+    if (replacephrase==""){
+        //Just in case
+        replacephrase = oldpassword;
+    }
 
 #ifdef injections
     if( note.HasPassword(newpassword))
@@ -551,7 +571,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
         return false;
     }
 
-    if( PassInStr( note.text, oldpassword ) == -1 ) return false;
+    if( PassInStr( note.text, replacephrase ) == -1 ) return false;
 
     MarkPasswordKnown(newpassword);
     if(oldpassword == newpassword){
@@ -562,7 +582,9 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     updated++;
     info("found note (TextTag: "$note.textTag$") with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
-    note.text = ReplaceText( note.text, oldpassword, newpassword, true );
+    newphrase = ReplaceText(replacephrase,oldpassword,newpassword,true);
+
+    note.text = ReplaceText( note.text, replacephrase, newphrase, true );
 #ifdef injections
     note.SetNewPassword(newpassword);
 #elseif hx

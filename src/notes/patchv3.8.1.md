@@ -22,6 +22,7 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
+  - New option to show speedrun splits overlay without saving, similar to Speedrun Shuffle mode.
   - If a new bingo board is generated after Mission 4, the "Take down Sandra Renton" bingo goal will fail immediately depending on if she left New York or not.
   - "Make Soup" bingo goal properly detects bodies that spawn already inside the hot tub (For example, if zombies resurrect in the water and then are killed again).
   - If a third person conversation is interrupted, it will attempt to play through as much of the remainder of the conversation as possible.  This helps avoid some situations where a conversation that would normally end with the speaker becoming hostile might be left in a friendly state if the conversation is interrupted.
@@ -35,6 +36,9 @@
   - Certain weapon mods applied to weapons will no longer be lost when loading save games or traveling to new levels.
   - Randomly spawned medbots and repair bots should no longer spawn in (or over) the water.
   - The dancing guy in the Underworld Bar (Mission 2/4/8) will no longer appear in Zero Rando.
+  - Some passwords that would not be learned properly when password randomization was disabled (eg. Zero Rando) will now be learned.
+  - Some passwords will get replaced in their original text in a more clean fashion (just replacing the password instead of a whole phrase).
+  - Trash paper that spawns from destroyed barrels and trash cans won't be on fire if spawned in water.  This prevents a crash when destroying burning barrels that are floating in water.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
 
 </details>
@@ -82,5 +86,11 @@
   - Many small tweaks for Revision maps will properly be applied, instead of applying some Vanilla map tweaks to the Revision maps.
   - Exit teleporter at the end of the Vandenberg Tunnels (Mission 12) will be placed in the correct location on Revision maps.
   - Phones in Revision maps will work for making phone calls for bingo.
+  - Many elevator buttons in Revision maps will no longer be missing.
 
 </details>
+
+
+## Intra-Patch Changes
+
+- Intros and Outros won't get stuck if you try to skip them.

@@ -54,11 +54,6 @@ function ReplaceActorTransfersInConversations()
             AddTransferRepairTrigger(ceto.Conversation,None);
         }
     }
-
-
-
-
-
 }
 
 function PopulateReplacedActors()
@@ -351,7 +346,7 @@ function ReplaceButton1(#var(prefix)Button1 a)
 
     ReplaceDeusExDecoration(a, n);
     a.Destroy();
-    n.BeginPlay(); //Get the skins applied appropriately
+    n.SetSkin(n.ButtonType,n.bLit); //Get the skins applied appropriately
 }
 
 function ReplaceFaucet(#var(prefix)Faucet a)
@@ -769,6 +764,8 @@ function ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration a, #var(DeusExPref
     n.FamiliarName = a.FamiliarName;
     n.UnfamiliarName = a.UnfamiliarName;
     n.ConBindEvents();
+
+    AttachMoverTag(n);
 
     ReplaceDecoration(a, n);
 }

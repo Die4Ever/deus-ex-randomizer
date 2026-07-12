@@ -721,6 +721,7 @@ function SetDifficulty(int new_difficulty)
             settings.minskill *= 0.8;
             settings.maxskill *= 0.8;
             moresettings.shuffle_missions = 45;
+            moresettings.splits_overlay = 2;
         }
     }
     else if(IsWaltonWare()) {

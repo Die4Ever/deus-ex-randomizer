@@ -106,7 +106,7 @@ static function GenerateTrashPaper(#var(prefix)Containers trashContainer, float 
 					trashPaper.dir = VRand() * 20 + vect(20,20,0);
 					trashPaper.dir.Z = 0;
 
-                    if (onFire && FRand() < 0.5) {
+                    if (onFire && trashPaper.Region.Zone.bWaterZone==False && FRand() < 0.5) {
                         fire = trashPaper.Spawn(class'SmokelessFire', trashPaper,, loc);
                         if (fire != None) {
                             fire.DrawScale = 0.25*FRand() + 0.5;
