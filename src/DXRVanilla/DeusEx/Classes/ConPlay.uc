@@ -313,6 +313,12 @@ function FastForward()
 
 function bool ShouldFastForwardConvType()
 {
+    if (bForcePlay){
+        //As far as I know, this is only used in the intro and outro,
+        //and causes issues if you try to skip through them.
+        return false;
+    }
+
     if (displayMode==DM_FirstPerson){
         //There aren't really any beneficial bugs that you might want from
         //not fast forwarding first person conversations, so always allow

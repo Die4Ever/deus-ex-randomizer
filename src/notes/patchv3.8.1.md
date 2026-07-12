@@ -89,3 +89,8 @@
   - Many elevator buttons in Revision maps will no longer be missing.
 
 </details>
+
+
+## Intra-Patch Changes
+
+- Intros and Outros won't get stuck if you try to skip them.
