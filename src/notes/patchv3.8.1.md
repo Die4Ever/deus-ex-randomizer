@@ -39,6 +39,7 @@
   - Some passwords that would not be learned properly when password randomization was disabled (eg. Zero Rando) will now be learned.
   - Some passwords will get replaced in their original text in a more clean fashion (just replacing the password instead of a whole phrase).
   - Trash paper that spawns from destroyed barrels and trash cans won't be on fire if spawned in water.  This prevents a crash when destroying burning barrels that are floating in water.
+  - Alarm sounder panels will become confused when hit by EMP damage, even when not actively sounding an alarm.  While confused, the panel will not be able to be used by enemies.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
 
 </details>
