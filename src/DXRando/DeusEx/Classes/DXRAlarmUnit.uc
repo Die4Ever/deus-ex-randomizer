@@ -60,7 +60,7 @@ function SetLightState(bool bOn)
             MultiSkins[2] = MultiSkins[7];
         #endif
         } else {
-        #ifdef gmdxnotae
+        #ifdef gmdx
             MultiSkins[1] = Texture'HDTPAlarmUnittex1';
         #elseif revision
             MultiSkins[1] = MultiSkins[6];
