@@ -48,6 +48,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local #var(prefix)Keypad2 kp;
+    local #var(DeusExPrefix)Mover dxm;
     local DynamicLight dl;
     local AIEventTrigger ait;
     local Robot jockheli;
@@ -233,6 +234,15 @@ function PreFirstEntryMapFixes()
             gas = WeaponGasGrenade(findNearestToActor(class'WeaponGasGrenade',t));
             if (gas!=None){
                 gas.Destroy();
+            }
+
+            //Vanilla maps have a weird mover in the corner of the bilge pumps room
+            //that has no associated brush and doesn't do anything.  Destroy it so
+            //that you can't highlight it.  This is present in the GMDX maps as well.
+            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+                if (dxm.Name!='DeusExMover34') continue;
+                DestroyMover(dxm);
+                break;
             }
         }
 

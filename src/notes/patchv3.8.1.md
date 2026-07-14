@@ -41,6 +41,7 @@
   - Trash paper that spawns from destroyed barrels and trash cans won't be on fire if spawned in water.  This prevents a crash when destroying burning barrels that are floating in water.
   - Alarm sounder panels will become confused when hit by EMP damage, even when not actively sounding an alarm.  While confused, the panel will not be able to be used by enemies.
   - Very minor tweaks to weapon positioning based on selected FOV.
+  - Removed an invisible door in the corner of the bilge pump room (Mission 9) that could be highlighted and did nothing.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
 
 </details>
