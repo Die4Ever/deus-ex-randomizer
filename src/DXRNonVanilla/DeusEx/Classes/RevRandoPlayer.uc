@@ -1412,6 +1412,31 @@ function UpdateInHand()
     //Also update the state of the aim laser.  This is good for states
     //where we don't highlight the centre object (like interpolating or conversations)
     HighlightCenterObjectLaser();
+
+    //Make sure the scope does not come up again mid-conversation
+    DisableScopeInConversation();
+}
+
+function DisableScopeInConversation()
+{
+    local DeusExWeapon dxw;
+
+    //Make sure that a reloading weapon doesn't finish and zoom in again during a conversation.
+    //Ideally this would be in state Conversation::Begin, where weapons are put away or not, based
+    //on their mass, etc, but it's kind of a pain in the ass to do that?
+
+    if (conPlay==None) return; //You have to be in a conversation
+    if (conPlay.GetDisplayMode()!=DM_ThirdPerson) return; //And it has to be a third person conversation
+
+    dxw=DeusExWeapon(InHand);
+    if (dxw==None) return; //Have to have a weapon
+    if (dxw.bHasScope==False) return; //That weapon has to have a scope
+    if (dxw.bWasZoomed==False) return; //And it has to have been *previously* zoomed
+    if (dxw.GetStateName()!='Reload') return; //and the weapon has to be reloading
+
+    //Don't rezoom mid-conversation
+    dxw.bWasZoomed = false;
+
 }
 
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView

@@ -43,6 +43,7 @@
   - Very minor tweaks to weapon positioning based on selected FOV.
   - Removed an invisible door in the corner of the bilge pump room (Mission 9) that could be highlighted and did nothing.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
+  - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
 
 </details>
 
