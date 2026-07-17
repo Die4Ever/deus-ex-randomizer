@@ -73,6 +73,7 @@
   - Locations of UNATCO Troops when returning to New York (Mission 8) will not be adjusted in Zero Rando.
   - Acceleration will no longer be maintained when activating Spy Drone (Which caused you to slowly move while controlling the drone).
   - Movement speed reductions will now be based on your selected maximum health instead of fixed health values assuming a maximum health of 100.
+  - When slamming into a wall at high speed, you will now only take damage once, instead of potentially multiple times depending on frame rate.  This damage will also no longer be increased based on your selected difficulty.
 
 </details>
 

@@ -7,7 +7,7 @@ var bool bOnLadder;
 var Rotator ShakeRotator;
 var bool bAutorun;
 var float autorunTime;
-
+var bool bWallSplat;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
@@ -2041,6 +2041,59 @@ state PlayerWalking
 // just in case it tries to get called from a different state, to prevent "Failed to find function" crashes
 function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
 {
+}
+
+//Duplicated and modified from GMDX9 DeusExPlayer::BumpWall
+//Rando: Player damagetype changed from 'Shot' to 'Fell', damage will only apply once per wall splat
+//Splat damage is taken when an appropriate amount of speed is applied into a wall directly, rather than if grazed
+function BumpWall( vector HitLocation, vector HitNormal )
+{
+    local AugIcarus icar;
+    local actor     acti;
+    local float     surfForce;
+
+    Super(PlayerPawnExt).BumpWall(HitLocation,HitNormal);
+
+    //Dot product gets us the amount of our velocity that is perpendicular to the surface itself (the HitNormal)
+    //This is probably a better way to determine if you really slammed into it than using pure velocity
+    //1200 velocity is honestly pretty fast...
+    surfForce = -(HitNormal dot Velocity); //The dot product result is negative, just make it positive so it's comparable to VSize(Velocity)
+
+    //ClientMessage("Velocity is "$VSize(Velocity)$"  Dot product is "$surfForce);
+
+    if (surfForce > 400) //CyberP: Smash through glass at high velocities. //Rando changed from VSize(Velocity) to dot product
+    {
+        acti = Trace(HitLocation,HitNormal,Location + (velocity*0.1),Location); //CyberP: Trace in the direction we are moving
+        if (acti != None && acti.IsA('DeusExMover'))
+        {
+            if (DeusExMover(acti).DamageThreshold < 4 && DeusExMover(acti).bBreakable) //CyberP: Limit it to breakable glass only
+            {
+                DeusExMover(acti).TakeDamage(10,self,DeusExMover(acti).Location,vect(0,0,0),'shot');
+                TakeDamage(5,self,Location,vect(0,0,0),'Fell'); //CyberP: Hurts the player a bit too! //RANDO: Changed from 'Shot' to 'Fell'
+            }
+        }
+
+        //You slammed into a solid wall, dumbass
+        //RANDO: Make sure you only splat into the wall once
+        if (surfForce > 1200 && Velocity.Z > -600 && !bWallSplat) //Rando changed from VSize(Velocity) to dot product
+        {
+            //ClientMessage("Hit wall with surface force "$surfForce);
+            bWallSplat=True;
+            TakeDamage(6,self,vect(0,0,0),vect(0,0,0),'Fell'); //RANDO: Changed from 'Shot' to 'Fell'
+        }
+    } else {
+        //RANDO: Once your velocity has decreased, reset the ability to get splatted again
+        bWallSplat=False;
+    }
+
+    if (RocketTargetMaxDistance==40001.000000)
+    {
+        icar = AugIcarus(AugmentationSystem.FindAugmentation(class'AugIcarus'));
+        if (icar.incremental > 1.75 - AugmentationSystem.GetAugLevelValue(class'DeusEx.AugIcarus'))
+        {
+        icar.incremental = 2;
+        }
+    }
 }
 
 
