@@ -1367,7 +1367,31 @@ function UpdateInHand()
     //Also update the state of the aim laser.  This is good for states
     //where we don't highlight the centre object (like interpolating or conversations)
     HighlightCenterObjectLaser();
+
+    //Make sure the scope does not appear mid-conversation
+    DisableScopeInConversation();
 }
+
+//GMDX has *way less* cases where you can keep a weapon drawn mid-conversation compared to Revision.
+//The scope won't come up again automatically after reloading while scoped, so that logic isn't
+//actually needed in GMDX.  Just unzoom a weapon if it's zoomed in during a conversation
+function DisableScopeInConversation()
+{
+    local DeusExWeapon dxw;
+
+    if (conPlay==None) return; //You have to be in a conversation
+    if (conPlay.GetDisplayMode()!=DM_ThirdPerson) return; //And it has to be a third person conversation
+
+    dxw=DeusExWeapon(InHand);
+    if (dxw==None) return; //Have to have a weapon
+    if (dxw.bHasScope==False) return; //That weapon has to have a scope
+
+    if (dxw.bZoomed){
+        //If actively zoomed, don't
+        dxw.ScopeOff();
+    }
+}
+
 
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView
 //Massively cut down for DXRando so that the game doesn't fade out or go back to the main menu, just spin forever and ever

@@ -1413,7 +1413,7 @@ function UpdateInHand()
     //where we don't highlight the centre object (like interpolating or conversations)
     HighlightCenterObjectLaser();
 
-    //Make sure the scope does not come up again mid-conversation
+    //Make sure the scope does not appear mid-conversation
     DisableScopeInConversation();
 }
 
@@ -1431,11 +1431,21 @@ function DisableScopeInConversation()
     dxw=DeusExWeapon(InHand);
     if (dxw==None) return; //Have to have a weapon
     if (dxw.bHasScope==False) return; //That weapon has to have a scope
-    if (dxw.bWasZoomed==False) return; //And it has to have been *previously* zoomed
-    if (dxw.GetStateName()!='Reload') return; //and the weapon has to be reloading
 
-    //Don't rezoom mid-conversation
-    dxw.bWasZoomed = false;
+    if (dxw.bZoomed){
+        //If actively zoomed, don't
+        if (dxw.bZoomed==False) return; //Has to be zoomed
+
+        dxw.ScopeOff();
+
+    } else {
+        //If not actively zoomed, make sure we aren't waiting to rezoom after reloading finishes
+        if (dxw.bWasZoomed==False) return; //And it has to have been *previously* zoomed
+        if (dxw.GetStateName()!='Reload') return; //and the weapon has to be reloading
+
+        //Don't rezoom mid-conversation
+        dxw.bWasZoomed = false;
+    }
 
 }
 
