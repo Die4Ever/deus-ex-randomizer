@@ -184,7 +184,7 @@ function PreFirstEntry()
 
     switch(dxr.dxInfo.missionNumber) {
         case 99:
-            Ending_FirstEntry();
+            //End game scenes
             break;
 
         default:
@@ -197,6 +197,12 @@ function PreFirstEntry()
 function PostFirstEntry()
 {
     Super.PostFirstEntry();
+
+    switch(dxr.dxInfo.missionNumber) {
+        case 99:
+            Ending_FirstEntry();
+            break;
+    }
 
     MarkBingoFailedSpecial();
     MarkBingoFailedGeneric();
