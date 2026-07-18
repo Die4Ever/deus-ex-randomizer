@@ -187,3 +187,29 @@ function PrintEndgameQuote(int num)
     }
 }
 #endif
+
+#ifdef gmdx
+//Duplicated from GMDX MissionScript class
+//RANDO: Don't ever clear the window stack.  This is MissionEndgame, so it'll always be one of the ENDGAMEx maps
+function PreTravel()
+{
+    /*
+    local DeusExRootWindow root;
+
+    Player = DeusExPlayer(GetPlayerPawn());
+    root = DeusExRootWindow(Player.rootWindow);
+
+    if (root != None && Player != none && localURL != "ENDGAME1" && localURL != "ENDGAME2" && localURL != "ENDGAME3" && localURL != "ENDGAME4" && (Player.bRealUI || Player.bHardCoreMode))
+    {
+        if (!Player.bDeadLoad && root.hud.barkDisplay != None && !root.hud.barkDisplay.bIsVisible)
+            root.ClearWindowStack();   //CyberP: close the inventory/GUI
+    }
+    */
+
+    // turn off the timer
+    SetTimer(0, False);
+
+    // zero the flags so FirstFrame() gets executed at load
+    flags = None;
+}
+#endif

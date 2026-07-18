@@ -635,11 +635,6 @@ function BingoWinScreen()
         class'DXRAutosave'.static.MakeCrashSave();
     }
 #endif
-    if (bingo_win_countdown == 2 && !#defined(vanilla)) {
-        //Give it 2 seconds to send the toot
-        //This is still needed outside of vanilla
-        BeatGame(dxr,4);
-    }
 }
 
 function HandleBingoWinCountdown()

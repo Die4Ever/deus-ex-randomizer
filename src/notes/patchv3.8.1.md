@@ -45,6 +45,7 @@
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
+  - Dance party ending for bingo wins now works properly and continues on to New Game Plus for non-vanilla mods.
 
 </details>
 
