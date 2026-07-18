@@ -1,10 +1,19 @@
 class VendingMachineEnergy extends #var(injectsprefix)VendingMachine;
 
+function MakeVendingMachineVMDNormal()
+{
+#ifdef vmd
+    bAdvancedUse=False;
+#endif
+}
+
 #ifndef hx
 
 function BeginPlay()
 {
     Super.BeginPlay();
+
+    MakeVendingMachineVMDNormal();
 
     Skin = Default.Skin;
 }
