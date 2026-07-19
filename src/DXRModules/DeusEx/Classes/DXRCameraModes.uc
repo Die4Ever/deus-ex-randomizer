@@ -141,6 +141,10 @@ function SetFirstPersonCamera()
         player().bBehindView=False;
         player().bCrosshairVisible=True;
     }
+    if (player().GetStateName()=='Dying'){
+        player().bBehindView=True;
+    }
+
     player().ViewTarget=None;
     player().Style= STY_Normal;
     if (reCam!=None){
@@ -168,7 +172,7 @@ function SetThirdPersonCamera()
 function SetFixedCamera()
 {
     if(#defined(hascustomplayer)){
-        player().bBehindView=False;
+        player().bBehindView=True;
         player().bCrosshairVisible=False;
         player().Style= STY_Normal;
         if (reCam==None || reCam.bDeleteMe){
