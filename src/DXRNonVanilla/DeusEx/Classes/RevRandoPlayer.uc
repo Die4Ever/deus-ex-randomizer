@@ -841,6 +841,7 @@ exec function ShowMainMenu()
 {
     local DeusExLevelInfo info;
     local MissionEndgame Script;
+    local RevisionMissionEndgame RevScript;
 
     // DXRando: we just don't want to do vanilla behavior during the intro (mission 98)
     // escape skips the conversation which still skips the intro anyways
@@ -854,9 +855,20 @@ exec function ShowMainMenu()
         foreach AllActors(class'MissionEndgame', Script)
             break;
 
+        foreach AllActors(class'RevisionMissionEndgame', RevScript)
+            break;
+
         // DXRando: make sure we have Script.Flags before skipping to avoid crashes
-        if (Script != None && Script.Flags != None)
+        if (Script != None && Script.Flags != None){
             Script.FinishCinematic();
+            return;
+        }
+
+        // DXRando: Also check for a Revision mission script
+        if (RevScript != None && RevScript.Flags != None){
+            RevScript.FinishCinematic();
+            return;
+        }
         return;
     }
     Super.ShowMainMenu();
@@ -1434,8 +1446,6 @@ function DisableScopeInConversation()
 
     if (dxw.bZoomed){
         //If actively zoomed, don't
-        if (dxw.bZoomed==False) return; //Has to be zoomed
-
         dxw.ScopeOff();
 
     } else {
