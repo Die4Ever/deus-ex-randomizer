@@ -142,7 +142,7 @@ function SetFirstPersonCamera()
         player().bCrosshairVisible=True;
     }
     if (player().GetStateName()=='Dying'){
-        player().bBehindView=True;
+        player().bBehindView=True; //BehindView is true while dying.  If False, your first person arm/weapon will appear
     }
 
     player().ViewTarget=None;
@@ -239,7 +239,7 @@ function SetCameraMode(int mode)
             if (class'MenuChoice_DeathCam'.static.IsKillCam()){
                 //Allow the camera to go on if we're using the kill cam
             } else {
-                return; // setting camera mode while dying causes your weapon and hand to show after dying
+                return;
             }
         }
     } else {
