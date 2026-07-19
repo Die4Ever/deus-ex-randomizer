@@ -122,6 +122,10 @@ function ReplaceActors()
         else if( RevisionMissionIntro(a) != None) {
             ReplaceRevMissionIntro(RevisionMissionIntro(a));
         }
+#elseif vmd2
+        else if( a.class.name == 'RevisionMissionEndgame') {
+            CreateRevMissionEndgamePiggyback(MissionScript(a));
+        }
 #endif
         else if( #var(prefix)MissionIntro(a) != None ) {
             ReplaceMissionIntro(#var(prefix)MissionIntro(a));
@@ -849,7 +853,21 @@ function ReplaceRevMissionIntro(RevisionMissionIntro a)
 
     a.Destroy();
 }
+#endif
 
+#ifdef vmd2
+//We can't create a hard dependency on the Revision package, so instead of replacing the script,
+//create a piggyback script that runs alongside it to handle our own changes
+function CreateRevMissionEndgamePiggyback(MissionScript a)
+{
+    local DXRMissionEndgamePiggyback n;
+
+    if (a==None) return; //All the endgames (including 4) *should* have a script in Revision, and they should (obviously) always be an actual MissionScript
+
+    n = Spawn(class'DXRMissionEndgamePiggyback');
+    n.Init(a);
+
+}
 #endif
 
 function ReplaceMissionIntro(#var(prefix)MissionIntro a)

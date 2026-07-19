@@ -97,6 +97,7 @@
   - Phones in Revision maps will work for making phone calls for bingo.
   - Many elevator buttons in Revision maps will no longer be missing.
   - Bingo goals for using vending machines will now work as expected.
+  - When using Revision maps, the ending cutscenes will show a randomized quote at the end instead of the original quotes.  The dance party ending will now show a quote after a moment and eventually continue to the credits.
 
 </details>
 
