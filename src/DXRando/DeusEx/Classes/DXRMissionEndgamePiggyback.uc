@@ -14,6 +14,8 @@ function Init(MissionScript orig)
 
 function Timer()
 {
+    if (baseScript.flags==None) return;
+
     if (baseScript.flags.GetBool('Endgame1_Played'))
     {
         if (!ourQuotePrinted)
