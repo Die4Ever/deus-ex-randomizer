@@ -110,3 +110,4 @@
 - Intros and Outros won't get stuck if you try to skip them.
 - GMDX: Mantling actually works again.
 - GMDX: Left clicking on charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) will use the original GMDX behaviour instead of instantly wearing the armor.
+- GMDX: Repairbots will actually limit the number of times they can be used (instead of decrementing the number of uses into negative numbers).

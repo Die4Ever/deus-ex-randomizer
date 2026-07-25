@@ -138,8 +138,6 @@ simulated function bool CanCharge()
         return False;
     }
 }
-#elseif gmdx
-// just let the Super.CanCharge() run
 #elseif hx
 simulated function bool CanCharge()
 {
