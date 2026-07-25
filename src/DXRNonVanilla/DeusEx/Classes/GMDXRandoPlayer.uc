@@ -1520,8 +1520,80 @@ state Dying
 state PlayerWalking
 {
     // lets us affect the player's movement
-    // RANDO: Mostly duped from the GMDX DeusExPlayer, indentation fixed though
+    // RANDO: Mostly duped from the GMDX Human, indentation fixed though
     function ProcessMove ( float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
+    {
+        local actor HitActor;
+        local vector HitLocation, HitNormal, checkpoint, start, checkNorm, EndTrace, Extent;
+        local float shakeTime, shakeRoll, shakeVert;
+
+        DeusExPlayerProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot); //RANDO: We changed some of that code too, so here we go...
+
+        if (bOnKeyHold && Physics == PHYS_Falling)
+            DoJump();
+
+        //Justice: Mantling system.  Code shamelessly stolen from CheckWaterJump() in ScriptedPawn
+        if (isMantling && !bOnLadder) //CyberP: PHYS_Falling && != 0
+        {
+            EndTrace = Location + CollisionHeight * 1.1 * vect(0,0,1);
+            HitActor = Trace(HitLocation, HitNormal, EndTrace,,True);
+            if (HitActor == None)
+            {
+                if (CarriedDecoration == None && velocity.Z > -1000)
+                {
+                    checkpoint = vector(Rotation);
+                    checkpoint.Z = 0.0;
+                    checkNorm = Normal(checkpoint);
+                    checkPoint = Location + CollisionRadius * checkNorm;
+                    //Extent = CollisionRadius * vect(1,1,0);
+                    if (bIcarusClimb)
+                        Extent = CollisionRadius * vect(1.2,1.2,0); //0.3
+                    else
+                        Extent = CollisionRadius * vect(0.3,0.3,0);
+                    Extent.Z = CollisionHeight*0.67;
+                    if (bIcarusClimb)
+                        Extent.Z = CollisionHeight*0.8;
+
+                    HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, Extent);
+                    if ( (HitActor != None) && (HitActor.IsA('Mover') || HitActor == Level || HitActor.IsA('DeusExDecoration')))
+                    {
+                        if (HitActor.IsA('DeusExDecoration') && (HitActor.CollisionHeight < 20 || DeusExDecoration(HitActor).bCanBeBase == False))
+                            return;
+                        else if (HitActor.IsA('DeusExDecoration'))
+                        {
+                            bSpecialCase = True; decorum = DeusExDecoration(HitActor);
+                        }
+                        else if (HitActor.IsA('DeusExMover'))
+                        {
+                            bSpecialCase2 = True; mova = DeusExMover(HitActor);
+                        }
+                        WallNormal = -1 * HitNormal;
+                        start = Location;
+                        start.Z += 1.1 * MaxStepHeight + CollisionHeight;
+                        checkPoint = start + 1.25 * CollisionRadius * checkNorm;
+                        HitActor = Trace(HitLocation, HitNormal, checkpoint, start, true, Extent);
+                        if (HitActor == None)
+                        {
+                            if (bDuck == 1 && bToggleCrouch == False)
+                            {
+                                bToggleCrouch = True;
+                                bIsCrouching = True;
+                                bCrouchOn = True;
+                                bDuck = 1;
+                                lastbDuck = 1;
+                                bCrouchHack = True;
+                            }
+                            goToState('Mantling');
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // can't call Super(DeusExPlayer.PlayerWalking).ProcessMove, so we gotta copy-paste it too...
+    // RANDO: Mostly duped from the GMDX DeusExPlayer, indentation fixed though
+    function DeusExPlayerProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
     {
         local int newSpeed, defSpeed;
         local name mat;
@@ -2099,6 +2171,7 @@ function BumpWall( vector HitLocation, vector HitNormal )
 
         //You slammed into a solid wall, dumbass
         //RANDO: Make sure you only splat into the wall once
+        bWallSplat=True; //RANDO: Actually don't do wallsplats at all...
         if (surfForce > 1200 && Velocity.Z > -600 && !bWallSplat) //Rando changed from VSize(Velocity) to dot product
         {
             //ClientMessage("Hit wall with surface force "$surfForce);

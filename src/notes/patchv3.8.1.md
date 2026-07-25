@@ -106,3 +106,4 @@
 ## Intra-Patch Changes
 
 - Intros and Outros won't get stuck if you try to skip them.
+- GMDX: Mantling actually works again.
