@@ -48,6 +48,7 @@
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
   - Dance party ending for bingo wins now works properly and continues on to New Game Plus for non-vanilla mods.
   - Revision: It is now possible to skip the quote shown after an ending when using Revision maps, to go into the credits immediately.
+  - Revision: Some items in inaccessible parts of the New York streets (Mission 2, 4, and 8) will no longer be randomized (to prevent important items from being shuffled out of the play area).
 
 </details>
 
