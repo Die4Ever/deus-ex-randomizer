@@ -173,6 +173,16 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
+        if (GMDXMaps)
+        {
+            //GMDX locks Lebedev's bedroom, so don't put the key in there...
+            keys_rules[i].item_name = 'lebedevdoor';
+            keys_rules[i].min_pos = vect(1430, -747, 400);
+            keys_rules[i].max_pos = vect(1726, -449, 300);
+            keys_rules[i].allow = false;
+            i++;
+        }
+
         keys_rules[i].item_name = 'lebedevdoor';
         keys_rules[i].min_pos = vect(166, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
