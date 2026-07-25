@@ -49,6 +49,7 @@
   - Dance party ending for bingo wins now works properly and continues on to New Game Plus for non-vanilla mods.
   - Revision: It is now possible to skip the quote shown after an ending when using Revision maps, to go into the credits immediately.
   - Revision: Some items in inaccessible parts of the New York streets (Mission 2, 4, and 8) will no longer be randomized (to prevent important items from being shuffled out of the play area).
+  - Revision: Charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) can no longer be instantly used by left clicking on them.
 
 </details>
 
@@ -107,3 +108,4 @@
 
 - Intros and Outros won't get stuck if you try to skip them.
 - GMDX: Mantling actually works again.
+- GMDX: Left clicking on charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) will use the original GMDX behaviour instead of instantly wearing the armor.

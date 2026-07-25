@@ -1129,7 +1129,8 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (item.bDeleteMe) return false;// just in case!
 
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
-    if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
+    //if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false; //This logic for "not-in-inventory" charged pickups doesn't really work here
+    if (ChargedPickup(item) != None) return false;
 
     //GMDX tracks fullness (In hardcore), so check in here
     if (IsFood(item)){
