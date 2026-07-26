@@ -113,3 +113,4 @@
 - GMDX: Mantling actually works again.
 - GMDX: Left clicking on charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) will use the original GMDX behaviour instead of instantly wearing the armor.
 - GMDX: Repairbots will actually limit the number of times they can be used (instead of decrementing the number of uses into negative numbers).
+- GMDX: Red screen overlay doesn't appear when you die with the "Show Killer" death cam option enabled.

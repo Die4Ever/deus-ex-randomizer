@@ -1491,11 +1491,6 @@ state Dying
         }
 
         if (class'MenuChoice_DeathCam'.static.IsKillCam() && GetKiller()!=None){
-            //Remove GMDX red clientflash for kill cam
-            DesiredFlashScale=0.0;
-            DesiredFlashFog = vect(0,0,0);
-            FlashTimer=0.0;
-
             camera = DXRCameraModes(class'DXRCameraModes'.static.Find());
             camera.EnableTempFixedCamera(true);
 
@@ -1515,6 +1510,21 @@ state Dying
     {
         if (class'MenuChoice_DeathCam'.static.IsKillCam()){
             FrobTarget = GetKiller();
+        }
+    }
+
+    function ViewFlash(float DeltaTime)
+    {
+        if (class'MenuChoice_DeathCam'.static.IsKillCam()){
+            //No red fog for kill cam
+            DesiredFlashScale=0.0;
+            DesiredFlashFog = vect(0,0,0);
+            FlashTimer=0.0;
+            FlashScale = vect(0,0,0);
+            FlashFog = vect(0,0,0);
+            SetViewFlash(false);
+        } else {
+            Super.ViewFlash(DeltaTime);
         }
     }
 }
