@@ -1,3 +1,4 @@
+#compileif vmd2
 class DXRMissionIntroPiggyback extends DXRMissionPiggyback;
 
 var bool invStolen;

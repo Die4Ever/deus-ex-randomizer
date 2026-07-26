@@ -955,6 +955,8 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
     //if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
     if (ChargedPickup(item) != None) return false; //Charged pickups that are "not-in-inventory" appear again when you change levels
+    if (Flare(item) != None && item.Lifespan > 0) return false; //Don't allow lighting again while already lit
+
     return true;
 }
 

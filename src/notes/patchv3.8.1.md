@@ -43,6 +43,7 @@
   - Very minor tweaks to weapon positioning based on selected FOV.
   - Removed an invisible door in the corner of the bilge pump room (Mission 9) that could be highlighted and did nothing.
   - "Kill Cam" will no longer show your first person perspective arm over your body when you die.
+  - Flares can no longer be activated again with left click while already lit on the ground.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
