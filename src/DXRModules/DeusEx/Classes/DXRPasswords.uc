@@ -296,47 +296,12 @@ function ChangeKeypadPasscode(#var(prefix)Keypad k, bool rando)
         Super.ChangeKeypadPasscode(k, rando);
 }
 
-function String GetDayNumSuffix(int day)
-{
-    //Could probably do some logic and stuff, but this is just easier
-    switch(day){
-        case 1:
-        case 21:
-        case 31:
-            return "st";
-        case 2:
-        case 22:
-            return "nd";
-        case 3:
-        case 23:
-            return "rd";
-        default:
-            return "th";
-    }
-    return "";
-}
-
 function FixMaggieChowBday(#var(prefix)Keypad k)
 {
     local string oldpassword, newpassword;
-    local int month, day, i, oldseed;
-    local string months[12];
+    local int month, day, oldseed;
 
     oldpassword = k.validCode;
-
-    i=0;
-    months[i++] = "January";
-    months[i++] = "February";
-    months[i++] = "March";
-    months[i++] = "April";
-    months[i++] = "May";
-    months[i++] = "June";
-    months[i++] = "July";
-    months[i++] = "August";
-    months[i++] = "September";
-    months[i++] = "October";
-    months[i++] = "November";
-    months[i++] = "December";
 
     oldseed = SetGlobalSeed(oldpassword);//manually set the seed to avoid using the level name in the seed
     month = rng(12)+1;
@@ -349,7 +314,7 @@ function FixMaggieChowBday(#var(prefix)Keypad k)
     ReplacePassword(oldpassword, newpassword);
     k.validCode = newpassword;
 
-    newpassword = months[month-1] @ day $ GetDayNumSuffix(day);
+    newpassword = ConstructMonthDayStr(month,day);
     ReplacePassword("July 18th", newpassword);
 }
 

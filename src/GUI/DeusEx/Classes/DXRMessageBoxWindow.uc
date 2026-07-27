@@ -12,13 +12,19 @@ var int     callbackId;
 const maxButtons = 3;
 var MenuUIActionButtonWindow customBtn[3];
 
+function CreateTextWindow()
+{
+    Super.CreateTextWindow();
+    winText.SetFont(Font'DXRFontMenuHeaders_DS');
+}
+
 function bool ButtonActivated( Window buttonPressed )
 {
 	local bool bHandled;
     local int i;
 
 	bHandled = Super.ButtonActivated(buttonPressed);
-    
+
     if (!bHandled) {
         if (mbMode == CustomMode) {
             for (i=0;i<numButtons;i++) {
@@ -29,16 +35,16 @@ function bool ButtonActivated( Window buttonPressed )
                         PostResult(i);
 
                     bHandled = True;
-                    break;                
+                    break;
                 }
             }
-        
+
         } else {
             //I don't know what mode we're in
             bHandled = False;
         }
     }
-    
+
     return bHandled;
 
 }
@@ -47,7 +53,7 @@ function SetCustomMode( int numBtns, String labels[3] )
 {
 	local int i;
     mbMode = CustomMode; //For now, we'll treat mode 2 as "custom" mode
-	
+
 	// Now create buttons appropriately
     for (i = 0;i<numBtns;i++) {
         customBtn[i]  = winButtonBar.AddButton(labels[i], HALIGN_Right);
@@ -79,11 +85,11 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 	local bool bHandled;
 
     bHandled = Super.VirtualKeyPressed(key,bRepeat);
-    
+
     if (!bHandled) {
         if (mbMode == CustomMode) {
             switch(key) {
-                case IK_Enter:	
+                case IK_Enter:
                 case IK_Space:
                 case IK_Escape:
                     if (bDeferredKeyPress) {
@@ -93,7 +99,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
                     }
                     bHandled = True;
                     break;
-                    
+
                 default:
                     //
                     break;
@@ -101,7 +107,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
             }
         }
     }
-    
+
     return bHandled;
 
 }
