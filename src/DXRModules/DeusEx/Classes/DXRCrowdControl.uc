@@ -495,13 +495,55 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
-    _StupidQuestions[numStupidQuestions].Question = "Have you heard of the critically acclaimed MMORPG Final Fantasy XIV?"$"  With an expanded free trial which you can play through the entirety of A Realm Reborn and the award-winning Heavenswa...";
+    _StupidQuestions[numStupidQuestions].Question = "Have you heard of the critically acclaimed MMORPG Final Fantasy XIV?"$"  With an expanded free trial which you can play through the entirety of A Realm Reborn and the award-winning Heave...";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "No";
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     numStupidQuestions++;
+
+    ShuffleStupidQuestions(); //Randomize the order of the questions based on the seed
 }
 
+function SwapStupidQuestions(int q1, int q2)
+{
+    local stupidQuestion spare;
+    local int i;
+
+    if (q1==q2) return; //Nothing to do, same index
+
+    spare.Question = _StupidQuestions[q1].Question;
+    spare.numAnswers = _StupidQuestions[q1].numAnswers;
+    spare.shuffleAnswers = _StupidQuestions[q1].shuffleAnswers;
+    for (i=0;i<ArrayCount(_StupidQuestions[q1].answers);i++){
+        spare.answers[i] = _StupidQuestions[q1].answers[i];
+    }
+
+    _StupidQuestions[q1].Question = _StupidQuestions[q2].Question;
+    _StupidQuestions[q1].numAnswers = _StupidQuestions[q2].numAnswers;
+    _StupidQuestions[q1].shuffleAnswers = _StupidQuestions[q2].shuffleAnswers;
+    for (i=0;i<ArrayCount(_StupidQuestions[q1].answers);i++){
+        _StupidQuestions[q1].answers[i] = _StupidQuestions[q2].answers[i];
+    }
+
+    _StupidQuestions[q2].Question = spare.Question;
+    _StupidQuestions[q2].numAnswers = spare.numAnswers;
+    _StupidQuestions[q2].shuffleAnswers = spare.shuffleAnswers;
+    for (i=0;i<ArrayCount(_StupidQuestions[q2].answers);i++){
+        _StupidQuestions[q2].answers[i] = spare.answers[i];
+    }
+}
+
+function ShuffleStupidQuestions()
+{
+    local int i,j;
+
+    SetGlobalSeedNew("CCStupidQuestions");
+
+    for (i=numStupidQuestions-1;i>=0;i--){
+        j = rng(i+1);
+        SwapStupidQuestions(i,j);
+    }
+}
 
 function getRandomQuestion(out string question, out int numAnswers,
                            out string ansOne, out string ansTwo, out string ansThree) {

@@ -228,9 +228,9 @@ static function string ConstructTimeOfDayStr(int hour, int minute)
     if (hour >= 12){
         isPM = true;
         hour = hour - 12;
-    } else if (hour == 0){
-        hour = 12; //12 AM
     }
+
+    if (hour == 0) hour = 12;
 
     timeStr = string(hour)$":";
     if (minute < 10){
