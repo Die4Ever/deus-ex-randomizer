@@ -452,10 +452,10 @@ function FixFOV()
 
     // GEP Gun
     v =  vect(46, -22, -10) * n;
-    v += vect(32, -22, -10) * w;
+    v += vect(29.4, -22, -10) * w;
     class'WeaponGEPGun'.default.PlayerViewOffset = v;
     v =  vect(-46, 22, 10) * n;
-    v += vect(-32, 22, 10) * w;
+    v += vect(-29.4, 22, 10) * w;
     class'WeaponGEPGun'.default.FireOffset = v;
 
     // LAW
@@ -548,18 +548,18 @@ function FixFOV()
 
     // WeaponMiniCrossbow
     v =  vect(25, -8, -14) * n;
-    v += vect(25, -8, -14) * w;
+    v += vect(23.5, -8, -14) * w;
     class'WeaponMiniCrossbow'.default.PlayerViewOffset = v;
     v =  vect(-25, 8, 14) * n;
-    v += vect(-25, 8, 14) * w;
+    v += vect(-23.5, 8, 14) * w;
     class'WeaponMiniCrossbow'.default.FireOffset = v;
 
     // WeaponNanoSword
     v =  vect(21, -16, -27) * n;
-    v += vect(7, -16, -30) * w;
+    v += vect(10, -16, -30) * w;
     class'WeaponNanoSword'.default.PlayerViewOffset = v;
     v =  vect(-21, 16, 27) * n;
-    v += vect(-7, 16, 30) * w;
+    v += vect(-10, 16, 30) * w;
     class'WeaponNanoSword'.default.FireOffset = v;
 
     // WeaponNanoVirusGrenade
@@ -612,10 +612,10 @@ function FixFOV()
 
     // WeaponSawedOffShotgun
     v =  vect(11, -4, -13) * n;
-    v += vect( 1, -4, -17) * w;
+    v += vect( 2.5, -4, -17) * w;
     class'WeaponSawedOffShotgun'.default.PlayerViewOffset = v;
     v = vect(-11,4,13) * n;
-    v += vect(-1,4,17) * w;
+    v += vect(-2.5,4,17) * w;
     class'WeaponSawedOffShotgun'.default.FireOffset = v;
 
     // WeaponShuriken
@@ -628,10 +628,10 @@ function FixFOV()
 
     // WeaponStealthPistol
     v =  vect(24, -10, -14) * n;
-    v += vect(17, -10, -15) * w;
+    v += vect(13, -10, -15) * w;
     class'WeaponStealthPistol'.default.PlayerViewOffset = v;
     v =  vect(-24, 10, 14) * n;
-    v += vect(-17, 10, 15) * w;
+    v += vect(-13, 10, 15) * w;
     class'WeaponStealthPistol'.default.FireOffset = v;
 
     // WeaponSword

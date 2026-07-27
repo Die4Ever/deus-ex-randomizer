@@ -7,7 +7,7 @@ var bool bOnLadder;
 var Rotator ShakeRotator;
 var bool bAutorun;
 var float autorunTime;
-
+var bool bWallSplat;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
@@ -1129,7 +1129,9 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (item.bDeleteMe) return false;// just in case!
 
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
-    if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
+    //if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false; //This logic for "not-in-inventory" charged pickups doesn't really work here
+    if (ChargedPickup(item) != None) return false;
+    if (Flare(item) != None && item.Lifespan > 0) return false; //Don't allow lighting again while already lit
 
     //GMDX tracks fullness (In hardcore), so check in here
     if (IsFood(item)){
@@ -1367,7 +1369,31 @@ function UpdateInHand()
     //Also update the state of the aim laser.  This is good for states
     //where we don't highlight the centre object (like interpolating or conversations)
     HighlightCenterObjectLaser();
+
+    //Make sure the scope does not appear mid-conversation
+    DisableScopeInConversation();
 }
+
+//GMDX has *way less* cases where you can keep a weapon drawn mid-conversation compared to Revision.
+//The scope won't come up again automatically after reloading while scoped, so that logic isn't
+//actually needed in GMDX.  Just unzoom a weapon if it's zoomed in during a conversation
+function DisableScopeInConversation()
+{
+    local DeusExWeapon dxw;
+
+    if (conPlay==None) return; //You have to be in a conversation
+    if (conPlay.GetDisplayMode()!=DM_ThirdPerson) return; //And it has to be a third person conversation
+
+    dxw=DeusExWeapon(InHand);
+    if (dxw==None) return; //Have to have a weapon
+    if (dxw.bHasScope==False) return; //That weapon has to have a scope
+
+    if (dxw.bZoomed){
+        //If actively zoomed, don't
+        dxw.ScopeOff();
+    }
+}
+
 
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView
 //Massively cut down for DXRando so that the game doesn't fade out or go back to the main menu, just spin forever and ever
@@ -1465,11 +1491,6 @@ state Dying
         }
 
         if (class'MenuChoice_DeathCam'.static.IsKillCam() && GetKiller()!=None){
-            //Remove GMDX red clientflash for kill cam
-            DesiredFlashScale=0.0;
-            DesiredFlashFog = vect(0,0,0);
-            FlashTimer=0.0;
-
             camera = DXRCameraModes(class'DXRCameraModes'.static.Find());
             camera.EnableTempFixedCamera(true);
 
@@ -1491,13 +1512,100 @@ state Dying
             FrobTarget = GetKiller();
         }
     }
+
+    function ViewFlash(float DeltaTime)
+    {
+        if (class'MenuChoice_DeathCam'.static.IsKillCam()){
+            //No red fog for kill cam
+            DesiredFlashScale=0.0;
+            DesiredFlashFog = vect(0,0,0);
+            FlashTimer=0.0;
+            FlashScale = vect(0,0,0);
+            FlashFog = vect(0,0,0);
+            SetViewFlash(false);
+        } else {
+            Super.ViewFlash(DeltaTime);
+        }
+    }
 }
 
 state PlayerWalking
 {
     // lets us affect the player's movement
-    // RANDO: Mostly duped from the GMDX DeusExPlayer, indentation fixed though
+    // RANDO: Mostly duped from the GMDX Human, indentation fixed though
     function ProcessMove ( float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
+    {
+        local actor HitActor;
+        local vector HitLocation, HitNormal, checkpoint, start, checkNorm, EndTrace, Extent;
+        local float shakeTime, shakeRoll, shakeVert;
+
+        DeusExPlayerProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot); //RANDO: We changed some of that code too, so here we go...
+
+        if (bOnKeyHold && Physics == PHYS_Falling)
+            DoJump();
+
+        //Justice: Mantling system.  Code shamelessly stolen from CheckWaterJump() in ScriptedPawn
+        if (isMantling && !bOnLadder) //CyberP: PHYS_Falling && != 0
+        {
+            EndTrace = Location + CollisionHeight * 1.1 * vect(0,0,1);
+            HitActor = Trace(HitLocation, HitNormal, EndTrace,,True);
+            if (HitActor == None)
+            {
+                if (CarriedDecoration == None && velocity.Z > -1000)
+                {
+                    checkpoint = vector(Rotation);
+                    checkpoint.Z = 0.0;
+                    checkNorm = Normal(checkpoint);
+                    checkPoint = Location + CollisionRadius * checkNorm;
+                    //Extent = CollisionRadius * vect(1,1,0);
+                    if (bIcarusClimb)
+                        Extent = CollisionRadius * vect(1.2,1.2,0); //0.3
+                    else
+                        Extent = CollisionRadius * vect(0.3,0.3,0);
+                    Extent.Z = CollisionHeight*0.67;
+                    if (bIcarusClimb)
+                        Extent.Z = CollisionHeight*0.8;
+
+                    HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, Extent);
+                    if ( (HitActor != None) && (HitActor.IsA('Mover') || HitActor == Level || HitActor.IsA('DeusExDecoration')))
+                    {
+                        if (HitActor.IsA('DeusExDecoration') && (HitActor.CollisionHeight < 20 || DeusExDecoration(HitActor).bCanBeBase == False))
+                            return;
+                        else if (HitActor.IsA('DeusExDecoration'))
+                        {
+                            bSpecialCase = True; decorum = DeusExDecoration(HitActor);
+                        }
+                        else if (HitActor.IsA('DeusExMover'))
+                        {
+                            bSpecialCase2 = True; mova = DeusExMover(HitActor);
+                        }
+                        WallNormal = -1 * HitNormal;
+                        start = Location;
+                        start.Z += 1.1 * MaxStepHeight + CollisionHeight;
+                        checkPoint = start + 1.25 * CollisionRadius * checkNorm;
+                        HitActor = Trace(HitLocation, HitNormal, checkpoint, start, true, Extent);
+                        if (HitActor == None)
+                        {
+                            if (bDuck == 1 && bToggleCrouch == False)
+                            {
+                                bToggleCrouch = True;
+                                bIsCrouching = True;
+                                bCrouchOn = True;
+                                bDuck = 1;
+                                lastbDuck = 1;
+                                bCrouchHack = True;
+                            }
+                            goToState('Mantling');
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // can't call Super(DeusExPlayer.PlayerWalking).ProcessMove, so we gotta copy-paste it too...
+    // RANDO: Mostly duped from the GMDX DeusExPlayer, indentation fixed though
+    function DeusExPlayerProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
     {
         local int newSpeed, defSpeed;
         local name mat;
@@ -2041,6 +2149,60 @@ state PlayerWalking
 // just in case it tries to get called from a different state, to prevent "Failed to find function" crashes
 function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
 {
+}
+
+//Duplicated and modified from GMDX9 DeusExPlayer::BumpWall
+//Rando: Player damagetype changed from 'Shot' to 'Fell', damage will only apply once per wall splat
+//Splat damage is taken when an appropriate amount of speed is applied into a wall directly, rather than if grazed
+function BumpWall( vector HitLocation, vector HitNormal )
+{
+    local AugIcarus icar;
+    local actor     acti;
+    local float     surfForce;
+
+    Super(PlayerPawnExt).BumpWall(HitLocation,HitNormal);
+
+    //Dot product gets us the amount of our velocity that is perpendicular to the surface itself (the HitNormal)
+    //This is probably a better way to determine if you really slammed into it than using pure velocity
+    //1200 velocity is honestly pretty fast...
+    surfForce = -(HitNormal dot Velocity); //The dot product result is negative, just make it positive so it's comparable to VSize(Velocity)
+
+    //ClientMessage("Velocity is "$VSize(Velocity)$"  Dot product is "$surfForce);
+
+    if (surfForce > 400) //CyberP: Smash through glass at high velocities. //Rando changed from VSize(Velocity) to dot product
+    {
+        acti = Trace(HitLocation,HitNormal,Location + (velocity*0.1),Location); //CyberP: Trace in the direction we are moving
+        if (acti != None && acti.IsA('DeusExMover'))
+        {
+            if (DeusExMover(acti).DamageThreshold < 4 && DeusExMover(acti).bBreakable) //CyberP: Limit it to breakable glass only
+            {
+                DeusExMover(acti).TakeDamage(10,self,DeusExMover(acti).Location,vect(0,0,0),'shot');
+                TakeDamage(5,self,Location,vect(0,0,0),'Fell'); //CyberP: Hurts the player a bit too! //RANDO: Changed from 'Shot' to 'Fell'
+            }
+        }
+
+        //You slammed into a solid wall, dumbass
+        //RANDO: Make sure you only splat into the wall once
+        bWallSplat=True; //RANDO: Actually don't do wallsplats at all...
+        if (surfForce > 1200 && Velocity.Z > -600 && !bWallSplat) //Rando changed from VSize(Velocity) to dot product
+        {
+            //ClientMessage("Hit wall with surface force "$surfForce);
+            bWallSplat=True;
+            TakeDamage(6,self,vect(0,0,0),vect(0,0,0),'Fell'); //RANDO: Changed from 'Shot' to 'Fell'
+        }
+    } else {
+        //RANDO: Once your velocity has decreased, reset the ability to get splatted again
+        bWallSplat=False;
+    }
+
+    if (RocketTargetMaxDistance==40001.000000)
+    {
+        icar = AugIcarus(AugmentationSystem.FindAugmentation(class'AugIcarus'));
+        if (icar.incremental > 1.75 - AugmentationSystem.GetAugLevelValue(class'DeusEx.AugIcarus'))
+        {
+        icar.incremental = 2;
+        }
+    }
 }
 
 

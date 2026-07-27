@@ -29,6 +29,13 @@ function DoNewGamePlus()
     }
 }
 
+//Hitting escape to end the credits holds through to the intro, which requires logic in ShowMainMenu
+//in a custom player class to discard the held down escape button when we enter the intro.
+function bool CanSkipWithEscape()
+{
+    return #defined(hascustomplayer);
+}
+
 function CreateControls()
 {
     local float winHeight,prefHeight,prefWidth;
@@ -50,7 +57,7 @@ function CreateControls()
     winControlText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 
     controlsText =                "Exit: ";
-    if (#defined(hascustomplayer)){
+    if (CanSkipWithEscape()){
         controlsText = controlsText $ "Escape or ";
     }
     controlsText = controlsText $ "Double Click|n|n";
@@ -153,7 +160,11 @@ function AddDXRCreditsGeneral()
     PrintText("Hold the up arrow key to slow down or go backwards");
     PrintText("Hold the down arrow key to speed up");
     PrintText("Press Spacebar to pause/unpause");
-    PrintText("Press Escape or Double Click to exit");
+    if (CanSkipWithEscape()){
+        PrintText("Press Escape or Double Click to exit");
+    } else {
+        PrintText("Double Click to exit");
+    }
     PrintLn();
 
     PrintHeader("Contributors");
@@ -298,7 +309,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 			break;
 
         case IK_Escape:
-            if (!#defined(hascustomplayer)){
+            if (!CanSkipWithEscape()){
                 //Requires ShowMainMenu fix from custom players for endgame
                 player.PlaySound(Sound'DeusExSounds.Generic.Buzz1');// HACK TODO
                 return True;

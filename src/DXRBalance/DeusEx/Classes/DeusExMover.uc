@@ -96,3 +96,48 @@ function Frob(Actor Frobber, Inventory frobWith)
     return _Frob(Frobber,frobWith);
 }
 */
+
+function string GetKeyName(#var(PlayerPawn) p)
+{
+    local NanoKeyInfo aKey;
+
+    if (p != None)
+    {
+        aKey = p.KeyList;
+
+        // Loop through all the keys and see if one exists
+        while(aKey != None)
+        {
+            if (aKey.KeyID == KeyIDNeeded)
+            {
+                return aKey.Description;
+            }
+
+            aKey = aKey.NextKey;
+        }
+    }
+    return "";
+}
+
+function Frob(Actor Frobber, Inventory frobWith)
+{
+    local string keyNameMsg;
+
+    if (keyIdNeeded!='' && class'MenuChoice_ShowKeys'.default.enabled){
+        keyNameMsg=GetKeyName(#var(PlayerPawn)(Frobber));
+        if (keyNameMsg!=""){
+            keyNameMsg = " with \""$keyNameMsg $ "\"";
+
+            msgKeyLocked   = msgKeyLocked   $ keyNameMsg;
+            msgKeyUnlocked = msgKeyUnlocked $ keyNameMsg;
+        }
+    }
+
+    _Frob(Frobber,frobWith);
+
+    if (keyNameMsg!=""){
+        msgKeyLocked   = Default.msgKeyLocked;
+        msgKeyUnlocked = Default.msgKeyUnlocked;
+    }
+
+}

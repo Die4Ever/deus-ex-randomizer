@@ -841,6 +841,7 @@ exec function ShowMainMenu()
 {
     local DeusExLevelInfo info;
     local MissionEndgame Script;
+    local RevisionMissionEndgame RevScript;
 
     // DXRando: we just don't want to do vanilla behavior during the intro (mission 98)
     // escape skips the conversation which still skips the intro anyways
@@ -854,9 +855,20 @@ exec function ShowMainMenu()
         foreach AllActors(class'MissionEndgame', Script)
             break;
 
+        foreach AllActors(class'RevisionMissionEndgame', RevScript)
+            break;
+
         // DXRando: make sure we have Script.Flags before skipping to avoid crashes
-        if (Script != None && Script.Flags != None)
+        if (Script != None && Script.Flags != None){
             Script.FinishCinematic();
+            return;
+        }
+
+        // DXRando: Also check for a Revision mission script
+        if (RevScript != None && RevScript.Flags != None){
+            RevScript.FinishCinematic();
+            return;
+        }
         return;
     }
     Super.ShowMainMenu();
@@ -941,7 +953,10 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (item.bDeleteMe) return false;// just in case!
 
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
-    if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
+    //if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
+    if (ChargedPickup(item) != None) return false; //Charged pickups that are "not-in-inventory" appear again when you change levels
+    if (Flare(item) != None && item.Lifespan > 0) return false; //Don't allow lighting again while already lit
+
     return true;
 }
 
@@ -1412,6 +1427,39 @@ function UpdateInHand()
     //Also update the state of the aim laser.  This is good for states
     //where we don't highlight the centre object (like interpolating or conversations)
     HighlightCenterObjectLaser();
+
+    //Make sure the scope does not appear mid-conversation
+    DisableScopeInConversation();
+}
+
+function DisableScopeInConversation()
+{
+    local DeusExWeapon dxw;
+
+    //Make sure that a reloading weapon doesn't finish and zoom in again during a conversation.
+    //Ideally this would be in state Conversation::Begin, where weapons are put away or not, based
+    //on their mass, etc, but it's kind of a pain in the ass to do that?
+
+    if (conPlay==None) return; //You have to be in a conversation
+    if (conPlay.GetDisplayMode()!=DM_ThirdPerson) return; //And it has to be a third person conversation
+
+    dxw=DeusExWeapon(InHand);
+    if (dxw==None) return; //Have to have a weapon
+    if (dxw.bHasScope==False) return; //That weapon has to have a scope
+
+    if (dxw.bZoomed){
+        //If actively zoomed, don't
+        dxw.ScopeOff();
+
+    } else {
+        //If not actively zoomed, make sure we aren't waiting to rezoom after reloading finishes
+        if (dxw.bWasZoomed==False) return; //And it has to have been *previously* zoomed
+        if (dxw.GetStateName()!='Reload') return; //and the weapon has to be reloading
+
+        //Don't rezoom mid-conversation
+        dxw.bWasZoomed = false;
+    }
+
 }
 
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView

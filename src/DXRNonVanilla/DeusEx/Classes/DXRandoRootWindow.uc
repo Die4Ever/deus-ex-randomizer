@@ -202,6 +202,29 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
     return Super.InvokeUIScreen(newScreen, GetNoPause(bNoPause));
 }
 
+//Duplicated from vanilla, but we allow starting a conversation when holding a zoomed in weapon
+//when we have a custom player class that will unzoom an in-hand weapon during a conversation
+function bool CanStartConversation()
+{
+    local DeusExWeapon weapon;
+    local bool         retval;
+
+    retval = (WindowStackCount() == 0);
+
+    //Custom player required to make sure zoomed-in weapons are handled properly
+    if ((class'MenuChoice_BalanceEtc'.static.IsDisabled() || !#defined(hascustomplayer)) && retval){
+        weapon = None;
+        if (GetRootWindow().parentPawn != None)
+            weapon = DeusExWeapon(GetRootWindow().parentPawn.Weapon);
+
+        if (weapon != None)
+            if (weapon.bZoomed)
+                retval = False;
+    }
+
+    return ( retval );
+}
+
 function DeusExBaseWindow PushWindow(
     Class<DeusExBaseWindow> newWindowClass,
     optional Bool hideCurrentWin,

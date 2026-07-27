@@ -446,6 +446,10 @@ function PreFirstEntryMapFixes()
                 if (ot.ClassProximityType!=class'#var(prefix)PaulDenton') continue;
                 ot.Event = 'PaulDenton'; //Actually hit Paul with the orders
             }
+        } else {
+            //Revision Maps
+            MassSetSecretGoalBox(class'Inventory',vectm(3211,2015,-600),vectm(3795,2646,-400),true); //Alley behind fence
+            MassSetSecretGoalBox(class'Inventory',vectm(-1662,257,443),vectm(-1406,-3,-147),true); //Balconies near free clinic
         }
 
         break;

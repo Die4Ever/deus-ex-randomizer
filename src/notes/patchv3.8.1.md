@@ -39,7 +39,19 @@
   - Some passwords that would not be learned properly when password randomization was disabled (eg. Zero Rando) will now be learned.
   - Some passwords will get replaced in their original text in a more clean fashion (just replacing the password instead of a whole phrase).
   - Trash paper that spawns from destroyed barrels and trash cans won't be on fire if spawned in water.  This prevents a crash when destroying burning barrels that are floating in water.
+  - Alarm sounder panels will become confused when hit by EMP damage, even when not actively sounding an alarm.  While confused, the panel will not be able to be used by enemies.
+  - Very minor tweaks to weapon positioning based on selected FOV.
+  - Removed an invisible door in the corner of the bilge pump room (Mission 9) that could be highlighted and did nothing.
+  - "Kill Cam" will no longer show your first person perspective arm over your body when you die.
+  - Flares can no longer be activated again with left click while already lit on the ground.
+  - "Key Assistance" option will now show what key was used to lock or unlock a door.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
+  - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
+  - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
+  - Dance party ending for bingo wins now works properly and continues on to New Game Plus for non-vanilla mods.
+  - Revision: It is now possible to skip the quote shown after an ending when using Revision maps, to go into the credits immediately.
+  - Revision: Some items in inaccessible parts of the New York streets (Mission 2, 4, and 8) will no longer be randomized (to prevent important items from being shuffled out of the play area).
+  - Revision: Charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) can no longer be instantly used by left clicking on them.
 
 </details>
 
@@ -70,6 +82,8 @@
   - Locations of UNATCO Troops when returning to New York (Mission 8) will not be adjusted in Zero Rando.
   - Acceleration will no longer be maintained when activating Spy Drone (Which caused you to slowly move while controlling the drone).
   - Movement speed reductions will now be based on your selected maximum health instead of fixed health values assuming a maximum health of 100.
+  - Slamming into a wall at high speed will no longer damage the player.
+  - The key to Lebedev's private quarters will no longer randomize into the locked bedroom at the front of the 747 (Mission 3).
 
 </details>
 
@@ -87,6 +101,8 @@
   - Exit teleporter at the end of the Vandenberg Tunnels (Mission 12) will be placed in the correct location on Revision maps.
   - Phones in Revision maps will work for making phone calls for bingo.
   - Many elevator buttons in Revision maps will no longer be missing.
+  - Bingo goals for using vending machines will now work as expected.
+  - When using Revision maps, the ending cutscenes will show a randomized quote at the end instead of the original quotes.  The dance party ending will now show a quote after a moment and eventually continue to the credits.
 
 </details>
 
@@ -94,3 +110,7 @@
 ## Intra-Patch Changes
 
 - Intros and Outros won't get stuck if you try to skip them.
+- GMDX: Mantling actually works again.
+- GMDX: Left clicking on charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) will use the original GMDX behaviour instead of instantly wearing the armor.
+- GMDX: Repairbots will actually limit the number of times they can be used (instead of decrementing the number of uses into negative numbers).
+- GMDX: Red screen overlay doesn't appear when you die with the "Show Killer" death cam option enabled.

@@ -9,10 +9,11 @@ struct stupidQuestion {
     var String question;
     var int numAnswers;
     var String answers[3];
+    var bool shuffleAnswers;
 };
 
 var int numStupidQuestions;
-var        stupidQuestion    _StupidQuestions[60];
+var        stupidQuestion    _StupidQuestions[70];
 var int curStupidQuestion;
 var DataStorage datastorage;
 
@@ -147,6 +148,12 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "Time check!  Is it currently %CURTIME%?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
     _StupidQuestions[numStupidQuestions].Question = "Is it really chili if it's hot?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "No";
@@ -175,6 +182,7 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "What?";
     _StupidQuestions[numStupidQuestions].answers[1] = "???";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "If you enjoy wasting time, is that time really wasted?";
@@ -196,10 +204,17 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
     numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "Date check!  Is it currently %WRONGDATE%?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
     _StupidQuestions[numStupidQuestions].Question = "How is babby formed?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "instain mother";
     _StupidQuestions[numStupidQuestions].answers[1] = "too lady to rest";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Do stairs go up or down?";
@@ -207,6 +222,7 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "Up";
     _StupidQuestions[numStupidQuestions].answers[1] = "Down";
     _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Did you ever ask for this?";
@@ -251,6 +267,13 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "YES!";
     numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "Wait, what day is it today?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "%WRONGDATE%";
+    _StupidQuestions[numStupidQuestions].answers[1] = "%CURDATE%";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
+    numStupidQuestions++;
+
     _StupidQuestions[numStupidQuestions].Question = "Do you think you could pilot a helicopter into a sewer?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "No";
@@ -285,6 +308,7 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Remain Ignorant";
     _StupidQuestions[numStupidQuestions].answers[1] = "I Understand";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Hey guys, did you know that in terms of human companionship, Flareon is objectively the most huggable Pokemon?";
@@ -298,6 +322,12 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Doors";
     _StupidQuestions[numStupidQuestions].answers[1] = "Wheels";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Date check!  Is it currently %CURDATE%?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Are you feeling paranoid right now?";
@@ -347,6 +377,7 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "C";
     _StupidQuestions[numStupidQuestions].answers[1] = "S";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Would you rather have permanent clown shoes or permanent clown makeup?";
@@ -361,10 +392,17 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "Two";
     numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "Time check!  Is it currently %WRONGTIME%?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
     _StupidQuestions[numStupidQuestions].Question = "If a cyclops closes its eye, is it winking or blinking?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Winking";
     _StupidQuestions[numStupidQuestions].answers[1] = "Blinking";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "If you stack lasagnas on top of each other, do you have one lasagna or two?";
@@ -377,12 +415,14 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Big Chair";
     _StupidQuestions[numStupidQuestions].answers[1] = "Small Couch";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "If a dog wore pants, would it wear them on all four legs, or just the hind legs?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Hind Legs";
     _StupidQuestions[numStupidQuestions].answers[1] = "All Legs";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Skill Testing Question|n|n(16 x 5) - (12 / 4)";
@@ -390,18 +430,21 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "77";
     _StupidQuestions[numStupidQuestions].answers[1] = "80";
     _StupidQuestions[numStupidQuestions].answers[2] = "83";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Which would you rather find living in your attic";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "1000 Roaches";
     _StupidQuestions[numStupidQuestions].answers[1] = "A Person";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Would you rather eat a shotglass worth of live wasps, or just the shotglass?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Wasps";
     _StupidQuestions[numStupidQuestions].answers[1] = "Shotglass";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "If all the planks of a ship are replaced one at a time, is it the same ship it started as?";
@@ -420,12 +463,14 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Top";
     _StupidQuestions[numStupidQuestions].answers[1] = "Bottom";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Which tastes better?  Ambrosia or Biocells?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Ambrosia";
     _StupidQuestions[numStupidQuestions].answers[1] = "Biocell";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Is this loss?";
@@ -434,11 +479,77 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "No";
     _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Is %VIEWERNAME% cool?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "*silence*";
+    _StupidQuestions[numStupidQuestions].answers[1] = "No";
+    _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Hey, do you know the time?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "%CURTIME%";
+    _StupidQuestions[numStupidQuestions].answers[2] = "%WRONGTIME%";
+    _StupidQuestions[numStupidQuestions].shuffleAnswers = True;
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Have you heard of the critically acclaimed MMORPG Final Fantasy XIV?"$"  With an expanded free trial which you can play through the entirety of A Realm Reborn and the award-winning Heave...";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    ShuffleStupidQuestions(); //Randomize the order of the questions based on the seed
 }
 
+function SwapStupidQuestions(int q1, int q2)
+{
+    local stupidQuestion spare;
+    local int i;
+
+    if (q1==q2) return; //Nothing to do, same index
+
+    spare.Question = _StupidQuestions[q1].Question;
+    spare.numAnswers = _StupidQuestions[q1].numAnswers;
+    spare.shuffleAnswers = _StupidQuestions[q1].shuffleAnswers;
+    for (i=0;i<ArrayCount(_StupidQuestions[q1].answers);i++){
+        spare.answers[i] = _StupidQuestions[q1].answers[i];
+    }
+
+    _StupidQuestions[q1].Question = _StupidQuestions[q2].Question;
+    _StupidQuestions[q1].numAnswers = _StupidQuestions[q2].numAnswers;
+    _StupidQuestions[q1].shuffleAnswers = _StupidQuestions[q2].shuffleAnswers;
+    for (i=0;i<ArrayCount(_StupidQuestions[q1].answers);i++){
+        _StupidQuestions[q1].answers[i] = _StupidQuestions[q2].answers[i];
+    }
+
+    _StupidQuestions[q2].Question = spare.Question;
+    _StupidQuestions[q2].numAnswers = spare.numAnswers;
+    _StupidQuestions[q2].shuffleAnswers = spare.shuffleAnswers;
+    for (i=0;i<ArrayCount(_StupidQuestions[q2].answers);i++){
+        _StupidQuestions[q2].answers[i] = spare.answers[i];
+    }
+}
+
+function ShuffleStupidQuestions()
+{
+    local int i,j;
+
+    SetGlobalSeedNew("CCStupidQuestions");
+
+    for (i=numStupidQuestions-1;i>=0;i--){
+        j = rng(i+1);
+        SwapStupidQuestions(i,j);
+    }
+}
 
 function getRandomQuestion(out string question, out int numAnswers,
                            out string ansOne, out string ansTwo, out string ansThree) {
+    local string answers[3], spare;
+    local int i,j;
+
     curStupidQuestion++;
     curStupidQuestion = curStupidQuestion % numStupidQuestions;
 
@@ -447,9 +558,24 @@ function getRandomQuestion(out string question, out int numAnswers,
 
     question = _StupidQuestions[curStupidQuestion].question;
     numAnswers = _StupidQuestions[curStupidQuestion].numAnswers;
-    ansOne   = _StupidQuestions[curStupidQuestion].answers[0];
-    ansTwo   = _StupidQuestions[curStupidQuestion].answers[1];
-    ansThree = _StupidQuestions[curStupidQuestion].answers[2];
+
+    for (i=0;i<ArrayCount(answers);i++){
+        answers[i]=_StupidQuestions[curStupidQuestion].answers[i];
+    }
+
+    if (_StupidQuestions[curStupidQuestion].shuffleAnswers){
+        //So weirder answers aren't always in the same order
+        for (i=numAnswers-1;i>=0;i--){
+            j = Rand(i+1);
+            spare = answers[i];
+            answers[i]=answers[j];
+            answers[j]=spare;
+        }
+    }
+
+    ansOne   = answers[0];
+    ansTwo   = answers[1];
+    ansThree = answers[2];
 }
 
 function IncHandledEffects()

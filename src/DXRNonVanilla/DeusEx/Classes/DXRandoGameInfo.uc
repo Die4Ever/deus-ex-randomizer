@@ -20,12 +20,12 @@ function DXRando GetDXR()
     foreach AllActors( Class'DeusExLevelInfo', DeusExLevelInfo )
         break;
 
-    dxr = Spawn(class'DXRando');
-
-    //Fix Endgame4, if that's where we are...
-    if (#defined(revision) && DeusExLevelInfo.MapName=="Endgame4"){
-        DeusExLevelInfo.MapName="ENDGAME4REV";
+    if (DeusExLevelInfo==None){
+        //Revision ENDGAME4 has a DeusExLevelInfo already, so we can naively assume this is the vanilla map
+        DeusExLevelInfo = SpawnDXLevelInfo("ENDGAME4",99,class'DXRMissionEndgame');
     }
+
+    dxr = Spawn(class'DXRando');
 
     dxr.SetdxInfo(DeusExLevelInfo);
     log("GetDXR(), dxr: "$dxr, self.name);
@@ -65,25 +65,26 @@ event InitGame( String Options, out String Error )
 event PostLogin(playerpawn NewPlayer)
 {
     local #var(PlayerPawn) p;
-    local bool hasLevelInfo;
     local DeusExLevelInfo dxLevelInfo;
+    local bool localURLChanged;
 
     _PostLogin(NewPlayer);
 
     if( Role != ROLE_Authority ) return;
 
-    if (#defined(revision) && InStr(Caps(Level.GetLocalURL()),"99_ENDGAME4")!=-1){
-        hasLevelInfo = False;
-        foreach AllActors(class'DeusExLevelInfo',dxLevelInfo){hasLevelInfo=True;}
-        if (!hasLevelInfo){
-            dxLevelInfo=SpawnDXLevelInfo();
-            dxr.SetdxInfo(dxLevelInfo);
-        }
-    }
-
     p = #var(PlayerPawn)(NewPlayer);
 
+    //Fix Endgame4, if that's where we are...  This could be either Revision itself or VMD2 using Revision maps
+    foreach AllActors(class'DeusExLevelInfo',dxLevelInfo){break;}
+    if (dxLevelInfo!=None && class'DXRMapVariants'.static.IsRevisionMaps(p) && dxLevelInfo.MapName~="ENDGAME4"){
+        dxLevelInfo.MapName="ENDGAME4REV";
+        localURLChanged=true;
+    }
+
     GetDXR();
+    if (localURLChanged){
+        dxr.LocalURL=Caps(dxLevelInfo.MapName);
+    }
     log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
     dxr.PlayerLogin( p );
 }
@@ -210,13 +211,15 @@ function SetupMusic(DeusExPlayer player)
 }
 #endif
 
-function DeusExLevelInfo SpawnDXLevelInfo()
+function DeusExLevelInfo SpawnDXLevelInfo(string mapName, int missionNum, class<MissionScript> script)
 {
     local DeusExLevelInfo DeusExLevelInfo;
 
-    class'DeusExLevelInfo'.default.MapName = "ENDGAME4REV";
-    class'DeusExLevelInfo'.default.missionNumber = 99;
-    class'DeusExLevelInfo'.default.Script = class'DXRMissionEndgame';
+    if (InStr(Caps(Level.GetLocalURL()),mapName)==-1) return None; //It's not that map
+
+    class'DeusExLevelInfo'.default.MapName = mapName;
+    class'DeusExLevelInfo'.default.missionNumber = missionNum;
+    class'DeusExLevelInfo'.default.Script = script;
     DeusExLevelInfo = Spawn(class'DeusExLevelInfo');
 
     //These defaults probably don't need to be reset, but better safe than sorry.
