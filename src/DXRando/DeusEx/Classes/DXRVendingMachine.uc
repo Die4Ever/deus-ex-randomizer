@@ -7,7 +7,7 @@ function DoSpawn(actor Frobber, Inventory frobWith)
 
 function int GetNumUses()
 {
-#ifndef vmd
+#ifndef vmd2
     return numUses;
 #else
     local int totalUses,i;

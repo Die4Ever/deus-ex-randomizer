@@ -2,7 +2,7 @@ class VendingMachineEnergy extends #var(injectsprefix)VendingMachine;
 
 function MakeVendingMachineVMDNormal()
 {
-#ifdef vmd
+#ifdef vmd2
     bAdvancedUse=False;
 #endif
 }
