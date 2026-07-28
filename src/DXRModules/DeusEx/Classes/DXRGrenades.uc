@@ -70,7 +70,8 @@ function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)T
                                                              name tag,
                                                              name event,
                                                              Actor owner,
-                                                             bool hidden)
+                                                             bool hidden,
+                                                             float radius)
 {
     local #var(prefix)ThrownProjectile gren;
 
@@ -85,6 +86,7 @@ function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)T
     gren.event = event;
     gren.bHighlight = True; //HX makes thrown grenades not highlightable, and planted ones explicitly become highlighted
     gren.bHidden=hidden;
+    gren.proxRadius=radius;
 #ifdef hx
     gren.Time = gren.FuseLength;  //This prevents the beep when planted (only an issue in HX)
     gren.bPlayerPlaced = false;
@@ -103,6 +105,7 @@ function FirstEntry()
     local name oldTag,oldEvent;
     local Actor oldOwner;
     local bool oldHidden;
+    local float oldRadius;
 
     Super.FirstEntry();
     if(dxr.flags.moresettings.grenadeswap <= 0) return;
@@ -128,10 +131,11 @@ function FirstEntry()
         oldEvent=grens[i].event;
         oldOwner=grens[i].owner;
         oldHidden=grens[i].bHidden;
+        oldRadius=grens[i].proxRadius;
         grens[i].SetCollision(false,false,false);
         grens[i].Destroy();
 
-        gren = SpawnNewPlantedGrenade(PickRandomGrenade(),loc,rot,oldTag,oldEvent,oldOwner,oldHidden);
+        gren = SpawnNewPlantedGrenade(PickRandomGrenade(),loc,rot,oldTag,oldEvent,oldOwner,oldHidden,oldRadius);
 
         if (gren!=None){
             l("Spawned a new grenade "$gren.name);
