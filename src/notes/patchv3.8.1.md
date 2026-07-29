@@ -46,6 +46,7 @@
   - Flares can no longer be activated again with left click while already lit on the ground.
   - "Key Assistance" option will now show what key was used to lock or unlock a door.
   - Randomized grenades will keep their original detection radius.
+  - The installer will now enable mirror reflections for the Direct3D 9 renderer, and disable OneXBlending for the OpenGL renderer to improve brightness.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.

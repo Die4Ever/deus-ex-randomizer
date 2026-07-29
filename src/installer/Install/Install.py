@@ -256,6 +256,16 @@ def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dic
     else:
         changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'True'})
 
+    #OpenGL: Improve brightness
+    if 'OpenGLDrv.OpenGLRenderDevice' not in changes:
+        changes['OpenGLDrv.OpenGLRenderDevice'] = {}
+    changes['OpenGLDrv.OpenGLRenderDevice'].update({'OneXBlending': 'False'})
+
+    #D3D9: Enable mirror reflections
+    if 'D3D9Drv.D3D9RenderDevice' not in changes:
+        changes['D3D9Drv.D3D9RenderDevice'] = {}
+    changes['D3D9Drv.D3D9RenderDevice'].update({'ShinySurfaces': 'True'})
+
     ZeroRando = settings.get('ZeroRando', False)
     ZeroRandoPlus = settings.get('ZeroRandoPlus', False)
     info('ZeroRando:', ZeroRando, ZeroRandoPlus, exename)
