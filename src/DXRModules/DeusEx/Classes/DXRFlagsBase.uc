@@ -90,6 +90,7 @@ struct MoreFlagsSettings{
     var int stalkers;
     var int entrance_rando;
     var int shuffle_missions; // 0 is disabled, otherwise approximate game length in minutes
+    var int gmdx_hardcore; // 0 is disabled, 1 is overwhelming odds, 2 is hardcore, 3 is Hardcore+ (Only used in GMDX)
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -462,6 +463,10 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
 
+#ifdef gmdx
+    FlagInt('Rando_gmdx_hardcore',moresettings.gmdx_hardcore,mode,str);
+#endif
+
     if(mode != Hashing) {
         if(!FlagInt('Rando_loop_initial_version',loop_initial_version,mode,str) && stored_version != 0 && mode==Reading) {
             // if the flag didn't exist, make sure to set it to 0 for compatibility
@@ -685,6 +690,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy weapons rando";
         case 'Rando_aug_loc_rando':
             return "Aug Slot Randomization";
+        case 'Rando_gmdx_hardcore':
+            return "GMDX Hardcore";
         case 'Rando_loop_initial_version':
             return "Starting Version";
         case 'MenuChoice_BalanceAugs':
@@ -1054,6 +1061,18 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Full Closet";
             } else {
                 return "Looting Needed";
+            }
+            break;
+
+        case 'Rando_gmdx_hardcore':
+            if (val==0){
+                return "Off";
+            } else if (val==1){
+                return "Overwhelming Odds";
+            } else if (val==2){
+                return "Hardcore";
+            } else if (val==3){
+                return "Hardcore+";
             }
             break;
 

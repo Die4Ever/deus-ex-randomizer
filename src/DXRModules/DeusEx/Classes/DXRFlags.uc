@@ -67,6 +67,12 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         f.SetBool('AchievementsDisabled', true,, 999);
     }
 
+    #ifdef gmdxnotae
+    //Reset the hardcore settings, in case you're flip-flopping between saves with different settings
+    p.SetupGMDXHardcoreByFlag(dxr.flags.moresettings.gmdx_hardcore);
+    p.setupDifficultyMod();
+    #endif
+
     l("starting map is set to "$moresettings.starting_map);
 }
 
@@ -197,6 +203,7 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -274,6 +281,7 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -350,6 +358,7 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -426,6 +435,7 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -502,6 +512,7 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 

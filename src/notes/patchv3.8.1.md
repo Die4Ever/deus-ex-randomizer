@@ -13,6 +13,7 @@
   - Larger heals are now more balanced across the body, instead of focusing on one limb at a time.
   - Automatic Weapon Mod Apply now available.  Right click a weapon mod while holding a weapon that can have that mod applied to it to instantly apply that mod to the weapon.
   - It is no longer possible to softlock yourself out of the Tong ending if you move across the Reactor lab control room too fast after activating the reactors. (Fixes a baseline GMDX bug)
+  - Hardcore mode will no longer be enabled based purely on the selected difficulty.  Instead, there is an option under the Advanced settings of the New Game screen.  This setting allows you to select between Off, Overwhelming Odds, Hardcore, and Hardcore+.  These settings will get initialized on a new game based on the settings you have selected in the GMDX Options menu.
 
   </details>
 

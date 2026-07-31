@@ -223,6 +223,31 @@ function bool PistolStartsAtTrained(DXRFlags flags)
     return flags != None && flags.IsZeroRando();
 }
 
+function HandleGMDXHardcore(int hardcore_val)
+{
+#ifdef gmdxnotae
+    player.bHardcoreFilterOption = false; //Overwhelming odds
+    bHardCoreMode = false; //Hardcore, menu value
+    player.bHardCoreMode = false; //Hardcore, actual real setting
+    player.bExtraHardcore = false; //Hardcore+
+
+    if (hardcore_val >= 1){
+        //Overwhelming odds or up
+        player.bHardcoreFilterOption=true;
+    }
+    if (hardcore_val >= 2){
+        //Hardcore and up
+        bHardCoreMode=true; //This being true will turn off autoreload
+        player.bHardCoreMode=true;
+    }
+    if (hardcore_val >= 3){
+        //Hardcore+
+        player.bExtraHardcore=true;
+    }
+    player.SaveConfig();
+#endif
+}
+
 function SaveSettings()
 {
     local Inventory i;
@@ -239,6 +264,9 @@ function SaveSettings()
     Super.SaveSettings();
 
     dxr.flags.SaveFlags();
+
+    HandleGMDXHardcore(dxr.flags.moresettings.gmdx_hardcore);
+
     dxr.Destroy();
     foreach player.AllActors(class'DXRando', dxr)
         dxr.Destroy();

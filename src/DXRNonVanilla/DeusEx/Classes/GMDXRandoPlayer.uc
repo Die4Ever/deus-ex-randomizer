@@ -1394,6 +1394,51 @@ function DisableScopeInConversation()
     }
 }
 
+function SetupGMDXHardcoreByFlag(int hardcore_val)
+{
+    bHardcoreFilterOption = false; //Overwhelming odds
+    bHardCoreMode = false; //Hardcore, actual real setting
+    bExtraHardcore = false; //Hardcore+
+
+    if (hardcore_val >= 1){
+        //Overwhelming odds or up
+        bHardcoreFilterOption=true;
+    }
+    if (hardcore_val >= 2){
+        //Hardcore and up
+        bHardCoreMode=true;
+    }
+    if (hardcore_val >= 3){
+        //Hardcore+
+        bExtraHardcore=true;
+    }
+    SaveConfig();
+}
+
+function setupDifficultyMod()
+{
+    //This is the GMDX function that does stuff for hardcore mode and stuff
+
+    //TODO: We could massage the CombatDifficulty here, since that plays into hardcore stuff
+
+    Super.setupDifficultyMod();
+}
+
+//I'm your cool uncle who lets you use cheats in hardcore mode
+exec function Say(string Msg )
+{
+    Super(PlayerPawnExt).Say(Msg);
+}
+
+exec function Type()
+{
+    Super(PlayerPawnExt).Type();
+}
+
+function Typing( bool bTyping )
+{
+    Super(PlayerPawnExt).Typing(bTyping);
+}
 
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView
 //Massively cut down for DXRando so that the game doesn't fade out or go back to the main menu, just spin forever and ever

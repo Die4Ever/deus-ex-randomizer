@@ -63,6 +63,7 @@ function BindControls(optional string action)
     f = GetFlags();
 
     class'DXRMenuSelectDifficulty'.static.CheckCrowdControlConnection(f);
+    class'DXRMenuSelectDifficulty'.static.CheckGMDXHardcoreSettings(player,f);
 
     CreateBasicOptions(f);
 
@@ -169,6 +170,14 @@ function BindControls(optional string action)
     NewMenuItem("Entrance Randomization", "Level transitions are randomized so they will take you to a different level than usual (within the same mission).");
     EnumOption("Disabled", 0, f.moresettings.entrance_rando, GetEntranceRandoHelpText(0));
     EnumOption("Enabled", 100, f.moresettings.entrance_rando, GetEntranceRandoHelpText(100));
+#endif
+
+#ifdef gmdx
+    splits_overlay = NewMenuItem("Hardcore Mode", "What level of GMDX Hardcore do you want?");
+    EnumOption("Off", 0, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(0));
+    EnumOption("Overwhelming Odds", 1, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(1));
+    EnumOption("Hardcore", 2, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(2));
+    EnumOption("Hardcore+", 3, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(3));
 #endif
 
     NewGroup("Bingo");
@@ -753,6 +762,30 @@ function String GetGenericHelpText(string opt)
         break;
     }
 
+    return msg;
+}
+
+function string GetGMDXHardcoreHelpText(int val)
+{
+    local string msg;
+
+    switch(val){
+        case 0:
+            msg = "GMDX Hardcore mode is fully disabled.";
+            break;
+        case 1:
+            //Stolen from the Overwhelming Odds menu help text
+            msg = "Overwhelming Odds enables the additional enemies introduced in GMDX's Hardcore mode, without the rest of the Hardcore functionality.";
+            break;
+        case 2:
+            //There's probably a better way to describe this, but I'm kind of lazy and this is good enough.
+            msg = "Hardcore Mode introduces additional enemies, removes some items, and makes enemies more aware.";
+            break;
+        case 3:
+            //Stolen from the Hardcore Mode+ menu help text
+            msg = "Hardcore+ includes all the Hardcore Mode functionality, but makes the save points require 100 credits to use.";
+            break;
+    }
     return msg;
 }
 

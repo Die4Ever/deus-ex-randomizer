@@ -82,6 +82,28 @@ static function CheckCrowdControlConnection(DXRFlags f)
 
 }
 
+static function CheckGMDXHardcoreSettings(DeusExPlayer p, DXRFlags f)
+{
+#ifdef gmdxnotae
+    if (p==None) return;
+
+    f.moresettings.gmdx_hardcore=0;
+
+    //This is kind of primitive, but seems reasonable?
+    if (p.bHardcoreFilterOption){
+        f.moresettings.gmdx_hardcore=1;
+    }
+    if (p.bHardCoreMode){
+        f.moresettings.gmdx_hardcore=2;
+    }
+    if (p.bExtraHardcore){
+        f.moresettings.gmdx_hardcore=3;
+    }
+#elseif gmdxae
+    //I dunno, but I know we'll have to re-evaluate how this is handled for AE (Or if it needs to be at all)
+#endif
+}
+
 function BindControls(optional string action)
 {
     local float difficulty;
@@ -104,6 +126,7 @@ function BindControls(optional string action)
     if(BindPresets()) return;
 
     CheckCrowdControlConnection(f); //Enable Crowd Control if there's a connected session
+    CheckGMDXHardcoreSettings(player,f);
 
     NewGroup("Customize");
 
@@ -321,6 +344,7 @@ function bool PresetButton(string label, optional string helpText)
         f.RollSeed();
         f.crowdcontrol = 0; // set some defaults for the preset
         CheckCrowdControlConnection(f); //Automatically handle Crowd Control setting if connected
+        CheckGMDXHardcoreSettings(Player,f);
         f.loadout = 0; // All Items Allowed
         f.autosave = 2; // Autosave Every Entry
         #ifdef injections
