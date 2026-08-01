@@ -37,6 +37,10 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_LockBelt');
 #endif
 
+    if (#bool(gmdxnotae)) {
+        CreateChoice(class'MenuChoice_GMDXStamina');
+    }
+
     if(#bool(vanilla)) {
         CreateChoice(class'MenuChoice_AutoAugs');
         CreateChoice(class'MenuChoice_AutoAugsInstall');

@@ -362,7 +362,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
 
     if(damageType == 'PoisonEffect' || damageType == 'Poison') {
         //CyberP: gas grenades and poison barrels drain stamina.
-        if (damage >= 1 && bStaminaSystem)
+        if (damage >= 1 && UseStaminaSystem()) //RANDO: Use the consistent stamina function instead of only checking if bStaminaSystem is true
         {
             swimTimer -= damage*0.4;
             if (swimTimer < 0)
@@ -1440,6 +1440,31 @@ function Typing( bool bTyping )
     Super(PlayerPawnExt).Typing(bTyping);
 }
 
+//RANDO: A consistent function for deciding if we're using the stamina system or not
+function bool UseStaminaSystem()
+{
+
+    //Original GMDX functionality
+    //return bStaminaSystem || bHardCoreMode;
+
+    if (bStaminaSystem) return true;
+    if (bHardcoreMode && class'MenuChoice_GMDXStamina'.static.IsEnabled()) return true;
+    return false;
+}
+
+function DoJump( optional float F )
+{
+    local float oldSwimTimer;
+
+    oldSwimTimer = swimTimer;
+    Super.DoJump(F);
+    if (!UseStaminaSystem())
+    {
+        //If we aren't using the stamina system, don't remove breath for jumping
+        swimTimer = oldSwimTimer;
+    }
+}
+
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView
 //Massively cut down for DXRando so that the game doesn't fade out or go back to the main menu, just spin forever and ever
 function CalcDeathSpin(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
@@ -1664,6 +1689,7 @@ state PlayerWalking
         local int ResetSize;
         local float mult, mult2, mult3, rand;
         local name ventMat;
+        local bool useStamina;
 
         if (bStaticFreeze)
         {
@@ -1929,7 +1955,7 @@ state PlayerWalking
             newSpeed *= mult3;
         }
 
-        if (Physics == PHYS_Walking && !bCrouchOn && (bStaminaSystem || bHardCoreMode))   //CyberP: stamina system
+        if (Physics == PHYS_Walking && !bCrouchOn && UseStaminaSystem())   //CyberP: stamina system //RANDO: Use the consistent function for stamina
         {
             if (bIsWalking == false && !bIsCrouching && (Velocity.X != 0 || Velocity.Y != 0 ))
             {
@@ -1941,7 +1967,7 @@ state PlayerWalking
                 if (swimTimer < 0)
                 {
                     swimTimer = 0;
-                    if (bStaminaSystem || bHardCoreMode)
+                    if (UseStaminaSystem())
                     {
                         bStunted = true;
                         SetTimer(3,false);
