@@ -9,6 +9,8 @@ var name prev_anim;
 var float prev_anim_rate;
 var float prev_weapon_skill;
 
+var() float max_standing_time;
+
 var int WeaponTexLoc[8];
 
 function PostBeginPlay()
@@ -107,7 +109,9 @@ simulated function Vector ComputeProjectileStart(Vector X, Vector Y, Vector Z)
 
 simulated function Tick(float deltaTime)
 {
-    local float r, e;
+    local float r, e, oldStandingTimer;
+
+    oldStandingTimer = standingTimer;
 
     Super.Tick(deltaTime);
 
@@ -123,6 +127,15 @@ simulated function Tick(float deltaTime)
             TargetMessage = msgLockLocked @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
             break;
         }
+    }
+
+    //The vanilla standingTimer incremented indefinitely, as long as you kept your gun out
+    //Cap the timer so you can't accrue perfect accuracy time just by going to the bathroom
+    //with the game unpaused.
+    //GLITCHFIX-17
+    if (class'MenuChoice_FixGlitches'.default.enabled && max_standing_time > 0 && standingTimer > oldStandingTimer) {
+        //Cap the bonus you get from standing still so it doesn't increase forever
+        standingTimer = FMin(standingTimer,max_standing_time);
     }
 
     if(!IsAnimating()) {
@@ -1044,4 +1057,5 @@ defaultproperties
     anim_speed=1
     RelativeRange=3750.0
     MinSpreadAcc=0.05
+    max_standing_time=20.0
 }

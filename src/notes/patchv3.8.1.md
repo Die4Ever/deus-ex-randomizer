@@ -50,6 +50,7 @@
   - Randomized grenades will keep their original detection radius.
   - The installer will now enable mirror reflections for the Direct3D 9 renderer, and disable OneXBlending for the OpenGL renderer to improve brightness.
   - "Go into Alex's closet" bingo goal will no longer be marked as complete when you use the keypad and will instead still need you to actually enter the closet.
+  - It is no longer possible to infinitely stockpile "how long you've been standing" for weapon accuracy bonuses.  You can now accumulate up to 20 seconds of standing time before it is capped.  Standing time will also no longer increase while reloading.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
