@@ -153,6 +153,16 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if(#defined(gmdxnotae)){
+            //GMDX Mission04 mission script has a check in FirstFrame to unkill Paul if he's dead somehow
+            //before you talk to him after sending the signal.  As far as I can tell, this check isn't
+            //even useful, since Paul only becomes killable after the raid starts.  It's also checking
+            //the wrong flag ('TalkedToPaulAfterMessage' instead of 'TalkedToPaulAfterMessage_Played'),
+            //so it just unkills Paul every time you load a map.  Since the flag it *is* checking is wrong,
+            //we can just set it to true to disable the functionality entirely.
+            dxr.flagbase.SetBool('TalkedToPaulAfterMessage', true,, 5);
+        }
+
         if (VanillaMaps){
             if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table

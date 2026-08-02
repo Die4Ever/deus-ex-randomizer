@@ -90,6 +90,7 @@
   - Movement speed reductions will now be based on your selected maximum health instead of fixed health values assuming a maximum health of 100.
   - Slamming into a wall at high speed will no longer damage the player.
   - The key to Lebedev's private quarters will no longer randomize into the locked bedroom at the front of the 747 (Mission 3).
+  - Paul will now actually stay dead if he dies in the raid, but you finish it and leave the hotel.
 
 </details>
 
