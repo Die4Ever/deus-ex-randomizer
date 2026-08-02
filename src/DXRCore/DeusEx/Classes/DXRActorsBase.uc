@@ -1634,7 +1634,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
 {
     local int i;
     local Actor newactor;
-    local bool bCollideActors, bBlockActors, bBlockPlayers;
+    local bool bCollideActors, bCollideWorld, bBlockActors, bBlockPlayers;
     local name tag, event;
 
     if(a.class == newclass)
@@ -1643,6 +1643,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     bCollideActors = a.bCollideActors;
     bBlockActors = a.bBlockActors;
     bBlockPlayers = a.bBlockPlayers;
+    bCollideWorld = a.bCollideWorld;
     a.SetCollision(false, false, false);
     tag = a.Tag;
     a.Tag = '';
@@ -1691,6 +1692,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     //SetBase resets the collision to... defaults?
     //Do this last for safety
     newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
+    newactor.bCollideWorld=bCollideWorld;
 
     return newactor;
 }
