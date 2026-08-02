@@ -9,7 +9,7 @@ var name prev_anim;
 var float prev_anim_rate;
 var float prev_weapon_skill;
 
-var() float max_standing_time;
+var() float standing_time_buffer;
 
 var int WeaponTexLoc[8];
 
@@ -107,9 +107,23 @@ simulated function Vector ComputeProjectileStart(Vector X, Vector Y, Vector Z)
     return ProjSpawn;
 }
 
+//Calculate the standing time required to get the maximum accuracy bonus from standing still
+//Based on inverted logic from DeusExWeapon::CalculateAccuracy
+//Add a buffer on top to allow a little bit of "stickiness" to the max accuracy, to maintain
+//a little bit of the vanilla behaviour if you're standing still for a while.
+simulated function float CalcMaxStandingTimer()
+{
+    local float div,maxVal;
+
+    div = FMax(15.0 + 29.0 * GetWeaponSkill(), 0.0);
+    maxVal = 0.6 * div;
+
+    return maxVal + standing_time_buffer;
+}
+
 simulated function Tick(float deltaTime)
 {
-    local float r, e, oldStandingTimer;
+    local float r, e, oldStandingTimer, maxStandingTime;
 
     oldStandingTimer = standingTimer;
 
@@ -133,9 +147,10 @@ simulated function Tick(float deltaTime)
     //Cap the timer so you can't accrue perfect accuracy time just by going to the bathroom
     //with the game unpaused.
     //GLITCHFIX-17
-    if (class'MenuChoice_FixGlitches'.default.enabled && max_standing_time > 0 && standingTimer > oldStandingTimer) {
+    maxStandingTime = CalcMaxStandingTimer();
+    if (class'MenuChoice_FixGlitches'.default.enabled && maxStandingTime > 0 && standingTimer > oldStandingTimer) {
         //Cap the bonus you get from standing still so it doesn't increase forever
-        standingTimer = FMin(standingTimer,max_standing_time);
+        standingTimer = FMin(standingTimer,maxStandingTime);
     }
 
     if(!IsAnimating()) {
@@ -1057,5 +1072,5 @@ defaultproperties
     anim_speed=1
     RelativeRange=3750.0
     MinSpreadAcc=0.05
-    max_standing_time=20.0
+    standing_time_buffer=2.0
 }
