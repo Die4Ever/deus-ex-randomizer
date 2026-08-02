@@ -504,8 +504,8 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
             if( adjustedHealAmount >= 18 ) {
                 aha2 = adjustedHealAmount / 10;// use most of it for the balanced heal, the rest for normal healing behavior
                 aha2 = Max(aha2, 3);
-                _HealPart(HealthHead, adjustedHealAmount, aha2, GetBodyPartMaxHealth(Default.HealthHead));
-                _HealPart(HealthTorso, adjustedHealAmount, aha2, GetBodyPartMaxHealth(Default.HealthTorso));
+                _HealPart(HealthHead, adjustedHealAmount, aha2, class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthHead,self));
+                _HealPart(HealthTorso, adjustedHealAmount, aha2, class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthTorso,self));
                 _HealPart(HealthLegRight, adjustedHealAmount, aha2);
                 _HealPart(HealthLegLeft, adjustedHealAmount, aha2);
                 _HealPart(HealthArmRight, adjustedHealAmount, aha2);
@@ -515,8 +515,8 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
                 HealBrokenPart(HealthLegRight, adjustedHealAmount);
                 HealBrokenPart(HealthLegLeft, adjustedHealAmount);
             }
-            _HealPart(HealthHead, adjustedHealAmount,adjustedHealAmount,GetBodyPartMaxHealth(Default.HealthHead));
-            _HealPart(HealthTorso, adjustedHealAmount,adjustedHealAmount,GetBodyPartMaxHealth(Default.HealthTorso));
+            _HealPart(HealthHead, adjustedHealAmount,adjustedHealAmount,class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthHead,self));
+            _HealPart(HealthTorso, adjustedHealAmount,adjustedHealAmount,class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthTorso,self));
             HealPart(HealthLegRight, adjustedHealAmount);
             HealPart(HealthLegLeft, adjustedHealAmount);
             HealPart(HealthArmRight, adjustedHealAmount);
@@ -530,21 +530,6 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
     }
 
     return adjustedHealAmount;
-}
-
-//GMDX makes Torso/Head max health increase with Medicine skill levels
-function int GetBodyPartMaxHealth(int HealthMax)
-{
-    local int spill;
-    local Skill sk;
-
-    if (SkillSystem==None) return HealthMax;
-
-    sk = SkillSystem.GetSkillFromClass(Class'DeusEx.SkillMedicine');
-    if (sk==None) return HealthMax;
-
-    return (HealthMax + sk.CurrentLevel*10);
-
 }
 
 function int HealBrokenPart(out int points, out int amt)

@@ -2758,6 +2758,25 @@ function bool DXRStartDataLinkTransmission( String DatalinkName )
 #endif
 }
 
+//GMDX makes Torso/Head max health increase with Medicine skill levels
+static function int GetBodyPartMaxHealth(int HealthMax, #var(PlayerPawn) p)
+{
+    local int spill;
+    local Skill sk;
+
+    //If it's not GMDX, we're just happy reporting back the maximum health as-is
+    if (!#defined(gmdx)) return HealthMax;
+
+    //If it's GMDX, figure out how much health there is on top of the defaults
+    if (p.SkillSystem==None) return HealthMax;
+
+    sk = p.SkillSystem.GetSkillFromClass(Class'DeusEx.SkillMedicine');
+    if (sk==None) return HealthMax;
+
+    return (HealthMax + sk.CurrentLevel*10);
+
+}
+
 //#region Belt Slots
 static function bool IsAssignableBeltPos(int pos)
 {
