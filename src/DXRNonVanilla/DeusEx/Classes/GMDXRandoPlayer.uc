@@ -8,6 +8,7 @@ var Rotator ShakeRotator;
 var bool bAutorun;
 var float autorunTime;
 var bool bWallSplat;
+var int rando_stamina;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
@@ -1394,7 +1395,7 @@ function DisableScopeInConversation()
     }
 }
 
-function SetupGMDXHardcoreByFlag(int hardcore_val)
+function SetupGMDXHardcoreByFlag(int hardcore_val, int stamina_val)
 {
     bHardcoreFilterOption = false; //Overwhelming odds
     bHardCoreMode = false; //Hardcore, actual real setting
@@ -1412,6 +1413,9 @@ function SetupGMDXHardcoreByFlag(int hardcore_val)
         //Hardcore+
         bExtraHardcore=true;
     }
+
+    rando_stamina = stamina_val;
+
     SaveConfig();
 }
 
@@ -1440,6 +1444,26 @@ function Typing( bool bTyping )
     Super(PlayerPawnExt).Typing(bTyping);
 }
 
+exec function IHateStamina()
+{
+    ClientMessage("Stamina Disabled");
+    ChangeStamina(1); //Permanently disabled
+}
+
+exec function ILoveStamina()
+{
+    ClientMessage("Stamina Enabled");
+    ChangeStamina(2); //Why do you like stamina
+}
+
+function ChangeStamina(int val)
+{
+    rando_stamina = val;
+    if (FlagBase!=None){
+        FlagBase.SetInt('Rando_gmdx_stamina',val,,999);
+    }
+}
+
 //RANDO: A consistent function for deciding if we're using the stamina system or not
 function bool UseStaminaSystem()
 {
@@ -1447,8 +1471,12 @@ function bool UseStaminaSystem()
     //Original GMDX functionality
     //return bStaminaSystem || bHardCoreMode;
 
+    if (rando_stamina==1) return false; //Permanently disabled
+    else if (rando_stamina==2) return true; //Permanently enabled
+
+    //Otherwise fall back to the original stamina logic
     if (bStaminaSystem) return true;
-    if (bHardcoreMode && class'MenuChoice_GMDXStamina'.static.IsEnabled()) return true;
+    if (bHardcoreMode) return true;
     return false;
 }
 

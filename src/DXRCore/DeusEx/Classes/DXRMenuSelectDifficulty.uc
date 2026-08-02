@@ -99,6 +99,12 @@ static function CheckGMDXHardcoreSettings(DeusExPlayer p, DXRFlags f)
     if (p.bExtraHardcore){
         f.moresettings.gmdx_hardcore=3;
     }
+
+    if (f.IsZeroRandoPure()){
+        f.moresettings.gmdx_stamina=0; //Use the original behaviour
+    } else {
+        f.moresettings.gmdx_stamina=1; //Default to "off"
+    }
 #elseif gmdxae
     //I dunno, but I know we'll have to re-evaluate how this is handled for AE (Or if it needs to be at all)
 #endif

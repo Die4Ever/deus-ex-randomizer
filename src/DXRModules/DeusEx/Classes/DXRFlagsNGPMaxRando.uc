@@ -318,6 +318,7 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         moresettings.menus_pause = oldmoresettings.menus_pause;
         moresettings.aug_loc_rando = oldmoresettings.aug_loc_rando;
         moresettings.gmdx_hardcore = oldmoresettings.gmdx_hardcore;
+        moresettings.gmdx_stamina = oldmoresettings.gmdx_stamina;
         moresettings.splits_overlay = oldmoresettings.splits_overlay;
         clothes_looting = old_clothes_looting;
         moresettings.entrance_rando = oldmoresettings.entrance_rando; //If you picked entrance rando, you probably want to keep doing it

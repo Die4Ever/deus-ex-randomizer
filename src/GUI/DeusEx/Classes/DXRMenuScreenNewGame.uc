@@ -223,7 +223,7 @@ function bool PistolStartsAtTrained(DXRFlags flags)
     return flags != None && flags.IsZeroRando();
 }
 
-function HandleGMDXHardcore(int hardcore_val)
+function HandleGMDXHardcore(int hardcore_val, int stamina_val)
 {
 #ifdef gmdxnotae
     player.bHardcoreFilterOption = false; //Overwhelming odds
@@ -244,6 +244,9 @@ function HandleGMDXHardcore(int hardcore_val)
         //Hardcore+
         player.bExtraHardcore=true;
     }
+
+    #var(PlayerPawn)(player).rando_stamina = stamina_val;
+
     player.SaveConfig();
 #endif
 }
@@ -265,7 +268,7 @@ function SaveSettings()
 
     dxr.flags.SaveFlags();
 
-    HandleGMDXHardcore(dxr.flags.moresettings.gmdx_hardcore);
+    HandleGMDXHardcore(dxr.flags.moresettings.gmdx_hardcore, dxr.flags.moresettings.gmdx_stamina);
 
     dxr.Destroy();
     foreach player.AllActors(class'DXRando', dxr)

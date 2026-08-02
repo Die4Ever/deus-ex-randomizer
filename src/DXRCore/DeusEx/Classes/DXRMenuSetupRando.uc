@@ -178,6 +178,11 @@ function BindControls(optional string action)
     EnumOption("Overwhelming Odds", 1, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(1));
     EnumOption("Hardcore", 2, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(2));
     EnumOption("Hardcore+", 3, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(3));
+
+    splits_overlay = NewMenuItem("GMDX Stamina", "Should the stamina system be used?");
+    EnumOption("Original", 0, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(0));
+    EnumOption("Off", 1, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(1));
+    EnumOption("On", 2, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(2));
 #endif
 
     NewGroup("Bingo");
@@ -784,6 +789,24 @@ function string GetGMDXHardcoreHelpText(int val)
         case 3:
             //Stolen from the Hardcore Mode+ menu help text
             msg = "Hardcore+ includes all the Hardcore Mode functionality, but makes the save points require 100 credits to use.";
+            break;
+    }
+    return msg;
+}
+
+function string GetGMDXStaminaHelpText(int val)
+{
+    local string msg;
+
+    switch(val){
+        case 0:
+            msg = "The stamina system will be forced on when Hardcore is enabled, or if the GMDX Settings menu option is enabled.";
+            break;
+        case 1:
+            msg = "The stamina system will be disabled.";
+            break;
+        case 2:
+            msg = "The stamina system will be enabled.";
             break;
     }
     return msg;
