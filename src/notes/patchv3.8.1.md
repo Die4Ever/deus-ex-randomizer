@@ -82,7 +82,9 @@
   - It is no longer possible to interact with certain objects through walls (such as switches).
   - Weapons are now correctly marked as "Modified" if they have Rate of Fire, Damage, or Full Auto mods applied.
   - Added ShowBingoWindow exec function to GMDXRandoPlayer so it can be manually bound to a hotkey.
-    - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
+    - In the GMDXUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
+  - Added ToggleAutorun exec function to GMDXRandoPlayer so it can be manually bound to a hotkey.
+    - In the GMDXUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to begin autorunning.  Change it so that it maps to ToggleAutorun, eg. to make V begin autorunning: `V=ToggleAutorun`
   - The password will no longer be unintentionally learned for the security computer in Smuggler's lair (Missions 2, 4, and 8).
   - Anna Navarre will no longer slowly walk towards you in Battery Park (Mission 2) when goal randomization is enabled.
   - Locations of UNATCO Troops when returning to New York (Mission 8) will not be adjusted in Zero Rando.
