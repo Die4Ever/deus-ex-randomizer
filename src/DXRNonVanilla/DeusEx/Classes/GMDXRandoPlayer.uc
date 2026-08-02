@@ -1613,15 +1613,9 @@ state Dying
 
     function ViewFlash(float DeltaTime)
     {
-        if (class'MenuChoice_DeathCam'.static.IsKillCam()){
-            //No red fog for kill cam
-            DesiredFlashScale=0.0;
-            DesiredFlashFog = vect(0,0,0);
-            FlashTimer=0.0;
-            FlashScale = vect(0,0,0);
-            FlashFog = vect(0,0,0);
-            SetViewFlash(false);
-        } else {
+        if (class'MenuChoice_DeathCam'.static.IsKillCam()==False){
+            //Only show the normal red death fog when not using the kill cam
+            //We want the kill cam to be crystal clear.
             Super.ViewFlash(DeltaTime);
         }
     }
