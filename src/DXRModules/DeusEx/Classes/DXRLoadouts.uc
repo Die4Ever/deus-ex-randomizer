@@ -1109,7 +1109,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
 #ifdef injections
     local DXRWeapon ws;
     ws = DXRWeapon(w);
-    class'Shuriken'.default.blood_mult = 2;
+    class'Shuriken'.default.blood_mult = 2; // the projectile, not the weapon
     switch(w.Class) {
         case class'WeaponSword':
             ws.blood_mult = 3;
@@ -1140,8 +1140,12 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             //ws.DrawScale = 2;
             ws.SetCollisionSize(16, ws.default.CollisionHeight*2);
             break;
-        default:
+        case class'WeaponCombatKnife':
             ws.blood_mult = 2;
+            break;
+        default:
+            ws.blood_mult = 0;
+            break;
     }
 #endif
 }
