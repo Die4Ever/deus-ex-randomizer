@@ -57,7 +57,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)InformationDevices id;
     local #var(prefix)DatalinkTrigger dlt;
     local #var(prefix)TerroristCommander leo;
-#ifdef gmdxnotae
+#ifdef gmdx
     local SpecialCaseTrigger sct;
 #endif
     local bool VanillaMaps;
@@ -153,7 +153,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-#ifdef gmdxnotae
+#ifdef gmdx
         foreach AllActors(class'SpecialCaseTrigger', sct, 'PaulRunningToPlayer'){
             //Find this SpecialCaseTrigger and just run it right away
             //It's marked as bTriggerOnlyOnce, but that actually only works for Touch,

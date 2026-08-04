@@ -42,11 +42,16 @@ function SetTitle(String newTitle)
         return;
     }
     bTickEnabled = true;
-#ifdef gmdx
+#ifdef gmdxnotae
     title = "GMDX RANDOMIZER " $ class'DXRVersion'.static.VersionString();
     nameLen = 14;
     firstSpace = 4;
     secondSpace = 999;
+#elseif gmdxae
+    title = "GMDX AE RANDOMIZER " $ class'DXRVersion'.static.VersionString();
+    nameLen = 16;
+    firstSpace = 4;
+    secondSpace = 7;
 #elseif revision
     title = "REVISION RANDOMIZER " $ class'DXRVersion'.static.VersionString();
     nameLen = 18;
