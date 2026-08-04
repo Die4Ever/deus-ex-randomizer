@@ -19,7 +19,7 @@ function CheckConfig()
     AddRandomWeapon(class'#var(prefix)WeaponStealthPistol', 6);
     AddRandomWeapon(class'#var(prefix)WeaponAssaultGun', 11);
     AddRandomWeapon(class'#var(prefix)WeaponMiniCrossbow', 5);
-#ifdef gmdx
+#ifdef gmdxnotae
     AddRandomWeapon(class'#var(prefix)#var(package).GMDXGepGun', 4);
 #else
     AddRandomWeapon(class'#var(prefix)WeaponGEPGun', 4);

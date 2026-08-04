@@ -50,18 +50,23 @@ function HackAction(Actor Hacker, bool bHacked)
 //Compartmentalize the HDTP/Not-HDTP logic into one place
 function SetLightState(bool bOn)
 {
-    if (IsHDTP()){
+    if (IsDXRHDTP()){
         if (bOn){
-        #ifdef gmdx
+        #ifdef gmdxnotae
             MultiSkins[1] = Texture'HDTPAlarmUnittex2';
             MultiSkins[2] = Texture'HDTPAlarmUnittex2';
+        #elseif gmdxae
+            MultiSkins[1] = class'HDTPLoader'.static.GetTexture("HDTPAlarmUnittex2");
+            MultiSkins[2] = class'HDTPLoader'.static.GetTexture("HDTPAlarmUnittex2");
         #elseif revision
             MultiSkins[1] = MultiSkins[7];
             MultiSkins[2] = MultiSkins[7];
         #endif
         } else {
-        #ifdef gmdx
+        #ifdef gmdxnotae
             MultiSkins[1] = Texture'HDTPAlarmUnittex1';
+        #elseif gmdxae
+            MultiSkins[1] = class'HDTPLoader'.static.GetTexture("HDTPAlarmUnittex1");
         #elseif revision
             MultiSkins[1] = MultiSkins[6];
         #endif
@@ -77,21 +82,21 @@ function SetLightState(bool bOn)
     }
 }
 
-function bool IsHDTP()
+function bool IsDXRHDTP()
 {
-    local bool isHDTP;
+    local bool isThisHDTP;
 
     #ifdef gmdxnotae
-        isHDTP=true;
+        isThisHDTP=true;
     #elseif revision
         //Revision has the vanilla mesh set as Default.Mesh, and HDTP as something else
         //Revision stores the "on" texture in slot 7 and (half of) the "off" texture in slot 6
-        isHDTP = (Mesh!=Default.Mesh);
+        isThisHDTP = (Mesh!=Default.Mesh);
     #elseif gmdxae
-        return Super.IsHDTP();
+        return IsHDTP();
     #endif
 
-    return isHDTP;
+    return isThisHDTP;
 
 }
 

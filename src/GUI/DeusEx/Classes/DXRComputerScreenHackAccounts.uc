@@ -10,8 +10,13 @@ function CreateChangeAccountButton()
     winActionButtons.SetWidth(174);
     winActionButtons.FillAllSpace(False);
 
+#ifdef gmdxae
+    btnChangeAccount = PersonaActionButtonWindowMenu(winActionButtons.NewChild(Class'PersonaActionButtonWindowMenu'));
+#else
     btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+#endif
     btnChangeAccount.SetButtonText(ChangeAccountButtonLabel);
+
 }
 
 //DXRando: Always show username in caps
