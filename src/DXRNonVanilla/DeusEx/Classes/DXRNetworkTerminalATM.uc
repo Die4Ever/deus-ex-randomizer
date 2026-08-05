@@ -103,8 +103,7 @@ function LogInAs(String user, String pass)
         atm.editAccount.SetText(user);
         atm.editPIN.SetText(pass);
 
-//SARGE: Fix a stupid crash! TODO: Fix this! WTF??!!!
-        if(pass != "" && !#bool(gmdxae))
+        if(pass != "")
             atm.ProcessLogin();
         else
             atm.SetFocusWindow(atm.editPIN);

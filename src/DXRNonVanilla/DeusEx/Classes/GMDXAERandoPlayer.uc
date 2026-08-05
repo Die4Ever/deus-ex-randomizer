@@ -1758,11 +1758,14 @@ state PlayerWalking
                 MoveDrone( DeltaTime, loc );
 
                 // freeze the player
-                Velocity = vect(0,0,0);
+                //Velocity = vect(0,0,0);
+                // RANDO: freeze the player in X and Y
+                Velocity = Velocity * vect(0,0,1);
+                Acceleration = Acceleration * vect(0,0,1);
 
                 //SARGE: Stop player from sliding along the ground very slowly while the drone is active
-                SetPhysics(PHYS_None);
-                SetPhysics(PHYS_Walking);
+                //SetPhysics(PHYS_None);
+                //SetPhysics(PHYS_Walking);
             }
             return;
         }
