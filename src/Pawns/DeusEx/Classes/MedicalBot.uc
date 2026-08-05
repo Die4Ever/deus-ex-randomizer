@@ -38,6 +38,17 @@ function bool Facelift(bool bOn)
 }
 #endif
 
+#ifdef gmdxae
+
+function SetupSkin()
+{
+    if (augsOnly) return;
+
+    Super.SetupSkin();
+}
+
+#endif
+
 function updateName()
 {
     familiarName = baseName $ GetRemainingUsesStr();
@@ -207,7 +218,7 @@ function MakeAugsOnly()
     Mesh = Default.Mesh; //No-op unless Revision has already facelifted
 
     #ifdef gmdx
-    Mesh=LodMesh'DeusExCharacters.MedicalBot'; //GMDX defaults to the HDTP mesh, so the trick above doesn't work...
+    Mesh=LodMesh'DeusExCharacters.MedicalBot'; //GMDXv9 defaults to the HDTP mesh, so the trick above doesn't work...
     healMaxTimes=0;
     #endif
 }
