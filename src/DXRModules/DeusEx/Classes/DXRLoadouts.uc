@@ -1288,6 +1288,10 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 #ifdef gmdx
     player.RepairInventory();
 #endif
+#ifdef gmdxae
+    player.ClearAllBeltPlaceHolders(); //Clear the original placeholders (prod, medkit, pistol)
+    player.bForceBeltAutofill=true;    //Force belt autofill on at the start to throw this starting equipment on your belt
+#endif
     AddStartingEquipment(player, respawn);
 
     for(i=0; i < start_amount; i++) {
@@ -1312,6 +1316,11 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
         if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)Medkit'))
             GiveItem(player, class'#var(prefix)Medkit');
     }
+
+#ifdef gmdxae
+    player.bForceBeltAutofill=false;
+#endif
+
 }
 
 function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory item, bool bFrob)

@@ -2282,6 +2282,15 @@ function DeusExPlayerProcessMove(float DeltaTime, vector NewAccel, eDodgeDir Dod
 {
 }
 
+function ClearAllBeltPlaceholders()
+{
+    local int i;
+
+    for (i = 0; i < ArrayCount(beltInfos);i++){
+        ClearPlaceholder(i);
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // #region Exec Functions
 ///////////////////////////////////////////////////////////////////////////////
