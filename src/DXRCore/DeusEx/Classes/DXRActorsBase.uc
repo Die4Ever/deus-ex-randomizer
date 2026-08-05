@@ -2759,13 +2759,22 @@ function bool DXRStartDataLinkTransmission( String DatalinkName )
 }
 
 //GMDX makes Torso/Head max health increase with Medicine skill levels
-static function int GetBodyPartMaxHealth(int HealthMax, #var(PlayerPawn) p)
+static function int GetBodyPartMaxHealth(int HealthMax, #var(PlayerPawn) p, optional bool torso)
 {
     local int spill;
     local Skill sk;
 
     //If it's not GMDX, we're just happy reporting back the maximum health as-is
     if (!#defined(gmdx)) return HealthMax;
+
+#ifdef gmdxae
+    if (torso){
+        return HealthMax + p.GetTorsoHealthAdjustment();
+    } else {
+        return HealthMax + p.GetHeadHealthAdjustment();
+    }
+
+#endif
 
     //If it's GMDX, figure out how much health there is on top of the defaults
     if (p.SkillSystem==None) return HealthMax;

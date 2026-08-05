@@ -1,5 +1,5 @@
-#compileif gmdxnotae
-class GMDXRandoPlayer extends JCDentonMale;
+#compileif gmdxae
+class GMDXAERandoPlayer extends JCDentonMale;
 
 var laserEmitter aimLaser;
 var bool bDoomMode;
@@ -7,7 +7,6 @@ var bool bOnLadder;
 var Rotator ShakeRotator;
 var bool bAutorun;
 var float autorunTime;
-var bool bWallSplat;
 var int rando_stamina;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
@@ -116,6 +115,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     local bool bReduced;
     local float damageMult;
     local int augClassLevel;
+    local AugBallisticPassive ballistic;
 
     augLevel = -1;
 
@@ -139,15 +139,20 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     if ((damageType == 'Shot') || (damageType == 'AutoShot') || (damageType == 'KnockedOut')) //GMDX also does KnockedOut here
     {
-        if (AugmentationSystem != None){
+        if (AugmentationSystem != None) //CyberP: now includes ballistic passive aug
+        {
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
 
-            if (augLevel < 0.0 && Energy > 0.0){ //this means we can't have both augs installed, and that for passive to work energy is required.
-                augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallisticPassive');
+            if (augLevel < 0.0 && Energy > 0.0) //this means we can't have both augs installed, and that for passive to work energy is required. //RSD: Actually it just means active overrides passive
+            {
+                ballistic = AugBallisticPassive(AugmentationSystem.GetAug(class'AugBallisticPassive'));
+                if (ballistic != None) //SARGE: Accessed none?
+                    augLevel = ballistic.GetDamageMod(true);
             }
+            //augLevel *= AugmentationSystem.GetAugLevelValue(class'AugBallistic');//RSD: figure out stacking prots later maybe
         }
 
-        if (augLevel >= 0.0)
+        if (augLevel > 0.0)
             newDamage *= augLevel;
     }
 
@@ -167,16 +172,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         (damageType == 'Exploded') || (damageType == 'Shocked') ||
         (damageType == 'EMP')) //GMDX merges EMP functionality into AugShield
     {
-        if (AugmentationSystem != None){
+        if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
-            augClassLevel = AugmentationSystem.GetClassLevel(class'AugShield');
-        }
 
         if (augLevel >= 0.0)
             newDamage *= augLevel;
-
-        //if (augLevel == 0.3)
-        if (augClassLevel>=3) //Check the aug level instead of the value (Why would you use the value here anyway?)
+        if (augLevel == 0.3)
             Spawn(class'SphereEffectShield2',,,(Location+vector(ViewRotation)*32));
     }
 
@@ -196,15 +197,22 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     if( pct > 0 ) {
         bReduced = True;
         ClientFlash(0.01, vect(32, 0, 0));
+    } else {
+        if (!bCheckOnly)
+            SetDamagePercent(0.0);
     }
 
     //
     // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
     // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
-    if (damageType == 'Shot' || damageType == 'AutoShot')
+    if (damageType == 'Shot' || damageType == 'AutoShot'  || (damageType == 'KnockedOut'))
     {
         newDamage *= CombatDifficulty;
         oldDamage *= CombatDifficulty;
+
+        // always take at least one point of damage
+        if ((newDamage <= 1) && (Damage > 0))
+            newDamage = 1;
     }
     else if((damageType == 'Flamed' || damageType == 'Burned') && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         newDamage *= CombatDifficulty;
@@ -221,7 +229,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         oldDamage += 0.999;
     }
 
-    adjustedDamage = Int(newDamage);// adjustedDamage is our out param
+    adjustedDamage = Int(newDamage+0.5);// adjustedDamage is our out param //RSD: Now rounds up! Fuck you!
 
     if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         // TearGas can't kill you
@@ -311,8 +319,10 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
 
 function float ReduceEnviroDamage(float damage, name damageType)
 {
-    local float skillLevel, augLevel, newDamage;
+    local float skillLevel, augLevel;
     local HazmatSuit suit;
+    local AugEnviro enviro;
+    local AugAqualung lung;
 
     augLevel = -1;
 
@@ -322,15 +332,32 @@ function float ReduceEnviroDamage(float damage, name damageType)
             return damage;
     }
 
-    if (DamageType != 'Shocked'){
-        if (bBoosterUpgrade && Energy > 0 && Damage > 0)
-                AugmentationSystem.AutoAugs(false,true);
-
+    if (DamageType != 'Shocked')
+    {
         if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
+        {
+            enviro = AugEnviro(AugmentationSystem.GetAug(class'AugEnviro'));
+            if (enviro != None)
+            {
+                augLevel = enviro.LevelValues[enviro.CurrentLevel];
 
-        if (augLevel >= 0.0)
-            damage *= augLevel;
+                //Make sure we have enough energy
+                //EDIT: This was based on damage tane, and still can be if you uncomment this. For now, use the old "20 per second" of the old aug.
+                //if (enviro.bIsActive && augLevel >= 0.0 && Energy > 0 && Energy >= enviro.GetCustomEnergyRate(damage * 0.1))
+                if (enviro.bIsActive && augLevel >= 0.0 && Energy > 0)
+                {
+                    //Only use energy once per 3 seconds, like the old aug
+                    if (saveTime >= enviro.lastEnergyTick)
+                    {
+                        //Energy -= MAX(int(damage * 0.1),1);
+                        Energy = FMAX(Energy - enviro.GetAdjustedEnergy(1),0);
+                        enviro.lastEnergyTick = saveTime + (60.0 / enviro.EnergyRate);
+                        enviro.displayAsActiveTime = saveTime + 3.0; //SARGE: Display as active while in use
+                    }
+                    damage *= augLevel;
+                }
+            }
+        }
     }
 
     // get rid of poison if we're maxed out
@@ -342,34 +369,57 @@ function float ReduceEnviroDamage(float damage, name damageType)
             drugEffectTimer = 0;
     }
 
-    skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-    skillLevel = FClamp(skillLevel, 0, 1.1);
+    // go through the actor list looking for owned HazMatSuits
+    // since they aren't in the inventory anymore after they are used
+
+
     if (UsingChargedPickup(class'HazMatSuit'))
     {
-        damage *= 0.75 * skillLevel;
-
-        //GMDX makes hazmat charge only decrease when protecting against damage
-        foreach AllActors(class'HazMatSuit',suit) {
-            if (suit.owner==Self && suit.bActive) {
-                suit.Charge -= (Damage * 16 * skillLevel);
+            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+            damage *= 0.4;//0.75 * skillLevel;
+            foreach AllActors(class'HazMatSuit', suit)
+            {
+                if ((suit.Owner == Self) && suit.bActive)
+                    suit.Charge -= (Damage * 16 * skillLevel);
+                if (suit.Charge < 0)                                         //RSD: Don't go below zero
+                {
+                    suit.Charge = 0;
+                    suit.UsedUp();                                           //RSD: Otherwise doesn't deactivate properly
+                }
             }
-        }
     }
-    else if(class'MenuChoice_BalanceSkills'.static.IsEnabled())// passive enviro skill still gives some damage reduction
+    else if(class'MenuChoice_BalanceSkills'.static.IsEnabled())// RANDO: passive enviro skill still gives some damage reduction
     {
         damage *= 1.1 * skillLevel + 0.3;
     }
 
+    if (damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Poison' || damageType == 'PoisonEffect') //CyberP: gas grenades and poison barrels drain stamina. // Trash: Now with more damange types!
+    {
 
-    if(damageType == 'PoisonEffect' || damageType == 'Poison') {
-        //CyberP: gas grenades and poison barrels drain stamina.
         if (damage >= 1 && UseStaminaSystem()) //RANDO: Use the consistent stamina function instead of only checking if bStaminaSystem is true
         {
-            swimTimer -= damage*0.4;
+            if (UsingChargedPickup(class'HazMatSuit') && PerkManager.GetPerkWithClass(class'DeusEx.PerkFilterUpgrade').bPerkObtained == true)
+            {
+                // Trash: No stamina damage while wearing a hazmat suit and with the perk FilterUpgrade
+            }
+            else
+            {
+                //Aqualung now reduces stamina damage
+                augLevel = 1.0;
+                lung = AugAqualung(AugmentationSystem.GetAug(class'AugAqualung'));
+                if (lung != None && lung.bIsActive)
+                {
+                    augLevel = 2.0 - lung.LevelValues[lung.CurrentLevel];
+                }
+                swimTimer -= ((damage*0.4) + 3) * augLevel;
+                DebugLog("Stamina Damage AugLevel: " $ augLevel);
+            }
+
             if (swimTimer < 0)
                 swimTimer = 0;
         }
     }
+
 
     return damage;
 }
@@ -377,24 +427,30 @@ function float ReduceEnviroDamage(float damage, name damageType)
 function float ArmorReduceDamage(float damage)
 {
     local float skillLevel;
-    local BallisticArmor ba;
+    local BallisticArmor armor;
 
     // go through the actor list looking for owned BallisticArmor
     // since they aren't in the inventory anymore after they are used
     if (UsingChargedPickup(class'BallisticArmor'))
     {
         skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-        if(skillLevel < 0)
-            skillLevel = 0;
+        damage *= 0.65; //GMDX: removed too easy * skillLevel; //CyberP: foreach durable armor
+        foreach AllActors(class'BallisticArmor', armor)
+        {
+            if ((armor.Owner == Self) && armor.bActive)
+            {
+                if (skillLevel == 1)
+                    armor.Charge -= (damage * 16 * skillLevel);
+                else
+                    armor.Charge -= (damage * 32 * skillLevel);	// Trash: Nerfed
+            }
 
-        //GMDX makes ballistic armour charge only decrease when protecting against damage
-        foreach AllActors(class'BallisticArmor',ba) {
-            if (ba.owner==Self && ba.bActive) {
-                ba.Charge -= (Damage * 16 * skillLevel);
-                break;
+            if (armor.Charge < 0)                                       //RSD: Don't go below zero
+            {
+                armor.Charge = 0;
+                armor.UsedUp();                                         //RSD: Otherwise doesn't deactivate properly
             }
         }
-        return damage * 0.5 * skillLevel;
     }
     return damage;
 }
@@ -593,7 +649,7 @@ exec function ToggleScope()
 
 }
 
-function PickupNanoKey(NanoKey newKey)
+function bool PickupNanoKey(NanoKey newKey)
 {
     local string msg;
     if (newKey.keyID==''){
@@ -604,7 +660,7 @@ function PickupNanoKey(NanoKey newKey)
             log(msg);
         }
     }
-    Super.PickupNanoKey(newKey);
+    return Super.PickupNanoKey(newKey);
 }
 
 event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation )
@@ -622,7 +678,7 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
         CameraLocation = reCam.Location;
         return;
     } else {
-        if (bSpyDroneActive && aDrone!=None && bBehindView && !InConversation()){
+        if (bSpyDroneActive && !bBigDroneView && aDrone!=None && bBehindView && !InConversation()){
             //Bypass being forced into first person and stay in third person
             CalcBehindView(CameraLocation, CameraRotation, 150);
         } else {
@@ -658,22 +714,31 @@ function HighlightCenterObject()
 {
     if (IsInState('Dying'))
         return;
-
+/*
     HighlightCenterObjectLadderLogic();
     HighlightCenterObjectCrouchLogic();
     if (HighlightCenterObjectMultitoolPerk() == False){
         HighlightCenterObjectMain();
     }
+*/
+    //Let's rely on the GMDX:AE logic for now
+    Super.HighlightCenterObject();
+
     HighlightCenterObjectLaser();
 }
+
+/*
 
 //Returns true if it highlighted something hackable with a multitool
 function bool HighlightCenterObjectMultitoolPerk()
 {
     local Actor oldFrobTarget;
     local float oldFrobTime;
+    local PerkWirelessStrength perk;
 
-    if (PerkNamesArray[16]==0) return False; //You have to have the "WIRELESS STRENGTH" perk
+    perk = PerkWirelessStrength(PerkManager.GetPerkWithClass(class'DeusEx.PerkWirelessStrength'));
+
+    if (perk != None && perk.bPerkObtained) return False; //You have to have the "WIRELESS STRENGTH" perk
     if (inHand==None) return False; //Need to have something in hand
     if (inHand.IsA('Multitool')==False) return False; //It has to be a multitool
 
@@ -823,7 +888,7 @@ function HighlightCenterObjectCrouchLogic()
 {
     if (bIsCrouching)
     {
-        if (PerkNamesArray[29]==1)
+        if (PerkManager.GetPerkWithClass(class'DeusEx.PerkEndurance').bPerkObtained) //CREEPER (29) -> Endurance (27)
             bCrouchRegen=True;
     }
     else
@@ -849,7 +914,7 @@ function HighlightCenterObjectLadderLogic()
                     bIsWalking=True;
                     if (AugmentationSystem.GetAugLevelValue(class'DeusEx.AugStealth') < 0)
                     {
-                        if (PerkNamesArray[9] != 1) // "NIMBLE"
+                        if (PerkManager.GetPerkWithClass(class'DeusEx.PerkNimble').bPerkObtained == false) // "NIMBLE"
                         {
                             rnd = FRand();
                             if (rnd < 0.25) PlaySound(Sound'GMDXSFX.Player.pl_ladder1',SLOT_None,0.75);
@@ -865,6 +930,7 @@ function HighlightCenterObjectLadderLogic()
         }
     }
 }
+*/
 
 function HighlightCenterObjectLaser()
 {
@@ -894,6 +960,20 @@ function HighlightCenterObjectLaser()
         }
     }
 }
+
+//TODO: This is typically handled in FrobDisplayWindow, but we currently aren't using that in AE
+//When we get that rolling, this won't be needed.
+function bool IsHighlighted(actor A)
+{
+    local bool wasBehind,highlight;
+
+    wasBehind = bBehindView;
+    bBehindView = False;
+    highlight = Super.IsHighlighted(A);
+    bBehindView = wasBehind;
+    return highlight;
+}
+
 
 exec function ShowMainMenu()
 {
@@ -952,6 +1032,7 @@ function Landed(vector HitNormal)
     Super.Landed(HitNormal);
 }
 
+
 exec function ParseLeftClick()
 {
     if (RestrictInput())
@@ -972,10 +1053,9 @@ exec function ParseLeftClick()
     }
 
     Super.ParseLeftClick();
-
 }
 
-function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
+function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly, optional bool bSkipDeclineCheck, optional DeusExCarcass FromCorpse, optional bool bShowOverflow, optional bool bShowOverflowWindow)
 {
     local bool bCanPickup;
     local #var(DeusExPrefix)Weapon weap,ownedWeapon;
@@ -994,7 +1074,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         weap = #var(DeusExPrefix)Weapon(inHand);
 
         //We don't want to auto apply in when looting a body
-        if (mod!=None && weap!=None && DeusExCarcass(mod.Owner)==None){
+        if (mod!=None && weap!=None && FromCorpse==None){
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName,, true);
@@ -1024,7 +1104,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     }
 */
 
-    bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly);
+    bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly, bSkipDeclineCheck, FromCorpse, bShowOverflow, bShowOverflowWindow);
 
 /*
     //Ammo Looting
@@ -1274,19 +1354,21 @@ function AddColorTheme(Class<ColorTheme> themeClass)
 
 function CreateColorThemeManager()
 {
-    local ColorTheme theme;
     Super.CreateColorThemeManager();
 
+    //TODO: Re-enable ColorThemeMenu's if the limit on MenuUIChoiceEnum number of enums is raised beyond 50
+
     AddColorTheme(Class'ColorThemeHUD_HotDogStand');
-    AddColorTheme(Class'ColorThemeMenu_HotDogStand');
+    //AddColorTheme(Class'ColorThemeMenu_HotDogStand');
     AddColorTheme(Class'ColorThemeHUD_Black');
-    AddColorTheme(Class'ColorThemeMenu_Black');
+    //AddColorTheme(Class'ColorThemeMenu_Black');
     AddColorTheme(Class'ColorThemeHUD_Rando');
-    AddColorTheme(Class'ColorThemeMenu_Rando');
+    //AddColorTheme(Class'ColorThemeMenu_Rando');
     AddColorTheme(Class'ColorThemeHUD_Swirl');
-    AddColorTheme(Class'ColorThemeMenu_Swirl');
+    //AddColorTheme(Class'ColorThemeMenu_Swirl');
     AddColorTheme(Class'ColorThemeHUD_Health');
-    AddColorTheme(Class'ColorThemeMenu_Health');
+    //AddColorTheme(Class'ColorThemeMenu_Health');
+
 }
 
 function UpdateRotation(float DeltaTime, float maxPitch)
@@ -1380,6 +1462,7 @@ function DisableScopeInConversation()
     }
 }
 
+//TBD Do we want to actually do anything with this in AE?
 function SetupGMDXHardcoreByFlag(int hardcore_val, int stamina_val)
 {
     bHardcoreFilterOption = false; //Overwhelming odds
@@ -1460,7 +1543,7 @@ function bool UseStaminaSystem()
     else if (rando_stamina==2) return true; //Permanently enabled
 
     //Otherwise fall back to the original stamina logic
-    if (bStaminaSystem) return true;
+    if (iStaminaSystem>0) return true;
     if (bHardcoreMode) return true;
     return false;
 }
@@ -1609,80 +1692,20 @@ state Dying
 state PlayerWalking
 {
     // lets us affect the player's movement
-    // RANDO: Mostly duped from the GMDX Human, indentation fixed though
+    // RANDO: Mostly duped from the GMDX Human, just changed to call DeusExPlayerProcessMove instead of Super.ProcessMove
     function ProcessMove ( float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
     {
-        local actor HitActor;
-        local vector HitLocation, HitNormal, checkpoint, start, checkNorm, EndTrace, Extent;
-        local float shakeTime, shakeRoll, shakeVert;
-
-        DeusExPlayerProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot); //RANDO: We changed some of that code too, so here we go...
+        DeusExPlayerProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot); //RANDO: We changed some of that code, so here we go...
 
         if (bOnKeyHold && Physics == PHYS_Falling)
             DoJump();
 
-        //Justice: Mantling system.  Code shamelessly stolen from CheckWaterJump() in ScriptedPawn
-        if (isMantling && !bOnLadder) //CyberP: PHYS_Falling && != 0
-        {
-            EndTrace = Location + CollisionHeight * 1.1 * vect(0,0,1);
-            HitActor = Trace(HitLocation, HitNormal, EndTrace,,True);
-            if (HitActor == None)
-            {
-                if (CarriedDecoration == None && velocity.Z > -1000)
-                {
-                    checkpoint = vector(Rotation);
-                    checkpoint.Z = 0.0;
-                    checkNorm = Normal(checkpoint);
-                    checkPoint = Location + CollisionRadius * checkNorm;
-                    //Extent = CollisionRadius * vect(1,1,0);
-                    if (bIcarusClimb)
-                        Extent = CollisionRadius * vect(1.2,1.2,0); //0.3
-                    else
-                        Extent = CollisionRadius * vect(0.3,0.3,0);
-                    Extent.Z = CollisionHeight*0.67;
-                    if (bIcarusClimb)
-                        Extent.Z = CollisionHeight*0.8;
-
-                    HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, Extent);
-                    if ( (HitActor != None) && (HitActor.IsA('Mover') || HitActor == Level || HitActor.IsA('DeusExDecoration')))
-                    {
-                        if (HitActor.IsA('DeusExDecoration') && (HitActor.CollisionHeight < 20 || DeusExDecoration(HitActor).bCanBeBase == False))
-                            return;
-                        else if (HitActor.IsA('DeusExDecoration'))
-                        {
-                            bSpecialCase = True; decorum = DeusExDecoration(HitActor);
-                        }
-                        else if (HitActor.IsA('DeusExMover'))
-                        {
-                            bSpecialCase2 = True; mova = DeusExMover(HitActor);
-                        }
-                        WallNormal = -1 * HitNormal;
-                        start = Location;
-                        start.Z += 1.1 * MaxStepHeight + CollisionHeight;
-                        checkPoint = start + 1.25 * CollisionRadius * checkNorm;
-                        HitActor = Trace(HitLocation, HitNormal, checkpoint, start, true, Extent);
-                        if (HitActor == None)
-                        {
-                            if (bDuck == 1 && bToggleCrouch == False)
-                            {
-                                bToggleCrouch = True;
-                                bIsCrouching = True;
-                                bCrouchOn = True;
-                                bDuck = 1;
-                                lastbDuck = 1;
-                                bCrouchHack = True;
-                            }
-                            goToState('Mantling');
-                        }
-                    }
-                }
-            }
-        }
+        checkMantle();
     }
 
     // can't call Super(DeusExPlayer.PlayerWalking).ProcessMove, so we gotta copy-paste it too...
-    // RANDO: Mostly duped from the GMDX DeusExPlayer, indentation fixed though
-    function DeusExPlayerProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
+    // RANDO: Mostly duped from the GMDX DeusExPlayer, indentation fixed though, and some small tweaks
+    function DeusExPlayerProcessMove ( float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
     {
         local int newSpeed, defSpeed;
         local name mat;
@@ -1696,7 +1719,16 @@ state PlayerWalking
         local int ResetSize;
         local float mult, mult2, mult3, rand;
         local name ventMat;
-        local bool useStamina;
+        local float heavyMult;                                                  //RSD
+        local float heavySkillVal;                                              //RSD
+        local float mult4;                                                      //RSD
+        local Wound wound;
+
+        //SARGE: Prevent walking if we're using a computer
+        if (bUsingComputer)
+        {
+            newAccel = vect(0,0,0);
+        }
 
         if (bStaticFreeze)
         {
@@ -1704,17 +1736,20 @@ state PlayerWalking
             return;
         }
 
-        // if the spy drone augmentation is active
-        if (bSpyDroneActive)
+        // if the spy drone augmentation is active //Lorenz: and augmentation wheel is invis
+        if (bSpyDroneActive && !bSpyDroneSet)                                   //RSD: Allows the user to toggle between moving and controlling the drone
         {
             if ( aDrone != None )
             {
                 // put away whatever is in our hand
+                /*
                 if (inHand != None)
                     PutInHand(None);
+                */
 
                 // make the drone's rotation match the player's view
-                aDrone.SetRotation(ViewRotation);
+                if (!bRadialAugMenuVisible)
+                    aDrone.SetRotation(ViewRotation);
 
                 // move the drone
                 loc = Normal((aUp * vect(0,0,1) + aForward * vect(1,0,0) + aStrafe * vect(0,1,0)) >> ViewRotation);
@@ -1723,11 +1758,11 @@ state PlayerWalking
                 MoveDrone( DeltaTime, loc );
 
                 // freeze the player
-                //Velocity = vect(0,0,0);
-                // RANDO: freeze the player in X and Y
-                Velocity = Velocity * vect(0,0,1);
-                Acceleration = Acceleration * vect(0,0,1);
+                Velocity = vect(0,0,0);
 
+                //SARGE: Stop player from sliding along the ground very slowly while the drone is active
+                SetPhysics(PHYS_None);
+                SetPhysics(PHYS_Walking);
             }
             return;
         }
@@ -1735,14 +1770,14 @@ state PlayerWalking
         defSpeed = GetCurrentGroundSpeed();
         ResetSize=0;
 
-        //log("TIPTOES "@bLeanLeftHook@bLeanRightHook@IsLeaning()@bIsCrouching@bForceDuck);
+    //      log("TIPTOES "@bLeanLeftHook@bLeanRightHook@IsLeaning()@bIsCrouching@bForceDuck);
         //GMDX:tiptoes
         if (!bPreTiptoes) bIsTiptoes=false;
 
         bTiptoes=bPreTiptoes&&(!IsLeaning()||bIsTiptoes);
 
-        // crouching makes you two feet tall
-        if (bIsCrouching || bForceDuck)
+    // crouching makes you two feet tall
+        if (IsCrouching())
         {
             if ( Level.NetMode != NM_Standalone )
                 SetBasedPawnSize(Default.CollisionRadius, 30.0);
@@ -1767,7 +1802,7 @@ state PlayerWalking
         if (bTiptoes)
         { //check we can go on tiptoes
             checkpoint = Location;
-            if (bForceDuck||bIsCrouching)
+            if (IsCrouching())
                 checkpoint.Z = checkpoint.Z + 14 +18;
             else
                 checkpoint.Z = checkpoint.Z + 5.3 + GetDefaultCollisionHeight();
@@ -1776,7 +1811,7 @@ state PlayerWalking
             traceSize.Y = CollisionRadius;
             traceSize.Z = 1;
             HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, traceSize);
-            if (HitActor == None && !bForceDuck)
+            if (HitActor == None && !bForceDuck && !IsCrippled())
                 bCanTiptoes = True;
             else
                 bCanTiptoes = False;
@@ -1807,7 +1842,7 @@ state PlayerWalking
         //        instead of fixed values (If using non-vanilla health)
         newSpeed = defSpeed;
 
-        if ( Level.NetMode == NM_Standalone && PerkNamesArray[17] != 1)
+        if ( Level.NetMode == NM_Standalone && PerkManager.GetPerkWithClass(class'DeusEx.PerkPerserverance').bPerkObtained == false)
         {
             if (HealthLegLeft < 1)
                 newSpeed -= (defSpeed/2) * 0.25;
@@ -1829,19 +1864,19 @@ state PlayerWalking
 
         // let the player pull themselves along with their hands even if both of
         // their legs are blown off
-        if ((HealthLegLeft < 1) && (HealthLegRight < 1))
+        if (IsCrippled())
         {
             newSpeed = defSpeed * 0.8;
             bIsWalking = True;
-            bForceDuck = True;
+            //bForceDuck = True;
             bCanTiptoes=false;
         }
         // make crouch speed faster than normal
-        else if ((bIsCrouching || bForceDuck) && !bOnLadder)
+        else if (IsCrouching() && !bOnLadder)
         {
             mult3=1;             //CyberP: faster crouch speed. Comment out all except bIsWalking = True to remove
             if (SkillSystem!=None && SkillSystem.GetSkillLevel(class'SkillStealth')>=1)
-                mult3= 1 + (SkillSystem.GetSkillLevel(class'SkillStealth')* 0.1);
+                mult3= 1 + (SkillSystem.GetSkillLevel(class'SkillStealth')* 0.15); //RSD: changed from *0.1
             newSpeed = defSpeed * mult3;
             bIsWalking = True;
         }
@@ -1849,23 +1884,23 @@ state PlayerWalking
         // CNN - Took this out because it sucks ASS!
         // if the legs are seriously damaged, increase the head bob
         // (unless the player has turned it off)
-        //	if (Bob > 0.0)
-        //	{
-        //		legTotal = (HealthLegLeft + HealthLegRight) / 2.0;
-        //		if (legTotal < 20)
-        //			Bob = Default.Bob * FClamp(0.05*(70 - legTotal), 1.0, 3.0);
-        //		else
-        //			Bob = Default.Bob;
-        //	}
+    //	if (Bob > 0.0)
+    //	{
+    //		legTotal = (HealthLegLeft + HealthLegRight) / 2.0;
+    //		if (legTotal < 20)
+    //			Bob = Default.Bob * FClamp(0.05*(70 - legTotal), 1.0, 3.0);
+    //		else
+    //			Bob = Default.Bob;
+    //	}
 
 
         //CyberP: slow the player under certain conditions
-        if (bStunted)
+        if (IsStunted())
         {
             if (Physics == PHYS_Walking && !bOnLadder)
             {
-                bIsWalking = True;
-                newSpeed = defSpeed;
+            bIsWalking = True;
+            newSpeed = defSpeed;
             }
         }
 
@@ -1875,25 +1910,47 @@ state PlayerWalking
         {
             if ( AugmentationSystem != None )
                 augValue = AugmentationSystem.GetClassLevel(class'AugMuscle');
-            if (augValue==3) augValue = 0; else augValue=1;
+
+            if (augValue==3)
+                augValue = 0;
+            else augValue=1;
 
             newSpeed -= CarriedDecoration.Mass * 2 * augValue;
         }
         // don't slow the player down if he's skilled at the corresponding weapon skill
         else if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) && (AugmentationSystem != None))
         {
-            if (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25 && AugmentationSystem.GetAugLevelValue(class'AugMuscle') == -1)
+        /*if (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25 && AugmentationSystem.GetAugLevelValue(class'AugMuscle') == -1)
             {
-                bIsWalking = True;
-                newSpeed = defSpeed;
-            }
+            bIsWalking = True;
+            newSpeed = defSpeed;
+            }*/
+            //RSD: New formula for Heavy weap speed penalty:
+            // 50% mult is lowest speed, 100% is normal run
+            // SkillWeaponHeavy adds 10/25/50%
+            // Microfibral Muscle adds 12.5/25/37.5/50%
+            // Caps at 100%
+            heavyMult = 0.5;                                                    //RSD: For more granular heavy weapon MS penalty
+            heavySkillVal = SkillSystem.GetSkillLevelValue(DeusExWeapon(Weapon).GoverningSkill);
+            //if (heavySkillVal >= 3.0)                                         //RSD: Was from when I was using skill level rather than value
+            //	heavySkillVal = 4.0;
+            heavyMult -= heavySkillVal;
+            if (AugmentationSystem.GetAugLevelValue(class'AugMuscle') != -1.0)
+                heavyMult += 0.5*(AugmentationSystem.GetAugLevelValue(class'AugMuscle')-1.0);
+            if (heavyMult > 1.0)
+                heavyMult = 1.0;
+            newSpeed *= heavyMult;
         }
         else if ((inHand != None) && inHand.IsA('POVCorpse'))
         {
             if ( AugmentationSystem != None )
                 augValue = AugmentationSystem.GetClassLevel(class'AugMuscle');
 
-            if (augValue==3) augValue = 0; else augValue=1;
+            if (augValue==3)
+                augValue = 0;
+            else
+                augValue=1;
+
             newSpeed -= inHand.Mass * 3*augValue;
         }
 
@@ -1919,8 +1976,16 @@ state PlayerWalking
                 TurnRateAdjuster = 1.0;
         } */
 
+        //Reduce if we have the poison trauma
+        if (WoundManager != None)
+        {
+            wound = WoundManager.GetWoundByType(class'WoundPoison');
+            if (wound != None && wound.HasWound())
+                newSpeed *= (1.0 - (0.01 * wound.woundData[0]));
+        }
+
         // if we are moving really slow, force us to walking
-        if ((newSpeed <= defSpeed / 3) && !bForceDuck)
+        if ((newSpeed <= defSpeed / 3) && !bForceDuck && !IsCrippled())
         {
             bIsWalking = True;
             newSpeed = defSpeed;
@@ -1932,8 +1997,8 @@ state PlayerWalking
         }
 
         // if we are moving backwards, we should move slower
-        // DEUS_EX AMSD Turns out this wasn't working right in multiplayer, I have a fix
-        // for it, but it would change all our balance.
+    // DEUS_EX AMSD Turns out this wasn't working right in multiplayer, I have a fix
+    // for it, but it would change all our balance.
         //if ((aForward < 0) && (Level.NetMode == NM_Standalone))
         //	newSpeed *= 0.65;  //CyberP:
 
@@ -1941,18 +2006,21 @@ state PlayerWalking
         if (bTiptoes&&bCanTiptoes) //!bIsTiptoes fuuk why so much spamming size
         {
             bIsTiptoes=true;
-            if (bIsCrouching || bForceDuck)
+            if (IsCrouching())
                 SetBasedPawnSize(Default.CollisionRadius, 16+18);
-            else
+                else
                 SetBasedPawnSize(Default.CollisionRadius, GetDefaultCollisionHeight()+5.3);
             newSpeed*=0.6;
         }
 
-        mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
-        swimDuration = UnderWaterTime * mult;
-        if (mult > 1.0)
-            mult *= 0.85;
-        if (bIsWalking && !bIsCrouching && !bForceDuck)  //CyberP: faster walking
+        mult = 0.5+0.5*SkillSystem.GetSkillLevelValue(class'SkillSwimming');      //RSD: Halved breath increase
+        /*UnderWaterTime = AugmentationSystem.GetAugLevelValue(class'AugAqualung'); //RSD: Passive Aqualung
+        if (UnderWaterTime == -1.0)
+            UnderWaterTime = default.UnderWaterTime;*/
+        swimDuration = UnderWaterTime * mult;                                  //RSD: Removed effect of Athletics on stamina //RSD: reinstated
+        //if (mult > 1.0)                                                         //RSD: Never went into effect anyway?
+        //   mult *= 0.85;
+        if (bIsWalking && !IsCrouching())  //CyberP: faster walking
         {
             mult3=1;             //CyberP: faster walk speed. Comment out all except newSpeed *= 1.7 to remove
             if (SkillSystem!=None && SkillSystem.GetSkillLevel(class'SkillStealth')>=1)
@@ -1962,26 +2030,34 @@ state PlayerWalking
             newSpeed *= mult3;
         }
 
-        if (Physics == PHYS_Walking && !bCrouchOn && UseStaminaSystem())   //CyberP: stamina system //RANDO: Use the consistent function for stamina
+        if (Physics == PHYS_Walking && (iStaminaSystem > 0 || bHardCoreMode))   //CyberP: stamina system
         {
-            if (bIsWalking == false && !bIsCrouching && (Velocity.X != 0 || Velocity.Y != 0 ))
+            //SARGE: Added bOnLadder check so that we use stamina when on ladders regardless of speed,
+            //since ladder climbing limits us to walking speed regardless.
+            if (((bIsWalking == false && !IsCrouching()) || bOnLadder) && (Velocity.X != 0 || Velocity.Y != 0 ))
             {
-                if (bHardCoreMode)
-                    swimTimer -= deltaTime*1.3;
+                /*if (bHardCoreMode)                                                    //RSD: Generalizing this a bit
+                swimTimer -= deltaTime*1.3;
                 else
-                    swimTimer -= deltaTime;
+                swimTimer -= deltaTime;*/
+
+                mult4 = 1.0;
+                //if (DrugsWithdrawalArray[0] == 1)                                       //RSD: if suffering from nicotine withdrawal, start at double
+                //    mult4 = 2.0;
+                if (bHardcoreMode)
+                    mult4 *= 1.3;
+                swimTimer -= mult4*deltaTime;
 
                 if (swimTimer < 0)
                 {
                     swimTimer = 0;
-                    if (UseStaminaSystem())
+                    if (iStaminaSystem > 0 || bHardCoreMode)
                     {
                         bStunted = true;
-                        SetTimer(3,false);
                         if (!bOnLadder && FRand() < 0.7)
-                            PlaySound(sound'MaleBreathe', SLOT_None,0.8);
-                        if (bBoosterUpgrade && Energy > 0)
-                            AugmentationSystem.AutoAugs(false,false);
+                        {
+                            PlayBreatheSound();
+                        }
                     }
                 }
             }
@@ -1989,51 +2065,13 @@ state PlayerWalking
 
         if (Physics == PHYS_Walking)  //CyberP: stamina system
         {
-            if (bIsWalking == true || (Velocity.X == 0 && Velocity.Y == 0))
+            if (bIsWalking || (Velocity.X == 0 && Velocity.Y == 0))
             {
-                if (bBoosterUpgrade)
-                {
-                    if (Energy > 0 && SwimTimer < SwimDuration * 0.25)
-                    {
-                        if (!bStunted && SwimTimer > 1)
-                        {
-                            SetTimer(1.5,false);
-                            AugmentationSystem.AutoAugs(false,false);
-                        }
-                    }
-                }
-                if (bIsCrouching)
-                {
-                    if (bCrouchRegen || (Velocity.X == 0 && Velocity.Y == 0))
-                    {
-                        mult2 = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
-                        if (mult2 == -1.0 && PerkNamesArray[27] == 1)
-                            swimTimer += deltaTime;
-                        else if (mult2 == -1.0)
-                            swimTimer += deltaTime*0.5;
-                        else
-                            swimTimer += deltaTime*(mult2*0.25);
-                        swimTimer += swimDuration*0.0025;
-                        if (swimTimer > swimDuration)
-                            swimTimer = swimDuration;
-                    }
-                }
-                else
-                {
-                    mult2 = AugmentationSystem.GetAugLevelValue(class'AugAqualung');
-                    if (mult2 == -1.0 && PerkNamesArray[27] == 1)
-                        swimTimer += deltaTime*4.4;
-                    else if (mult2 == -1.0)
-                        swimTimer += deltaTime*2.2;
-                    else
-                        swimTimer += deltaTime*(mult2*0.5);
-                    swimTimer += swimDuration*0.0025;
-                    if (swimTimer > swimDuration)
-                    {
-                        swimTimer = swimDuration;
-                        bStunted = False;
-                    }
-                }
+
+                //SARGE: Moved Endurance check to here.
+                bCrouchRegen=PerkManager.GetPerkWithClass(class'DeusEx.PerkEndurance').bPerkObtained || (iStaminaSystem == 2 && !bHardCoreMode);
+                if ((!IsCrouching() || bCrouchRegen) && !bOnLadder && (inHand == None || !inHand.IsA('POVCorpse')) && CarriedDecoration == None) //(bIsCrouching)     //RSD: Simplified this entire logic from original crouching -> bCrouchRegen check, added !bOnLadder //SARGE: Added corpse carrying //SARGE: And decoration carrying
+                    RegenStaminaTick(deltaTime);                                        //RSD: Generalized stamina regen function
             }
         }
 
@@ -2055,13 +2093,12 @@ state PlayerWalking
             if ( PlayerIsClient() || (Level.NetMode == NM_Standalone) )
                 ViewRotation.Roll = curLeanDist * 20;
 
-            if (!bIsCrouching && !bForceDuck)
+            if (!IsCrouching())
             {
                 SetBasedPawnSize(CollisionRadius, GetDefaultCollisionHeight() - Abs(curLeanDist) / 3.0);
                 //log("Size REset");
             }
         }
-
         if (bCanLean && (aExtra0 != 0))
         {
             // lean
@@ -2146,6 +2183,15 @@ state PlayerWalking
             }
         }
 
+        if(Physics == PHYS_Walking && IsCrouching() && lastWalkTimer == 0 && (abs(velocity.Y) > 0 || abs(velocity.X) > 0) && Velocity.Z == 0 && (bCrouchingSounds || bHardcoreMode))
+        {
+            lastWalkTimer = 0.4;
+            //lastWalkTimer = FMIN(0.1,0.5 - 0.01 * VSize(Velocity));
+            //lastWalkTimer = 50 * (1 - VSize(Velocity));
+            //DebugMessage("Vel: " $ VSize(Velocity));
+            //DebugMessage("timer: " $ lastWalkTimer);
+            PlayFootStep();
+        }
         PlayerPawnProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot);
     }
 
@@ -2229,60 +2275,9 @@ function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir Dodge
 {
 }
 
-//Duplicated and modified from GMDX9 DeusExPlayer::BumpWall
-//Rando: Player damagetype changed from 'Shot' to 'Fell', damage will only apply once per wall splat
-//Splat damage is taken when an appropriate amount of speed is applied into a wall directly, rather than if grazed
-function BumpWall( vector HitLocation, vector HitNormal )
+function DeusExPlayerProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
 {
-    local AugIcarus icar;
-    local actor     acti;
-    local float     surfForce;
-
-    Super(PlayerPawnExt).BumpWall(HitLocation,HitNormal);
-
-    //Dot product gets us the amount of our velocity that is perpendicular to the surface itself (the HitNormal)
-    //This is probably a better way to determine if you really slammed into it than using pure velocity
-    //1200 velocity is honestly pretty fast...
-    surfForce = -(HitNormal dot Velocity); //The dot product result is negative, just make it positive so it's comparable to VSize(Velocity)
-
-    //ClientMessage("Velocity is "$VSize(Velocity)$"  Dot product is "$surfForce);
-
-    if (surfForce > 400) //CyberP: Smash through glass at high velocities. //Rando changed from VSize(Velocity) to dot product
-    {
-        acti = Trace(HitLocation,HitNormal,Location + (velocity*0.1),Location); //CyberP: Trace in the direction we are moving
-        if (acti != None && acti.IsA('DeusExMover'))
-        {
-            if (DeusExMover(acti).DamageThreshold < 4 && DeusExMover(acti).bBreakable) //CyberP: Limit it to breakable glass only
-            {
-                DeusExMover(acti).TakeDamage(10,self,DeusExMover(acti).Location,vect(0,0,0),'shot');
-                TakeDamage(5,self,Location,vect(0,0,0),'Fell'); //CyberP: Hurts the player a bit too! //RANDO: Changed from 'Shot' to 'Fell'
-            }
-        }
-
-        //You slammed into a solid wall, dumbass
-        //RANDO: Make sure you only splat into the wall once
-        bWallSplat=True; //RANDO: Actually don't do wallsplats at all...
-        if (surfForce > 1200 && Velocity.Z > -600 && !bWallSplat) //Rando changed from VSize(Velocity) to dot product
-        {
-            //ClientMessage("Hit wall with surface force "$surfForce);
-            bWallSplat=True;
-            TakeDamage(6,self,vect(0,0,0),vect(0,0,0),'Fell'); //RANDO: Changed from 'Shot' to 'Fell'
-        }
-    } else {
-        //RANDO: Once your velocity has decreased, reset the ability to get splatted again
-        bWallSplat=False;
-    }
-
-    if (RocketTargetMaxDistance==40001.000000)
-    {
-        icar = AugIcarus(AugmentationSystem.FindAugmentation(class'AugIcarus'));
-        if (icar.incremental > 1.75 - AugmentationSystem.GetAugLevelValue(class'DeusEx.AugIcarus'))
-        {
-        icar.incremental = 2;
-        }
-    }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // #region Exec Functions
