@@ -106,8 +106,8 @@ static function PeepTimer(#var(PlayerPawn) peeper, out int watchTime, out Actor 
                     //peeper.ClientMessage("Hit fake mirror");
                     break;
                 } else {
-                    #ifdef vmd2
-                    //VMD2 uses a modified TraceTexture that continues through the level,
+                    #ifdef vmd2||gmdxae
+                    //VMD2 and GMDX:AE use a modified TraceTexture that continues through the level,
                     //I guess, so we actually want to explicitly break here now
                     break;
                     #endif
