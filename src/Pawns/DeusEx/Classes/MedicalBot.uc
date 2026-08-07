@@ -221,6 +221,9 @@ function MakeAugsOnly()
     Mesh=LodMesh'DeusExCharacters.MedicalBot'; //GMDXv9 defaults to the HDTP mesh, so the trick above doesn't work...
     healMaxTimes=0;
     #endif
+    #ifdef gmdxae
+    HDTPMesh = "";
+    #endif
 }
 
 function Tick(float delta)

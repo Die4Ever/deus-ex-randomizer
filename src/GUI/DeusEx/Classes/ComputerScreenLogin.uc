@@ -92,6 +92,8 @@ function ProcessLogin()
         if (winTerm.GetSkillLevel() < userSkillLevel)
             winTerm.SetSkillLevel(userSkillLevel);
 
+        GMDXAEPerformLoginAction();
+
         CloseScreen("LOGIN");
     }
     else
@@ -107,3 +109,9 @@ function ProcessLogin()
 }
 #endif
 
+function GMDXAEPerformLoginAction()
+{
+#ifdef gmdxae
+    Computers(CompOwner).PerformLoginAction(player);
+#endif
+}

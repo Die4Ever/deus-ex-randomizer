@@ -2343,6 +2343,7 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
         case "DeusExText.01_Book09":
         case "RevisionText.01_Book09_Biomod":
         case "RevisionText.01_Book09_Rev":
+        case "GMDXText.Datacube21":
             return "Nano-Augmentation Guidelines";
         case "RevisionText.01_Datacube01":
             return "Note to Paul"; //To Paul from Janice, telling him his account is now active (no details)
