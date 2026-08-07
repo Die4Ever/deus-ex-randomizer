@@ -72,6 +72,24 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
     return chargedPoints;
 }
 
+#ifdef gmdxae
+//Recharging wearable equipment
+function ChargeEquipment(inventory EquipToCharge, DeusExPlayer EquipOwner)
+{
+    local int prevCharges;
+
+    prevCharges = chargeMaxTimes;
+
+    Super.ChargeEquipment(EquipToCharge,EquipOwner);
+
+    //Charging equipment sometimes counts against the number of charges (based on difficulty)
+    if (prevCharges<chargeMaxTimes){
+        numUses++;
+    }
+
+}
+#endif
+
 simulated function int GetMaxUses()
 {
     if(#defined(vmd)) return 0;// disabled for VMD
