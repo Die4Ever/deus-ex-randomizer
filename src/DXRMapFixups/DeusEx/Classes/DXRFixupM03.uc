@@ -97,6 +97,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)JuanLebedev juan;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)Keypad kp;
+    local DeusExDecoration s;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -177,12 +178,12 @@ function PreFirstEntryMapFixes()
             st.Event = 'GroundLevel';
         }
 
-        foreach AllActors(class'Mover',m) {
-            // sewer door backtracking so we can make a switch for this
-            if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
-            {
-                m.Tag = 'Sewerdoor';
-            }
+        // Sewerdoor backtracking
+        s = AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'DXRSewerdoor');
+
+        m = Mover(findNearestToActor(class'Mover',s, 500.0));
+        if (m!=None){
+            m.Tag = 'DXRSewerdoor';
         }
 
         if(class'MenuChoice_BalanceMaps'.static.AllEnabled() &&
@@ -200,8 +201,6 @@ function PreFirstEntryMapFixes()
             unatco.bHateDistress = false;
         }
 
-        // Sewerdoor backtracking
-        AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
 
         //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
         AddActor(class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
