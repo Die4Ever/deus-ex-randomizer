@@ -673,13 +673,18 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
     }
     reCam = CCResidentEvilCam(ViewTarget);
 
+    if (bSpyDroneActive && bBigDroneView && !bSpyDroneSet && aDrone!=None && !InConversation()){
+        //Force into first person while droning around
+        Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+        return;
+    }
+
     if (reCam!=None){
         CameraRotation = reCam.Rotation;
         CameraLocation = reCam.Location;
         return;
     } else {
-        if (bSpyDroneActive && !bBigDroneView && aDrone!=None && bBehindView && !InConversation()){
-            //Bypass being forced into first person and stay in third person
+        if (bBehindView && !InConversation()){
             CalcBehindView(CameraLocation, CameraRotation, 150);
         } else {
             Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
