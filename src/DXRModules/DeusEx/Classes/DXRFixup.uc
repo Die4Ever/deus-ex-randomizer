@@ -1409,11 +1409,7 @@ function MakeRobotWeaponsNative()
 
 function SpawnDatacubes()
 {
-#ifdef injections
-    local #var(prefix)DataCube dc;
-#else
-    local DXRInformationDevices dc;
-#endif
+    local #var(injectsprefix)InformationDevices dc;
 
     local vector loc;
     local rotator rot;
