@@ -794,7 +794,7 @@ function bool CanChangeClothes()
     local #var(PlayerPawn) p;
     p = #var(PlayerPawn)(player);
     if (p==None) return false;
-    if (p.outfitManager !=None && p.IsHDTP()==False) return false;
+    if (p.UsingAugmentique(p)) return false;
     return true;
 
 #elseif vmd

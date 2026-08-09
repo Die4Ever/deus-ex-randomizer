@@ -87,8 +87,7 @@ simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
     if(p==None){return None;}
 
 #ifdef gmdxae
-    //Check to see if the player has an Augmentique outfit manager and can use it
-    if(p.outfitManager!=None && p.IsHDTP()==False) return None;
+    if(p.UsingAugmentique(p)) return None;
 #endif
 
     f = DXRFashionManager(p.FindInventoryType(class'DXRFashionManager'));
@@ -907,7 +906,7 @@ simulated function GetDressed()
     //Check to see if the player has an Augmentique outfit manager and can use it
     //Don't get dressed in that case
     foreach AllActors(class'#var(PlayerPawn)', player) break;
-    if(player.outfitManager!=None && player.IsHDTP()==False) return;
+    if(player.UsingAugmentique(player)) return;
 #endif
 
     // JC Denton Carcass

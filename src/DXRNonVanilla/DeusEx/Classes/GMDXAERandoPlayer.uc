@@ -2290,7 +2290,12 @@ function RefreshSkills()
         randoSkills.RandoSkill(aSkill);
         aSkill=aSkill.Next;
     }
+}
 
+static function bool UsingAugmentique(#var(PlayerPawn) p)
+{
+    if (p.OutfitManager==None) return false; //Definitely not
+    return p.OutfitManager.Installed();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
