@@ -788,6 +788,22 @@ function string PianoStrInfo(Actor frobTarget, out int numLines)
     return strInfo;
 }
 
+function bool CanChangeClothes()
+{
+#ifdef gmdxae
+    local #var(PlayerPawn) p;
+    p = #var(PlayerPawn)(player);
+    if (p==None) return false;
+    if (p.outfitManager !=None && p.IsHDTP()==False) return false;
+    return true;
+
+#elseif vmd
+    return false;
+#else
+    return true;
+#endif
+}
+
 function string OtherStrInfo(Actor frobTarget, out int numLines)
 {
     local string strInfo;
@@ -818,8 +834,13 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
     }
     else if (frobTarget.IsA(#switch(injections:'WHPiano','DXRPiano')))
         strInfo = PianoStrInfo(frobTarget,numLines);
-    else if (frobTarget.IsA('#var(injectsprefix)ClothesRack'))
-        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Right Click to change clothing " $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+    else if (frobTarget.IsA('#var(injectsprefix)ClothesRack')) {
+        strInfo = player.GetDisplayName(frobTarget);
+        if (CanChangeClothes()){
+            strInfo = strInfo $ CR() $ "Right Click to change clothing ";
+        }
+        strInfo = strInfo $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+    }
     else if (frobTarget.IsA('DeusExDecoration'))
         strInfo = player.GetDisplayName(frobTarget) $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExProjectile'))

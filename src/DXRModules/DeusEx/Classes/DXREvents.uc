@@ -3325,7 +3325,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     local float loge_duration, medbots, repairbots, merchants;
     local DXRLoadouts loadout;
     local int start_map;
-    local bool RevisionMaps;
+    local bool RevisionMaps, GMDXMaps;
 
     //Precalculate some useful pieces of information
 
@@ -3346,6 +3346,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     start_map = dxr.flags.GetStartingMap(); //if it's based PURELY on start_map, it should be in DXRStartMap::BingoGoalImpossible instead
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -3566,8 +3567,9 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             return loadout != None && loadout.IsLoadoutNoCorpses();
 
 /////////////////////////////////////////////////////////////////////
-    //Ban goals that aren't possible on Revision maps
-        case "LibertyBenches": //Too lazy to mark the 22 extra benches on the Revision maps
+    //Ban goals that aren't possible on Revision or GMDX maps
+        case "LibertyBenches": //Too lazy to mark the 22 extra benches on the Revision maps.  GMDX has extra benches too
+            return RevisionMaps || GMDXMaps;
         case "SignsOfTheEnd_singlepeepedtex": //Some of the signs in Sector 4 are different textures and non-solid now
             return RevisionMaps;
 
@@ -3586,6 +3588,20 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                 }
             }
             break;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals where the mod has different behaviour
+    //Charged pickups can be equipped and unequipped
+        case "BallisticArmor_Activated":
+        case "AdaptiveArmor_Activated":
+        case "TechGoggles_Activated":
+        case "HazmatSuit_Activated":
+            return #defined(gmdx);
+
+    //GMDX:AE has it's own (optional) clothing system
+        case "ChangeClothes":
+            return #defined(gmdxae);
+
     }
 
     //More broad loadout checks
