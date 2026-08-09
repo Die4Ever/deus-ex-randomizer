@@ -1441,19 +1441,16 @@ function SpawnDatacubes()
         rot = add_datacubes[i].rotation;
         rot = rotm(rot.Pitch, rot.Yaw, rot.Roll, 0.0);
 
-#ifdef injections
-        dc = Spawn(class'#var(prefix)DataCube',,, loc, rot);
-#else
-        dc = Spawn(class'DXRInformationDevices',,, loc, rot);
-#endif
+        if (add_datacubes[i].text!=""){
+            dc = SpawnDatacubePlaintext(loc,rot,add_datacubes[i].text, add_datacubes[i].plaintextTag,false,false);
+        } else if (add_datacubes[i].imageClass!=None){
+            dc = SpawnDatacubeImage(loc,rot,add_datacubes[i].imageClass,false,false);
+        } else {
+            warning("add_datacubes["$i$"] has neither text nor imageClass to spawn at "$loc);
+        }
 
         if( dc != None ){
             dc.SetCollision(true,false,false);
-            if(dxr.flags.settings.infodevices > 0)
-                GlowUp(dc);
-            dc.plaintext = add_datacubes[i].text;
-            dc.imageClass = add_datacubes[i].imageClass;
-            dc.plaintextTag = add_datacubes[i].plaintextTag;
             l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", plaintextTag: "$dc.plaintextTag$", location: "$loc);
         }
         else warning("failed to spawn datacube at "$loc$", text: \""$add_datacubes[i].text$"\", image: "$dc.imageClass);

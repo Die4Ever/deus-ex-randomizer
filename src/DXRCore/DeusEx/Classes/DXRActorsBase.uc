@@ -1546,7 +1546,7 @@ function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector l
     return box;
 }
 
-function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move, optional bool dont_add_note)
 {
 #ifdef injections
     local #var(prefix)DataCube dc;
@@ -1562,6 +1562,8 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
         if(dxr.flags.settings.infodevices > 0)
             GlowUp(dc);
 
+        dc.bAddToVault = !dont_add_note; //Datacubes normally add notes by default, but the InformationDevices class has it set to False
+
         if (#defined(hx)){
             //Add all datacubes to the vault in HX
             dc.bAddToVault = True;
@@ -1574,11 +1576,11 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
 }
 
 
-function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, string plaintextTag, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, string plaintextTag, optional bool dont_move, optional bool dont_add_note)
 {
     local #var(injectsprefix)InformationDevices dc;
 
-    dc = SpawnDatacube(loc,rot,dont_move);
+    dc = SpawnDatacube(loc,rot,dont_move,dont_add_note);
 
     if(dc != None) {
         dc.plaintext = text;
@@ -1587,11 +1589,11 @@ function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc
     return dc;
 }
 
-function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator rot, name texttag, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator rot, name texttag, optional bool dont_move, optional bool dont_add_note)
 {
     local #var(injectsprefix)InformationDevices dc;
 
-    dc = SpawnDatacube(loc,rot,dont_move);
+    dc = SpawnDatacube(loc,rot,dont_move,dont_add_note);
 
     if(dc != None) {
         SetInfoDeviceTextTag(dc,texttag);
@@ -1599,11 +1601,11 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, 
     return dc;
 }
 
-function #var(injectsprefix)InformationDevices SpawnDatacubeImage(vector loc, rotator rot, class<DataVaultImage> imageClass, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubeImage(vector loc, rotator rot, class<DataVaultImage> imageClass, optional bool dont_move, optional bool dont_add_note)
 {
     local #var(injectsprefix)InformationDevices dc;
 
-    dc = SpawnDatacube(loc,rot,dont_move);
+    dc = SpawnDatacube(loc,rot,dont_move,dont_add_note);
 
     if(dc != None) {
         dc.imageClass = imageClass;

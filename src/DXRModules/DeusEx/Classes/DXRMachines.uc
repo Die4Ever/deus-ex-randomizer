@@ -588,12 +588,12 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, i
     id = SpawnDatacubeTextTag(GetRandomPositionFine(a.Location,min_datacube_distance, max_datacube_distance),
                               GetRandomYaw(),
                               datacubeTag,
+                              True,
                               True);
     if (id==None) return a;
     id.Tag = 'botdatacube';
     id.SetCollision(true,false,false);
     id.TextPackage = "#var(package)";
-    id.bAddToVault = false;
     id.ItemName = datacubename;
     GlowUp(id, datacubehue);
 
