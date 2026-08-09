@@ -1818,7 +1818,7 @@ function MakeElevatorOpenDoorButtons(name eleEvents[5])
             if (injbutton.Event==eleEvents[i] && injbutton.ButtonType==BT_Blank){
                 //Both the button inside and outside
                 injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
+                injbutton.UpdateCurrentSkin();
             }
         }
     }

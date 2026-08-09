@@ -27,6 +27,11 @@ function SetSkin(EButtonType type, bool lit)
     }
 }
 
+function UpdateCurrentSkin()
+{
+    SetSkin(ButtonType, bLit);
+}
+
 defaultproperties
 {
     RandoButtonType=RBT_Vanilla

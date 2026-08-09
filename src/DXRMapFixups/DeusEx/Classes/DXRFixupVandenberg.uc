@@ -948,7 +948,7 @@ function FixCmdElevator()
     doorButton.RandoButtonType=RBT_OpenDoors;
     doorButton.ButtonType=BT_Blank;
     doorButton.Event='all_doors_button';
-    doorButton.BeginPlay();
+    doorButton.UpdateCurrentSkin();
 
     //Doors are 'door1', 'door2', and 'door3'
     d = Spawn(class'Dispatcher',, 'all_doors_button' );
