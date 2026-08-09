@@ -83,8 +83,9 @@ function ChargeEquipment(inventory EquipToCharge, DeusExPlayer EquipOwner)
     Super.ChargeEquipment(EquipToCharge,EquipOwner);
 
     //Charging equipment sometimes counts against the number of charges (based on difficulty)
-    if (prevCharges<chargeMaxTimes){
+    if (prevCharges>chargeMaxTimes){
         numUses++;
+        updateName();
     }
 
 }
@@ -140,6 +141,12 @@ simulated function bool HasLimitedUses()
 simulated function bool ChargesRemaining()
 {
     return GetRemainingUses()!=0;
+}
+
+//GMDX:AE Function
+function bool HasChargesRemaining()
+{
+    return ChargesRemaining();
 }
 
 //#region CanCharge

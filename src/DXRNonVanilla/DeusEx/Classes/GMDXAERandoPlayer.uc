@@ -1204,9 +1204,8 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (ChargedPickup(item) != None) return false;
     if (Flare(item) != None && item.Lifespan > 0) return false; //Don't allow lighting again while already lit
 
-    //GMDX tracks fullness (In hardcore), so check in here
-    if (IsFood(item)){
-        if (fullUp >= 100) return false;
+    if (ConsumableItem(item)!=None){
+        if (ConsumableItem(item).RestrictedUse(self)) return false;
     }
 
     return true;
