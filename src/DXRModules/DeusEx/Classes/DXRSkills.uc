@@ -140,6 +140,21 @@ simulated function RandoSkillLevelValues(Skill a)
     local string add_desc, s;
     local float skill_value_wet_dry;
 
+    #ifdef gmdxae
+    local int i;
+    local float origLevelValues[4];
+
+    //GMDX:AE has alternate values that can be toggled based on settings, and can be changed at any time,
+    //so we need to be able to handle that on the fly.  We will assume that the appropriate values for the
+    //setting have been populated into LevelValues before getting here.
+
+    //Store the original default values, then copy the current LevelValues into the defaults for randomization
+    for(i=0;i<ArrayCount(a.LevelValues);i++){
+        origLevelValues[i]=a.Default.LevelValues[i];
+        a.Default.LevelValues[i]=a.LevelValues[i];
+    }
+    #endif
+
     if( #var(prefix)SkillWeaponHeavy(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
         add_desc = "Over 100% will allow you to move more quickly while carrying a heavy weapon, up to full speed at 160%.";
     }
@@ -163,6 +178,13 @@ simulated function RandoSkillLevelValues(Skill a)
 
     skill_value_wet_dry = float(dxr.flags.settings.skill_value_rando) / 100.0;
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
+
+    #ifdef gmdxae
+    //Restore the default skill values
+    for(i=0;i<ArrayCount(a.LevelValues);i++){
+        a.Default.LevelValues[i]=origLevelValues[i];
+    }
+    #endif
 }
 
 static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)

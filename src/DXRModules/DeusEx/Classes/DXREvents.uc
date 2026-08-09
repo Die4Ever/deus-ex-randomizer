@@ -3104,6 +3104,7 @@ function bool PeepableTexture(name texName)
         //Advertisements
         case 'bigtops':         //Big Top Cigarettes
         case 'BigTopsCig_sign': //Big Top Cigarettes
+        case 'bigtopsKZ':       //Big Top Cigarettes (GMDX)
         case 'Super45B_BB':     //"Drink More Think Less"
         case 'Super45a_sign':   //"Drink More Think Less"
         case 'Super45b_sign':   //"Drink More Think Less"
@@ -3155,6 +3156,7 @@ function float PeepTexDistance(name texName){
         //Advertisements
         case 'bigtops':         //Big Top Cigarettes
         case 'BigTopsCig_sign': //Big Top Cigarettes
+        case 'bigtopsKZ':       //Big Top Cigarettes (GMDX)
         case 'Super45B_BB':     //"Drink More Think Less"
         case 'Super45a_sign':   //"Drink More Think Less"
         case 'Super45b_sign':   //"Drink More Think Less"
@@ -4036,6 +4038,7 @@ function string RemapBingoEvent(string eventname)
             return eventname;
         case "bigtops_singlepeepedtex":         //Big Top Cigarettes
         case "BigTopsCig_sign_singlepeepedtex": //Big Top Cigarettes
+        case "bigtopsKZ_singlepeepedtex":       //Big Top Cigarettes (GMDX)
         case "Super45B_BB_singlepeepedtex":     //"Drink More Think Less"
         case "Super45a_sign_singlepeepedtex":   //"Drink More Think Less"
         case "Super45b_sign_singlepeepedtex":   //"Drink More Think Less"

@@ -42,7 +42,10 @@ function bool Facelift(bool bOn)
 
 function SetupSkin()
 {
-    if (augsOnly) return;
+    if (augsOnly) {
+        MakeAugsOnly(); //Reapply
+        return;
+    }
 
     Super.SetupSkin();
 }

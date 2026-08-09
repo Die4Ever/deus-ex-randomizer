@@ -2287,13 +2287,26 @@ function DeusExPlayerProcessMove(float DeltaTime, vector NewAccel, eDodgeDir Dod
 {
 }
 
-function ClearAllBeltPlaceholders()
+function RefreshSkills()
 {
-    local int i;
+    local DXRSkills randoSkills;
+    local Skill aSkill;
 
-    for (i = 0; i < ArrayCount(beltInfos);i++){
-        ClearPlaceholder(i);
+    if (SkillSystem==None) return;
+
+    Super.RefreshSkills(); //This will return randomized skills to their default/alternative values
+
+    randoSkills = DXRSkills(class'DXRSkills'.static.Find());
+
+    if (randoSkills==None) return; //Can't do anything if we can't find the module
+
+    //Now re-apply randomization to all the skills, since RefreshSkills will have reset all of them
+    aSkill = SkillSystem.FirstSkill;
+    while (aSkill!=None){
+        randoSkills.RandoSkill(aSkill);
+        aSkill=aSkill.Next;
     }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
