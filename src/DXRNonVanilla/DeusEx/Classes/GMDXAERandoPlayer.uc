@@ -1174,21 +1174,6 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly, opti
     return bCanPickup;
 }
 
-function bool IsFood(DeusExPickup item)
-{
-    switch(item.class){
-        case class'SodaCan':
-        case class'SoyFood':
-        case class'Candybar':
-        case class'WineBottle':
-        case class'Liquor40oz':
-        case class'LiquorBottle':
-        case class'VialCrack':
-            return true;
-    }
-    return false;
-}
-
 function bool CanInstantLeftClick(DeusExPickup item)
 {
     if (inHand!=None) return false;
