@@ -418,7 +418,7 @@ function TimerMapFixes()
             }
         }
 
-        if (#defined(gmdxnotae) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+        if (#defined(gmdx) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             GMDXUnatcoTroopTimerChecks();
         }
 
@@ -701,7 +701,7 @@ function PreFirstEntryMapFixes()
                 pawn.bInWorld=false;
                 pawn.InitializePawn();
 
-                if (#defined(gmdxnotae)){
+                if (#defined(gmdx)){
                     GMDXInitUnatcoTroopLocations();
                 }
             }
@@ -1090,7 +1090,7 @@ function PostFirstEntryMapFixes()
                 //Make sure the troopers are running to the reinforcement points
                 foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
                     SetUNATCOTargetOrders(sp);
-                    if (#defined(gmdxnotae)){
+                    if (#defined(gmdx)){
                         SendGMDXUNATCOTroopsOutOfWorld(sp);
                     }
                 }
