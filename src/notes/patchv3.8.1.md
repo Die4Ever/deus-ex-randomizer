@@ -97,6 +97,8 @@
   - Paul will now actually stay dead if he dies in the raid, but you finish it and leave the hotel.
   - If medicine skill is upgraded so that Head and Torso health maximums are above the standard maximum, your health will no longer be capped to the standard maximum when you change maps.  For example, if your standard health limit is 100 and your medicine skill increases Head and Torso to 110 maximum, you won't leave a map with 110 head health and enter the next with 100.
   - Opening the door just before the falling platforms in the Airfield Helibase (Mission 3) will no longer open the door to the side path at the same time.
+  - Fixed an issue where sometimes you wouldn't be able to pick up stuck projectiles like darts or throwing knives if they were in narrow locations.
+  - "Super MIBs" will have their blue glow effect properly attached to them after being shuffled.
 
 </details>
 

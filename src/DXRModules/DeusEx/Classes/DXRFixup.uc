@@ -256,6 +256,8 @@ function PostFirstEntry()
 
     FixStandingDancingBlockages();
 
+    FixAttachedParticleGenerators();
+
     NudgeItemsUnderOthers();
 }
 
@@ -1227,6 +1229,24 @@ function FixStandingDancingBlockages()
 
         //Make them always try to return to their starting position
         sp.SetHomeBase(sp.Location,sp.Rotation,sp.CollisionRadius);
+    }
+}
+
+function FixAttachedParticleGenerators()
+{
+    local #var(prefix)ParticleGenerator pg;
+
+    //When we shuffle pawns, it will disconnect any "base"dness, but if they were attached with attachTag,
+    //the Owner should still be correct.  Keep in mind, the tag of the intended attachment may have changed,
+    //so trust the Owner instead.
+
+    foreach AllActors(class'#var(prefix)ParticleGenerator',pg){
+        if (pg.attachTag=='') continue; //We only care about attached particle generators
+        if (pg.Owner==None) continue; //If it's supposed to be attached to something but has no owner, we can't really do anything
+        if (pg.Base!=None) continue; //It's properly based already, no fix necessary.
+
+        pg.SetLocation(pg.Owner.Location);  //Move it to the owner
+        pg.SetBase(pg.Owner); //And re-attach it to the owner
     }
 }
 

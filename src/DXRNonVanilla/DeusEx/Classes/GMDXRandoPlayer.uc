@@ -895,6 +895,46 @@ function HighlightCenterObjectLaser()
     }
 }
 
+function DoFrob(Actor Frobber, Inventory frobWith)
+{
+    local bool changed;
+    local DeusExProjectile dxp;
+    local class<DeusExWeapon>	spawnWeaponClass;
+    local class<Ammo>			spawnAmmoClass;
+
+    //Holy hack, Batman!
+    //GMDX gives things world collision, but these things need to be able to spawn wherever a projectile might be getting grabbed.
+    //Just temporarily remove world collision from the defaults of the thing that they actually spawn when you grab them
+    dxp = DeusExProjectile(FrobTarget);
+    if (dxp!=None){
+        spawnWeaponClass = dxp.spawnWeaponClass;
+        spawnAmmoClass = dxp.spawnAmmoClass;
+
+        if (spawnWeaponClass!=None){
+            if (spawnWeaponClass.Default.bCollideWorld==True){
+                changed=True;
+                spawnWeaponClass.Default.bCollideWorld=False;
+            }
+        }else if (spawnAmmoClass!=None){
+            if (spawnAmmoClass.Default.bCollideWorld==True){
+                changed=True;
+                spawnAmmoClass.Default.bCollideWorld=False;
+            }
+        }
+    }
+
+    Super.DoFrob(Frobber,frobWith);
+
+    if (changed){
+        if (spawnWeaponClass!=None){
+            spawnWeaponClass.Default.bCollideWorld=True;
+        }else if (spawnAmmoClass!=None){
+            spawnAmmoClass.Default.bCollideWorld=True;
+        }
+    }
+}
+
+
 exec function ShowMainMenu()
 {
     local DeusExLevelInfo info;

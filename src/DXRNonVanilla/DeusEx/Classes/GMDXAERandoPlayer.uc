@@ -2298,6 +2298,19 @@ static function bool UsingAugmentique(#var(PlayerPawn) p)
     return p.OutfitManager.Installed();
 }
 
+exec function QuickSave()
+{
+    local bool couldSave;
+
+    couldSave=CanSave(false);
+
+    Super.QuickSave();
+
+    if (couldSave){
+        ClientMessage("Quick Saved");
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // #region Exec Functions
 ///////////////////////////////////////////////////////////////////////////////
