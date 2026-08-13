@@ -522,7 +522,7 @@ function CheckConfig()
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
-        more_difficulty_settings[i].menus_pause = 1;
+        more_difficulty_settings[i].menus_pause = #switch(gmdx:0,1); //GMDX has real time menus by default, otherwise default to paused
         if(#defined(hx)) {
             difficulty_settings[i].startinglocations = 0;
             difficulty_settings[i].merchants = 0;
