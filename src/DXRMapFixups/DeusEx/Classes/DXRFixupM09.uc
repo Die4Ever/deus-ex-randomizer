@@ -53,6 +53,7 @@ function PreFirstEntryMapFixes()
     local AIEventTrigger ait;
     local Robot jockheli;
     local DXRHoverHint hoverHint;
+    local bool block;
 
     local #var(PlayerPawn) p;
     local bool VanillaMaps;
@@ -400,11 +401,15 @@ function PreFirstEntryMapFixes()
     //#region Dockyards Ventilation
     case "09_NYC_SHIPFAN":
         if (class'DXRMapVariants'.static.IsGMDXMaps(player())){
-            //Block things from spawning/randomizing in the whole unused warehouse area added on the side
-            MassSetSecretGoalBox(class'NavigationPoint', vectm(-2883,335,200), vectm(-7172,-1500,-2630), true);
-            MassSetSecretGoalBox(class'ScriptedPawn',    vectm(-2883,335,200), vectm(-7172,-1500,-2630), true);
-            MassSetSecretGoalBox(class'Inventory',       vectm(-2883,335,200), vectm(-7172,-1500,-2630), true);
-            MassSetSecretGoalBox(class'Decoration',      vectm(-2883,335,200), vectm(-7172,-1500,-2630), true);
+            #ifdef gmdxae
+            block = player().bShippingAndReceiving==False;
+            #else
+            block = true;
+            #endif
+            if (block){
+                //Block things from spawning/randomizing in the whole unused warehouse area added on the side
+                MassSetSecretGoalBoxAll(vectm(-2883,335,200), vectm(-7172,-1500,-2630), true);
+            }
         }
         if (VanillaMaps){
             foreach AllActors(class'ComputerSecurity',cs){

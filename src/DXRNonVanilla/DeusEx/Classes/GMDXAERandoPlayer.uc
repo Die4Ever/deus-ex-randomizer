@@ -3,7 +3,6 @@ class GMDXAERandoPlayer extends JCDentonMale;
 
 var laserEmitter aimLaser;
 var bool bDoomMode;
-var bool bOnLadder;
 var Rotator ShakeRotator;
 var bool bAutorun;
 var float autorunTime;
