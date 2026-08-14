@@ -317,9 +317,10 @@ function RandomHotelDoorSounds()
 
 function ReplaceHotelAmbientSounds()
 {
-    local bool RevisionMaps;
+    local bool RevisionMaps,GMDXMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    GMDXMaps     = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     if (RevisionMaps){
         //Starting from the elevator, working around the hall
@@ -342,7 +343,9 @@ function ReplaceHotelAmbientSounds()
         class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(675,-2065,90),100); //Corner
         class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(790,-1945,90),100); //Corner
         class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(790,-1550,90),100);
-        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(670,-810,90),100);
+        if(!GMDXMaps){ //GMDX has a ramp up from the ground floor here, instead of a hotel door
+            class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(670,-810,90),100);
+        }
     }
 
 }
