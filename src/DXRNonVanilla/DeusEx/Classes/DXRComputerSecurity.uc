@@ -104,6 +104,38 @@ function bool HasKnownAccounts()
     return False;
 }
 
+#ifdef gmdxae
+function AdditionalActivation(DeusExPlayer ActivatingPlayer)
+{
+    local Texture tex;
+    local bool changed;
+
+    if (Skin!=default.Skin){
+        tex = Skin;
+        changed = true;
+    }
+    Super.AdditionalActivation(ActivatingPlayer);
+    if (changed){
+        Skin = tex;
+    }
+}
+
+function AdditionalDeactivation(DeusExPlayer DeactivatingPlayer)
+{
+    local Texture tex;
+    local bool changed;
+
+    if (Skin!=Texture'DeusExDeco.Skins.ComputerSecurityTex1'){ //Maybe we can make this not hardcoded?
+        tex = Skin;
+        changed = true;
+    }
+    Super.AdditionalDeactivation(DeactivatingPlayer);
+    if (changed){
+        Skin = tex;
+    }
+}
+#endif
+
 #ifdef hx
 //To simplify making this compile cleanly...
 function int NumUsers()
