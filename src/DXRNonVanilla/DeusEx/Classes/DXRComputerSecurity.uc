@@ -105,12 +105,17 @@ function bool HasKnownAccounts()
 }
 
 #ifdef gmdxae
+function bool IsDefaultSkin()
+{
+    return Skin==Default.Skin || Skin==Default.ActivatedSkin || String(Skin)==HDTPSkin;
+}
+
 function AdditionalActivation(DeusExPlayer ActivatingPlayer)
 {
     local Texture tex;
     local bool changed;
 
-    if (Skin!=default.Skin){
+    if (!IsDefaultSkin()){
         tex = Skin;
         changed = true;
     }
@@ -125,7 +130,7 @@ function AdditionalDeactivation(DeusExPlayer DeactivatingPlayer)
     local Texture tex;
     local bool changed;
 
-    if (Skin!=Texture'DeusExDeco.Skins.ComputerSecurityTex1'){ //Maybe we can make this not hardcoded?
+    if (!IsDefaultSkin()){
         tex = Skin;
         changed = true;
     }
