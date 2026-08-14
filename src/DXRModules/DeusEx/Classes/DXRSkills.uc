@@ -414,17 +414,17 @@ function ExtendedTests()
         TestWeightedLevelValues(f, f+0.01);
     }
 
-    testint(FrobDisplayWindow.static.GetNumTools(0.190000, 0.188827), 2, "GetNumTools for lockpicks/multitools test 1");
-    testint(FrobDisplayWindow.static.GetNumTools(0.070000, 0.010000), 7, "GetNumTools for lockpicks/multitools test 2");
-    testint(FrobDisplayWindow.static.GetNumTools(0.060000, 0.010000), 6, "GetNumTools for lockpicks/multitools test 3");
-    testint(FrobDisplayWindow.static.GetNumTools(0.050000, 0.010000), 5, "GetNumTools for lockpicks/multitools test 4");
-    testint(FrobDisplayWindow.static.GetNumTools(0.040000, 0.010000), 4, "GetNumTools for lockpicks/multitools test 5");
-    testint(FrobDisplayWindow.static.GetNumTools(0.030000, 0.010000), 3, "GetNumTools for lockpicks/multitools test 6");
-    testint(FrobDisplayWindow.static.GetNumTools(0.020000, 0.010000), 2, "GetNumTools for lockpicks/multitools test 7");
-    testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010000), 1, "GetNumTools for lockpicks/multitools test 8");
-    testint(FrobDisplayWindow.static.GetNumTools(0.0100001, 0.010000), 1, "GetNumTools for lockpicks/multitools test 9");
-    testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010001), 1, "GetNumTools for lockpicks/multitools test 10");
-    testint(FrobDisplayWindow.static.GetNumTools(0.010000, 0.010000), 1, "GetNumTools for lockpicks/multitools test 11");
+    testint(FrobDisplayWindow.static.GetNumTools(0.190000, 0.188827, None), 2, "GetNumTools for lockpicks/multitools test 1");
+    testint(FrobDisplayWindow.static.GetNumTools(0.070000, 0.010000, None), 7, "GetNumTools for lockpicks/multitools test 2");
+    testint(FrobDisplayWindow.static.GetNumTools(0.060000, 0.010000, None), 6, "GetNumTools for lockpicks/multitools test 3");
+    testint(FrobDisplayWindow.static.GetNumTools(0.050000, 0.010000, None), 5, "GetNumTools for lockpicks/multitools test 4");
+    testint(FrobDisplayWindow.static.GetNumTools(0.040000, 0.010000, None), 4, "GetNumTools for lockpicks/multitools test 5");
+    testint(FrobDisplayWindow.static.GetNumTools(0.030000, 0.010000, None), 3, "GetNumTools for lockpicks/multitools test 6");
+    testint(FrobDisplayWindow.static.GetNumTools(0.020000, 0.010000, None), 2, "GetNumTools for lockpicks/multitools test 7");
+    testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010000, None), 1, "GetNumTools for lockpicks/multitools test 8");
+    testint(FrobDisplayWindow.static.GetNumTools(0.0100001, 0.010000, None), 1, "GetNumTools for lockpicks/multitools test 9");
+    testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010001, None), 1, "GetNumTools for lockpicks/multitools test 10");
+    testint(FrobDisplayWindow.static.GetNumTools(0.010000, 0.010000, None), 1, "GetNumTools for lockpicks/multitools test 11");
 
     testint(FrobDisplayWindow.static.GetNumHits(0.010000, 0.010000), 1, "GetNumHits for doors test 1");
 

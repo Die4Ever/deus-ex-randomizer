@@ -99,6 +99,7 @@
   - Opening the door just before the falling platforms in the Airfield Helibase (Mission 3) will no longer open the door to the side path at the same time.
   - Fixed an issue where sometimes you wouldn't be able to pick up stuck projectiles like darts or throwing knives if they were in narrow locations.
   - "Super MIBs" will have their blue glow effect properly attached to them after being shuffled.
+  - "Cracked" and "Locksport" perks will cause the highlight info for hackable electronics and locked doors to show the appropriate number of multitools or lockpicks needed.
 
 </details>
 

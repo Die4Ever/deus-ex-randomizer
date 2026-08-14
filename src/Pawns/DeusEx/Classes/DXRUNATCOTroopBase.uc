@@ -7,9 +7,11 @@ function bool Facelift(bool bOn)
 
 function VMDRandomizeAppearance(){} //Dummy function to prevent VMD from randomizing the appearance of these guys
 
+#ifdef gmdxae
 //GMDX:AE functions to do HDTP and Augmentique skin randomization
 exec function UpdateHDTPsettings(){}
 function SetupSkin(){}
+#endif
 
 function Explode(optional vector HitLocation) // argument for compatibility with Revision and VMD
 {

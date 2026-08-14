@@ -1573,7 +1573,7 @@ function ExtendedTests()
     SetDifficulty(0);
     testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
     testint(moresettings.spoilers, 1, "SetDifficulty check spoilers");
-    testint(moresettings.menus_pause, 1, "SetDifficulty check menus_pause");
+    testint(moresettings.menus_pause, #switch(gmdx:0,1), "SetDifficulty check menus_pause");
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
     testint(moresettings.splits_overlay, 0, "SetDifficulty check splits_overlay");
