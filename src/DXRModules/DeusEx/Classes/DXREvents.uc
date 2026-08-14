@@ -3066,6 +3066,14 @@ simulated function int tweakBingoMissions(string event, int missions)
                 newMissions = newMissions | #bit(12);
             }
             break;
+        case "TonThirdFloor":
+            //Vanilla is #bit(2,4,8)
+            //Revision matches Vanilla
+            if (GMDXMaps){
+                //GMDX closes the elevator shaft door for missions 4 and 8, for whatever reason
+                newMissions = #bit(2);
+            }
+            break;
 
     }
 
