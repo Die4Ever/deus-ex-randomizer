@@ -2043,15 +2043,16 @@ static function RandoHackable(DXRando dxr, #var(prefix)HackableDevices h)
 function RandoInfoDevs(int percent)
 {
     local #var(prefix)InformationDevices id;
-    local bool totallyEmpty;
+    local bool totallyEmpty, doGlowUp;
 #ifndef injections
     local #var(injectsprefix)InformationDevices dxrid;
 #endif
 
     foreach AllActors(class'#var(prefix)InformationDevices', id)
     {
+        doGlowUp=false;
         if(!id.bHidden && percent>0 && id.Mesh == class'#var(prefix)DataCube'.default.Mesh)
-            GlowUp(id);
+            doGlowUp=true;
         if( id.bIsSecretGoal || !chance_single(percent) ) {
             if( ! id.bAddToVault ) { // Zero Rando books should add to vault too
                 InfoDevsHasPass(id);
@@ -2071,7 +2072,11 @@ function RandoInfoDevs(int percent)
                 if (dxrid.plaintext!="") totallyEmpty=False;
             }
 #endif
-            if (totallyEmpty) continue;
+            if (totallyEmpty) continue; //Intentionally does not glow up blank things
+
+            if (doGlowUp){
+                GlowUp(id);
+            }
         }
         _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
     }
