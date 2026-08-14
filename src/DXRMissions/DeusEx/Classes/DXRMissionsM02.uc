@@ -257,10 +257,11 @@ function PreFirstEntryMapFixes()
 
     if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
 
-        if (#defined(gmdx)){
+        if (#defined(gmdx) && dxr.flags.settings.startinglocations>0){
             //There's normally a trigger right where you spawn that makes Anna walk to you.
             //That trigger hits a dispatcher that hits the orderstrigger, but we'll get rid
-            //of the OrdersTrigger first.
+            //of the OrdersTrigger first.  This is only necessary if randomized starting
+            //locations are enabled.
             foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'oty'){
                 ot.Event=''; //Clear it first...
                 ot.Tag='';

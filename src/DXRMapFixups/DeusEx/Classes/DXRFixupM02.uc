@@ -103,6 +103,7 @@ function PreFirstEntryMapFixes()
         }
 
         PreventShufflingAmbrosia();
+        FixGMDXAnnaWalking();
 
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)BarrelAmbrosia', ambrosia) {
@@ -746,3 +747,46 @@ function AnyEntryMapFixes()
     }
 }
 //#endregion
+
+
+// In the GMDX Maps, Battery Park has a trigger right where you spawn on the docks.
+// This trigger hits a dispatcher (Tag=Dispx) which hits an OrdersTrigger (Tag=oty) that sets
+// Anna to WalkTo the player after 2 seconds.
+//
+// With Goal Randomization enabled, we disable the OrdersTrigger completely so that she doesn'
+// walk towards you at your random starting location (You hit the trigger on map entry before
+// getting moved to your random start location).  That's handled in DXRMissionsM02.
+//
+// If you aren't using goal rando, it is still possible to start the map, talk to Anna, and skip
+// through her whole conversation before those 2 seconds are up.  At the end of her conversation,
+// she is ordered to Run to the entrance of the castle, but if that 2 second timer expires after,
+// that order is cancelled and she is stuck continuously walking towards you.  In this case, we
+// will insert a FlagTrigger between the Dispatcher and the OrdersTrigger to prevent the order
+// from getting set if you already finished the conversation with her.
+function FixGMDXAnnaWalking()
+{
+    local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)FlagTrigger ft;
+
+    if (class'DXRMapVariants'.static.IsGMDXMaps(player())==False) return; //This is a problem in the GMDX map set
+    if (dxr.flags.settings.startinglocations>0) return; //DXRMissionsM02 will already handle this itself.
+
+    //Find the OrdersTrigger and update to a new tag so it isn't hit by the dispatcher directly
+    foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'oty'){
+        ot.Tag='otyFlagChecked';
+        break;
+    }
+
+    if (ot==None) return; //Didn't find the OrdersTrigger, no need to continue
+
+    //Create a FlagTrigger that sits in between the dispatcher and the OrdersTrigger that checks for AnnaDock_Played
+    ft = Spawn(class'#var(prefix)FlagTrigger');
+    ft.tag = 'oty';
+    ft.bInitiallyActive=True;
+    ft.SetCollision(false,false,false);
+    ft.FlagName='AnnaDock_Played';
+    ft.bSetFlag=False; //Only check the flag, don't set it
+    ft.flagValue=False; //The flag must be false to continue
+    ft.bTrigger=True;
+    ft.Event='otyFlagChecked';
+}

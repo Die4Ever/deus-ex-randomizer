@@ -100,6 +100,7 @@
   - Fixed an issue where sometimes you wouldn't be able to pick up stuck projectiles like darts or throwing knives if they were in narrow locations.
   - "Super MIBs" will have their blue glow effect properly attached to them after being shuffled.
   - "Cracked" and "Locksport" perks will cause the highlight info for hackable electronics and locked doors to show the appropriate number of multitools or lockpicks needed.
+  - Anna will no longer walk towards you forever if you manage to finish Anna's conversation at the dock in Mission 2 in under 2 seconds.
 
 </details>
 
