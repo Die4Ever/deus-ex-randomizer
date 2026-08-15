@@ -57,9 +57,19 @@ function SetAccountKnownByName(String username)
     SetAccountKnown(GetAccountIndexByName(username));
 }
 
+function bool GetAccountKnownByName(String username)
+{
+    return GetAccountKnown(GetAccountIndexByName(username));
+}
+
 function SetAccountKnownByPassword(String password)
 {
     SetAccountKnown(GetAccountIndexByPass(password));
+}
+
+function bool GetAccountKnownByPassword(String password)
+{
+    return GetAccountKnown(GetAccountIndexByPass(password));
 }
 
 function int GetAccountIndexByName(string username)
@@ -105,6 +115,24 @@ function bool HasKnownAccounts()
     }
     return False;
 }
+
+#ifdef gmdxae
+//Override GMDX:AE checks to feed it with our own knowledge of the password
+//Theoretically this could maybe actually try to check if you have the note, etc.  Future TODO, I guess
+function bool IsDiscovered(DeusExPlayer player, string code, optional string code2, optional bool bReallyKnown)
+{
+    //Code is the Username, Code2 is the password
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.passwordsrandomized > 0){
+        return GetAccountKnownByName(code);
+    } else {
+        Super.IsDiscovered(player,code,code2,bReallyKnown);
+    }
+}
+#endif
 
 #ifdef hx
 //To simplify making this compile cleanly...
