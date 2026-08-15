@@ -119,6 +119,9 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
         case class'MenuScreenPlaythroughModifiers':
             newScreen = class'DXRMenuScreenPlaythroughModifiersGMDXAE';
             break;
+        case class'MenuScreenGMDXOptionsQoL':
+            newScreen = class'DXRMenuScreenGMDXOptionsQoLGMDXAE';
+            break;
 #endif
 
         case class'CreditsWindow':
