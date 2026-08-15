@@ -2431,3 +2431,8 @@ exec function MarkLoc(int x, int y, int z, optional string markName)
 }
 
 //#endregion
+
+defaultproperties
+{
+    bPistolStartTrained=false
+}
