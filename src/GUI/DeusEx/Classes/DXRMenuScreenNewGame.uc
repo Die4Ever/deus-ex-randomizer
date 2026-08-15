@@ -10,9 +10,7 @@ var config string last_player_name;
 var config int last_portrait;
 var bool hasCheckedLDDP;
 var MenuUIActionButtonWindow btnRandomPortrait;
-#ifndef injections
 var bool bDXRFemaleEnabled;
-#endif
 
 static function bool HasLDDPInstalled()
 {
@@ -45,6 +43,9 @@ static function bool HasLDDPInstalled()
     CriticalDelete(parser);
 
     default.bDXRFemaleEnabled = opened;
+    #ifdef injections
+    default.bFemaleEnabled = opened;
+    #endif
     default.hasCheckedLDDP = true;
     return opened;
 }
@@ -52,8 +53,8 @@ static function bool HasLDDPInstalled()
 event InitWindow()
 {
     bDXRFemaleEnabled = HasLDDPInstalled();
-    #ifdef gmdxae
-    bFemaleEnabled=bDXRFemaleEnabled; //Make sure our knowledge gets transferred into GMDX:AE logic
+    #ifdef gmdxae||injections
+    bFemaleEnabled=bDXRFemaleEnabled; //Make sure our knowledge gets transferred into the base logic
     #endif
 
     Super(MenuUIScreenWindow).InitWindow();
