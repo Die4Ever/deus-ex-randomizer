@@ -1475,13 +1475,37 @@ function SetupGMDXHardcoreByFlag(int hardcore_val, int stamina_val)
     SaveConfig();
 }
 
+function float ConvertGMDXDifficultyOption(int val)
+{
+    switch(val){
+        case 0: return 0.5; //EASY
+        case 1: return 1.5; //MEDIUM
+        case 2: return 2.0; //HARD
+        case 3: return 3.0; //REALISTIC
+    }
+    return 1.5; //idk, medium if things get fucked up, I guess?
+}
+
 function setupDifficultyMod()
 {
+    local DXRando dxr;
+    local float OldDifficulty;
     //This is the GMDX function that does stuff for hardcore mode and stuff
 
-    //TODO: We could massage the CombatDifficulty here, since that plays into hardcore stuff
+    dxr = class'DXRando'.default.dxr;
+
+    //Store the original difficulty so we can restore it later
+    OldDifficulty = CombatDifficulty;
+
+    if (dxr!=None && dxr.flags!=None){
+        //Set the difficulty to the GMDX difficulty (So you can choose what actually applies!)
+        CombatDifficulty=ConvertGMDXDifficultyOption(dxr.flags.moresettings.gmdx_difficulty);
+    }
 
     Super.setupDifficultyMod();
+
+    //Revert the difficulty back to where it was before
+    CombatDifficulty = OldDifficulty;
 }
 
 //I'm your cool uncle who lets you use cheats in hardcore mode

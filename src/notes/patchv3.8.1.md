@@ -15,6 +15,7 @@
   - It is no longer possible to softlock yourself out of the Tong ending if you move across the Reactor lab control room too fast after activating the reactors. (Fixes a baseline GMDX bug)
   - Hardcore mode will no longer be enabled based purely on the selected difficulty.  Instead, there is an option under the Advanced settings of the New Game screen.  This setting allows you to select between Off, Overwhelming Odds, Hardcore, and Hardcore+.  These settings will get initialized on a new game based on the settings you have selected in the GMDX Options menu.
   - A new option under the Advanced settings of the New Game screen to enable or disable the stamina system.  Zero Rando will default to using the same system to determine if stamina should be enabled or not (Either if the "Stamina System" option in the GMDX settings is enabled, or if you're playing Hardcore).  Outside of Zero Rando, the stamina system will be disabled by default.
+  - A new option under the Advanced settings of the New Game screen to select which set of NPC behavioural changes to apply, based on the original GMDX difficulty settings.  Things like NPC awareness (How easily enemies hear or see you) increase as the "GMDX Difficulty" setting is increased, along with things like how much health certain enemies have.
 
   </details>
 

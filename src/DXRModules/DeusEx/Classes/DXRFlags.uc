@@ -205,6 +205,7 @@ function CheckConfig()
     more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -284,6 +285,7 @@ function CheckConfig()
     more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -362,6 +364,7 @@ function CheckConfig()
     more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 1;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -440,6 +443,7 @@ function CheckConfig()
     more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 2;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -518,6 +522,7 @@ function CheckConfig()
     more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].gmdx_hardcore = 0;
     more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 3;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 

@@ -173,16 +173,22 @@ function BindControls(optional string action)
 #endif
 
 #ifdef gmdx
-    splits_overlay = NewMenuItem("Hardcore Mode", "What level of GMDX Hardcore do you want?");
+    NewMenuItem("Hardcore Mode", "What level of GMDX Hardcore do you want?");
     EnumOption("Off", 0, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(0));
     EnumOption("Overwhelming Odds", 1, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(1));
     EnumOption("Hardcore", 2, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(2));
     EnumOption("Hardcore+", 3, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(3));
 
-    splits_overlay = NewMenuItem("GMDX Stamina", "Should the stamina system be used?");
+    NewMenuItem("GMDX Stamina", "Should the stamina system be used?");
     EnumOption("Original", 0, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(0));
     EnumOption("Off", 1, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(1));
     EnumOption("On", 2, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(2));
+
+    NewMenuItem("GMDX Difficulty", "What original GMDX difficulty should be used for gameplay changes?");
+    EnumOption("Easy", 0, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(0));
+    EnumOption("Medium", 1, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(1));
+    EnumOption("Hard", 2, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(2));
+    EnumOption("Realistic", 3, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(2));
 #endif
 
     NewGroup("Bingo");
@@ -809,6 +815,66 @@ function string GetGMDXStaminaHelpText(int val)
             msg = "The stamina system will be enabled.";
             break;
     }
+    return msg;
+}
+
+function string GetGMDXDifficultyHelpText(int val)
+{
+    local string msg;
+
+    switch(val){
+        case 0:
+            //EASY
+            msg =       "GMDX difficulty changes will apply as though you selected 'EASY' mode in unrandomized GMDX.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many human enemies are much worse at spotting the player, much worse at hearing the player, and will be surprised when spotting the player slightly longer.  " $ "They will lose track of the player much more quickly, and will be less likely to strafe around corners.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Robots will lose track of the player more quickly, and many are not as fast.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many tough enemies do not have as much health as on higher difficulties.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many security cameras will swing more slowly, will be able to see less far, and will be easier to hack.  "$"Auto turrets will not be able to shoot as far.|n";
+            msg = msg $ "|n";
+            msg = msg $ "There will not be as many grenades planted on the wall, and the ones that do remain will detect the player in a smaller radius.|n";
+            break;
+        case 1:
+            //MEDIUM
+            msg =       "GMDX difficulty changes will apply as though you selected 'MEDIUM' mode in unrandomized GMDX.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many human enemies are not as good at spotting the player, not as good at hearing the player, and will be surprised when spotting the player slightly longer.  " $ "They will lose track of the player more quickly, and will be less likely to strafe around corners.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Robots will lose track of the player more quickly, and many are not as fast.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many tough enemies do not have as much health as on higher difficulties (But more health than 'EASY'!).|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many security cameras will swing more slowly, will be able to see less far, and will be easier to hack.  "$"Auto turrets will not be able to shoot as far.|n";
+            msg = msg $ "|n";
+            msg = msg $ "There will not be as many grenades planted on the wall, and the ones that do remain will detect the player in a smaller radius.|n";
+            break;
+        case 2:
+            //HARD
+            msg =       "GMDX difficulty changes will apply as though you selected 'HARD' mode in unrandomized GMDX.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many human enemies are not as good at spotting the player, not as good at hearing the player, and will be surprised when spotting the player slightly longer.  " $ "They will lose track of the player more quickly, and will be less likely to strafe around corners.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Robots will lose track of the player more quickly, and many are not as fast.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many tough enemies do not have as much health as on higher difficulties (But more health than 'MEDIUM'!).|n";
+            msg = msg $ "|n";
+            msg = msg $ "Many security cameras will swing more slowly, will be able to see less far, and will be easier to hack.  "$"Auto turrets will not be able to shoot as far.|n";
+            msg = msg $ "|n";
+            msg = msg $ "There will not be as many grenades planted on the wall, and the ones that do remain will detect the player in a smaller radius.|n";
+            break;
+        case 3:
+            //REALISTIC
+            msg =       "GMDX difficulty changes will apply as though you selected 'REALISTIC' mode in unrandomized GMDX.|n";
+            msg = msg $ "|n";
+            msg = msg $ "There will not be as many grenades planted on the wall, and the ones that do remain will detect the player in a smaller radius.|n";
+            msg = msg $ "|n";
+            msg = msg $ "Some extra crates will be removed with additional supplies.|n";
+            break;
+    }
+
     return msg;
 }
 

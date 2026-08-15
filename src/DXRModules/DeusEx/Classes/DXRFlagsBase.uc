@@ -92,6 +92,7 @@ struct MoreFlagsSettings{
     var int shuffle_missions; // 0 is disabled, otherwise approximate game length in minutes
     var int gmdx_hardcore; // 0 is disabled, 1 is overwhelming odds, 2 is hardcore, 3 is Hardcore+ (Only used in GMDX)
     var int gmdx_stamina; // 0 is based on hardcore and menu options, 1 is off, 2 is on (Only used in GMDX)
+    var int gmdx_difficulty; //0-3 is EASY/MEDIUM/HARD/REALISTIC (Only used in GMDX)
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -467,6 +468,7 @@ simulated function string BindFlags(int mode, optional string str)
 #ifdef gmdx
     FlagInt('Rando_gmdx_hardcore',moresettings.gmdx_hardcore,mode,str);
     FlagInt('Rando_gmdx_stamina',moresettings.gmdx_stamina,mode,str);
+    FlagInt('Rando_gmdx_difficulty',moresettings.gmdx_difficulty,mode,str);
 #endif
 
     if(mode != Hashing) {
@@ -696,6 +698,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "GMDX Hardcore";
         case 'Rando_gmdx_stamina':
             return "GMDX Stamina";
+        case 'Rando_gmdx_difficulty':
+            return "GMDX Difficulty";
         case 'Rando_loop_initial_version':
             return "Starting Version";
         case 'MenuChoice_BalanceAugs':
@@ -1087,6 +1091,18 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Off";
             } else if (val==2){
                 return "On";
+            }
+            break;
+
+        case 'Rando_gmdx_difficulty':
+            if (val==0){
+                return "Easy";
+            } else if (val==1){
+                return "Medium";
+            } else if (val==2){
+                return "Hard";
+            } else if (val==3){
+                return "Realistic";
             }
             break;
 
