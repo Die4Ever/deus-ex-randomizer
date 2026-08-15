@@ -11,20 +11,29 @@ var config int last_portrait;
 var bool hasCheckedLDDP;
 var MenuUIActionButtonWindow btnRandomPortrait;
 #ifndef injections
-var bool bFemaleEnabled;
+var bool bDXRFemaleEnabled;
 #endif
 
 static function bool HasLDDPInstalled()
 {
     local DeusExTextParser parser;
     local bool opened;
+    local Texture TTex;
 
     if(#defined(revision)) return true; //Revision always has LDDP available
 
-    if(!#defined(injections)) return false;// just to be safe if you have a lot of mods installed in the same folder, Revision and VMD still allow selecting FemJC
+    if(!#defined(injections||gmdxae)) return false;// just to be safe if you have a lot of mods installed in the same folder, Revision and VMD still allow selecting FemJC
 
     if(default.hasCheckedLDDP) {
-        return default.bFemaleEnabled;
+        return default.bDXRFemaleEnabled;
+    }
+
+    if (#defined(gmdxae)){
+        //GMDX checks for the presence of the menu image instead, since the text is presumably somewhere else?
+        TTex = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_1", class'Texture', true));
+        default.bDXRFemaleEnabled = (TTex!=None);
+        default.hasCheckedLDDP = true;
+        return default.bDXRFemaleEnabled;
     }
 
     //LDDP, 10/26/21: Attempt a load. If succesful, we have LDDP installed. Thus, we can flick on all the female functionality.
@@ -35,18 +44,21 @@ static function bool HasLDDPInstalled()
         parser.CloseText();
     CriticalDelete(parser);
 
-    default.bFemaleEnabled = opened;
+    default.bDXRFemaleEnabled = opened;
     default.hasCheckedLDDP = true;
     return opened;
 }
 
 event InitWindow()
 {
-    bFemaleEnabled = HasLDDPInstalled();
+    bDXRFemaleEnabled = HasLDDPInstalled();
+    #ifdef gmdxae
+    bFemaleEnabled=bDXRFemaleEnabled; //Make sure our knowledge gets transferred into GMDX:AE logic
+    #endif
 
     Super(MenuUIScreenWindow).InitWindow();
 
-    if (bFemaleEnabled && !#defined(revision)) //Revision has all male, then all female ordering instead of interleaved
+    if (bDXRFemaleEnabled && !#defined(revision)) //Revision has all male, then all female ordering instead of interleaved
     {
         TexPortraits[0] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_1", class'Texture', false));
         TexPortraits[1] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_1", class'Texture', false));
@@ -379,7 +391,7 @@ function SelectRandomPortrait(bool noRepeat)
     //We could use the size of the array, but Revision has a whole bunch
     //of other options available that I don't think we really want to
     //include in the random pool.
-    if (bFemaleEnabled){
+    if (bDXRFemaleEnabled){
         numPortraits=10;
     } else {
         numPortraits=5;
