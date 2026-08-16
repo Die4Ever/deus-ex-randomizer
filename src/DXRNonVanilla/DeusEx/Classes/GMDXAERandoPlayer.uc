@@ -1498,6 +1498,10 @@ function setupDifficultyMod()
     //This is the GMDX function that does stuff for hardcore mode and stuff
 
     dxr = class'DXRando'.default.dxr;
+    if (dxr!=None && dxr.flags!=None){
+        //Apply Real-Time UI based on the flag
+        bRealUI = (dxr.flags.moresettings.menus_pause==0);
+    }
 
     //Store the original difficulty so we can restore it later
     OldDifficulty = CombatDifficulty;

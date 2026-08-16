@@ -122,6 +122,9 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
         case class'MenuScreenGMDXOptionsQoL':
             newScreen = class'DXRMenuScreenGMDXOptionsQoLGMDXAE';
             break;
+        case class 'MenuScreenGMDXOptionsGameplay':
+            newScreen = class'DXRMenuScreenGMDXOptionsGameplayGMDXAE';
+            break;
 #endif
 
         case class'CreditsWindow':
