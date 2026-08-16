@@ -1077,8 +1077,8 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly, opti
         mod = #var(prefix)WeaponMod(FrobTarget);
         weap = #var(DeusExPrefix)Weapon(inHand);
 
-        //We don't want to auto apply in when looting a body
-        if (mod!=None && weap!=None && FromCorpse==None){
+        //We don't want to auto apply it when looting a body
+        if (mod!=None && weap!=None && weap.IsInState('DownWeapon')==False && FromCorpse==None){
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName,, true);

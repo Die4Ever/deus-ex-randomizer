@@ -55,6 +55,7 @@
   - It is no longer possible to infinitely stockpile "how long you've been standing" for weapon accuracy bonuses.  You can now accumulate up to 20 seconds of standing time before it is capped.  Standing time will also no longer increase while reloading.
   - Randomized weapon mods will no longer sometimes fall through the world.
   - Empty datacubes will no longer glow.
+  - Weapon mods will not get auto-applied to a weapon that is being put away.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.

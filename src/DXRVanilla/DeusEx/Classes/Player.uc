@@ -290,7 +290,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     if (class'MenuChoice_AutoWeaponMods'.default.enabled){
         mod = #var(prefix)WeaponMod(FrobTarget);
         weap = #var(DeusExPrefix)Weapon(inHand);
-        if (mod!=None && weap!=None){
+        if (mod!=None && weap!=None && weap.IsInState('DownWeapon')==False){
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName,, true);

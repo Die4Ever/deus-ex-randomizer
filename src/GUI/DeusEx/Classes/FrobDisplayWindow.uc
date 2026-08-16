@@ -760,6 +760,7 @@ function bool WeaponModAutoApply(WeaponMod wm)
     if (wm==None) return False;
     if (player.InHand==None) return False;
     if (player.InHand.IsA('DeusExWeapon')==False) return False;
+    if (DeusExWeapon(player.InHand).IsInState('DownWeapon')) return False; //Putting the weapon away
     if (wm.CanUpgradeWeapon(DeusExWeapon(player.InHand))==False) return False;
     if (GetAutoWeaponMods()==False) return False;
     return True;
