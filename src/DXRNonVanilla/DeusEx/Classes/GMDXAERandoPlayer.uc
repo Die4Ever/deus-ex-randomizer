@@ -1450,22 +1450,16 @@ function DisableScopeInConversation()
     }
 }
 
-//TBD Do we want to actually do anything with this in AE?
-function SetupGMDXHardcoreByFlag(int hardcore_val, int stamina_val)
+function SetUpGMDXHardcoreStuff(int diff_val, int stamina_val)
 {
-    bHardcoreFilterOption = false; //Overwhelming odds
     bHardCoreMode = false; //Hardcore, actual real setting
     bExtraHardcore = false; //Hardcore+
 
-    if (hardcore_val >= 1){
-        //Overwhelming odds or up
-        bHardcoreFilterOption=true;
-    }
-    if (hardcore_val >= 2){
+    if (diff_val >= 4){
         //Hardcore and up
         bHardCoreMode=true;
     }
-    if (hardcore_val >= 3){
+    if (diff_val >= 5){
         //Hardcore+
         bExtraHardcore=true;
     }
@@ -1478,11 +1472,21 @@ function SetupGMDXHardcoreByFlag(int hardcore_val, int stamina_val)
 function float ConvertGMDXDifficultyOption(int val)
 {
     switch(val){
-        case 0: return 0.5; //EASY
-        case 1: return 1.5; //MEDIUM
-        case 2: return 2.0; //HARD
-        case 3: return 3.0; //REALISTIC
+        case 0: //EASY
+            return 0.5;
+
+        case 1: //MEDIUM
+            return 1.5;
+
+        case 2: //HARD
+            return 2.0;
+
+        case 3: //REALISTIC
+        case 4: //HARDCORE
+        case 5: //HARDCORE+
+            return 3.0;
     }
+
     return 1.5; //idk, medium if things get fucked up, I guess?
 }
 
@@ -1490,6 +1494,7 @@ function setupDifficultyMod()
 {
     local DXRando dxr;
     local float OldDifficulty;
+    local int diff, stam;
     //This is the GMDX function that does stuff for hardcore mode and stuff
 
     dxr = class'DXRando'.default.dxr;
@@ -1497,9 +1502,16 @@ function setupDifficultyMod()
     //Store the original difficulty so we can restore it later
     OldDifficulty = CombatDifficulty;
 
-    if (dxr!=None && dxr.flags!=None){
+    if (flagbase!=None){
+        //Grab these settings directly out of the flags, as this will run early
+        //enough for dxr to not be set up yet
+        diff = flagbase.GetInt('Rando_gmdx_difficulty');
+        stam = flagbase.GetInt('Rando_gmdx_stamina');
+
         //Set the difficulty to the GMDX difficulty (So you can choose what actually applies!)
-        CombatDifficulty=ConvertGMDXDifficultyOption(dxr.flags.moresettings.gmdx_difficulty);
+        CombatDifficulty=ConvertGMDXDifficultyOption(diff);
+
+        SetUpGMDXHardcoreStuff(diff,stam);
     }
 
     Super.setupDifficultyMod();

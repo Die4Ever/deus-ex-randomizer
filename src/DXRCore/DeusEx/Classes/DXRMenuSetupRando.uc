@@ -172,13 +172,12 @@ function BindControls(optional string action)
     EnumOption("Enabled", 100, f.moresettings.entrance_rando, GetEntranceRandoHelpText(100));
 #endif
 
+#ifdef gmdxnotae
+    NewMenuItem("Overwhelming Odds", "Enable Overwhelming Odds?");
+    EnumOption("Off", 0, f.moresettings.gmdx_overwhelming,GetGMDXOverwhelmingHelpText(0));
+    EnumOption("On", 1, f.moresettings.gmdx_overwhelming,GetGMDXOverwhelmingHelpText(1));
+#endif
 #ifdef gmdx
-    NewMenuItem("Hardcore Mode", "What level of GMDX Hardcore do you want?");
-    EnumOption("Off", 0, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(0));
-    EnumOption("Overwhelming Odds", 1, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(1));
-    EnumOption("Hardcore", 2, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(2));
-    EnumOption("Hardcore+", 3, f.moresettings.gmdx_hardcore,GetGMDXHardcoreHelpText(3));
-
     NewMenuItem("GMDX Stamina", "Should the stamina system be used?");
     EnumOption("Original", 0, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(0));
     EnumOption("Off", 1, f.moresettings.gmdx_stamina,GetGMDXStaminaHelpText(1));
@@ -188,7 +187,9 @@ function BindControls(optional string action)
     EnumOption("Easy", 0, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(0));
     EnumOption("Medium", 1, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(1));
     EnumOption("Hard", 2, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(2));
-    EnumOption("Realistic", 3, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(2));
+    EnumOption("Realistic", 3, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(3));
+    EnumOption("Hardcore", 4, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(4));
+    EnumOption("Hardcore+", 5, f.moresettings.gmdx_difficulty,GetGMDXDifficultyHelpText(5));
 #endif
 
     NewGroup("Bingo");
@@ -776,25 +777,17 @@ function String GetGenericHelpText(string opt)
     return msg;
 }
 
-function string GetGMDXHardcoreHelpText(int val)
+function string GetGMDXOverwhelmingHelpText(int val)
 {
     local string msg;
 
     switch(val){
         case 0:
-            msg = "GMDX Hardcore mode is fully disabled.";
+            msg = "Overwhelming Odds is fully disabled.";
             break;
         case 1:
             //Stolen from the Overwhelming Odds menu help text
             msg = "Overwhelming Odds enables the additional enemies introduced in GMDX's Hardcore mode, without the rest of the Hardcore functionality.";
-            break;
-        case 2:
-            //There's probably a better way to describe this, but I'm kind of lazy and this is good enough.
-            msg = "Hardcore Mode introduces additional enemies, removes some items, and makes enemies more aware.";
-            break;
-        case 3:
-            //Stolen from the Hardcore Mode+ menu help text
-            msg = "Hardcore+ includes all the Hardcore Mode functionality, but makes the save points require 100 credits to use.";
             break;
     }
     return msg;
@@ -873,7 +866,17 @@ function string GetGMDXDifficultyHelpText(int val)
             msg = msg $ "|n";
             msg = msg $ "Some extra crates will be removed with additional supplies.|n";
             break;
+        case 4:
+            //HARDCORE
+            msg =       "GMDX difficulty changes will apply as though you selected 'HARDCORE' mode in unrandomized GMDX.|n";
+            break;
+        case 5:
+            //HARDCORE+
+            msg =       "GMDX difficulty changes will apply as though you selected 'HARDCORE' mode in unrandomized GMDX and enabled the 'HARDCORE+' modifier.|n";
+            break;
     }
+
+    msg = msg $ "|nPlease note that this option will NOT change how much damage you take.|n";
 
     return msg;
 }

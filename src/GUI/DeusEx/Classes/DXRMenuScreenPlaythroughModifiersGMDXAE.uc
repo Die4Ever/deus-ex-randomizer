@@ -29,5 +29,9 @@ function BuildModifierList()
     //so let's not do this for now.
     RemoveItem("bPrisonStart");
 
+    //Fully remove the Hardcore+ option, as it can be selected as a GMDX Difficulty
+    //setting under Advanced
+    RemoveItem("bExtraHardcore");
+
     Super.BuildModifierList();
 }

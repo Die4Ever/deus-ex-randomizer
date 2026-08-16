@@ -317,7 +317,7 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         moresettings.newgameplus_curve_scalar = oldmoresettings.newgameplus_curve_scalar;
         moresettings.menus_pause = oldmoresettings.menus_pause;
         moresettings.aug_loc_rando = oldmoresettings.aug_loc_rando;
-        moresettings.gmdx_hardcore = oldmoresettings.gmdx_hardcore;
+        moresettings.gmdx_overwhelming = oldmoresettings.gmdx_overwhelming;
         moresettings.gmdx_stamina = oldmoresettings.gmdx_stamina;
         moresettings.gmdx_difficulty = oldmoresettings.gmdx_difficulty;
         moresettings.splits_overlay = oldmoresettings.splits_overlay;

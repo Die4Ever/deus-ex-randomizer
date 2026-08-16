@@ -90,9 +90,9 @@ struct MoreFlagsSettings{
     var int stalkers;
     var int entrance_rando;
     var int shuffle_missions; // 0 is disabled, otherwise approximate game length in minutes
-    var int gmdx_hardcore; // 0 is disabled, 1 is overwhelming odds, 2 is hardcore, 3 is Hardcore+ (Only used in GMDX)
+    var int gmdx_overwhelming; // Overwhelming Odds, 0 is disabled, 1 is enabled (Only used in GMDX, not AE)
     var int gmdx_stamina; // 0 is based on hardcore and menu options, 1 is off, 2 is on (Only used in GMDX)
-    var int gmdx_difficulty; //0-3 is EASY/MEDIUM/HARD/REALISTIC (Only used in GMDX)
+    var int gmdx_difficulty; //0-5 is EASY/MEDIUM/HARD/REALISTIC/HARDCORE/HARDCORE+ (Only used in GMDX)
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -465,8 +465,10 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
 
+#ifdef gmdxnotae
+    FlagInt('Rando_gmdx_overwhelming',moresettings.gmdx_overwhelming,mode,str);
+#endif
 #ifdef gmdx
-    FlagInt('Rando_gmdx_hardcore',moresettings.gmdx_hardcore,mode,str);
     FlagInt('Rando_gmdx_stamina',moresettings.gmdx_stamina,mode,str);
     FlagInt('Rando_gmdx_difficulty',moresettings.gmdx_difficulty,mode,str);
 #endif
@@ -694,8 +696,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy weapons rando";
         case 'Rando_aug_loc_rando':
             return "Aug Slot Randomization";
-        case 'Rando_gmdx_hardcore':
-            return "GMDX Hardcore";
+        case 'Rando_gmdx_overwhelming':
+            return "Overwhelming Odds";
         case 'Rando_gmdx_stamina':
             return "GMDX Stamina";
         case 'Rando_gmdx_difficulty':
@@ -1072,15 +1074,11 @@ simulated function string flagValToHumanVal(name flagname, int val){
             }
             break;
 
-        case 'Rando_gmdx_hardcore':
+        case 'Rando_gmdx_overwhelming':
             if (val==0){
                 return "Off";
             } else if (val==1){
-                return "Overwhelming Odds";
-            } else if (val==2){
-                return "Hardcore";
-            } else if (val==3){
-                return "Hardcore+";
+                return "On";
             }
             break;
 

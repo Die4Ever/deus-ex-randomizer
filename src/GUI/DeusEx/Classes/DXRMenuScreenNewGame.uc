@@ -236,7 +236,20 @@ function bool PistolStartsAtTrained(DXRFlags flags)
     return flags != None && flags.IsZeroRando();
 }
 
-function HandleGMDXHardcore(int hardcore_val, int stamina_val)
+#ifdef gmdxae
+function InvokePlaythroughModifiersMenu(optional bool bCheck)
+{
+
+    if (dxr!=None && dxr.flags!=None){
+        bHardCoreMode = (dxr.flags.moresettings.gmdx_difficulty >= 4);
+    }
+
+    Super.InvokePlaythroughModifiersMenu(bCheck);
+
+}
+#endif
+
+function HandleGMDXHardcore(int diff_val, int overwhelming_val, int stamina_val)
 {
 #ifdef gmdxnotae
     player.bHardcoreFilterOption = false; //Overwhelming odds
@@ -244,16 +257,17 @@ function HandleGMDXHardcore(int hardcore_val, int stamina_val)
     player.bHardCoreMode = false; //Hardcore, actual real setting
     player.bExtraHardcore = false; //Hardcore+
 
-    if (hardcore_val >= 1){
+    if (overwhelming_val >= 1){
         //Overwhelming odds or up
         player.bHardcoreFilterOption=true;
     }
-    if (hardcore_val >= 2){
+
+    if (diff_val >= 4){
         //Hardcore and up
         bHardCoreMode=true; //This being true will turn off autoreload
         player.bHardCoreMode=true;
     }
-    if (hardcore_val >= 3){
+    if (diff_val >= 5){
         //Hardcore+
         player.bExtraHardcore=true;
     }
@@ -281,7 +295,9 @@ function SaveSettings()
 
     dxr.flags.SaveFlags();
 
-    HandleGMDXHardcore(dxr.flags.moresettings.gmdx_hardcore, dxr.flags.moresettings.gmdx_stamina);
+    HandleGMDXHardcore(dxr.flags.moresettings.gmdx_difficulty,
+                       dxr.flags.moresettings.gmdx_overwhelming,
+                       dxr.flags.moresettings.gmdx_stamina);
 
     dxr.Destroy();
     foreach player.AllActors(class'DXRando', dxr)

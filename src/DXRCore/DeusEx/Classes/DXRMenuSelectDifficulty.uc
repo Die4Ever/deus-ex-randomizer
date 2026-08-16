@@ -87,17 +87,18 @@ static function CheckGMDXHardcoreSettings(DeusExPlayer p, DXRFlags f)
 #ifdef gmdxnotae
     if (p==None) return;
 
-    f.moresettings.gmdx_hardcore=0;
+    f.moresettings.gmdx_overwhelming=0;
 
     //This is kind of primitive, but seems reasonable?
     if (p.bHardcoreFilterOption){
-        f.moresettings.gmdx_hardcore=1;
+        f.moresettings.gmdx_overwhelming=1;
     }
+
     if (p.bHardCoreMode){
-        f.moresettings.gmdx_hardcore=2;
+        f.moresettings.gmdx_difficulty=4;
     }
     if (p.bExtraHardcore){
-        f.moresettings.gmdx_hardcore=3;
+        f.moresettings.gmdx_difficulty=5;
     }
 
     if (f.IsZeroRandoPure()){
