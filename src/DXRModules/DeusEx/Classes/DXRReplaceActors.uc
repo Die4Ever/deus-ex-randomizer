@@ -517,7 +517,7 @@ function ReplaceWaterFountain(#var(prefix)WaterFountain a)
 
     ReplaceDecoration(a, n);
 
-    a.Destroy();
+    DestroyOutOfWorld(a);
 }
 
 function ReplaceWaterCooler(#var(prefix)WaterCooler a)
@@ -529,7 +529,7 @@ function ReplaceWaterCooler(#var(prefix)WaterCooler a)
 
     ReplaceDecoration(a, n);
 
-    a.Destroy();
+    DestroyOutOfWorld(a);
 }
 
 function ReplaceVendingMachine(#var(prefix)VendingMachine a)
@@ -606,7 +606,7 @@ function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
         UpdateActorReferences(a, n);
     }
 
-    a.Destroy();
+    DestroyOutOfWorld(a);
 }
 
 function ReplaceToilet(#var(prefix)Toilet a)

@@ -989,6 +989,17 @@ function bool DestroyActor( Actor d )
     return d.Destroy();
 }
 
+//Move the actor away from the world before destroying it
+//Useful for destroying things like water coolers or trash
+//that spawn things when destroyed (puddles or debris)
+function DestroyOutOfWorld(Actor a)
+{
+    a.SetCollision(false,false,false);
+    a.bCollideWorld=false;
+    a.SetLocation(a.Location+vect(0,0,20000));
+    a.Destroy();
+}
+
 // only used by DXRMemes title screen? doesn't copy the tag or event or anything
 function Actor ReplaceActor(Actor oldactor, string newclassstring)
 {
