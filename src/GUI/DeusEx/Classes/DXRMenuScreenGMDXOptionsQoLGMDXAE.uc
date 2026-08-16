@@ -9,19 +9,6 @@ function BuildModifierList()
     RemoveItem("bPistolStartTrained");
 
     Super.BuildModifierList();
-
-    //Theoretically the Super should probably be calling this
-    CreateChoices();
-}
-
-//Hopefully this will be patched upstream soon (Or handled in some other way to call this?)
-event InitWindow()
-{
-    Super.InitWindow();
-
-    //This should probably be getting called normally???
-    BuildModifierList();
-
 }
 
 defaultproperties
