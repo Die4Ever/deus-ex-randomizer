@@ -2057,7 +2057,7 @@ state PlayerWalking
             newSpeed *= mult3;
         }
 
-        if (Physics == PHYS_Walking && (iStaminaSystem > 0 || bHardCoreMode))   //CyberP: stamina system
+        if (Physics == PHYS_Walking && UseStaminaSystem())   //CyberP: stamina system //RANDO: Our stamina choices
         {
             //SARGE: Added bOnLadder check so that we use stamina when on ladders regardless of speed,
             //since ladder climbing limits us to walking speed regardless.
@@ -2078,7 +2078,7 @@ state PlayerWalking
                 if (swimTimer < 0)
                 {
                     swimTimer = 0;
-                    if (iStaminaSystem > 0 || bHardCoreMode)
+                    if (UseStaminaSystem()) //RANDO: Our stamina choices
                     {
                         bStunted = true;
                         if (!bOnLadder && FRand() < 0.7)
@@ -2096,7 +2096,7 @@ state PlayerWalking
             {
 
                 //SARGE: Moved Endurance check to here.
-                bCrouchRegen=PerkManager.GetPerkWithClass(class'DeusEx.PerkEndurance').bPerkObtained || (iStaminaSystem == 2 && !bHardCoreMode);
+                bCrouchRegen=PerkManager.GetPerkWithClass(class'DeusEx.PerkEndurance').bPerkObtained || (iStaminaSystem == 2 && UseStaminaSystem()); //RANDO: Only if we want the stamina on
                 if ((!IsCrouching() || bCrouchRegen) && !bOnLadder && (inHand == None || !inHand.IsA('POVCorpse')) && CarriedDecoration == None) //(bIsCrouching)     //RSD: Simplified this entire logic from original crouching -> bCrouchRegen check, added !bOnLadder //SARGE: Added corpse carrying //SARGE: And decoration carrying
                     RegenStaminaTick(deltaTime);                                        //RSD: Generalized stamina regen function
             }
