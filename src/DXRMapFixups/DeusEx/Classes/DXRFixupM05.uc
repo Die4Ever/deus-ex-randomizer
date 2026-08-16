@@ -53,6 +53,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ThugMale2 thug;
     local #var(prefix)Karkian kark;
     local #var(prefix)DataLinkTrigger dlt;
+    local #var(prefix)AmmoCrate ac;
 
     local DXREnemies dxre;
     local int i;
@@ -107,6 +108,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
             if (dlt.datalinkTag!='DL_NoPaulCorpse') continue;
             dlt.Destroy();
+        }
+
+        foreach AllActors(class'#var(prefix)AmmoCrate',ac,'ammostoredhere'){
+            //GMDX RSD/AE use an ammo crate to store your stolen ammo
+            //Don't randomize the location of that (Goal Rando will move it)
+            //There probably aren't ammo crates in any other mod anyway?
+            ac.bIsSecretGoal=true;
         }
 
         if (VanillaMaps){
@@ -544,6 +552,7 @@ function BalanceJailbreak()
     local #var(prefix)Toilet jailToilet;
     local Pickup origPickup;
     local vector toiletLoc,loc;
+    local #var(prefix)AmmoCrate ac;
     local string itemManifest;
     local Inventory movedItems[50];
     local int numMoved;
@@ -590,6 +599,11 @@ function BalanceJailbreak()
             }
         }
 
+#ifdef gmdxae
+        //Look for the GMDX ammo crate
+        foreach AllActors(class'#var(prefix)AmmoCrate',ac,'ammostoredhere'){break;}
+#endif
+
         num=0;
         l("BalanceJailbreak EquipLocation == " $ EquipLocation);
         if(EquipLocation == "Armory")
@@ -618,6 +632,8 @@ function BalanceJailbreak()
                         itemLocations[num++] = SP.Location;
                         break;
                 }
+
+            //No need to move the GMDX ammocrate for the armory, the default location is fine
 
         else { //EquipLocation == "Surgery Ward"
             // put the items in the surgery ward
@@ -666,6 +682,11 @@ function BalanceJailbreak()
                 dlt.bCollideWorld = false;
                 l("BalanceJailbreak moving "$dlt @ dlt.SetLocation(vectm(1670.443237,-702.527649,-179.660095)) @ dlt.Location);
             }
+
+            if (ac!=None){
+                //Move the ammo crate into a corner of the surgery ward
+                ac.SetLocation(vectm(1905,-465,-255));
+            }
         }
 
         itemManifest="";
@@ -678,6 +699,35 @@ function BalanceJailbreak()
                 }
             }
         }
+
+#ifdef gmdxae
+        //Move ammo into the ammo crate, if it exists
+        //Grenade ammo should have already been removed and placed into the items
+        if (ac!=None){
+            if (p.bHardcoreMode || p.bImprisonmentTakesAmmo){
+                //Take ammo
+                nextItem = p.Inventory;
+                while(nextItem != None){
+                    if (Ammo(nextItem)!=None && Ammo(nextItem).AmmoAmount>0) //Don't bother taking away ammo that you had none of
+                    {
+                        movedItem = ac.SpawnCopy(Ammo(nextItem)); //Spawn a copy into the ammo crate
+                        if (movedItem!=None){
+                            movedItem.bIsSecretGoal=true; //Don't reduce ammo amount on this copy
+                            movedItems[numMoved++]=movedItem;
+                            Ammo(nextItem).AmmoAmount=0; //Clear the ammo out of the inventory
+                        }
+                    }
+                    nextItem = nextItem.Inventory;
+                }
+            } else {
+                ac.Destroy();
+            }
+        }
+
+        p.primaryWeapon=None;
+        p.RefreshChargedPickups();
+
+#endif
 
         #ifdef locdebug
         if("#var(locdebug)"~="JailItemLocations") {
@@ -819,7 +869,13 @@ function string GeneratePrisonManifestLine(Inventory item, out Inventory movedIt
 
     p = Pickup(item);
     if (p!=None){
-        if (p.bCanHaveMultipleCopies==False){
+        if (Ammo(p)!=None){
+            count = Ammo(p).AmmoAmount;
+            if (count==0){
+                //0 Ammo means nothing to steal
+                return "";
+            }
+        } else if (p.bCanHaveMultipleCopies==False){
             for (i=0;i<ArrayCount(movedItems);i++){
                 if(movedItems[i].class!=item.class) continue;
                 count=count+1;
