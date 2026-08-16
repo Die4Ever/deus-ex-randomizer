@@ -805,12 +805,20 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
 
 #ifdef gmdx
-    else if( a.Class == class'AugBallisticPassive') {
+    else if( a.Class == class'AugBallisticPassive' && #defined(gmdxnotae)) {
         word = "Damage Reduction";
         if(val < 0) {
             val = 0;
         }
         shortDisplay=int( (1.0 - val) * 100.0 ) $ "%";
+        return shortDisplay;
+    }
+    else if( a.Class == class'AugBallisticPassive' && #defined(gmdxae)) {
+        word = "Charge Threshold";
+        if(val < 0) {
+            val = 0;
+        }
+        shortDisplay=int( val * 100.0 ) $ "%";
         return shortDisplay;
     }
     else if( a.Class == class'AugIcarus' ) {
