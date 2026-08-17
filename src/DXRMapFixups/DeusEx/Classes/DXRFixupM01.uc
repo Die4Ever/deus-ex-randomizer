@@ -59,9 +59,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)InformationDevices id;
     local #var(prefix)DatalinkTrigger dlt;
     local #var(prefix)TerroristCommander leo;
-#ifdef gmdx
-    local SpecialCaseTrigger sct;
-#endif
     local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -161,20 +158,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-#ifdef gmdx
-        foreach AllActors(class'SpecialCaseTrigger', sct, 'PaulRunningToPlayer'){
-            //Find this SpecialCaseTrigger and just run it right away
-            //It's marked as bTriggerOnlyOnce, but that actually only works for Touch,
-            //so just delete it after we trigger it.
-            //This does stuff like deleting some pawn(s?), opening the gate near the dock,
-            //and turning on some lights.  Why is this in a trigger and not just the
-            //mission script?  This thing sucks, lol
-            //This particular trigger is basically meant to run right away anyway, so here we go...
-            sct.Trigger(self,Player());
-            sct.Destroy();
-        }
-#endif
-
+        HandleGMDXSpecialCaseTrigger();
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
@@ -368,6 +352,41 @@ function string FixedSaveReminderCubeText()
     return msg;
 #else
     return "";
+#endif
+}
+
+function HandleGMDXSpecialCaseTrigger()
+{
+#ifdef gmdx
+    local SpecialCaseTrigger sct;
+    local #var(PlayerPawn) p;
+    local bool triggered;
+    local float oldCombatDiff;
+
+    p = Player();
+
+    //We need to use the gmdx_difficulty configured CombatDifficulty instead
+    //of the real one, so we should flip it back and forth here.
+    oldCombatDiff = p.CombatDifficulty;
+    p.CombatDifficulty = p.ConvertGMDXDifficultyOption(dxr.flags.moresettings.gmdx_difficulty);
+
+    foreach AllActors(class'SpecialCaseTrigger', sct, 'PaulRunningToPlayer'){
+        //Find this SpecialCaseTrigger and just run it right away
+        //It's marked as bTriggerOnlyOnce, but that actually only works for Touch,
+        //so just delete it after we trigger it.
+        //This does stuff like deleting some pawn(s?), opening the gate near the dock,
+        //and turning on some lights.  Why is this in a trigger and not just the
+        //mission script?  This thing sucks, lol
+
+        //This particular trigger is basically meant to run right away anyway, so here we go...
+        if (!triggered){
+            sct.Trigger(self,p);
+            triggered=true;
+        }
+        sct.Destroy();
+    }
+
+    p.CombatDifficulty = oldCombatDiff;
 #endif
 }
 
