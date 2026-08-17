@@ -1,5 +1,7 @@
 class DXRFixupM01 extends DXRFixup;
 
+var bool statueMissionComplete;
+
 //#region Post First Entry
 function PostFirstEntryMapFixes()
 {
@@ -78,6 +80,12 @@ function PreFirstEntryMapFixes()
     //#region UNATCO Island
     case "01_NYC_UNATCOISLAND":
         FixHarleyFilben();
+
+        if (!#defined(vanilla)){
+            //Start a timer to see if we need to kill any leftover clones when the mission is done
+            //Vanilla will use the logic in DXRMission01 (The modified mission script)
+            SetTimer(1.0, True);
+        }
 
         //Requesting Fearless Leo
         foreach AllActors(class'#var(prefix)TerroristCommander', leo) {
@@ -363,6 +371,49 @@ function string FixedSaveReminderCubeText()
 #endif
 }
 
+function KillHostileClones()
+{
+    local ScriptedPawn P;
+    local Inventory item,nextItem;
+
+    foreach AllActors(class'ScriptedPawn', P)
+    {
+        if (P.GetAllianceType('player')!=ALLIANCE_Hostile) continue; //Only destroy enemies
+        if (InStr(P.Tag,"_clone")==-1) continue; //We only care about clones
+
+        P.Destroy(); //Just destroy all the clones that weren't already subclasses of handled classes
+/*
+        //The vanilla mission script just does a Destroy on SecurityBot3 and ThugMale2, so maybe that's precedent to not do this?
+
+        if (Robot(p)!=None){
+            //Just destroy robots so they don't damage stuff around them when they explode
+            P.Destroy();
+            continue;
+        }
+
+        //Kill the clones and yoink their inventory (logic stolen from the vanilla mission script Mission01)
+        P.HealthTorso = 0;
+        P.Health = 0;
+        P.TakeDamage(1, P, P.Location, vect(0,0,0), 'Shot');
+
+        // delete their inventories as well
+        if (P.Inventory != None)
+        {
+            do
+            {
+                item = P.Inventory;
+                nextItem = item.Inventory;
+                P.DeleteInventory(item);
+                item.Destroy();
+                item = nextItem;
+            }
+            until (item == None);
+        }
+*/
+    }
+
+}
+
 //#region Timer
 function TimerMapFixes()
 {
@@ -371,6 +422,14 @@ function TimerMapFixes()
     case "01_NYC_UNATCOHQ":
         if (!dxr.flagbase.GetBool('M01ReadyForBriefing') && dxr.flagbase.GetBool('MeetCarter_Played') && dxr.flagbase.GetBool('MeetJaime_Played')){
             dxr.flagbase.SetBool('M01ReadyForBriefing',True,,999);
+            SetTimer(0,false);
+        }
+        break;
+    case "01_NYC_UNATCOISLAND":
+        if (!statueMissionComplete && dxr.flagbase.GetBool('MS_MissionComplete')){
+            //Remove hostile clones after finishing the mission (Let the main mission script run first)
+            KillHostileClones();
+            statueMissionComplete=true;
             SetTimer(0,false);
         }
         break;
