@@ -379,10 +379,7 @@ function HandleGMDXSpecialCaseTrigger()
         //mission script?  This thing sucks, lol
 
         //This particular trigger is basically meant to run right away anyway, so here we go...
-        if (!triggered){
-            sct.Trigger(self,p);
-            triggered=true;
-        }
+        sct.Trigger(self,p);
         sct.Destroy();
     }
 
@@ -397,6 +394,7 @@ function KillHostileClones()
 
     foreach AllActors(class'ScriptedPawn', P)
     {
+        if (#var(prefix)Terrorist(P)!=None) continue; //The original script will have already caught them
         if (P.GetAllianceType('player')!=ALLIANCE_Hostile) continue; //Only destroy enemies
         if (InStr(P.Tag,"_clone")==-1) continue; //We only care about clones
 
