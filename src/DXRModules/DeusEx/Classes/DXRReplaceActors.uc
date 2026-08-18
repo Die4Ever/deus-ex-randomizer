@@ -73,6 +73,14 @@ function ReplaceActors()
         if( #var(prefix)InformationDevices(a) != None ) {
             ReplaceInformationDevice(#var(prefix)InformationDevices(a));
         }
+#ifdef gmdxnotae
+        else if( GMDXTutorialCube(a) != None ) {
+            ReplaceGMDXTutorialCube(GMDXTutorialCube(a));
+        }
+        else if( NewClipboard2(a) != None ) {
+            ReplaceGMDXClipboard(NewClipboard2(a));
+        }
+#endif
         else if( #var(prefix)AllianceTrigger(a) != None ) {
             ReplaceAllianceTrigger(#var(prefix)AllianceTrigger(a));
         }
@@ -272,6 +280,96 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 
     a.Destroy();
 }
+
+#ifdef gmdxnotae
+//The GMDXv9 GMDXTutorialCube extends from DeusExDecoration, and is hacky as fuck.
+//Pass the information into a DXRInformationDevices so that it can work like other ones
+function ReplaceGMDXTutorialCube(GMDXTutorialCube a)
+{
+    local DXRInformationDevices n;
+    local DynamicLight lt;
+    local int GMDXTextNum;
+
+    n = DXRInformationDevices(SpawnReplacement(a, class'DXRInformationDevices'));
+    if(n == None)
+        return;
+
+    n.bAddToVault = true;
+
+    //This gets the value of the enum, but the text strings are 1 indexed
+    //Eg. GMDXTextNum=1 aligns to GMDXText2 in the GMDXTutorialCube
+    GMDXTextNum = int(a.HackText);
+
+    //Find the plaintext
+    n.plaintext = a.GetPropertyText("GMDXText"$string(GMDXTextNum+1));
+
+    //Make the plaintextTag (Try to align it to the AE ones)
+    n.plaintextTag = "V9Datacube"$string(GMDXTextNum);
+
+    //Just so it kind of aligns with AE
+    n.TextPackage="GMDXText";
+
+    n.msgNoText = class'Datacube'.default.msgNoText;
+    n.ImageLabel = class'Datacube'.default.ImageLabel;
+    n.AddedToDatavaultLabel = class'Datacube'.default.AddedToDatavaultLabel;
+    n.defaultItemName = class'Datacube'.default.ItemName;
+
+    //Move dynamic lights that might be based on the info device
+    foreach a.BasedActors(class'DynamicLight', lt) {
+        lt.SetBase(n);
+    }
+
+    ReplaceDeusExDecoration(a, n);
+
+    a.Destroy();
+}
+
+
+//The GMDXv9 Clipboard2 also extends from DeusExDecoration, and is hacky as fuck.
+//Pass the information into a DXRInformationDevices so that it can work like other ones
+function ReplaceGMDXClipboard(NewClipboard2 a)
+{
+    local DXRInformationDevices n;
+    local DynamicLight lt;
+    local int GMDXTextNum;
+
+    n = DXRInformationDevices(SpawnReplacement(a, class'DXRInformationDevices'));
+    if(n == None)
+        return;
+
+    n.bAddToVault = true;
+
+    //This gets the value of the enum, but the text strings are 1 indexed
+    //Eg. GMDXTextNum=1 aligns to GMDXText2 in the GMDXTutorialCube
+    if (a.sClip){
+        GMDXTextNum=1;
+        n.plaintext = a.HackText;
+    } else if (a.sClip2){
+        GMDXTextNum=2;
+        n.plainText = a.hackText2;
+    }
+
+    //Make the plaintextTag (Try to align it to the AE ones)
+    n.plaintextTag = "V9Clipboard"$string(GMDXTextNum);
+
+    //Just so it kind of aligns with AE
+    n.TextPackage="GMDXText";
+
+    n.msgNoText = class'Datacube'.default.msgNoText;
+    n.ImageLabel = class'Datacube'.default.ImageLabel;
+    n.AddedToDatavaultLabel = class'Datacube'.default.AddedToDatavaultLabel;
+    n.defaultItemName = class'NewClipboard2'.default.ItemName;
+
+    //Move dynamic lights that might be based on the info device
+    foreach a.BasedActors(class'DynamicLight', lt) {
+        lt.SetBase(n);
+    }
+
+    ReplaceDeusExDecoration(a, n);
+
+    a.Destroy();
+}
+#endif
 
 function ReplaceKeypad(#var(prefix)Keypad a)
 {

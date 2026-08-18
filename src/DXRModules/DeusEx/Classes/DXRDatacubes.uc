@@ -2843,6 +2843,96 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
         case "RevisionText.15_Datacube01":
             return "Note to Rose";
 
+
+        case "GMDXText.V9Datacube0":
+        case "GMDXText.Datacube00":
+            return "Excellent";
+        case "GMDXText.V9Datacube1":
+        case "GMDXText.Datacube01":
+            return "Swimming Tips";
+        case "GMDXText.V9Datacube2":
+        case "GMDXText.Datacube02":
+            return "Ladder Jumping";
+        case "GMDXText.V9Datacube3":
+        case "GMDXText.Datacube03":
+            return "Accuracy Breakdown";
+        case "GMDXText.V9Datacube4":
+        case "GMDXText.Datacube04":
+            return "Secondary Items";
+        case "GMDXText.V9Datacube5":
+        case "GMDXText.Datacube05":
+            return "Final Test";
+        case "GMDXText.V9Datacube6":
+        case "GMDXText.Datacube06":
+            return "Weapon Controls";
+        case "GMDXText.V9Datacube7":
+        case "GMDXText.Datacube07":
+            return "Training Course Closed";
+        case "GMDXText.V9Datacube8":
+        case "GMDXText.Datacube08":
+            return "Takedowns";
+        case "GMDXText.V9Datacube9":
+        case "GMDXText.Datacube09":
+            return "Door Information";
+        case "GMDXText.V9Datacube10":
+        case "GMDXText.Datacube10":
+            return "Mantling Training";
+        case "GMDXText.V9Datacube11":
+        case "GMDXText.Datacube11":
+            return "About Ammo Types";
+        case "GMDXText.V9Datacube12":
+        case "GMDXText.Datacube12":
+            return "Jumping";
+        case "GMDXText.V9Datacube13":
+        case "GMDXText.Datacube13":
+            return "Crawlspaces";
+        case "GMDXText.V9Datacube14":
+        case "GMDXText.Datacube14":
+            return "Walkway Code";
+        case "GMDXText.V9Datacube15":
+        case "GMDXText.Datacube15":
+            return "Staying Healthy";
+        case "GMDXText.V9Datacube16":
+        case "GMDXText.Datacube16":
+            return "Advanced Interactivity";
+        case "GMDXText.V9Datacube17":
+        case "GMDXText.Datacube17":
+            return "Zyme Deal";
+        case "GMDXText.V9Datacube18":
+        case "GMDXText.Datacube18":
+            return "Well Done!";
+        case "GMDXText.V9Datacube19":
+        case "GMDXText.Datacube19":
+            return "Storage Inventory Ledger";
+        case "GMDXText.V9Datacube20":
+        case "GMDXText.Datacube20":
+            return "The Canister";
+        case "GMDXText.V9Datacube21":
+        case "GMDXText.Datacube21":
+            return "Nano-Augmentation Guidelines";
+        case "GMDXText.V9Datacube22":
+        case "GMDXText.Datacube22":
+            return "Transfer Request";
+
+        case "GMDXText.V9Clipboard1":
+            return "Informal Resignation";
+        case "GMDXText.V9Clipboard2":
+            return "Guard Orders";
+
+        case "GMDXText.Datacube23": //AE
+            return "Stop Falling Asleep!";
+        case "GMDXText.Datacube24": //AE
+            return "Advanced World Interactions";
+        case "GMDXText.Datacube25": //AE
+            return "Left-Click Interactions";
+        case "GMDXText.Datacube26": //AE
+            return "Ammo Restrictions";
+        case "GMDXText.Datacube27": //AE
+            return "Disarming Explosives";
+        case "GMDXText.Datacube28": //AE
+            return "Toolbelt Slots";
+
+
 /////////////////////////
 //   Added datacubes   //
 /////////////////////////
