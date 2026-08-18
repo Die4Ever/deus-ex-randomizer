@@ -59,6 +59,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)InformationDevices id;
     local #var(prefix)DatalinkTrigger dlt;
     local #var(prefix)TerroristCommander leo;
+#ifdef gmdx
+    local SpecialCaseTrigger sct;
+#endif
     local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -158,7 +161,14 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        HandleGMDXSpecialCaseTrigger();
+        HandleGMDXSpecialCaseTrigger(true);
+    #ifdef gmdx
+        foreach AllActors(class'SpecialCaseTrigger',sct,'SpecialCaseTrigger2'){
+            //Detach the SCT at the top of the trigger so it can be hit by the timer at the end of the mission and handled correctly
+            sct.Tag='EndSpecialCaseTrigger';
+            sct.SetCollision(false,false,false); //Just to be safe
+        }
+    #endif
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
@@ -355,28 +365,44 @@ function string FixedSaveReminderCubeText()
 #endif
 }
 
-function HandleGMDXSpecialCaseTrigger()
+function HandleGMDXSpecialCaseTrigger(bool start)
 {
 #ifdef gmdx
     local SpecialCaseTrigger sct;
     local #var(PlayerPawn) p;
     local bool triggered;
     local float oldCombatDiff;
+    local name target;
+
+    if (start)
+        target='PaulRunningToPlayer';
+    else
+        target='EndSpecialCaseTrigger'; //Renamed by PreFirstEntry from SpecialCaseTrigger2, to detach it from the Trigger
+
+    //The start one does stuff like deleting some pawn(s?), opening the gate near the dock,
+    //and turning on some lights.  Why is this in a trigger and not just the
+    //mission script?  This thing sucks, lol
+
+    //The end one is near the top of the statue and TODO
 
     p = Player();
 
     //We need to use the gmdx_difficulty configured CombatDifficulty instead
     //of the real one, so we should flip it back and forth here.
     oldCombatDiff = p.CombatDifficulty;
-    p.CombatDifficulty = p.ConvertGMDXDifficultyOption(dxr.flags.moresettings.gmdx_difficulty);
 
-    foreach AllActors(class'SpecialCaseTrigger', sct, 'PaulRunningToPlayer'){
+    if (dxr.flags.settings.goals>0 || dxr.flags.settings.startinglocations>0){
+        //If you have randomized starting (or goal) locations enabled, keeping the gate closed can be a problem.
+        //Presumably if you thought that was a good idea, force a combat difficulty high enough to always open.
+        p.CombatDifficulty = 5.0; //Technically it just needs to be above 1.0, but let's give it some room
+    } else {
+        p.CombatDifficulty = p.ConvertGMDXDifficultyOption(dxr.flags.moresettings.gmdx_difficulty);
+    }
+
+    foreach AllActors(class'SpecialCaseTrigger', sct, target){
         //Find this SpecialCaseTrigger and just run it right away
         //It's marked as bTriggerOnlyOnce, but that actually only works for Touch,
         //so just delete it after we trigger it.
-        //This does stuff like deleting some pawn(s?), opening the gate near the dock,
-        //and turning on some lights.  Why is this in a trigger and not just the
-        //mission script?  This thing sucks, lol
 
         //This particular trigger is basically meant to run right away anyway, so here we go...
         sct.Trigger(self,p);
@@ -446,6 +472,7 @@ function TimerMapFixes()
         if (!statueMissionComplete && dxr.flagbase.GetBool('MS_MissionComplete')){
             //Remove hostile clones after finishing the mission (Let the main mission script run first)
             KillHostileClones();
+            HandleGMDXSpecialCaseTrigger(false); //Do the top of statue trigger
             statueMissionComplete=true;
             SetTimer(0,false);
         }
