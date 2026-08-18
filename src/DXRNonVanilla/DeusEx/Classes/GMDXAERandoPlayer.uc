@@ -2333,7 +2333,17 @@ function RefreshSkills()
 
 static function bool UsingAugmentique(#var(PlayerPawn) p)
 {
-    if (p.OutfitManager==None) return false; //Definitely not
+    local class<OutfitManagerBase> managerBaseClass;
+
+    if (p.OutfitManager==None){
+        //Outfit manager shouldn't really be none, it should either be an OutfitManagerBase or
+        //a real Augmentique.OutfitManager.  If it's none, that probably means we beat the player
+        //initialization (probably something like Paul loading in).  In these cases, let's check
+        //with a DynamicLoadObject in advance to see if it's loaded.  This is the same logic the
+        //player uses in SetupOutfitManager to try to load Augmentique.
+        managerBaseClass = class<OutfitManagerBase>(DynamicLoadObject("Augmentique.OutfitManager", class'Class'));
+        return managerBaseClass!=None;
+    }
     return p.OutfitManager.Installed();
 }
 
