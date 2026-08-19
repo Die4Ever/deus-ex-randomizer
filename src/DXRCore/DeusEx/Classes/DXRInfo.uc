@@ -381,6 +381,24 @@ simulated static final function string StripMapName(string s)
     return stripped;
 }
 
+simulated static function bool StrInList(coerce string str, string commaList, optional bool caseSensitive)
+{
+    local string str1,list,word;
+
+    list = commaList;
+    word = "";
+    while(list!=""){
+        word = UnpackString(list);
+
+        if (caseSensitive){
+            if (str==word) return true;
+        } else {
+            if (str~=word) return true;
+        }
+    }
+    return false;
+}
+
 simulated static function string UnpackString(out string s)
 {
     return UnpackStringChar(s,",");
