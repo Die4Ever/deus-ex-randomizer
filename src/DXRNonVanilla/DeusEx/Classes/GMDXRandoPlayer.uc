@@ -346,7 +346,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
     skillLevel = FClamp(skillLevel, 0, 1.1);
     if (UsingChargedPickup(class'HazMatSuit'))
     {
-        damage *= 0.75 * skillLevel;
+        damage *= 0.4; //0.75 * skillLevel;
 
         //GMDX makes hazmat charge only decrease when protecting against damage
         foreach AllActors(class'HazMatSuit',suit) {
@@ -394,7 +394,8 @@ function float ArmorReduceDamage(float damage)
                 break;
             }
         }
-        return damage * 0.5 * skillLevel;
+        //GMDX: removed too easy * skillLevel reduction
+        return damage * 0.65; //0.5 * skillLevel;
     }
     return damage;
 }

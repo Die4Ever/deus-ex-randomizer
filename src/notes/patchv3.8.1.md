@@ -105,6 +105,8 @@
   - "Super MIBs" will have their blue glow effect properly attached to them after being shuffled.
   - "Cracked" and "Locksport" perks will cause the highlight info for hackable electronics and locked doors to show the appropriate number of multitools or lockpicks needed.
   - Anna will no longer walk towards you forever if you manage to finish Anna's conversation at the dock in Mission 2 in under 2 seconds.
+  - Ballistic Armor will now correctly apply a flat 35% damage reduction to bullet shots.
+  - Hazmat Suits will now correctly apply a flat 60% damage reduction to environmental damage.
 
 </details>
 
