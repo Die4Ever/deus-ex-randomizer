@@ -52,7 +52,7 @@
   - Randomized grenades will keep their original detection radius.
   - The installer will now enable mirror reflections for the Direct3D 9 renderer, and disable OneXBlending for the OpenGL renderer to improve brightness.
   - "Go into Alex's closet" bingo goal will no longer be marked as complete when you use the keypad and will instead still need you to actually enter the closet.
-  - It is no longer possible to infinitely stockpile "how long you've been standing" for weapon accuracy bonuses.  You can now accumulate up to 20 seconds of standing time before it is capped.  Standing time will also no longer increase while reloading.
+  - It is no longer possible to infinitely stockpile "how long you've been standing" for weapon accuracy bonuses.  You can now accumulate 2 seconds beyond the time necessary to reach the maximum bonus before it is capped.
   - Randomized weapon mods will no longer sometimes fall through the world.
   - Empty datacubes will no longer glow.
   - Weapon mods will not get auto-applied to a weapon that is being put away.
