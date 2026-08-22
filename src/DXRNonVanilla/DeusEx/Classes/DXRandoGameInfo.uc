@@ -295,6 +295,15 @@ exec function CheatsOff()
     SetCheatsState(false);
 }
 
+exec function FixAugHotkeys()
+{
+    local #var(PlayerPawn) p;
+
+    foreach AllActors(class'#var(PlayerPawn)',p){
+        class'DXRAugmentations'.static.FixAugHotkeys(p,true);
+    }
+}
+
 function SetCheatsState(bool enabled)
 {
     local #var(PlayerPawn) p;
