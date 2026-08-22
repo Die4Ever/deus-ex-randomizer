@@ -15,6 +15,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     if(Level.LevelAction != LEVACT_None) return;
 
+    //Vanilla Rando Scrambler grenade logic.  Not needed in AE since it already gives scramblers an effect on the player
+/*
     if(damageType == 'NanoVirus' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         augLevel = -1;
         if (AugmentationSystem != None)
@@ -26,7 +28,10 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             AddDamageDisplay('NanoVirus', vect(0,0,0));
             SetDamagePercent(1);
         }
-    } else if (damageType=='Shot' || damageType=='AutoShot'){
+    } else
+*/
+
+    if (damageType=='Shot' || damageType=='AutoShot'){
         if (WineBulletsActive()){
             drugEffectTimer+=3.0;
         }
