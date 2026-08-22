@@ -438,10 +438,7 @@ function float ArmorReduceDamage(float damage)
         {
             if ((armor.Owner == Self) && armor.bActive)
             {
-                if (skillLevel == 1)
-                    armor.Charge -= (damage * 16 * skillLevel);
-                else
-                    armor.Charge -= (damage * 32 * skillLevel);	// Trash: Nerfed
+                armor.Charge -= (damage * 32 * skillLevel);
             }
 
             if (armor.Charge < 0)                                       //RSD: Don't go below zero
