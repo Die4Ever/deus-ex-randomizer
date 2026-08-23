@@ -108,6 +108,7 @@
   - Ballistic Armor will now correctly apply a flat 35% damage reduction to bullet shots.
   - Hazmat Suits will now correctly apply a flat 60% damage reduction to environmental damage.
   - LAW damage is now shown relative to the real default damage of 1000, instead of the invalid 100 base damage shown before.
+  - Buying a perk on a skill that is "Banned" will no longer change the text to say 99999 points to upgrade instead of "Banned".
 
 </details>
 
