@@ -107,6 +107,7 @@
   - Anna will no longer walk towards you forever if you manage to finish Anna's conversation at the dock in Mission 2 in under 2 seconds.
   - Ballistic Armor will now correctly apply a flat 35% damage reduction to bullet shots.
   - Hazmat Suits will now correctly apply a flat 60% damage reduction to environmental damage.
+  - LAW damage is now shown relative to the real default damage of 1000, instead of the invalid 100 base damage shown before.
 
 </details>
 

@@ -343,55 +343,7 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
             if(class'MenuChoice_BalanceItems'.static.IsEnabled()) return 100 * mult; // PS40
             else return 25 * mult; // PS20
         }
-        // mostly copied from DXRWeapons module
-        switch(ProjectileClass) {
-        case class'DXRDart':
-            return 17.0 * mult;
-
-        case class'#var(prefix)Dart':
-            return 15.0 * mult;
-
-        case class'#var(prefix)DartFlare':
-        case class'#var(prefix)DartPoison':
-            return 5.0 * mult;
-
-        case class'#var(prefix)PlasmaBolt':
-        case class'PlasmaBoltFixTicks':
-            return 18.0 * mult;
-
-        case class'#var(prefix)Rocket':
-        case class'RocketFixTicks':
-            return 300.0 * mult;
-
-        case class'#var(prefix)RocketWP':
-            return 300.0 * mult;
-
-        case class'#var(prefix)HECannister20mm':
-        case class'HECannisterFixTicks':
-            // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
-            return 180.0 * mult;
-
-        case class'#var(prefix)Shuriken':
-        case class'#var(prefix)Fireball':
-            return default.HitDamage * mult;
-
-        case class'#var(prefix)LAM':
-            return 500.0 * mult;
-
-        case class'#var(prefix)RocketLAW':
-            return 1000.0 * mult;
-
-        case class'#var(prefix)GreaselSpit':
-        case class'#var(prefix)GraySpit':
-            return 8.0 * mult;
-
-        case class'#var(prefix)RocketMini':
-            return 50.0 * mult;
-
-        case None:
-            return default.HitDamage * mult;
-        }
-        return ProjectileClass.default.Damage * mult;
+        return class'DXRWeapons'.static.GetDefaultProjDamage(ProjectileClass) * mult;
     }
 
     if( class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
