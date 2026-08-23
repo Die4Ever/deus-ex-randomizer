@@ -596,6 +596,10 @@ function PatchHole(Vector baseloc, Rotator baserot, string texture, int roll, fl
     local int x, y;
     local Vector loc, offset;
     local Rotator rot;
+    local Texture theTex;
+
+    //Load the texture once
+    theTex = Texture(DynamicLoadObject(texture, class'Texture'));
 
     rot = baserot;
     rot.Yaw += 32768;
@@ -609,16 +613,7 @@ function PatchHole(Vector baseloc, Rotator baserot, string texture, int roll, fl
             offset.Z = float(y) * 49.5 * scale;
             loc = baseloc + (offset >> baserot);
             loc = vectm(loc.X, loc.Y, loc.Z);
-            a = spawn(class'#var(prefix)CeilingFanMotor',,, loc, rot);
-            a.bCollideWorld = false;
-            a.SetPhysics(PHYS_None);
-            a.SetCollision(false,false,false);
-            a.DrawScale = scale;
-            a.ScaleGlow = 0.2;
-            a.bUnlit = true;
-            a.AmbientSound = None;
-            a.Mesh = LodMesh'DeusExItems.FlatFX';
-            a.Skin = Texture(DynamicLoadObject(texture, class'Texture'));
+            a = class'FakeWallPlate'.static.Create(self,loc,rot,scale,theTex);
         }
     }
 }
