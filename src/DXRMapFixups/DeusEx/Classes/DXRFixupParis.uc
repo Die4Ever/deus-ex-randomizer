@@ -193,6 +193,10 @@ function PreFirstEntryMapFixes()
             ft.bWhileStandingOnly = true;
             ft.bTriggerOnceOnly = false;
             ft.FlagName = 'ChateauInCellar';
+
+            //Don't shuffle anything on top of the beams in the back foyer of the Chateau.  GMDX puts 48 credits on top
+            //of one of the beams.  Wow, what a great reward for such an inaccessible spot.
+            MassSetSecretGoalBox(class'Inventory', vectm(-290,-1310,300), vectm(-830,-770,740), true);
         }
 
         //Add a button to the top of the dumbwaiter shaft in case you get stuck on top... (Krickraken...)
