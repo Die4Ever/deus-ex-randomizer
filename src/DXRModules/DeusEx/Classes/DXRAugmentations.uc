@@ -946,6 +946,14 @@ static simulated function FixAugHotkeys(PlayerPawn player, bool verbose)
 
     p = #var(PlayerPawn)(player);
 
+#ifdef gmdxae
+    if (p.AugmentationSystem!=None){
+        //Just use the AE function that is for this exact case
+        p.AugmentationSystem.AssignAugHotKeys();
+        return;
+    }
+#endif
+
     am = p.AugmentationSystem;
     for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {
         hotkeynums[loc] = am.AugLocs[loc].KeyBase + 1;
