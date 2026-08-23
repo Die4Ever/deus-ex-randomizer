@@ -255,6 +255,25 @@ function Tick(float delta)
     }
 }
 
+#ifdef gmdxae
+simulated function ActivateRepairBotScreens(DeusExPlayer PlayerToDisplay)
+{
+    local int realChargeRefresh;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    realChargeRefresh = chargeRefreshTime;
+
+    Super.ActivateRepairBotScreens(PlayerToDisplay);
+
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.repairbotcooldowns>0){
+        //If Medbot cooldowns are randomized, restore the previous cooldown
+        chargeRefreshTime = realChargeRefresh;
+    }
+}
+#endif
+
 defaultproperties
 {
     bDetectable=false

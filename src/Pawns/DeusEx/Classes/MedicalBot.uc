@@ -253,6 +253,25 @@ function Tick(float delta)
     }
 }
 
+#ifdef gmdxae
+function Frob(Actor Frobber, Inventory frobWith)
+{
+    local int realHealRefresh;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    realHealRefresh = healRefreshTime;
+
+    Super.Frob(Frobber,frobWith);
+
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.medbotcooldowns>0){
+        //If Medbot cooldowns are randomized, restore the previous cooldown
+        healRefreshTime = realHealRefresh;
+    }
+}
+#endif
+
 defaultproperties
 {
     bDetectable=false
