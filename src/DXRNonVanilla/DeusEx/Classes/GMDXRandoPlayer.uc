@@ -1765,6 +1765,20 @@ state PlayerWalking
                     }
                 }
             }
+        } else if (!isMantling && !bOnLadder){
+            //Allow mid-air crouching without toggle crouch (Toggle crouch will handle this itself)
+            //Toggle crouch only allows *crouching* in mid-air, not *uncrouching*, do the same here
+            //Crouch logic yoinked from PlayerPawn::ProcessMove
+            if (!bToggleCrouch && Physics == PHYS_Falling){
+                if (!bIsCrouching)
+                {
+                    if (bDuck != 0)
+                    {
+                        bIsCrouching = true;
+                        PlayDuck();
+                    }
+                }
+            }
         }
     }
 
@@ -2368,6 +2382,32 @@ function BumpWall( vector HitLocation, vector HitNormal )
         {
         icar.incremental = 2;
         }
+    }
+}
+
+exec function QuickSave()
+{
+    local int oldQuickSave;
+    local bool wasAutosave;
+    local SavePoint sp;
+
+    oldQuickSave = QuickSaveLast;
+
+    //Need to differentiate between autosave and savepoint still, both use bPendingHardCoreSave
+    wasAutosave = bPendingHardCoreSave;
+    foreach AllActors(class'SavePoint',sp){
+        //Check if any savepoints are actively trying to save
+        if (sp.GetStateName()=='QuickSaver'){
+            wasAutosave = false;
+        }
+    }
+
+    Super.QuickSave();
+
+    //If load from last actual quicksave and it was an autosave...
+    if (class'MenuChoice_LoadLatest'.default.enabled==false && wasAutosave){
+        QuickSaveLast = oldQuickSave;
+        ConsoleCommand("set DeusEx.JCDentonMale iQuickSaveLast "$QuickSaveLast);
     }
 }
 

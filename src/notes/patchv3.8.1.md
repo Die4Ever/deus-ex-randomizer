@@ -110,6 +110,8 @@
   - LAW damage is now shown relative to the real default damage of 1000, instead of the invalid 100 base damage shown before.
   - Buying a perk on a skill that is "Banned" will no longer change the text to say 99999 points to upgrade instead of "Banned".
   - Items at the DuClare Chateau (Mission 10) will no longer be able to randomize into the mostly inaccessible rafters in the back entry room.
+  - New option under the "Rando > Gameplay" menu to choose between allowing Quick Load to load Autosaves and only allowing it to load manual saves (Quick Saves or Savepoints).
+  - Players who hold the crouch key instead of using it as a toggle can now crouch mid-jump like players using toggle mode can.
 
 </details>
 

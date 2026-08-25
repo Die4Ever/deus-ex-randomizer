@@ -1731,6 +1731,22 @@ state PlayerWalking
             DoJump();
 
         checkMantle();
+
+        if (!isMantling && !bOnLadder){
+            //Allow mid-air crouching without toggle crouch (Toggle crouch will handle this itself)
+            //Toggle crouch only allows *crouching* in mid-air, not *uncrouching*, do the same here
+            //Crouch logic yoinked from PlayerPawn::ProcessMove
+            if (!bToggleCrouch && Physics == PHYS_Falling){
+                if (!bIsCrouching)
+                {
+                    if (bDuck != 0)
+                    {
+                        bIsCrouching = true;
+                        PlayDuck();
+                    }
+                }
+            }
+        }
     }
 
     // can't call Super(DeusExPlayer.PlayerWalking).ProcessMove, so we gotta copy-paste it too...
