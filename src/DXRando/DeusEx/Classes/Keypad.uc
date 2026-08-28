@@ -78,11 +78,11 @@ function bool IsDiscovered(DeusExPlayer player, string code, optional string cod
 
     dxr = class'DXRando'.default.dxr;
 
-    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.passwordsrandomized > 0){
-        return bCodeKnown;
-    } else {
-        Super.IsDiscovered(player,code,code2,bReallyKnown);
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.passwordsrandomized > 0 && bCodeKnown){
+        return true;
     }
+
+    return Super.IsDiscovered(player,code,code2,bReallyKnown);
 }
 #endif
 

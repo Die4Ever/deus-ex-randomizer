@@ -125,11 +125,11 @@ function bool IsDiscovered(DeusExPlayer player, string code, optional string cod
 
     dxr = class'DXRando'.default.dxr;
 
-    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.passwordsrandomized > 0){
-        return GetAccountKnownByName(code);
-    } else {
-        Super.IsDiscovered(player,code,code2,bReallyKnown);
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.passwordsrandomized > 0 && GetAccountKnownByName(code)){
+        return true;
     }
+
+    Super.IsDiscovered(player,code,code2,bReallyKnown);
 }
 
 function bool IsDefaultSkin()
