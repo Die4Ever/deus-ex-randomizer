@@ -7,6 +7,7 @@ class DXRRepairBot extends #var(prefix)RepairBot;
 var travel int numUses;
 var transient DXRando dxr;
 var string baseName;
+var int baseChargeAmount;
 
 replication
 {
@@ -23,10 +24,40 @@ function PostBeginPlay()
 
 function StandStill()
 {
+    if (baseChargeAmount==-1){
+        baseChargeAmount=chargeAmount;
+    }
     Super.StandStill();
     SetPropertyText("lowerThreshold", "0");// RSD
+    HandlePerkLogic();
+
 }
 #endif
+
+function HandlePerkLogic()
+{
+    local DeusExPlayer player;
+
+    player = DeusExPlayer(GetPlayerPawn());
+    chargeAmount = baseChargeAmount;
+
+#ifdef gmdxae
+    if (player!=None &&
+        player.PerkManager!=None &&
+        player.PerkManager.GetPerkWithClass(class'DeusEx.PerkMisfeatureExploit').bPerkObtained == true){
+
+        //Base GMDX chargeAmount is 60, and with the perk, it does 90 (60 * 1.5 = 90)
+        chargeAmount = chargeAmount * 1.5;
+    }
+#elseif gmdxnotae
+    if (player!=None &&
+        player.PerkNamesArray[21] == 1){
+        //Base GMDX chargeAmount is 60, and with the perk, it does 90 (60 * 1.5 = 90)
+        chargeAmount = chargeAmount * 1.5;
+    }
+#endif
+}
+
 
 function updateName()
 {
@@ -284,4 +315,5 @@ defaultproperties
     LightRadius=6
     LightHue=89
     LightPeriod=25
+    baseChargeAmount=-1
 }

@@ -8,6 +8,7 @@ var travel int numUses;
 var transient DXRando dxr;
 var bool augsOnly;
 var string baseName;
+var int baseHealAmount;
 
 replication
 {
@@ -253,7 +254,7 @@ function Tick(float delta)
     }
 }
 
-#ifdef gmdxae
+#ifdef gmdx
 function Frob(Actor Frobber, Inventory frobWith)
 {
     local int realHealRefresh;
@@ -262,6 +263,9 @@ function Frob(Actor Frobber, Inventory frobWith)
     dxr = class'DXRando'.default.dxr;
 
     realHealRefresh = healRefreshTime;
+    if (baseHealAmount==-1){
+        baseHealAmount = healAmount;
+    }
 
     Super.Frob(Frobber,frobWith);
 
@@ -269,8 +273,36 @@ function Frob(Actor Frobber, Inventory frobWith)
         //If Medbot cooldowns are randomized, restore the previous cooldown
         healRefreshTime = realHealRefresh;
     }
+
+    HandlePerkLogic(Frobber);
+
 }
 #endif
+
+function HandlePerkLogic(Actor Frobber)
+{
+    local DeusExPlayer player;
+
+    player = DeusExPlayer(Frobber);
+    healAmount = baseHealAmount;
+
+#ifdef gmdxae
+    if (player!=None &&
+        player.PerkManager!=None &&
+        player.PerkManager.GetPerkWithClass(class'DeusEx.PerkMisfeatureExploit').bPerkObtained == true){
+
+        //Base GMDX:AE healAmount is 250, and with the perk, it does 375 (250 * 1.5 = 375)
+        healAmount = healAmount * 1.5;
+    }
+#elseif gmdxnotae
+    if (player!=None &&
+        player.PerkNamesArray[21]==1){
+        //Base GMDXv9 healAmount is 250, and with the perk, it does 450 (250 * 1.8 = 450)
+        healAmount = healAmount * 1.8;
+    }
+#endif
+
+}
 
 defaultproperties
 {
@@ -282,4 +314,5 @@ defaultproperties
     LightRadius=6
     LightHue=89
     LightPeriod=25
+    baseHealAmount=-1
 }
