@@ -1243,6 +1243,7 @@ function InstantlyUseItem(DeusExPickup item)
 function float GetCurrentGroundSpeed()
 {
     local float augValue, speed;
+    local PerkSprinter perk;
 
     // Remove this later and find who's causing this to Access None MB
     if ( AugmentationSystem == None )
@@ -1259,6 +1260,10 @@ function float GetCurrentGroundSpeed()
         speed = Self.mpGroundSpeed * augValue;
     else
         speed = Default.GroundSpeed * augValue;
+
+    perk = PerkSprinter(PerkManager.GetPerkWithClass(class'DeusEx.PerkSprinter'));
+    if (perk != None && perk.bPerkObtained && inHand == None && CarriedDecoration == None)
+        speed = speed * perk.perkValue;
 
     return speed;
 }
