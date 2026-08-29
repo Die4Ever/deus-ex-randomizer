@@ -18,7 +18,7 @@ event InitWindow()
     activeItems.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 #endif
 
-#ifndef vmd||hx||gmdxae
+#ifndef vmd||hx
     augDisplay.Destroy();
     augDisplay = AugmentationDisplayWindow(NewChild(Class'DXRAugDisplayWindow'));
     augDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);

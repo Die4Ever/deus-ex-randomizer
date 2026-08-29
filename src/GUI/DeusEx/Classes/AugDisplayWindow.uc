@@ -1,5 +1,4 @@
 #dontcompileif hx
-#dontcompileif gmdxae
 #ifdef revision
 class DXRAugDisplayWindow injects RevAugmentationDisplayWindow;
 #else
@@ -111,6 +110,9 @@ function ConfigurationChanged()
 
 function bool IsHeatSource(Actor A)
 {
+
+    if (#defined(gmdxae)) return Super.IsHeatSource(A);
+
     if ((A.bHidden) && (Player.Level.NetMode != NM_Standalone))
         return False;
     if (A.IsA('Pawn'))
@@ -158,6 +160,11 @@ function DrawBrush(GC gc, Actor a)
 
 function PostDrawWindow(GC gc)
 {
+    if (#defined(gmdxae)){
+        Super.PostDrawWindow(gc);
+        return;
+    }
+
     if(#bool(injections)) GetVisionLevelValue();
     else bVisionEnhancement = bVisionActive;
     Super.PostDrawWindow(gc);
@@ -168,6 +175,11 @@ function DrawVisionAugmentation(GC gc)
     local Vector loc;
     local float x, y, w, h;
     local Actor A;
+
+    if (#defined(gmdxae)){
+        Super.DrawVisionAugmentation(gc);
+        return;
+    }
 
     // brighten and tint the screen
     if(class'MenuUIChoiceVisionTint'.default.value == 1) {
@@ -274,6 +286,9 @@ function bool ShouldDrawActorDist(Actor A, float dist)
 //Allow different actors to show up as different colours
 function Texture GetGridTexture(Texture tex)
 {
+
+    if (#defined(gmdxae)) return Super.GetGridTexture(tex);
+
     switch(tex) {
         case None:
         case Texture'BlackMaskTex':
@@ -548,10 +563,13 @@ function DrawTargetAugmentation(GC gc)
     local vector HitLocation,HitNormal,EndTrace;
 
     gc.SetFont(Font'DXRFontMenuSmall_DS'); //This font is so much better for everything
-
-    SuperDrawTargetAugmentation(gc);
-
-    DrawGMDXIFFOverlays(gc);
+    if(!#defined(gmdxae)){
+        SuperDrawTargetAugmentation(gc);
+        DrawGMDXIFFOverlays(gc);
+    } else {
+        //GMDX:AE, just use the AE DrawTargetAugmentation
+        Super.DrawTargetAugmentation(gc);
+    }
 
     // check 500 feet in front of the player
     target = TraceHoverHint(8000);
@@ -1069,6 +1087,8 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
             break;
     }
 
+    if (#defined(gmdxae)) return;
+
     if ( Player.Level.NetMode == NM_Standalone ) {
         if ( target.IsA('AutoTurret') || target.IsA('AutoTurretGun') ) {
                 if (target.IsA('AutoTurret')){
@@ -1153,6 +1173,11 @@ function DrawDefenseAugmentation(GC gc)
     local float boxCX, boxCY;
     local float x, y, w, h, mult;
     local bool bDrawLine;
+
+    if(#defined(gmdxae)){
+        Super.DrawDefenseAugmentation(gc);
+        return;
+    }
 
     if (defenseTarget != None)
     {
