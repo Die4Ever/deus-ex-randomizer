@@ -2367,6 +2367,32 @@ exec function QuickSave()
     }
 }
 
+function SetupPerkManager()
+{
+    Super.SetupPerkManager();
+
+    if (PerkManager!=None){
+        //It better not be none by this point!
+
+        //Currently, Rando always saves emails and stuff as notes.  Maybe in
+        //the future we can make things play together nicely.
+        HidePerk(class'PerkDataRecovery');
+    }
+}
+
+function HidePerk(class<Perk> aPerk)
+{
+    local Perk p;
+
+    if (PerkManager==None) return;
+
+    p = PerkManager.GetPerkWithClass(aPerk);
+    if (p!=None){
+        //Hide it by changing it to belong to a skill that isn't possible to select
+        p.PerkSkill=class'SkillUnused';
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // #region Exec Functions
 ///////////////////////////////////////////////////////////////////////////////
