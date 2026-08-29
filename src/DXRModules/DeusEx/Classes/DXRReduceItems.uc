@@ -510,6 +510,9 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
 
     foreach AllActors(class'Ammo', a) {
         if( AmmoNone(a)!=None ) continue; //Don't do anything to AmmoNone
+#ifdef gmdxae
+        if( AmmoLAW(a)!=None ) continue; //Don't do anything to AmmoLAW so the Lawfare perk works
+#endif
         if( ! a.IsA(type.name) ) continue;
 
         f = float(percent) / 100.0;
