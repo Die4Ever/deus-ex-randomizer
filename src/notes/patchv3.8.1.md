@@ -57,6 +57,8 @@
   - Empty datacubes will no longer glow.
   - Weapon mods will not get auto-applied to a weapon that is being put away.
   - Walking in the right spot outside of the Comms Building in Vandenberg (Mission 12) will no longer complete the goal to activate the power for the bots.
+  - Walking Security Bots now have a higher maximum step height, allowing them to step up slightly higher ledges.
+  - UNATCO Troops who enter the map when Riot Cops are taken down in Mission 8 will now more consistently appear further away from the location of the Riot Cop.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.

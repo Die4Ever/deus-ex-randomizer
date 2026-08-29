@@ -656,12 +656,13 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local #var(DeusExPrefix)Mover d;
     local DXRHoverHint hoverHint;
-    local bool VanillaMaps;
+    local bool VanillaMaps,GMDXMaps,RevisionMaps;
     local ScriptedPawn pawn;
     local #var(prefix)LaserTrigger lt;
     local Teleporter tel;
     local DynamicTeleporter dtel;
-    local RiotCop rc;
+    local #var(prefix)RiotCop rc;
+    local #var(prefix)UNATCOTroop ut;
     local Smuggler smug;
     local #var(prefix)OrdersTrigger ot;
     local DXRReinforcementPoint reinforce;
@@ -681,6 +682,8 @@ function PreFirstEntryMapFixes()
 #endif
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL)
     {
@@ -703,6 +706,48 @@ function PreFirstEntryMapFixes()
 
                 if (#defined(gmdx)){
                     GMDXInitUnatcoTroopLocations();
+                }
+
+                //Make the cops bIsSecretGoal so they don't shuffle
+                foreach AllActors(class'#var(prefix)RiotCop',rc){
+                    switch (rc.Tag){
+                        case 'Cop1':
+                        case 'Cop2':
+                        case 'Cop3':
+                        case 'Cop4':
+                        case 'Cop5':
+                        case 'Cop6':
+                            rc.bIsSecretGoal=true;
+                            break;
+                    }
+                }
+
+                //Reorganize which groups of UNATCO guys correspond to which cops
+                //Revision has entirely different map layouts and patrol routes,
+                //so let's assume they figured this out already and just do vanilla.
+                if (VanillaMaps){
+                    foreach AllActors(class'#var(prefix)UNATCOTroop',ut){
+                        switch(ut.Tag){
+                        case 'troop1': // 1 -> 1
+                            ut.Tag='troop1';
+                            break;
+                        case 'troop2': // 2 -> 5
+                            ut.Tag='troop5';
+                            break;
+                        case 'troop3': // 3 -> 4
+                            ut.Tag='troop4';
+                            break;
+                        case 'troop4': // 4 -> 2
+                            ut.Tag='troop2';
+                            break;
+                        case 'troop5': // 5 -> 3
+                            ut.Tag='troop3';
+                            break;
+                        case 'troop6': // 6 -> 6
+                            ut.Tag='troop6';
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -793,6 +838,13 @@ function PreFirstEntryMapFixes()
                 MassSetSecretGoalBox(class'Inventory',vectm(-1662,257,443),vectm(-1406,-3,-147),true); //Balconies near free clinic
             }
 
+            if (VanillaMaps){
+                class'PlaceholderEnemy'.static.Create(self,vectm(1975, 20, -460),27376);
+                class'PlaceholderEnemy'.static.Create(self,vectm(-600, 2400, -440),-12352);
+                class'PlaceholderEnemy'.static.Create(self,vectm(-1800, 325, -460),0);
+                class'PlaceholderEnemy'.static.Create(self,vectm(-450, -2000, -460),11160);
+            }
+
             break;
     //#endregion
 
@@ -816,7 +868,7 @@ function PreFirstEntryMapFixes()
                         GlowUp(k);
                 }
 
-                foreach AllActors(class'RiotCop', rc) {
+                foreach AllActors(class'#var(prefix)RiotCop', rc) {
                     if (rc.bindname == "RiotCop") {
                         rc.bindname = "Cop";
                     }
