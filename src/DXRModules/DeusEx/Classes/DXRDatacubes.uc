@@ -882,8 +882,32 @@ function vanilla_datacubes_rules()
 
         //Aquinas Substation and Router Control Room code
         datacubes_rules[i].item_name = '15_Datacube11';
-        datacubes_rules[i].min_pos = vect(7158, -6119, -6115);
-        datacubes_rules[i].max_pos = vect(4620, -8039, -5371);
+        datacubes_rules[i].min_pos = vect(6980,-10975,-5585); //Coolant room
+        datacubes_rules[i].max_pos = vect(8140,-8577, -9000);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(5158,-6154,-5394); //Room with radioactive tanks and lower room
+        datacubes_rules[i].max_pos = vect(4612,-8303,-5808);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(5980,-6985,-5755); //Room in middle of area
+        datacubes_rules[i].max_pos = vect(6585,-7540,-6115);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(6010, -8200, -5174); //Overlook room
+        datacubes_rules[i].max_pos = vect(4550, -8560, -4950);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(7678,-5473,-6015); //Lower floor security bot container and Aquinas Substation
+        datacubes_rules[i].max_pos = vect(7086,-6590,-5820);
         datacubes_rules[i].allow = true;
         i++;
 
@@ -1970,9 +1994,41 @@ function revision_datacubes_rules()
         i++;
 
         //Aquinas Substation and Router Control Room code
+        /*
         datacubes_rules[i].item_name = '15_Datacube11';
         datacubes_rules[i].min_pos = vect(-1546,1643,0);
         datacubes_rules[i].max_pos = vect(967,3487,-762);
+        datacubes_rules[i].allow = true;
+        i++;
+        */
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(813,-1361,-55); //Coolant room
+        datacubes_rules[i].max_pos = vect(2010,1034,-5000);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1542,3458,-20); //Room with radioactive tanks and lower room
+        datacubes_rules[i].max_pos = vect(-864,1375,-422);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-185,2620,-390); //Room in middle of area
+        datacubes_rules[i].max_pos = vect(415,2070,-740);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1615,1506,500); //Overlook room
+        datacubes_rules[i].max_pos = vect(-160,1050,195);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(1495,4140,-650); //Lower floor security bot container and Aquinas Substation
+        datacubes_rules[i].max_pos = vect(920,3015,-450);
         datacubes_rules[i].allow = true;
         i++;
 
