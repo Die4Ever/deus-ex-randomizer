@@ -2380,6 +2380,20 @@ function SetupPerkManager()
     }
 }
 
+function SetupRandomizer()
+{
+    //Pass the DXRando seed into the AE seed, so things are consistent
+    if (FlagBase!=None){
+        //This is probably running before the flags in DXR have been populated,
+        //so just pull from the flags instead
+        if (FlagBase.CheckFlag('Rando_seed',FLAG_Int)){
+            seed = FlagBase.GetInt('Rando_seed');
+        }
+    }
+
+    Super.SetupRandomizer();
+}
+
 function HidePerk(class<Perk> aPerk)
 {
     local Perk p;
