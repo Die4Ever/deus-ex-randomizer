@@ -243,7 +243,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 90;
     difficulty_settings[i].medkits = 90;
     difficulty_settings[i].biocells = 90;
-    difficulty_settings[i].lockpicks = 90;
+    difficulty_settings[i].lockpicks = 80;
     difficulty_settings[i].multitools = 90;
     difficulty_settings[i].speedlevel = 2;
     difficulty_settings[i].startinglocations = 100;
@@ -322,7 +322,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 70;
     difficulty_settings[i].medkits = 70;
     difficulty_settings[i].biocells = 70;
-    difficulty_settings[i].lockpicks = 70;
+    difficulty_settings[i].lockpicks = 60;
     difficulty_settings[i].multitools = 70;
     difficulty_settings[i].speedlevel = 1;
     difficulty_settings[i].startinglocations = 100;
@@ -401,7 +401,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 65;
     difficulty_settings[i].medkits = 60;
     difficulty_settings[i].biocells = 60;
-    difficulty_settings[i].lockpicks = 60;
+    difficulty_settings[i].lockpicks = 50;
     difficulty_settings[i].multitools = 60;
     difficulty_settings[i].speedlevel = 1;
     difficulty_settings[i].startinglocations = 100;
@@ -480,7 +480,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 50;
     difficulty_settings[i].medkits = 50;
     difficulty_settings[i].biocells = 50;
-    difficulty_settings[i].lockpicks = 50;
+    difficulty_settings[i].lockpicks = 45;
     difficulty_settings[i].multitools = 50;
     difficulty_settings[i].speedlevel = 1;
     difficulty_settings[i].startinglocations = 100;

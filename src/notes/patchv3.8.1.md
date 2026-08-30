@@ -1,5 +1,7 @@
 ## Major Changes
 
+- Slightly reduced lock strength of doors that have randomized lock strength. Also slightly reduced randomized lockpick quantities to compensate.
+- Increased the New Game+ minimum value for lockpicks and multitools from 5% up to 10%.
 
 ## GMDX Major Changes
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.

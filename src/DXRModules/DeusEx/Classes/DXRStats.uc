@@ -866,16 +866,16 @@ function TestScoring()
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
 
     dxr.flags.SetDifficulty(1);
-    testint(dxr.flags.ScoreFlags(), 4870, "score bonus for Normal");
+    testint(dxr.flags.ScoreFlags(), 4920, "score bonus for Normal");
 
     dxr.flags.SetDifficulty(2);
-    testint(dxr.flags.ScoreFlags(), 10630, "score bonus for Hard");
+    testint(dxr.flags.ScoreFlags(), 10680, "score bonus for Hard");
 
     dxr.flags.SetDifficulty(3);
-    testint(dxr.flags.ScoreFlags(), 12755, "score bonus for Extreme");
+    testint(dxr.flags.ScoreFlags(), 12805, "score bonus for Extreme");
 
     dxr.flags.SetDifficulty(4);
-    testint(dxr.flags.ScoreFlags(), 14115, "score bonus for Impossible");
+    testint(dxr.flags.ScoreFlags(), 14140, "score bonus for Impossible");
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
