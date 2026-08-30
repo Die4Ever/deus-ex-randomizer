@@ -100,6 +100,12 @@ function CheckConfig()
     AddRandomEnemyType(class'MJ12CloneAugShield1', 2.5, MJ12);
     AddRandomEnemyType(class'MJ12CloneAugTough1', 2.5, MJ12);
     AddRandomEnemyType(class'MJ12CloneAugStealth1', 2.5, MJ12);
+#ifdef gmdx
+    AddRandomEnemyType(class'MJ12Elite', 2, MJ12);
+#endif
+#ifdef gmdxae
+    AddRandomEnemyType(class'MJ12Elite2', 2, MJ12);
+#endif
 
     AddRandomEnemyType(class'#var(prefix)Terrorist', 10, NSF);
     AddRandomEnemyType(class'NSFClone1', 10, NSF);

@@ -118,6 +118,7 @@
   - New option under the "Rando > Gameplay" menu to choose between allowing Quick Load to load Autosaves and only allowing it to load manual saves (Quick Saves or Savepoints).
   - Players who hold the crouch key instead of using it as a toggle can now crouch mid-jump like players using toggle mode can.
   - "Misfeature Exploit" perk actually interacts correctly with randomized heal and charge amounts on medical bots and repair bots, instead of always updating their values to fixed amounts.
+  - MJ12 faction enemies have a low chance of spawning additional MJ12 Elites.
 
 </details>
 
