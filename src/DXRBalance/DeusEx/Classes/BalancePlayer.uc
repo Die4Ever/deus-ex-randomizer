@@ -765,7 +765,6 @@ state PlayerWalking
                     PlayDuck();
                 }
             }
-
         }
 
         // if the spy drone augmentation is active

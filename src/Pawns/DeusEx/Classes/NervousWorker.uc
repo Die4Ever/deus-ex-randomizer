@@ -1,5 +1,11 @@
 class NervousWorker extends #var(prefix)Male1;
 
+#ifdef gmdxae
+//GMDX:AE functions to do HDTP and Augmentique skin randomization
+exec function UpdateHDTPsettings(){}
+function SetupSkin(){}
+#endif
+
 defaultproperties
 {
     Alliance=Workers

@@ -7,6 +7,7 @@ class DXRRepairBot extends #var(prefix)RepairBot;
 var travel int numUses;
 var transient DXRando dxr;
 var string baseName;
+var int baseChargeAmount;
 
 replication
 {
@@ -23,10 +24,40 @@ function PostBeginPlay()
 
 function StandStill()
 {
+    if (baseChargeAmount==-1){
+        baseChargeAmount=chargeAmount;
+    }
     Super.StandStill();
     SetPropertyText("lowerThreshold", "0");// RSD
+    HandlePerkLogic();
+
 }
 #endif
+
+function HandlePerkLogic()
+{
+    local DeusExPlayer player;
+
+    player = DeusExPlayer(GetPlayerPawn());
+    chargeAmount = baseChargeAmount;
+
+#ifdef gmdxae
+    if (player!=None &&
+        player.PerkManager!=None &&
+        player.PerkManager.GetPerkWithClass(class'DeusEx.PerkMisfeatureExploit').bPerkObtained == true){
+
+        //Base GMDX chargeAmount is 60, and with the perk, it does 90 (60 * 1.5 = 90)
+        chargeAmount = chargeAmount * 1.5;
+    }
+#elseif gmdxnotae
+    if (player!=None &&
+        player.PerkNamesArray[21] == 1){
+        //Base GMDX chargeAmount is 60, and with the perk, it does 90 (60 * 1.5 = 90)
+        chargeAmount = chargeAmount * 1.5;
+    }
+#endif
+}
+
 
 function updateName()
 {
@@ -71,6 +102,25 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
 
     return chargedPoints;
 }
+
+#ifdef gmdxae
+//Recharging wearable equipment
+function ChargeEquipment(inventory EquipToCharge, DeusExPlayer EquipOwner)
+{
+    local int prevCharges;
+
+    prevCharges = chargeMaxTimes;
+
+    Super.ChargeEquipment(EquipToCharge,EquipOwner);
+
+    //Charging equipment sometimes counts against the number of charges (based on difficulty)
+    if (prevCharges>chargeMaxTimes){
+        numUses++;
+        updateName();
+    }
+
+}
+#endif
 
 simulated function int GetMaxUses()
 {
@@ -122,6 +172,12 @@ simulated function bool HasLimitedUses()
 simulated function bool ChargesRemaining()
 {
     return GetRemainingUses()!=0;
+}
+
+//GMDX:AE Function
+function bool HasChargesRemaining()
+{
+    return ChargesRemaining();
 }
 
 //#region CanCharge
@@ -230,6 +286,25 @@ function Tick(float delta)
     }
 }
 
+#ifdef gmdxae
+simulated function ActivateRepairBotScreens(DeusExPlayer PlayerToDisplay)
+{
+    local int realChargeRefresh;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    realChargeRefresh = chargeRefreshTime;
+
+    Super.ActivateRepairBotScreens(PlayerToDisplay);
+
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.repairbotcooldowns>0){
+        //If Medbot cooldowns are randomized, restore the previous cooldown
+        chargeRefreshTime = realChargeRefresh;
+    }
+}
+#endif
+
 defaultproperties
 {
     bDetectable=false
@@ -240,4 +315,5 @@ defaultproperties
     LightRadius=6
     LightHue=89
     LightPeriod=25
+    baseChargeAmount=-1
 }

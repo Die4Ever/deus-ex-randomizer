@@ -882,8 +882,32 @@ function vanilla_datacubes_rules()
 
         //Aquinas Substation and Router Control Room code
         datacubes_rules[i].item_name = '15_Datacube11';
-        datacubes_rules[i].min_pos = vect(7158, -6119, -6115);
-        datacubes_rules[i].max_pos = vect(4620, -8039, -5371);
+        datacubes_rules[i].min_pos = vect(6980,-10975,-5585); //Coolant room
+        datacubes_rules[i].max_pos = vect(8140,-8577, -9000);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(5158,-6154,-5394); //Room with radioactive tanks and lower room
+        datacubes_rules[i].max_pos = vect(4612,-8303,-5808);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(5980,-6985,-5755); //Room in middle of area
+        datacubes_rules[i].max_pos = vect(6585,-7540,-6115);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(6010, -8200, -5174); //Overlook room
+        datacubes_rules[i].max_pos = vect(4550, -8560, -4950);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(7678,-5473,-6015); //Lower floor security bot container and Aquinas Substation
+        datacubes_rules[i].max_pos = vect(7086,-6590,-5820);
         datacubes_rules[i].allow = true;
         i++;
 
@@ -1970,9 +1994,41 @@ function revision_datacubes_rules()
         i++;
 
         //Aquinas Substation and Router Control Room code
+        /*
         datacubes_rules[i].item_name = '15_Datacube11';
         datacubes_rules[i].min_pos = vect(-1546,1643,0);
         datacubes_rules[i].max_pos = vect(967,3487,-762);
+        datacubes_rules[i].allow = true;
+        i++;
+        */
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(813,-1361,-55); //Coolant room
+        datacubes_rules[i].max_pos = vect(2010,1034,-5000);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1542,3458,-20); //Room with radioactive tanks and lower room
+        datacubes_rules[i].max_pos = vect(-864,1375,-422);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-185,2620,-390); //Room in middle of area
+        datacubes_rules[i].max_pos = vect(415,2070,-740);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1615,1506,500); //Overlook room
+        datacubes_rules[i].max_pos = vect(-160,1050,195);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(1495,4140,-650); //Lower floor security bot container and Aquinas Substation
+        datacubes_rules[i].max_pos = vect(920,3015,-450);
         datacubes_rules[i].allow = true;
         i++;
 
@@ -2043,15 +2099,16 @@ static function RandoHackable(DXRando dxr, #var(prefix)HackableDevices h)
 function RandoInfoDevs(int percent)
 {
     local #var(prefix)InformationDevices id;
-    local bool totallyEmpty;
+    local bool totallyEmpty, doGlowUp;
 #ifndef injections
     local #var(injectsprefix)InformationDevices dxrid;
 #endif
 
     foreach AllActors(class'#var(prefix)InformationDevices', id)
     {
+        doGlowUp=false;
         if(!id.bHidden && percent>0 && id.Mesh == class'#var(prefix)DataCube'.default.Mesh)
-            GlowUp(id);
+            doGlowUp=true;
         if( id.bIsSecretGoal || !chance_single(percent) ) {
             if( ! id.bAddToVault ) { // Zero Rando books should add to vault too
                 InfoDevsHasPass(id);
@@ -2071,7 +2128,11 @@ function RandoInfoDevs(int percent)
                 if (dxrid.plaintext!="") totallyEmpty=False;
             }
 #endif
-            if (totallyEmpty) continue;
+            if (totallyEmpty) continue; //Intentionally does not glow up blank things
+
+            if (doGlowUp){
+                GlowUp(id);
+            }
         }
         _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
     }
@@ -2343,6 +2404,7 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
         case "DeusExText.01_Book09":
         case "RevisionText.01_Book09_Biomod":
         case "RevisionText.01_Book09_Rev":
+        case "GMDXText.Datacube21":
             return "Nano-Augmentation Guidelines";
         case "RevisionText.01_Datacube01":
             return "Note to Paul"; //To Paul from Janice, telling him his account is now active (no details)
@@ -2836,6 +2898,96 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
             return "Page Security Login";
         case "RevisionText.15_Datacube01":
             return "Note to Rose";
+
+
+        case "GMDXText.V9Datacube0":
+        case "GMDXText.Datacube00":
+            return "Excellent";
+        case "GMDXText.V9Datacube1":
+        case "GMDXText.Datacube01":
+            return "Swimming Tips";
+        case "GMDXText.V9Datacube2":
+        case "GMDXText.Datacube02":
+            return "Ladder Jumping";
+        case "GMDXText.V9Datacube3":
+        case "GMDXText.Datacube03":
+            return "Accuracy Breakdown";
+        case "GMDXText.V9Datacube4":
+        case "GMDXText.Datacube04":
+            return "Secondary Items";
+        case "GMDXText.V9Datacube5":
+        case "GMDXText.Datacube05":
+            return "Final Test";
+        case "GMDXText.V9Datacube6":
+        case "GMDXText.Datacube06":
+            return "Weapon Controls";
+        case "GMDXText.V9Datacube7":
+        case "GMDXText.Datacube07":
+            return "Training Course Closed";
+        case "GMDXText.V9Datacube8":
+        case "GMDXText.Datacube08":
+            return "Takedowns";
+        case "GMDXText.V9Datacube9":
+        case "GMDXText.Datacube09":
+            return "Door Information";
+        case "GMDXText.V9Datacube10":
+        case "GMDXText.Datacube10":
+            return "Mantling Training";
+        case "GMDXText.V9Datacube11":
+        case "GMDXText.Datacube11":
+            return "About Ammo Types";
+        case "GMDXText.V9Datacube12":
+        case "GMDXText.Datacube12":
+            return "Jumping";
+        case "GMDXText.V9Datacube13":
+        case "GMDXText.Datacube13":
+            return "Crawlspaces";
+        case "GMDXText.V9Datacube14":
+        case "GMDXText.Datacube14":
+            return "Walkway Code";
+        case "GMDXText.V9Datacube15":
+        case "GMDXText.Datacube15":
+            return "Staying Healthy";
+        case "GMDXText.V9Datacube16":
+        case "GMDXText.Datacube16":
+            return "Advanced Interactivity";
+        case "GMDXText.V9Datacube17":
+        case "GMDXText.Datacube17":
+            return "Zyme Deal";
+        case "GMDXText.V9Datacube18":
+        case "GMDXText.Datacube18":
+            return "Well Done!";
+        case "GMDXText.V9Datacube19":
+        case "GMDXText.Datacube19":
+            return "Storage Inventory Ledger";
+        case "GMDXText.V9Datacube20":
+        case "GMDXText.Datacube20":
+            return "The Canister";
+        case "GMDXText.V9Datacube21":
+        case "GMDXText.Datacube21":
+            return "Nano-Augmentation Guidelines";
+        case "GMDXText.V9Datacube22":
+        case "GMDXText.Datacube22":
+            return "Transfer Request";
+
+        case "GMDXText.V9Clipboard1":
+            return "Informal Resignation";
+        case "GMDXText.V9Clipboard2":
+            return "Guard Orders";
+
+        case "GMDXText.Datacube23": //AE
+            return "Stop Falling Asleep!";
+        case "GMDXText.Datacube24": //AE
+            return "Advanced World Interactions";
+        case "GMDXText.Datacube25": //AE
+            return "Left-Click Interactions";
+        case "GMDXText.Datacube26": //AE
+            return "Ammo Restrictions";
+        case "GMDXText.Datacube27": //AE
+            return "Disarming Explosives";
+        case "GMDXText.Datacube28": //AE
+            return "Toolbelt Slots";
+
 
 /////////////////////////
 //   Added datacubes   //

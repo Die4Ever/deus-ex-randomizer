@@ -69,6 +69,23 @@ function SetCodeKnown()
     }
 }
 
+#ifdef gmdxae
+//Override GMDX:AE checks to feed it with our own knowledge of the password
+//Theoretically this could maybe actually try to check if you have the note, etc.  Future TODO, I guess
+function bool IsDiscovered(DeusExPlayer player, string code, optional string code2, optional bool bReallyKnown)
+{
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.passwordsrandomized > 0 && bCodeKnown){
+        return true;
+    }
+
+    return Super.IsDiscovered(player,code,code2,bReallyKnown);
+}
+#endif
+
 function UnlockDoor()
 {
     local #var(DeusExPrefix)Mover dxm;

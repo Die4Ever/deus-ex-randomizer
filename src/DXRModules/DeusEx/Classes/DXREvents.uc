@@ -508,11 +508,11 @@ function SetWatchFlags() {
         WatchFlag('M02Briefing_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
-            bt.bTriggerOnceOnly=False;
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-            bt.bTriggerOnceOnly=False;
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
@@ -702,9 +702,11 @@ function SetWatchFlags() {
         WatchFlag('MeetInjuredTrooper2_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
@@ -827,11 +829,13 @@ function SetWatchFlags() {
     case "04_NYC_UNATCOHQ":
         WatchFlag('M04MeetWalton_Played');
         if(RevisionMaps){
-            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(960,234,297),350,60,class'#var(prefix)JuanLebedevCarcass');
         } else {
-            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(220,4,280),300,40,class'#var(prefix)JuanLebedevCarcass');
 
@@ -948,10 +952,12 @@ function SetWatchFlags() {
         bt.bTriggerOnceOnly=False;
 
         if(RevisionMaps){
-            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
         } else {
-            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt.Tag='';
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
@@ -3060,6 +3066,14 @@ simulated function int tweakBingoMissions(string event, int missions)
                 newMissions = newMissions | #bit(12);
             }
             break;
+        case "TonThirdFloor":
+            //Vanilla is #bit(2,4,8)
+            //Revision matches Vanilla
+            if (GMDXMaps){
+                //GMDX closes the elevator shaft door for missions 4 and 8, for whatever reason
+                newMissions = #bit(2);
+            }
+            break;
 
     }
 
@@ -3098,6 +3112,7 @@ function bool PeepableTexture(name texName)
         //Advertisements
         case 'bigtops':         //Big Top Cigarettes
         case 'BigTopsCig_sign': //Big Top Cigarettes
+        case 'bigtopsKZ':       //Big Top Cigarettes (GMDX)
         case 'Super45B_BB':     //"Drink More Think Less"
         case 'Super45a_sign':   //"Drink More Think Less"
         case 'Super45b_sign':   //"Drink More Think Less"
@@ -3149,6 +3164,7 @@ function float PeepTexDistance(name texName){
         //Advertisements
         case 'bigtops':         //Big Top Cigarettes
         case 'BigTopsCig_sign': //Big Top Cigarettes
+        case 'bigtopsKZ':       //Big Top Cigarettes (GMDX)
         case 'Super45B_BB':     //"Drink More Think Less"
         case 'Super45a_sign':   //"Drink More Think Less"
         case 'Super45b_sign':   //"Drink More Think Less"
@@ -3317,7 +3333,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     local float loge_duration, medbots, repairbots, merchants;
     local DXRLoadouts loadout;
     local int start_map;
-    local bool RevisionMaps;
+    local bool RevisionMaps, GMDXMaps;
 
     //Precalculate some useful pieces of information
 
@@ -3338,6 +3354,7 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     start_map = dxr.flags.GetStartingMap(); //if it's based PURELY on start_map, it should be in DXRStartMap::BingoGoalImpossible instead
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -3558,8 +3575,9 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             return loadout != None && loadout.IsLoadoutNoCorpses();
 
 /////////////////////////////////////////////////////////////////////
-    //Ban goals that aren't possible on Revision maps
-        case "LibertyBenches": //Too lazy to mark the 22 extra benches on the Revision maps
+    //Ban goals that aren't possible on Revision or GMDX maps
+        case "LibertyBenches": //Too lazy to mark the 22 extra benches on the Revision maps.  GMDX has extra benches too
+            return RevisionMaps || GMDXMaps;
         case "SignsOfTheEnd_singlepeepedtex": //Some of the signs in Sector 4 are different textures and non-solid now
             return RevisionMaps;
 
@@ -3578,6 +3596,20 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                 }
             }
             break;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals where the mod has different behaviour
+    //Charged pickups can be equipped and unequipped
+        case "BallisticArmor_Activated":
+        case "AdaptiveArmor_Activated":
+        case "TechGoggles_Activated":
+        case "HazmatSuit_Activated":
+            return #defined(gmdx);
+
+    //GMDX:AE has it's own (optional) clothing system
+        case "ChangeClothes":
+            return #defined(gmdxae);
+
     }
 
     //More broad loadout checks
@@ -4030,6 +4062,7 @@ function string RemapBingoEvent(string eventname)
             return eventname;
         case "bigtops_singlepeepedtex":         //Big Top Cigarettes
         case "BigTopsCig_sign_singlepeepedtex": //Big Top Cigarettes
+        case "bigtopsKZ_singlepeepedtex":       //Big Top Cigarettes (GMDX)
         case "Super45B_BB_singlepeepedtex":     //"Drink More Think Less"
         case "Super45a_sign_singlepeepedtex":   //"Drink More Think Less"
         case "Super45b_sign_singlepeepedtex":   //"Drink More Think Less"

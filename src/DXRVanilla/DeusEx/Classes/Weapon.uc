@@ -9,6 +9,8 @@ var name prev_anim;
 var float prev_anim_rate;
 var float prev_weapon_skill;
 
+var() float standing_time_buffer;
+
 var int WeaponTexLoc[8];
 
 function PostBeginPlay()
@@ -105,9 +107,25 @@ simulated function Vector ComputeProjectileStart(Vector X, Vector Y, Vector Z)
     return ProjSpawn;
 }
 
+//Calculate the standing time required to get the maximum accuracy bonus from standing still
+//Based on inverted logic from DeusExWeapon::CalculateAccuracy
+//Add a buffer on top to allow a little bit of "stickiness" to the max accuracy, to maintain
+//a little bit of the vanilla behaviour if you're standing still for a while.
+simulated function float CalcMaxStandingTimer()
+{
+    local float div,maxVal;
+
+    div = FMax(15.0 + 29.0 * GetWeaponSkill(), 0.0);
+    maxVal = 0.6 * div;
+
+    return maxVal + standing_time_buffer;
+}
+
 simulated function Tick(float deltaTime)
 {
-    local float r, e;
+    local float r, e, oldStandingTimer, maxStandingTime;
+
+    oldStandingTimer = standingTimer;
 
     Super.Tick(deltaTime);
 
@@ -123,6 +141,16 @@ simulated function Tick(float deltaTime)
             TargetMessage = msgLockLocked @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
             break;
         }
+    }
+
+    //The vanilla standingTimer incremented indefinitely, as long as you kept your gun out
+    //Cap the timer so you can't accrue perfect accuracy time just by going to the bathroom
+    //with the game unpaused.
+    //GLITCHFIX-17
+    maxStandingTime = CalcMaxStandingTimer();
+    if (class'MenuChoice_FixGlitches'.default.enabled && maxStandingTime > 0 && standingTimer > oldStandingTimer) {
+        //Cap the bonus you get from standing still so it doesn't increase forever
+        standingTimer = FMin(standingTimer,maxStandingTime);
     }
 
     if(!IsAnimating()) {
@@ -315,55 +343,11 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
             if(class'MenuChoice_BalanceItems'.static.IsEnabled()) return 100 * mult; // PS40
             else return 25 * mult; // PS20
         }
-        // mostly copied from DXRWeapons module
-        switch(ProjectileClass) {
-        case class'DXRDart':
-            return 17.0 * mult;
-
-        case class'#var(prefix)Dart':
-            return 15.0 * mult;
-
-        case class'#var(prefix)DartFlare':
-        case class'#var(prefix)DartPoison':
-            return 5.0 * mult;
-
-        case class'#var(prefix)PlasmaBolt':
-        case class'PlasmaBoltFixTicks':
-            return 18.0 * mult;
-
-        case class'#var(prefix)Rocket':
-        case class'RocketFixTicks':
-            return 300.0 * mult;
-
-        case class'#var(prefix)RocketWP':
-            return 300.0 * mult;
-
-        case class'#var(prefix)HECannister20mm':
-        case class'HECannisterFixTicks':
-            // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
-            return 180.0 * mult;
-
-        case class'#var(prefix)Shuriken':
-        case class'#var(prefix)Fireball':
-            return default.HitDamage * mult;
-
-        case class'#var(prefix)LAM':
-            return 500.0 * mult;
-
-        case class'#var(prefix)RocketLAW':
-            return 1000.0 * mult;
-
-        case class'#var(prefix)GreaselSpit':
-        case class'#var(prefix)GraySpit':
-            return 8.0 * mult;
-
-        case class'#var(prefix)RocketMini':
-            return 50.0 * mult;
-
-        case None:
+        if (ProjectileClass!=None){
+            return class'DXRWeapons'.static.GetDefaultProjDamage(ProjectileClass) * mult;
+        } else {
             return default.HitDamage * mult;
         }
-        return ProjectileClass.default.Damage * mult;
     }
 
     if( class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
@@ -1044,4 +1028,5 @@ defaultproperties
     anim_speed=1
     RelativeRange=3750.0
     MinSpreadAcc=0.05
+    standing_time_buffer=2.0
 }

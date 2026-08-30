@@ -765,9 +765,9 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             message="You played A Melody to Break the Curse from The Messenger";
             break;
         case 111:
-            SelectedSound = sound'DeltaruneWorldRevolving';
+            SelectedSound = sound'DeltaruneWorldRevolving'; //Yes, but really it's the...
             duration = 12.25;
-            message="You played The World Revolving from Deltarune";
+            message="You played the Freedom Motif from Deltarune";
             break;
         case 112:
             SelectedSound = sound'StarfoxMainTheme';

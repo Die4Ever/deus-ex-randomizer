@@ -52,7 +52,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX AE/",
         "preproc_definitions": {
             "gmdx":1, "gmdxae":1, "singleplayer":1, "mapfixes":1, "flags":1, "prefix":"", "vanillamaps":2,
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "GMDXAERandomizer", "injectsprefix": "DXR", "allfeatures": false
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"GMDXAERandoPlayer", "flagvarprefix": "", "package": "GMDXAERandomizer", "injectsprefix": "DXR", "allfeatures": false, "hascustomplayer":1
         },
         "mods_paths": [ "./" ],
         "packages": [ "GMDXAERandomizer" ],

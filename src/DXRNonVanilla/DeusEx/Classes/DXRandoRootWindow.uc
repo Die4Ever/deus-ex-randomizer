@@ -115,6 +115,17 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
             newScreen = class'DXRMenuSelectDifficulty';
             break;
 #endif
+#ifdef gmdxae
+        case class'MenuScreenPlaythroughModifiers':
+            newScreen = class'DXRMenuScreenPlaythroughModifiersGMDXAE';
+            break;
+        case class'MenuScreenGMDXOptionsQoL':
+            newScreen = class'DXRMenuScreenGMDXOptionsQoLGMDXAE';
+            break;
+        case class 'MenuScreenGMDXOptionsGameplay':
+            newScreen = class'DXRMenuScreenGMDXOptionsGameplayGMDXAE';
+            break;
+#endif
 
         case class'CreditsWindow':
             newScreen = class'NewGamePlusCreditsWindow';

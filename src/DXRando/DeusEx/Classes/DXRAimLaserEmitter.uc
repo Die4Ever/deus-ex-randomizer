@@ -115,7 +115,11 @@ static function bool AimLaserShouldBeOn(PlayerPawn p)
     }
 
     if (player.bSpyDroneActive){
+    #ifdef gmdxae
+        if (!player.bSpyDroneSet) return False; //Don't show the aim laser while actively driving the drone
+    #else
         return False;
+    #endif
     }
 
     if (player.InConversation()){
@@ -126,7 +130,7 @@ static function bool AimLaserShouldBeOn(PlayerPawn p)
         return False;
     }
 
-#ifdef injections||revision
+#ifdef hascustomplayer
     if (player.aimLaser!=None && player.aimLaser.Owner==None){
         return False;
     }

@@ -90,6 +90,9 @@ struct MoreFlagsSettings{
     var int stalkers;
     var int entrance_rando;
     var int shuffle_missions; // 0 is disabled, otherwise approximate game length in minutes
+    var int gmdx_overwhelming; // Overwhelming Odds, 0 is disabled, 1 is enabled (Only used in GMDX, not AE)
+    var int gmdx_stamina; // 0 is based on hardcore and menu options, 1 is off, 2 is on (Only used in GMDX)
+    var int gmdx_difficulty; //0-5 is EASY/MEDIUM/HARD/REALISTIC/HARDCORE/HARDCORE+ (Only used in GMDX)
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -462,6 +465,14 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
 
+#ifdef gmdxnotae
+    FlagInt('Rando_gmdx_overwhelming',moresettings.gmdx_overwhelming,mode,str);
+#endif
+#ifdef gmdx
+    FlagInt('Rando_gmdx_stamina',moresettings.gmdx_stamina,mode,str);
+    FlagInt('Rando_gmdx_difficulty',moresettings.gmdx_difficulty,mode,str);
+#endif
+
     if(mode != Hashing) {
         if(!FlagInt('Rando_loop_initial_version',loop_initial_version,mode,str) && stored_version != 0 && mode==Reading) {
             // if the flag didn't exist, make sure to set it to 0 for compatibility
@@ -685,6 +696,12 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy weapons rando";
         case 'Rando_aug_loc_rando':
             return "Aug Slot Randomization";
+        case 'Rando_gmdx_overwhelming':
+            return "Overwhelming Odds";
+        case 'Rando_gmdx_stamina':
+            return "GMDX Stamina";
+        case 'Rando_gmdx_difficulty':
+            return "GMDX Difficulty";
         case 'Rando_loop_initial_version':
             return "Starting Version";
         case 'MenuChoice_BalanceAugs':
@@ -1054,6 +1071,36 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Full Closet";
             } else {
                 return "Looting Needed";
+            }
+            break;
+
+        case 'Rando_gmdx_overwhelming':
+            if (val==0){
+                return "Off";
+            } else if (val==1){
+                return "On";
+            }
+            break;
+
+        case 'Rando_gmdx_stamina':
+            if (val==0){
+                return "Original";
+            } else if (val==1){
+                return "Off";
+            } else if (val==2){
+                return "On";
+            }
+            break;
+
+        case 'Rando_gmdx_difficulty':
+            if (val==0){
+                return "Easy";
+            } else if (val==1){
+                return "Medium";
+            } else if (val==2){
+                return "Hard";
+            } else if (val==3){
+                return "Realistic";
             }
             break;
 

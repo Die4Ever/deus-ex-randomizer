@@ -989,6 +989,17 @@ function bool DestroyActor( Actor d )
     return d.Destroy();
 }
 
+//Move the actor away from the world before destroying it
+//Useful for destroying things like water coolers or trash
+//that spawn things when destroyed (puddles or debris)
+function DestroyOutOfWorld(Actor a)
+{
+    a.SetCollision(false,false,false);
+    a.bCollideWorld=false;
+    a.SetLocation(a.Location+vect(0,0,20000));
+    a.Destroy();
+}
+
 // only used by DXRMemes title screen? doesn't copy the tag or event or anything
 function Actor ReplaceActor(Actor oldactor, string newclassstring)
 {
@@ -1546,7 +1557,7 @@ function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector l
     return box;
 }
 
-function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move, optional bool dont_add_note)
 {
 #ifdef injections
     local #var(prefix)DataCube dc;
@@ -1562,6 +1573,8 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
         if(dxr.flags.settings.infodevices > 0)
             GlowUp(dc);
 
+        dc.bAddToVault = !dont_add_note; //Datacubes normally add notes by default, but the InformationDevices class has it set to False
+
         if (#defined(hx)){
             //Add all datacubes to the vault in HX
             dc.bAddToVault = True;
@@ -1574,11 +1587,11 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
 }
 
 
-function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, string plaintextTag, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, string plaintextTag, optional bool dont_move, optional bool dont_add_note)
 {
     local #var(injectsprefix)InformationDevices dc;
 
-    dc = SpawnDatacube(loc,rot,dont_move);
+    dc = SpawnDatacube(loc,rot,dont_move,dont_add_note);
 
     if(dc != None) {
         dc.plaintext = text;
@@ -1587,11 +1600,11 @@ function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc
     return dc;
 }
 
-function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator rot, name texttag, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator rot, name texttag, optional bool dont_move, optional bool dont_add_note)
 {
     local #var(injectsprefix)InformationDevices dc;
 
-    dc = SpawnDatacube(loc,rot,dont_move);
+    dc = SpawnDatacube(loc,rot,dont_move,dont_add_note);
 
     if(dc != None) {
         SetInfoDeviceTextTag(dc,texttag);
@@ -1599,11 +1612,11 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, 
     return dc;
 }
 
-function #var(injectsprefix)InformationDevices SpawnDatacubeImage(vector loc, rotator rot, class<DataVaultImage> imageClass, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubeImage(vector loc, rotator rot, class<DataVaultImage> imageClass, optional bool dont_move, optional bool dont_add_note)
 {
     local #var(injectsprefix)InformationDevices dc;
 
-    dc = SpawnDatacube(loc,rot,dont_move);
+    dc = SpawnDatacube(loc,rot,dont_move,dont_add_note);
 
     if(dc != None) {
         dc.imageClass = imageClass;
@@ -1634,7 +1647,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
 {
     local int i;
     local Actor newactor;
-    local bool bCollideActors, bBlockActors, bBlockPlayers;
+    local bool bCollideActors, bCollideWorld, bBlockActors, bBlockPlayers;
     local name tag, event;
 
     if(a.class == newclass)
@@ -1643,6 +1656,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     bCollideActors = a.bCollideActors;
     bBlockActors = a.bBlockActors;
     bBlockPlayers = a.bBlockPlayers;
+    bCollideWorld = a.bCollideWorld;
     a.SetCollision(false, false, false);
     tag = a.Tag;
     a.Tag = '';
@@ -1691,6 +1705,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     //SetBase resets the collision to... defaults?
     //Do this last for safety
     newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
+    newactor.bCollideWorld=bCollideWorld;
 
     return newactor;
 }
@@ -2754,6 +2769,34 @@ function bool DXRStartDataLinkTransmission( String DatalinkName )
 #else
     return player().StartDataLinkTransmission( DatalinkName );
 #endif
+}
+
+//GMDX makes Torso/Head max health increase with Medicine skill levels
+static function int GetBodyPartMaxHealth(int HealthMax, #var(PlayerPawn) p, optional bool torso)
+{
+    local int spill;
+    local Skill sk;
+
+    //If it's not GMDX, we're just happy reporting back the maximum health as-is
+    if (!#defined(gmdx)) return HealthMax;
+
+#ifdef gmdxae
+    if (torso){
+        return HealthMax + p.GetTorsoHealthAdjustment();
+    } else {
+        return HealthMax + p.GetHeadHealthAdjustment();
+    }
+
+#endif
+
+    //If it's GMDX, figure out how much health there is on top of the defaults
+    if (p.SkillSystem==None) return HealthMax;
+
+    sk = p.SkillSystem.GetSkillFromClass(Class'DeusEx.SkillMedicine');
+    if (sk==None) return HealthMax;
+
+    return (HealthMax + sk.CurrentLevel*10);
+
 }
 
 //#region Belt Slots

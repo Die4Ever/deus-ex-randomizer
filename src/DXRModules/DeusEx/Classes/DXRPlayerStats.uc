@@ -81,7 +81,7 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
 
 function SetMaxStats(#var(PlayerPawn) p)
 {
-    local int i;
+    local int i, maxHead, maxTorso;
     i = dxr.flags.settings.health;
     i = Max(1, i);// need at least 1 health
 
@@ -96,8 +96,8 @@ function SetMaxStats(#var(PlayerPawn) p)
     p.default.HealthArmLeft = i;
     p.default.HealthArmRight = i;
 
-    CapHealth(p.HealthHead, p.default.HealthHead);
-    CapHealth(p.HealthTorso, p.default.HealthTorso);
+    CapHealth(p.HealthHead, class'DXRActorsBase'.static.GetBodyPartMaxHealth(p.default.HealthHead,p,false)); //GMDX maintains a higher health limit on head and torso with medicine upgrades
+    CapHealth(p.HealthTorso, class'DXRActorsBase'.static.GetBodyPartMaxHealth(p.default.HealthTorso,p,true));
     CapHealth(p.HealthLegLeft, p.default.HealthLegLeft);
     CapHealth(p.HealthLegRight, p.default.HealthLegRight);
     CapHealth(p.HealthArmLeft, p.default.HealthArmLeft);

@@ -73,6 +73,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AlarmUnit au;
     local #var(prefix)AutoTurret turret;
     local #var(prefix)SkillAwardTrigger sat;
+    local #var(prefix)GoalCompleteTrigger gct;
 
     local bool VanillaMaps, GMDXMaps;
 
@@ -189,6 +190,14 @@ function PreFirstEntryMapFixes()
         // mechanics in the comms building shouldn't be cloned
         foreach AllActors(class'#var(prefix)ScriptedPawn', sp, 'Mechanic') {
             sp.bImportant = true;
+        }
+
+        //Make sure the goal complete trigger outside the Comms Building doesn't have collision,
+        //so you can't just finish the "ActivatePower" goal by walking in the right spot
+        foreach AllActors(class'#var(prefix)GoalCompleteTrigger', gct){
+            if (gct.GoalName!='ActivatePower') continue;
+            gct.SetCollision(False,False,False);
+            break;
         }
 
         ReduceHelicopterDelay('map_exit',1);
@@ -948,7 +957,7 @@ function FixCmdElevator()
     doorButton.RandoButtonType=RBT_OpenDoors;
     doorButton.ButtonType=BT_Blank;
     doorButton.Event='all_doors_button';
-    doorButton.BeginPlay();
+    doorButton.UpdateCurrentSkin();
 
     //Doors are 'door1', 'door2', and 'door3'
     d = Spawn(class'Dispatcher',, 'all_doors_button' );

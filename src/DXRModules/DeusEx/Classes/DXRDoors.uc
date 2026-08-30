@@ -55,8 +55,8 @@ function CheckConfig()
 {
     SetDoorFixes();
 
-    min_lock_adjust=0.4;
-    max_lock_adjust=1.5;
+    min_lock_adjust=0.3;
+    max_lock_adjust=1.4;
     min_door_adjust=0.4;
     max_door_adjust=1.5;
     min_mindmg_adjust=0.3;

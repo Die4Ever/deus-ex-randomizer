@@ -158,7 +158,7 @@ function _InvokeNewGameScreen(float difficulty)
 
     if (newGame != None) {
 #ifdef gmdx
-        newGame.SetDifficulty(difficulty, dxr.flags.autosave == 3 || difficulty >= 4); //Sarge: Added Hardcore Mode on Impossible and above!
+        newGame.SetDifficulty(difficulty, false); //Our new game screen will handle Hardcore stuff based on flags
 #else
         newGame.SetDifficulty(difficulty);
 #endif

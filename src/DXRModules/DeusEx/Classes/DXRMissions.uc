@@ -444,6 +444,9 @@ function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture
         #endif
         if(newTex != None) a.Skin = newTex;
         else a.Skin = Texture'GoalSecurityComputerGreen';
+        #ifdef gmdxae
+        ComputerSecurity(a).ActivatedSkin=a.Skin; //Don't change from this skin
+        #endif
         changed=True;
     } else if (ComputerPersonal(a)!=None){
         #ifdef revision

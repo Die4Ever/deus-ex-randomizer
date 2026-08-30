@@ -46,6 +46,14 @@ simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
     min_weapon_dmg = float(dxr.flags.settings.min_weapon_dmg) / 100;
     max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
 
+    if (!#defined(vmd||revision) && #var(prefix)WeaponLAW(w)!=None && w.ProjectileClass!=None){
+        //Correct the HitDamage of the LAW so it actually matches what the projectile does
+        //This is really just a cosmetic thing
+        //VMD shows 2x the HitDamage in the inventory, so it is already corrected
+        //Revision already bumps the HitDamage up to 1000, so not needed there
+        w.default.HitDamage = GetDefaultProjDamage(w.ProjectileClass);
+    }
+
     new_damage = w.default.HitDamage;
 #ifdef injections
     if(WeaponHideAGun(w) != None && class'MenuChoice_BalanceItems'.static.IsEnabled()) {
@@ -186,8 +194,16 @@ simulated function float _ProjDamage(float OrigDmg, float ratio, optional float 
 //This sucks ass, but we already hardcoded these before, and we modify the default values
 //This is at least a central spot where the determination of what damage to use doesn't
 //get mixed with other logic
-simulated function float GetDefaultProjDamage(class<Projectile> p)
+static simulated function float GetDefaultProjDamage(class<Projectile> p)
 {
+    local DXRando dxr;
+    local bool ShifterBiomod;
+
+    dxr = class'DXRando'.default.dxr;
+    if (dxr!=None && dxr.flags!=None){
+        ShifterBiomod = dxr.flags.UsingShifterOrBioMod();
+    }
+
     switch(p)
     {
 #ifdef injections
@@ -197,7 +213,7 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
         if (#defined(vmd)){
             return 20.0;
         } else if (#defined(revision)){
-            if (UsingShifterOrBioMod()){
+            if (ShifterBiomod){
                 return 18.0;
             } else {
                 return 10.0;
@@ -214,7 +230,7 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
         if (#defined(vmd)){
             return 20.0;
         } else if (#defined(revision)){
-            if (UsingShifterOrBioMod()){
+            if (ShifterBiomod){
                 return 2.5;
             } else {
                 return 10.0;
@@ -237,7 +253,7 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
         if (#defined(vmd)){
             return 25.0;
         } else if (#defined(revision)){
-            if (UsingShifterOrBioMod()){
+            if (ShifterBiomod){
                 return 40.0;
             } else {
                 return 20.0;
@@ -353,7 +369,7 @@ simulated function float GetDefaultProjDamage(class<Projectile> p)
 
     }
 
-    err("GetDefProjDamage() could not find projectile "$p);
+    log("GetDefProjDamage() could not find projectile "$p);
     return p.Default.Damage;
 }
 

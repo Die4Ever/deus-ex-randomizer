@@ -805,12 +805,20 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
 
 #ifdef gmdx
-    else if( a.Class == class'AugBallisticPassive') {
+    else if( a.Class == class'AugBallisticPassive' && #defined(gmdxnotae)) {
         word = "Damage Reduction";
         if(val < 0) {
             val = 0;
         }
         shortDisplay=int( (1.0 - val) * 100.0 ) $ "%";
+        return shortDisplay;
+    }
+    else if( a.Class == class'AugBallisticPassive' && #defined(gmdxae)) {
+        word = "Charge Threshold";
+        if(val < 0) {
+            val = 0;
+        }
+        shortDisplay=int( val * 100.0 ) $ "%";
         return shortDisplay;
     }
     else if( a.Class == class'AugIcarus' ) {
@@ -937,6 +945,14 @@ static simulated function FixAugHotkeys(PlayerPawn player, bool verbose)
     local #var(PlayerPawn) p;
 
     p = #var(PlayerPawn)(player);
+
+#ifdef gmdxae
+    if (p.AugmentationSystem!=None){
+        //Just use the AE function that is for this exact case
+        p.AugmentationSystem.AssignAugHotKeys();
+        return;
+    }
+#endif
 
     am = p.AugmentationSystem;
     for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {

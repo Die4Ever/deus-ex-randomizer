@@ -760,6 +760,7 @@ function bool WeaponModAutoApply(WeaponMod wm)
     if (wm==None) return False;
     if (player.InHand==None) return False;
     if (player.InHand.IsA('DeusExWeapon')==False) return False;
+    if (DeusExWeapon(player.InHand).IsInState('DownWeapon')) return False; //Putting the weapon away
     if (wm.CanUpgradeWeapon(DeusExWeapon(player.InHand))==False) return False;
     if (GetAutoWeaponMods()==False) return False;
     return True;
@@ -786,6 +787,22 @@ function string PianoStrInfo(Actor frobTarget, out int numLines)
     strInfo = strInfo $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
 
     return strInfo;
+}
+
+function bool CanChangeClothes()
+{
+#ifdef gmdxae
+    local #var(PlayerPawn) p;
+    p = #var(PlayerPawn)(player);
+    if (p==None) return false;
+    if (p.UsingAugmentique(p)) return false;
+    return true;
+
+#elseif vmd
+    return false;
+#else
+    return true;
+#endif
 }
 
 function string OtherStrInfo(Actor frobTarget, out int numLines)
@@ -818,8 +835,13 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
     }
     else if (frobTarget.IsA(#switch(injections:'WHPiano','DXRPiano')))
         strInfo = PianoStrInfo(frobTarget,numLines);
-    else if (frobTarget.IsA('#var(injectsprefix)ClothesRack'))
-        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Right Click to change clothing " $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+    else if (frobTarget.IsA('#var(injectsprefix)ClothesRack')) {
+        strInfo = player.GetDisplayName(frobTarget);
+        if (CanChangeClothes()){
+            strInfo = strInfo $ CR() $ "Right Click to change clothing ";
+        }
+        strInfo = strInfo $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+    }
     else if (frobTarget.IsA('DeusExDecoration'))
         strInfo = player.GetDisplayName(frobTarget) $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExProjectile'))
@@ -885,7 +907,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     // draw the absolute number of lockpicks on top of the colored bar
     if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable && !(GetShowKeys() && keyAcq))
     {
-        numTools = GetNumTools(dxMover.lockStrength, player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking'));
+        numTools = GetNumTools(dxMover.lockStrength, player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking'),class'SkillLockpicking');
         if (numTools == 1)
             strInfo = numTools @ msgPick;
         else
@@ -967,7 +989,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         // draw the absolute number of multitools on top of the colored bar
         if ((device.bHackable) && (device.hackStrength != 0.0))
         {
-            numTools = GetNumTools(device.hackStrength, player.SkillSystem.GetSkillLevelValue(class'SkillTech'));
+            numTools = GetNumTools(device.hackStrength, player.SkillSystem.GetSkillLevelValue(class'SkillTech'),class'SkillTech');
             if (numTools == 1)
                 strInfo = numTools @ msgTool;
             else
@@ -1005,9 +1027,35 @@ static function int GetNumHits(float strength, float damage)
     return numHits;
 }
 
-static function int GetNumTools(float strength, float skill)
+static function int GetNumTools(float strength, float skill, class<Skill> skillUsed)
 {
     local int numTools, numTicks, i;
+    local DXRando dxr;
+#ifdef gmdxae
+    local Perk p;
+#endif
+
+    dxr = class'DXRando'.default.dxr;
+
+#ifdef gmdxnotae
+    if (dxr!=None && dxr.player!=None &&
+        ((skillUsed == class'SkillTech' && dxr.player.PerkNamesArray[31]==1) || //"CRACKED" Perk, always 1 multitool to hack
+         (skillUsed == class'SkillLockpicking' && dxr.player.PerkNamesArray[32]==1))){ //"LOCKSPORT" Perk, always 1 lockpick to pick
+        return 1;
+    }
+#elseif gmdxae
+    if (dxr!=None && dxr.player!=None && skillUsed==class'SkillTech'){
+        p = dxr.player.PerkManager.GetPerkWithClass(class'DeusEx.PerkCracked'); //free hack for devices under PerkValue (0 tools)
+        if (p.bPerkObtained && strength <= p.PerkValue){
+            return 0;
+        }
+    } else if (dxr!=None && dxr.player!=None && skillUsed==class'SkillLockpicking'){
+        p = dxr.player.PerkManager.GetPerkWithClass(class'DeusEx.PerkLocksport'); //Still "always one lockpick"
+        if (p.bPerkObtained){
+            return 1;
+        }
+    }
+#endif
 
     numTicks = skill * 100;
     for(numTools=0; !(strength ~= 0.0) && numTools<100; numTools++) {

@@ -20,11 +20,14 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 
     info("got DXRFashion_LastUpdate: "$lastUpdate);
     if ((class'MenuChoice_ToggleFashion'.static.IsEnabled(dxr.flags))
+        && f != None
         && (f.lastUpdate < dxr.dxInfo.MissionNumber || f.lastUpdate > dxr.dxInfo.MissionNumber + 2)) {
         f.RandomizeClothes(player());
     }
 
-    f.GetDressed();
+    if (f!=None){
+        f.GetDressed();
+    }
 }
 
 //Add unique clothes to racks

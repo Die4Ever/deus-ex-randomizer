@@ -130,10 +130,6 @@ function SwapScriptedPawns(int percent, bool enemies)
             exceptAlliance = 'Researcher';
         break;
 
-    case "08_NYC_STREET":
-        keepTags = true;// fix M08 street unatco troops spawning early https://github.com/Die4Ever/deus-ex-randomizer/issues/522
-        break;
-
     case "12_VANDENBERG_CMD":
         keepTagName = 'enemy_bot';// 12_VANDENBERG_CMD fix, see Mission12.uc https://discord.com/channels/823629359931195394/823629360929046530/974454774034497567
         break;

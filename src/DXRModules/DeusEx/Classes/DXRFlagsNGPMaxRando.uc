@@ -317,6 +317,9 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         moresettings.newgameplus_curve_scalar = oldmoresettings.newgameplus_curve_scalar;
         moresettings.menus_pause = oldmoresettings.menus_pause;
         moresettings.aug_loc_rando = oldmoresettings.aug_loc_rando;
+        moresettings.gmdx_overwhelming = oldmoresettings.gmdx_overwhelming;
+        moresettings.gmdx_stamina = oldmoresettings.gmdx_stamina;
+        moresettings.gmdx_difficulty = oldmoresettings.gmdx_difficulty;
         moresettings.splits_overlay = oldmoresettings.splits_overlay;
         clothes_looting = old_clothes_looting;
         moresettings.entrance_rando = oldmoresettings.entrance_rando; //If you picked entrance rando, you probably want to keep doing it
@@ -344,8 +347,8 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
     settings.hiddenenemiesrandomized = NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000, True);
     if(oldsettings.ammo > 0) settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100, True);
     if(oldsettings.medkits > 0) settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100, True);
-    if(oldsettings.multitools > 0) settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100, True);
-    if(oldsettings.lockpicks > 0) settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
+    if(oldsettings.multitools > 0) settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 10, 100, True);
+    if(oldsettings.lockpicks > 0) settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 10, 100, True);
     if(oldsettings.biocells > 0) settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
     if(oldsettings.medbots > 0) settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
     if(oldsettings.repairbots > 0) settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 6, 100, True);

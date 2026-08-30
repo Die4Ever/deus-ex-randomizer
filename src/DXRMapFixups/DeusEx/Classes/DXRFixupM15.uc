@@ -832,6 +832,8 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
         Spawn(class'PlaceholderItem',,, vectm(5999, -7005, -6059));  //Also near water hatch under Page
         Spawn(class'PlaceholderItem',,, vectm(5720, -7129, -6011));  //Basically middle of bottom floor
         Spawn(class'PlaceholderItem',,, vectm(7877, -9077, -6155));  //Under the grating in coolant area
+        Spawn(class'PlaceholderItem',,, vectm(8116, -9453, -6205));  //In the vents under the coolant area
+        Spawn(class'PlaceholderItem',,, vectm(7575, -10780,-5920));  //On the "Flush System" control panel
     } else {
         Spawn(class'PlaceholderItem',,, vectm(-65,3062,266));  //Infusion Control Panel
         Spawn(class'PlaceholderItem',,, vectm(-393,1666,-182));  //Boxes in front of middle UC
@@ -843,6 +845,8 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
         Spawn(class'PlaceholderItem',,, vectm(-164,2601,-687));  //Also near water hatch under Page
         Spawn(class'PlaceholderItem',,, vectm(-437,2461,-639));  //Basically middle of bottom floor
         Spawn(class'PlaceholderItem',,, vectm(1715,529,-783));  //Under the grating in coolant area
+        Spawn(class'PlaceholderItem',,, vectm(1945,155,-830));  //In the vents under the coolant area
+        Spawn(class'PlaceholderItem',,, vectm(1405,-1170,-555));  //On the "Flush System" control panel
     }
 }
 //#endregion

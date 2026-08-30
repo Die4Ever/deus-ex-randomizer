@@ -10,21 +10,28 @@ var config string last_player_name;
 var config int last_portrait;
 var bool hasCheckedLDDP;
 var MenuUIActionButtonWindow btnRandomPortrait;
-#ifndef injections
-var bool bFemaleEnabled;
-#endif
+var bool bDXRFemaleEnabled;
 
 static function bool HasLDDPInstalled()
 {
     local DeusExTextParser parser;
     local bool opened;
+    local Texture TTex;
 
     if(#defined(revision)) return true; //Revision always has LDDP available
 
-    if(!#defined(injections)) return false;// just to be safe if you have a lot of mods installed in the same folder, Revision and VMD still allow selecting FemJC
+    if(!#defined(injections||gmdxae)) return false;// just to be safe if you have a lot of mods installed in the same folder, Revision and VMD still allow selecting FemJC
 
     if(default.hasCheckedLDDP) {
-        return default.bFemaleEnabled;
+        return default.bDXRFemaleEnabled;
+    }
+
+    if (#defined(gmdxae)){
+        //GMDX checks for the presence of the menu image instead, since the text is presumably somewhere else?
+        TTex = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_1", class'Texture', true));
+        default.bDXRFemaleEnabled = (TTex!=None);
+        default.hasCheckedLDDP = true;
+        return default.bDXRFemaleEnabled;
     }
 
     //LDDP, 10/26/21: Attempt a load. If succesful, we have LDDP installed. Thus, we can flick on all the female functionality.
@@ -35,18 +42,24 @@ static function bool HasLDDPInstalled()
         parser.CloseText();
     CriticalDelete(parser);
 
+    default.bDXRFemaleEnabled = opened;
+    #ifdef injections
     default.bFemaleEnabled = opened;
+    #endif
     default.hasCheckedLDDP = true;
     return opened;
 }
 
 event InitWindow()
 {
-    bFemaleEnabled = HasLDDPInstalled();
+    bDXRFemaleEnabled = HasLDDPInstalled();
+    #ifdef gmdxae||injections
+    bFemaleEnabled=bDXRFemaleEnabled; //Make sure our knowledge gets transferred into the base logic
+    #endif
 
     Super(MenuUIScreenWindow).InitWindow();
 
-    if (bFemaleEnabled && !#defined(revision)) //Revision has all male, then all female ordering instead of interleaved
+    if (bDXRFemaleEnabled && !#defined(revision)) //Revision has all male, then all female ordering instead of interleaved
     {
         TexPortraits[0] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_1", class'Texture', false));
         TexPortraits[1] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_1", class'Texture', false));
@@ -223,6 +236,48 @@ function bool PistolStartsAtTrained(DXRFlags flags)
     return flags != None && flags.IsZeroRando();
 }
 
+#ifdef gmdxae
+function InvokePlaythroughModifiersMenu(optional bool bCheck)
+{
+
+    if (dxr!=None && dxr.flags!=None){
+        bHardCoreMode = (dxr.flags.moresettings.gmdx_difficulty >= 4);
+    }
+
+    Super.InvokePlaythroughModifiersMenu(bCheck);
+
+}
+#endif
+
+function HandleGMDXHardcore(int diff_val, int overwhelming_val, int stamina_val)
+{
+#ifdef gmdxnotae
+    player.bHardcoreFilterOption = false; //Overwhelming odds
+    bHardCoreMode = false; //Hardcore, menu value
+    player.bHardCoreMode = false; //Hardcore, actual real setting
+    player.bExtraHardcore = false; //Hardcore+
+
+    if (overwhelming_val >= 1){
+        //Overwhelming odds or up
+        player.bHardcoreFilterOption=true;
+    }
+
+    if (diff_val >= 4){
+        //Hardcore and up
+        bHardCoreMode=true; //This being true will turn off autoreload
+        player.bHardCoreMode=true;
+    }
+    if (diff_val >= 5){
+        //Hardcore+
+        player.bExtraHardcore=true;
+    }
+
+    #var(PlayerPawn)(player).rando_stamina = stamina_val;
+
+    player.SaveConfig();
+#endif
+}
+
 function SaveSettings()
 {
     local Inventory i;
@@ -239,6 +294,11 @@ function SaveSettings()
     Super.SaveSettings();
 
     dxr.flags.SaveFlags();
+
+    HandleGMDXHardcore(dxr.flags.moresettings.gmdx_difficulty,
+                       dxr.flags.moresettings.gmdx_overwhelming,
+                       dxr.flags.moresettings.gmdx_stamina);
+
     dxr.Destroy();
     foreach player.AllActors(class'DXRando', dxr)
         dxr.Destroy();
@@ -348,7 +408,7 @@ function SelectRandomPortrait(bool noRepeat)
     //We could use the size of the array, but Revision has a whole bunch
     //of other options available that I don't think we really want to
     //include in the random pool.
-    if (bFemaleEnabled){
+    if (bDXRFemaleEnabled){
         numPortraits=10;
     } else {
         numPortraits=5;

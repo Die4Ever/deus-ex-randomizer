@@ -1,5 +1,7 @@
 ## Major Changes
-
+- Slightly reduced lock strength of doors that have randomized lock strength. Also slightly reduced randomized lockpick quantities to compensate.
+- Increased the New Game+ minimum value for lockpicks and multitools from 5% up to 10%.
+- Datacube with the Aquinas Router door code in Area 51 Sector 4 (Mission 15) now has a harder set of potential locations, so it won't be quite as easy to find.
 
 ## GMDX Major Changes
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.
@@ -13,6 +15,9 @@
   - Larger heals are now more balanced across the body, instead of focusing on one limb at a time.
   - Automatic Weapon Mod Apply now available.  Right click a weapon mod while holding a weapon that can have that mod applied to it to instantly apply that mod to the weapon.
   - It is no longer possible to softlock yourself out of the Tong ending if you move across the Reactor lab control room too fast after activating the reactors. (Fixes a baseline GMDX bug)
+  - A new "GMDX Stamina" option under the Advanced settings of the New Game screen to enable or disable the stamina system.  Zero Rando will default to using the same system to determine if stamina should be enabled or not (Either if the "Stamina System" option in the GMDX settings is enabled, or if you're playing Hardcore).  Outside of Zero Rando, the stamina system will be disabled by default.
+  - A new "Overwhelming Odds" option under the Advanced settings of the New Game screen to enable or disable Overwhelming Odds.  This option enables the extra enemies from Hardcore without the additional modifiers.
+  - A new "GMDX Difficulty" option under the Advanced settings of the New Game screen to select which set of NPC behavioural changes to apply, based on the original GMDX difficulty settings.  Things like NPC awareness (How easily enemies hear or see you) increase as the "GMDX Difficulty" setting is increased, along with things like how much health certain enemies have.  This option also includes enabling Hardcore or Hardcore+ modes.
 
   </details>
 
@@ -22,6 +27,7 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
+  - Fixed crashes in Ninja JC mode by making extra blood only for ninja weapons.
   - New option to show speedrun splits overlay without saving, similar to Speedrun Shuffle mode.
   - If a new bingo board is generated after Mission 4, the "Take down Sandra Renton" bingo goal will fail immediately depending on if she left New York or not.
   - "Make Soup" bingo goal properly detects bodies that spawn already inside the hot tub (For example, if zombies resurrect in the water and then are killed again).
@@ -45,6 +51,16 @@
   - "Kill Cam" will no longer show your first person perspective arm over your body when you die.
   - Flares can no longer be activated again with left click while already lit on the ground.
   - "Key Assistance" option will now show what key was used to lock or unlock a door.
+  - Randomized grenades will keep their original detection radius.
+  - The installer will now enable mirror reflections for the Direct3D 9 renderer, and disable OneXBlending for the OpenGL renderer to improve brightness.
+  - "Go into Alex's closet" bingo goal will no longer be marked as complete when you use the keypad and will instead still need you to actually enter the closet.
+  - It is no longer possible to infinitely stockpile "how long you've been standing" for weapon accuracy bonuses.  You can now accumulate 2 seconds beyond the time necessary to reach the maximum bonus before it is capped.
+  - Randomized weapon mods will no longer sometimes fall through the world.
+  - Empty datacubes will no longer glow.
+  - Weapon mods will not get auto-applied to a weapon that is being put away.
+  - Walking in the right spot outside of the Comms Building in Vandenberg (Mission 12) will no longer complete the goal to activate the power for the bots.
+  - Walking Security Bots now have a higher maximum step height, allowing them to step up slightly higher ledges.
+  - UNATCO Troops who enter the map when Riot Cops are taken down in Mission 8 will now more consistently appear further away from the location of the Riot Cop.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
@@ -52,6 +68,7 @@
   - Revision: It is now possible to skip the quote shown after an ending when using Revision maps, to go into the credits immediately.
   - Revision: Some items in inaccessible parts of the New York streets (Mission 2, 4, and 8) will no longer be randomized (to prevent important items from being shuffled out of the play area).
   - Revision: Charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) can no longer be instantly used by left clicking on them.
+  - Non-Vanilla: All enemies (including added ones) will be properly cleaned up after finishing the Liberty Island mission (Mission 1).
 
 </details>
 
@@ -76,7 +93,9 @@
   - It is no longer possible to interact with certain objects through walls (such as switches).
   - Weapons are now correctly marked as "Modified" if they have Rate of Fire, Damage, or Full Auto mods applied.
   - Added ShowBingoWindow exec function to GMDXRandoPlayer so it can be manually bound to a hotkey.
-    - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
+    - In the GMDXUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
+  - Added ToggleAutorun exec function to GMDXRandoPlayer so it can be manually bound to a hotkey.
+    - In the GMDXUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to begin autorunning.  Change it so that it maps to ToggleAutorun, eg. to make V begin autorunning: `V=ToggleAutorun`
   - The password will no longer be unintentionally learned for the security computer in Smuggler's lair (Missions 2, 4, and 8).
   - Anna Navarre will no longer slowly walk towards you in Battery Park (Mission 2) when goal randomization is enabled.
   - Locations of UNATCO Troops when returning to New York (Mission 8) will not be adjusted in Zero Rando.
@@ -84,6 +103,22 @@
   - Movement speed reductions will now be based on your selected maximum health instead of fixed health values assuming a maximum health of 100.
   - Slamming into a wall at high speed will no longer damage the player.
   - The key to Lebedev's private quarters will no longer randomize into the locked bedroom at the front of the 747 (Mission 3).
+  - Paul will now actually stay dead if he dies in the raid, but you finish it and leave the hotel.
+  - If medicine skill is upgraded so that Head and Torso health maximums are above the standard maximum, your health will no longer be capped to the standard maximum when you change maps.  For example, if your standard health limit is 100 and your medicine skill increases Head and Torso to 110 maximum, you won't leave a map with 110 head health and enter the next with 100.
+  - Opening the door just before the falling platforms in the Airfield Helibase (Mission 3) will no longer open the door to the side path at the same time.
+  - Fixed an issue where sometimes you wouldn't be able to pick up stuck projectiles like darts or throwing knives if they were in narrow locations.
+  - "Super MIBs" will have their blue glow effect properly attached to them after being shuffled.
+  - "Cracked" and "Locksport" perks will cause the highlight info for hackable electronics and locked doors to show the appropriate number of multitools or lockpicks needed.
+  - Anna will no longer walk towards you forever if you manage to finish Anna's conversation at the dock in Mission 2 in under 2 seconds.
+  - Ballistic Armor will now correctly apply a flat 35% damage reduction to bullet shots.
+  - Hazmat Suits will now correctly apply a flat 60% damage reduction to environmental damage.
+  - LAW damage is now shown relative to the real default damage of 1000, instead of the invalid 100 base damage shown before.
+  - Buying a perk on a skill that is "Banned" will no longer change the text to say 99999 points to upgrade instead of "Banned".
+  - Items at the DuClare Chateau (Mission 10) will no longer be able to randomize into the mostly inaccessible rafters in the back entry room.
+  - New option under the "Rando > Gameplay" menu to choose between allowing Quick Load to load Autosaves and only allowing it to load manual saves (Quick Saves or Savepoints).
+  - Players who hold the crouch key instead of using it as a toggle can now crouch mid-jump like players using toggle mode can.
+  - "Misfeature Exploit" perk actually interacts correctly with randomized heal and charge amounts on medical bots and repair bots, instead of always updating their values to fixed amounts.
+  - MJ12 faction enemies have a low chance of spawning additional MJ12 Elites.
 
 </details>
 
@@ -114,3 +149,4 @@
 - GMDX: Left clicking on charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) will use the original GMDX behaviour instead of instantly wearing the armor.
 - GMDX: Repairbots will actually limit the number of times they can be used (instead of decrementing the number of uses into negative numbers).
 - GMDX: Red screen overlay doesn't appear when you die with the "Show Killer" death cam option enabled.
+- GMDX: "Show Killer" Death Cam option no longer goes black and causes the game to lock up when using the Direct3D 9 renderer.

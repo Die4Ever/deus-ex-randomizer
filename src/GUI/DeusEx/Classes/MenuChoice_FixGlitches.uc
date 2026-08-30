@@ -70,6 +70,13 @@ class MenuChoice_FixGlitches extends DXRMenuUIChoiceBool;
         - MapExit's don't check *what* touches them when they have collision enabled and will always teleport the player when touched
           in those cases.  The MapExit near the helicopter location out front of Vandenberg Command has collision enabled, so it can
           be hit by any object, including projectiles or the *tracers* from instant hit weapons (like the assault rifle).
+    - Weapon StandingTimer increments indefinitely (GLITCHFIX-17)
+        - This isn't really something that's actively used in a speedrun, but the fix maybe has speedrun implications
+        - When you stand still with a weapon out, a timer increments to represent your aim steadiness or whatever, increasing your accuracy.
+          In vanilla, this counter can go up indefinitely, so if you stand still for ~5 minutes, you can run around for about a minute with
+          perfect accuracy (and scaling upwards infinitely, the longer you wait)
+        - The fix for this now caps the amount of standing time you can accumulate, so it never becomes excessive, but doesn't drain immediately
+          if you were waiting a while.
 
 
 

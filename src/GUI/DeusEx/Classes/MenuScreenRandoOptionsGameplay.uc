@@ -8,8 +8,10 @@ function CreateChoices()
 {
     // TODO: simulated crowd control strength
 
-#ifdef vanilla
+#ifdef vanilla||gmdxnotae
     CreateChoice(class'MenuChoice_LoadLatest');
+#endif
+#ifdef vanilla
     CreateChoice(class'MenuChoice_SaveDuringInfolinks');
     CreateChoice(class'MenuChoice_AutosaveCombat');
     CreateChoice(class'MenuChoice_ShowKeys');

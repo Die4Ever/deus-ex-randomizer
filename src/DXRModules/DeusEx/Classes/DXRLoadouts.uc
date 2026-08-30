@@ -1109,7 +1109,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
 #ifdef injections
     local DXRWeapon ws;
     ws = DXRWeapon(w);
-    class'Shuriken'.default.blood_mult = 2;
+    class'Shuriken'.default.blood_mult = 2; // the projectile, not the weapon
     switch(w.Class) {
         case class'WeaponSword':
             ws.blood_mult = 3;
@@ -1140,8 +1140,12 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             //ws.DrawScale = 2;
             ws.SetCollisionSize(16, ws.default.CollisionHeight*2);
             break;
-        default:
+        case class'WeaponCombatKnife':
             ws.blood_mult = 2;
+            break;
+        default:
+            ws.blood_mult = 0;
+            break;
     }
 #endif
 }
@@ -1284,6 +1288,10 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 #ifdef gmdx
     player.RepairInventory();
 #endif
+#ifdef gmdxae
+    player.ClearAllBeltPlaceHolders(); //Clear the original placeholders (prod, medkit, pistol)
+    player.bForceBeltAutofill=true;    //Force belt autofill on at the start to throw this starting equipment on your belt
+#endif
     AddStartingEquipment(player, respawn);
 
     for(i=0; i < start_amount; i++) {
@@ -1308,6 +1316,11 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
         if(!class'DXRActorsBase'.static.HasItem(player, class'#var(prefix)Medkit'))
             GiveItem(player, class'#var(prefix)Medkit');
     }
+
+#ifdef gmdxae
+    player.bForceBeltAutofill=false;
+#endif
+
 }
 
 function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory item, bool bFrob)

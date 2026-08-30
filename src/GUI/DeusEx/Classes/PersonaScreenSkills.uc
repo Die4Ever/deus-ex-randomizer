@@ -79,3 +79,9 @@ function UpgradeSkill()
         }
     }
 }
+
+function RefreshWindow(float DeltaTime)
+{
+    Super.RefreshWindow(DeltaTime);
+    UpdateSkillBanned(selectedSkillButton);
+}

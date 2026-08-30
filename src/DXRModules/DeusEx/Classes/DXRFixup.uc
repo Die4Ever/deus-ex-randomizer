@@ -256,6 +256,8 @@ function PostFirstEntry()
 
     FixStandingDancingBlockages();
 
+    FixAttachedParticleGenerators();
+
     NudgeItemsUnderOthers();
 }
 
@@ -1230,6 +1232,24 @@ function FixStandingDancingBlockages()
     }
 }
 
+function FixAttachedParticleGenerators()
+{
+    local #var(prefix)ParticleGenerator pg;
+
+    //When we shuffle pawns, it will disconnect any "base"dness, but if they were attached with attachTag,
+    //the Owner should still be correct.  Keep in mind, the tag of the intended attachment may have changed,
+    //so trust the Owner instead.
+
+    foreach AllActors(class'#var(prefix)ParticleGenerator',pg){
+        if (pg.attachTag=='') continue; //We only care about attached particle generators
+        if (pg.Owner==None) continue; //If it's supposed to be attached to something but has no owner, we can't really do anything
+        if (pg.Base!=None) continue; //It's properly based already, no fix necessary.
+
+        pg.SetLocation(pg.Owner.Location);  //Move it to the owner
+        pg.SetBase(pg.Owner); //And re-attach it to the owner
+    }
+}
+
 //Scale the damage done by zones to counteract the damage scaling from CombatDifficulty
 function ScaleZoneDamage()
 {
@@ -1409,11 +1429,7 @@ function MakeRobotWeaponsNative()
 
 function SpawnDatacubes()
 {
-#ifdef injections
-    local #var(prefix)DataCube dc;
-#else
-    local DXRInformationDevices dc;
-#endif
+    local #var(injectsprefix)InformationDevices dc;
 
     local vector loc;
     local rotator rot;
@@ -1441,19 +1457,16 @@ function SpawnDatacubes()
         rot = add_datacubes[i].rotation;
         rot = rotm(rot.Pitch, rot.Yaw, rot.Roll, 0.0);
 
-#ifdef injections
-        dc = Spawn(class'#var(prefix)DataCube',,, loc, rot);
-#else
-        dc = Spawn(class'DXRInformationDevices',,, loc, rot);
-#endif
+        if (add_datacubes[i].text!=""){
+            dc = SpawnDatacubePlaintext(loc,rot,add_datacubes[i].text, add_datacubes[i].plaintextTag,false,false);
+        } else if (add_datacubes[i].imageClass!=None){
+            dc = SpawnDatacubeImage(loc,rot,add_datacubes[i].imageClass,false,false);
+        } else {
+            warning("add_datacubes["$i$"] has neither text nor imageClass to spawn at "$loc);
+        }
 
         if( dc != None ){
             dc.SetCollision(true,false,false);
-            if(dxr.flags.settings.infodevices > 0)
-                GlowUp(dc);
-            dc.plaintext = add_datacubes[i].text;
-            dc.imageClass = add_datacubes[i].imageClass;
-            dc.plaintextTag = add_datacubes[i].plaintextTag;
             l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", plaintextTag: "$dc.plaintextTag$", location: "$loc);
         }
         else warning("failed to spawn datacube at "$loc$", text: \""$add_datacubes[i].text$"\", image: "$dc.imageClass);

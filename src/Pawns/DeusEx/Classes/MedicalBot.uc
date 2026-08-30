@@ -8,6 +8,7 @@ var travel int numUses;
 var transient DXRando dxr;
 var bool augsOnly;
 var string baseName;
+var int baseHealAmount;
 
 replication
 {
@@ -36,6 +37,20 @@ function bool Facelift(bool bOn)
 
     return Super.Facelift(bOn);
 }
+#endif
+
+#ifdef gmdxae
+
+function SetupSkin()
+{
+    if (augsOnly) {
+        MakeAugsOnly(); //Reapply
+        return;
+    }
+
+    Super.SetupSkin();
+}
+
 #endif
 
 function updateName()
@@ -77,11 +92,6 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
 
         PlayerToHeal.ClientMessage(msg);
     }
-#elseif gmdxae
-    //GMDX:AE will almost certainly get a custom player class before release, but this covers our ass just in case
-    uses = healMaxTimes;
-    healedPoints = Super.HealPlayer(PlayerToHeal);
-    healMaxTimes = uses-1; //GMDX bot use limiting is based on CombatDifficulty, so use our own logic instead
 #else
     healedPoints = Super.HealPlayer(PlayerToHeal);
     numUses++;
@@ -92,6 +102,17 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
 
     return healedPoints;
 }
+
+#ifdef gmdxae
+function CurePlayer(DeusExPlayer player)
+{
+    if (player!=None)
+    {
+        Super.CurePlayer(player);
+        numUses++;
+    }
+}
+#endif
 
 simulated function int GetMaxUses()
 {
@@ -112,13 +133,7 @@ simulated function int GetRemainingUses()
     if (augsOnly)
         return 0;
     else
-        if (!#defined(gmdxae)){
-            return (GetMaxUses() - numUses);
-        } else {
-            #ifdef gmdxae
-            return healMaxTimes;
-            #endif
-        }
+        return (GetMaxUses() - numUses);
 }
 
 simulated function string GetRemainingUsesStr()
@@ -207,8 +222,11 @@ function MakeAugsOnly()
     Mesh = Default.Mesh; //No-op unless Revision has already facelifted
 
     #ifdef gmdx
-    Mesh=LodMesh'DeusExCharacters.MedicalBot'; //GMDX defaults to the HDTP mesh, so the trick above doesn't work...
+    Mesh=LodMesh'DeusExCharacters.MedicalBot'; //GMDXv9 defaults to the HDTP mesh, so the trick above doesn't work...
     healMaxTimes=0;
+    #endif
+    #ifdef gmdxae
+    HDTPMesh = "";
     #endif
 }
 
@@ -236,6 +254,56 @@ function Tick(float delta)
     }
 }
 
+#ifdef gmdx
+function Frob(Actor Frobber, Inventory frobWith)
+{
+    local int realHealRefresh;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    realHealRefresh = healRefreshTime;
+    if (baseHealAmount==-1){
+        baseHealAmount = healAmount;
+    }
+
+    Super.Frob(Frobber,frobWith);
+
+    if (dxr!=None && dxr.flags!=None && dxr.flags.settings.medbotcooldowns>0){
+        //If Medbot cooldowns are randomized, restore the previous cooldown
+        healRefreshTime = realHealRefresh;
+    }
+
+    HandlePerkLogic(Frobber);
+
+}
+#endif
+
+function HandlePerkLogic(Actor Frobber)
+{
+    local DeusExPlayer player;
+
+    player = DeusExPlayer(Frobber);
+    healAmount = baseHealAmount;
+
+#ifdef gmdxae
+    if (player!=None &&
+        player.PerkManager!=None &&
+        player.PerkManager.GetPerkWithClass(class'DeusEx.PerkMisfeatureExploit').bPerkObtained == true){
+
+        //Base GMDX:AE healAmount is 250, and with the perk, it does 375 (250 * 1.5 = 375)
+        healAmount = healAmount * 1.5;
+    }
+#elseif gmdxnotae
+    if (player!=None &&
+        player.PerkNamesArray[21]==1){
+        //Base GMDXv9 healAmount is 250, and with the perk, it does 450 (250 * 1.8 = 450)
+        healAmount = healAmount * 1.8;
+    }
+#endif
+
+}
+
 defaultproperties
 {
     bDetectable=false
@@ -246,4 +314,5 @@ defaultproperties
     LightRadius=6
     LightHue=89
     LightPeriod=25
+    baseHealAmount=-1
 }

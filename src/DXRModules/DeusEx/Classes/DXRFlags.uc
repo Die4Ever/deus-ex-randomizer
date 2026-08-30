@@ -67,6 +67,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         f.SetBool('AchievementsDisabled', true,, 999);
     }
 
+    #ifdef gmdx
+    //Reset the hardcore settings, in case you're flip-flopping between saves with different settings
+    p.setupDifficultyMod();
+    #endif
+
     l("starting map is set to "$moresettings.starting_map);
 }
 
@@ -197,6 +202,9 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_overwhelming = 0;
+    more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -235,7 +243,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 90;
     difficulty_settings[i].medkits = 90;
     difficulty_settings[i].biocells = 90;
-    difficulty_settings[i].lockpicks = 90;
+    difficulty_settings[i].lockpicks = 80;
     difficulty_settings[i].multitools = 90;
     difficulty_settings[i].speedlevel = 2;
     difficulty_settings[i].startinglocations = 100;
@@ -274,6 +282,9 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_overwhelming = 0;
+    more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -311,7 +322,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 70;
     difficulty_settings[i].medkits = 70;
     difficulty_settings[i].biocells = 70;
-    difficulty_settings[i].lockpicks = 70;
+    difficulty_settings[i].lockpicks = 60;
     difficulty_settings[i].multitools = 70;
     difficulty_settings[i].speedlevel = 1;
     difficulty_settings[i].startinglocations = 100;
@@ -350,6 +361,9 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_overwhelming = 0;
+    more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 1;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -387,7 +401,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 65;
     difficulty_settings[i].medkits = 60;
     difficulty_settings[i].biocells = 60;
-    difficulty_settings[i].lockpicks = 60;
+    difficulty_settings[i].lockpicks = 50;
     difficulty_settings[i].multitools = 60;
     difficulty_settings[i].speedlevel = 1;
     difficulty_settings[i].startinglocations = 100;
@@ -426,6 +440,9 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_overwhelming = 0;
+    more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 2;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -463,7 +480,7 @@ function CheckConfig()
     difficulty_settings[i].ammo = 50;
     difficulty_settings[i].medkits = 50;
     difficulty_settings[i].biocells = 50;
-    difficulty_settings[i].lockpicks = 50;
+    difficulty_settings[i].lockpicks = 45;
     difficulty_settings[i].multitools = 50;
     difficulty_settings[i].speedlevel = 1;
     difficulty_settings[i].startinglocations = 100;
@@ -502,11 +519,14 @@ function CheckConfig()
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].aug_loc_rando = 0;
+    more_difficulty_settings[i].gmdx_overwhelming = 0;
+    more_difficulty_settings[i].gmdx_stamina = 0;
+    more_difficulty_settings[i].gmdx_difficulty = 3;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
-        more_difficulty_settings[i].menus_pause = 1;
+        more_difficulty_settings[i].menus_pause = #switch(gmdxnotae:0,1); //GMDX has real time menus by default, otherwise default to paused
         if(#defined(hx)) {
             difficulty_settings[i].startinglocations = 0;
             difficulty_settings[i].merchants = 0;
@@ -1557,7 +1577,7 @@ function ExtendedTests()
     SetDifficulty(0);
     testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
     testint(moresettings.spoilers, 1, "SetDifficulty check spoilers");
-    testint(moresettings.menus_pause, 1, "SetDifficulty check menus_pause");
+    testint(moresettings.menus_pause, #switch(gmdx:0,1), "SetDifficulty check menus_pause");
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
     testint(moresettings.splits_overlay, 0, "SetDifficulty check splits_overlay");

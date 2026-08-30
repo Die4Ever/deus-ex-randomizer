@@ -67,12 +67,12 @@ function CheckOfflineUpdates()
         num++;
         campaign = "2052";
     }
-    if(DateAtLeast(2026, 10, 13)) {
-        newsdates[num] = "2026-10-13";
+    if(DateAtLeast(2027, 10, 13)) {
+        newsdates[num] = "2027-10-13";
         newsheaders[num] = "Halloween Update!";
         newstexts[num] = "You have Online Features disabled or the server is down, so we can't know for sure, but there's a good chance that a new Halloween Update has been released!";
         num++;
-        campaign = "halloween2026";
+        campaign = "halloween2027";
     }
     if(DateAtLeast(2027, 6, 23)) {// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler?
         newsdates[num] = "2027-06-22";

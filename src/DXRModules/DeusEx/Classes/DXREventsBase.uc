@@ -1245,8 +1245,12 @@ static function GeneralEventData(DXRando dxr, out string j)
 
 static function bool ConsiderAugPassive(Augmentation anAug)
 {
-    if(#defined(gmdx)){
+    if(#defined(gmdxnotae)){
         return anAug.bAlwaysActive;
+    } else if (#defined(gmdxae)){
+        #ifdef gmdxae
+        return anAug.AugmentationType==Aug_Passive || anAug.AugmentationType==Aug_Automatic;
+        #endif
     } else if (#defined(vmd)){
         if (anAug.HotKeyNum <= 0) return true;
         #ifdef vmd2

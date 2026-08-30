@@ -851,7 +851,7 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        if (VanillaMaps) {
+        if (VanillaMaps && !GMDXMaps) {
             foreach RadiusActors(class'WaterCooler', wc, 1.0, vectm(-1000.329651, 155.701721, 201.670242)) {
                 // this water cooler faces the wall normally
                 rot = wc.Rotation;
@@ -1818,7 +1818,7 @@ function MakeElevatorOpenDoorButtons(name eleEvents[5])
             if (injbutton.Event==eleEvents[i] && injbutton.ButtonType==BT_Blank){
                 //Both the button inside and outside
                 injbutton.RandoButtonType=RBT_OpenDoors;
-                injbutton.BeginPlay();
+                injbutton.UpdateCurrentSkin();
             }
         }
     }

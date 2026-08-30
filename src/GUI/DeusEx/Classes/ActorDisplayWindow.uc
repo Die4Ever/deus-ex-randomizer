@@ -329,6 +329,24 @@ function DrawColourLine(GC gc, vector point1, vector point2, int r, int g, int b
     }
 }
 
+function bool StrInList(coerce string str, string commaList, optional bool caseSensitive)
+{
+    local string str1,list,word;
+
+    list = commaList;
+    word = "";
+    while(list!=""){
+        word = class'DXRInfo'.static.UnpackString(list);
+
+        if (caseSensitive){
+            if (str==word) return true;
+        } else {
+            if (str~=word) return true;
+        }
+    }
+    return false;
+}
+
 //#region DrawWindow
 //I just want to change the font :(
 function DrawWindow(GC gc)
@@ -341,6 +359,7 @@ function DrawWindow(GC gc)
     local vector tVect;
     local vector cVect;
     local PlayerPawnExt player;
+    local DeusExPlayer  dxp;
     local Actor trackActor, otherActor;
     local Dispatcher disp;
     local LogicTrigger logic;
@@ -363,7 +382,6 @@ function DrawWindow(GC gc)
     local DeusExMover dxMover;
     local vector minpos, maxpos;
     local Inventory item;
-    local name filter;
     local int radius;
     local DebugBox db;
     local class<Actor> classToShow;
@@ -386,9 +404,6 @@ function DrawWindow(GC gc)
     if (bShowMesh)
         gc.ClearZ();
 
-    if (nameFilter!="")
-        filter = StringToName(nameFilter);
-
     radius = 999999;
     if (bLimitRadius){
         radius = actorRadius;
@@ -399,11 +414,11 @@ function DrawWindow(GC gc)
         if(!bShowHidden && trackActor.bHidden)
             continue;// DXRando: for spoilers buttons
 
-        if (filter!='' && filter!=trackActor.Name)
+        if (nameFilter!="" && !StrInList(trackActor.Name,nameFilter))
             continue;
-        if (tagFilter!="" && !(tagFilter~=string(trackActor.Tag)))
+        if (tagFilter!="" && !StrInList(trackActor.Tag,tagFilter))
             continue;
-        if (eventFilter!="" && !(eventFilter~=string(trackActor.Event)))
+        if (eventFilter!="" && !StrInList(trackActor.Event,eventFilter))
             continue;
         if (customFilterAttrib!="" && customFilterVal!=""){
             if (bCustomFilterPartial){ //partial, case-insensitive match
@@ -425,6 +440,7 @@ function DrawWindow(GC gc)
         cVect.Z = trackActor.CollisionHeight;
         tVect = trackActor.Location;
         bPointIsClose = FALSE;
+
         if (bShowEyes && (Pawn(trackActor) != None))
             tVect.Z += Pawn(trackActor).BaseEyeHeight;
         if (trackActor == player)
@@ -447,14 +463,19 @@ function DrawWindow(GC gc)
         }
         else
         {
+            dxp = DeusExPlayer(player);
             if (!bShowLineOfSight || (player.AICanSee(trackActor, 1, false, true, bShowArea) > 0)) {
                 if (trackActor.Owner == player && VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else if (dxp!=None && dxp.InHand!=None && trackActor==dxp.InHand){ //In-hand items can be a bit further away, just be flexible
                     bPointIsClose = TRUE;
                 } else {
                     bPointValid = ConvertVectorToCoordinates(tVect, centerX, centerY);
                 }
             } else {
                 if (VSize(player.Location - trackActor.Location)<10){
+                    bPointIsClose = TRUE;
+                } else if (dxp!=None && dxp.InHand!=None && trackActor==dxp.InHand){ //In-hand items can be a bit further away, just be flexible
                     bPointIsClose = TRUE;
                 } else {
                     bPointValid = FALSE;

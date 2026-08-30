@@ -1,5 +1,7 @@
 class DXRFixupM01 extends DXRFixup;
 
+var bool statueMissionComplete;
+
 //#region Post First Entry
 function PostFirstEntryMapFixes()
 {
@@ -57,7 +59,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)InformationDevices id;
     local #var(prefix)DatalinkTrigger dlt;
     local #var(prefix)TerroristCommander leo;
-#ifdef gmdxnotae
+#ifdef gmdx
     local SpecialCaseTrigger sct;
 #endif
     local bool VanillaMaps;
@@ -78,6 +80,12 @@ function PreFirstEntryMapFixes()
     //#region UNATCO Island
     case "01_NYC_UNATCOISLAND":
         FixHarleyFilben();
+
+        if (!#defined(vanilla)){
+            //Start a timer to see if we need to kill any leftover clones when the mission is done
+            //Vanilla will use the logic in DXRMission01 (The modified mission script)
+            SetTimer(1.0, True);
+        }
 
         //Requesting Fearless Leo
         foreach AllActors(class'#var(prefix)TerroristCommander', leo) {
@@ -153,20 +161,14 @@ function PreFirstEntryMapFixes()
             }
         }
 
-#ifdef gmdxnotae
-        foreach AllActors(class'SpecialCaseTrigger', sct, 'PaulRunningToPlayer'){
-            //Find this SpecialCaseTrigger and just run it right away
-            //It's marked as bTriggerOnlyOnce, but that actually only works for Touch,
-            //so just delete it after we trigger it.
-            //This does stuff like deleting some pawn(s?), opening the gate near the dock,
-            //and turning on some lights.  Why is this in a trigger and not just the
-            //mission script?  This thing sucks, lol
-            //This particular trigger is basically meant to run right away anyway, so here we go...
-            sct.Trigger(self,Player());
-            sct.Destroy();
+        HandleGMDXSpecialCaseTrigger(true);
+    #ifdef gmdx
+        foreach AllActors(class'SpecialCaseTrigger',sct,'SpecialCaseTrigger2'){
+            //Detach the SCT at the top of the trigger so it can be hit by the timer at the end of the mission and handled correctly
+            sct.Tag='EndSpecialCaseTrigger';
+            sct.SetCollision(false,false,false); //Just to be safe
         }
-#endif
-
+    #endif
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
@@ -363,6 +365,98 @@ function string FixedSaveReminderCubeText()
 #endif
 }
 
+function HandleGMDXSpecialCaseTrigger(bool start)
+{
+#ifdef gmdx
+    local SpecialCaseTrigger sct;
+    local #var(PlayerPawn) p;
+    local bool triggered;
+    local float oldCombatDiff;
+    local name target;
+
+    if (start)
+        target='PaulRunningToPlayer';
+    else
+        target='EndSpecialCaseTrigger'; //Renamed by PreFirstEntry from SpecialCaseTrigger2, to detach it from the Trigger
+
+    //The start one does stuff like deleting some pawn(s?), opening the gate near the dock,
+    //and turning on some lights.  Why is this in a trigger and not just the
+    //mission script?  This thing sucks, lol
+
+    //The end one is near the top of the statue and TODO
+
+    p = Player();
+
+    //We need to use the gmdx_difficulty configured CombatDifficulty instead
+    //of the real one, so we should flip it back and forth here.
+    oldCombatDiff = p.CombatDifficulty;
+
+    if (dxr.flags.settings.goals>0 || dxr.flags.settings.startinglocations>0){
+        //If you have randomized starting (or goal) locations enabled, keeping the gate closed can be a problem.
+        //Presumably if you thought that was a good idea, force a combat difficulty high enough to always open.
+        p.CombatDifficulty = 5.0; //Technically it just needs to be above 1.0, but let's give it some room
+    } else {
+        p.CombatDifficulty = p.ConvertGMDXDifficultyOption(dxr.flags.moresettings.gmdx_difficulty);
+    }
+
+    foreach AllActors(class'SpecialCaseTrigger', sct, target){
+        //Find this SpecialCaseTrigger and just run it right away
+        //It's marked as bTriggerOnlyOnce, but that actually only works for Touch,
+        //so just delete it after we trigger it.
+
+        //This particular trigger is basically meant to run right away anyway, so here we go...
+        sct.Trigger(self,p);
+        sct.Destroy();
+    }
+
+    p.CombatDifficulty = oldCombatDiff;
+#endif
+}
+
+function KillHostileClones()
+{
+    local ScriptedPawn P;
+    local Inventory item,nextItem;
+
+    foreach AllActors(class'ScriptedPawn', P)
+    {
+        if (#var(prefix)Terrorist(P)!=None) continue; //The original script will have already caught them
+        if (P.GetAllianceType('player')!=ALLIANCE_Hostile) continue; //Only destroy enemies
+        if (InStr(P.Tag,"_clone")==-1) continue; //We only care about clones
+
+        P.Destroy(); //Just destroy all the clones that weren't already subclasses of handled classes
+/*
+        //The vanilla mission script just does a Destroy on SecurityBot3 and ThugMale2, so maybe that's precedent to not do this?
+
+        if (Robot(p)!=None){
+            //Just destroy robots so they don't damage stuff around them when they explode
+            P.Destroy();
+            continue;
+        }
+
+        //Kill the clones and yoink their inventory (logic stolen from the vanilla mission script Mission01)
+        P.HealthTorso = 0;
+        P.Health = 0;
+        P.TakeDamage(1, P, P.Location, vect(0,0,0), 'Shot');
+
+        // delete their inventories as well
+        if (P.Inventory != None)
+        {
+            do
+            {
+                item = P.Inventory;
+                nextItem = item.Inventory;
+                P.DeleteInventory(item);
+                item.Destroy();
+                item = nextItem;
+            }
+            until (item == None);
+        }
+*/
+    }
+
+}
+
 //#region Timer
 function TimerMapFixes()
 {
@@ -371,6 +465,15 @@ function TimerMapFixes()
     case "01_NYC_UNATCOHQ":
         if (!dxr.flagbase.GetBool('M01ReadyForBriefing') && dxr.flagbase.GetBool('MeetCarter_Played') && dxr.flagbase.GetBool('MeetJaime_Played')){
             dxr.flagbase.SetBool('M01ReadyForBriefing',True,,999);
+            SetTimer(0,false);
+        }
+        break;
+    case "01_NYC_UNATCOISLAND":
+        if (!statueMissionComplete && dxr.flagbase.GetBool('MS_MissionComplete')){
+            //Remove hostile clones after finishing the mission (Let the main mission script run first)
+            KillHostileClones();
+            HandleGMDXSpecialCaseTrigger(false); //Do the top of statue trigger
+            statueMissionComplete=true;
             SetTimer(0,false);
         }
         break;

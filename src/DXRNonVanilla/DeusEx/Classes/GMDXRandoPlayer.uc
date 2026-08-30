@@ -8,6 +8,7 @@ var Rotator ShakeRotator;
 var bool bAutorun;
 var float autorunTime;
 var bool bWallSplat;
+var int rando_stamina;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
@@ -19,7 +20,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     if(damageType == 'NanoVirus' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         augLevel = -1;
         if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
+            augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield'); //Was AugEMP in vanilla, but that's merged into AugShield in GMDX
         if(augLevel == -1) {
             RandomizeAugStates();
         }
@@ -345,7 +346,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
     skillLevel = FClamp(skillLevel, 0, 1.1);
     if (UsingChargedPickup(class'HazMatSuit'))
     {
-        damage *= 0.75 * skillLevel;
+        damage *= 0.4; //0.75 * skillLevel;
 
         //GMDX makes hazmat charge only decrease when protecting against damage
         foreach AllActors(class'HazMatSuit',suit) {
@@ -362,7 +363,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
 
     if(damageType == 'PoisonEffect' || damageType == 'Poison') {
         //CyberP: gas grenades and poison barrels drain stamina.
-        if (damage >= 1 && bStaminaSystem)
+        if (damage >= 1 && UseStaminaSystem()) //RANDO: Use the consistent stamina function instead of only checking if bStaminaSystem is true
         {
             swimTimer -= damage*0.4;
             if (swimTimer < 0)
@@ -393,7 +394,8 @@ function float ArmorReduceDamage(float damage)
                 break;
             }
         }
-        return damage * 0.5 * skillLevel;
+        //GMDX: removed too easy * skillLevel reduction
+        return damage * 0.65; //0.5 * skillLevel;
     }
     return damage;
 }
@@ -503,8 +505,8 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
             if( adjustedHealAmount >= 18 ) {
                 aha2 = adjustedHealAmount / 10;// use most of it for the balanced heal, the rest for normal healing behavior
                 aha2 = Max(aha2, 3);
-                _HealPart(HealthHead, adjustedHealAmount, aha2, GetBodyPartMaxHealth(Default.HealthHead));
-                _HealPart(HealthTorso, adjustedHealAmount, aha2, GetBodyPartMaxHealth(Default.HealthTorso));
+                _HealPart(HealthHead, adjustedHealAmount, aha2, class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthHead,self,false));
+                _HealPart(HealthTorso, adjustedHealAmount, aha2, class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthTorso,self,true));
                 _HealPart(HealthLegRight, adjustedHealAmount, aha2);
                 _HealPart(HealthLegLeft, adjustedHealAmount, aha2);
                 _HealPart(HealthArmRight, adjustedHealAmount, aha2);
@@ -514,8 +516,8 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
                 HealBrokenPart(HealthLegRight, adjustedHealAmount);
                 HealBrokenPart(HealthLegLeft, adjustedHealAmount);
             }
-            _HealPart(HealthHead, adjustedHealAmount,adjustedHealAmount,GetBodyPartMaxHealth(Default.HealthHead));
-            _HealPart(HealthTorso, adjustedHealAmount,adjustedHealAmount,GetBodyPartMaxHealth(Default.HealthTorso));
+            _HealPart(HealthHead, adjustedHealAmount,adjustedHealAmount,class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthHead,self,false));
+            _HealPart(HealthTorso, adjustedHealAmount,adjustedHealAmount,class'DXRActorsBase'.static.GetBodyPartMaxHealth(Default.HealthTorso,self,true));
             HealPart(HealthLegRight, adjustedHealAmount);
             HealPart(HealthLegLeft, adjustedHealAmount);
             HealPart(HealthArmRight, adjustedHealAmount);
@@ -529,21 +531,6 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
     }
 
     return adjustedHealAmount;
-}
-
-//GMDX makes Torso/Head max health increase with Medicine skill levels
-function int GetBodyPartMaxHealth(int HealthMax)
-{
-    local int spill;
-    local Skill sk;
-
-    if (SkillSystem==None) return HealthMax;
-
-    sk = SkillSystem.GetSkillFromClass(Class'DeusEx.SkillMedicine');
-    if (sk==None) return HealthMax;
-
-    return (HealthMax + sk.CurrentLevel*10);
-
 }
 
 function int HealBrokenPart(out int points, out int amt)
@@ -909,6 +896,46 @@ function HighlightCenterObjectLaser()
     }
 }
 
+function DoFrob(Actor Frobber, Inventory frobWith)
+{
+    local bool changed;
+    local DeusExProjectile dxp;
+    local class<DeusExWeapon>	spawnWeaponClass;
+    local class<Ammo>			spawnAmmoClass;
+
+    //Holy hack, Batman!
+    //GMDX gives things world collision, but these things need to be able to spawn wherever a projectile might be getting grabbed.
+    //Just temporarily remove world collision from the defaults of the thing that they actually spawn when you grab them
+    dxp = DeusExProjectile(FrobTarget);
+    if (dxp!=None){
+        spawnWeaponClass = dxp.spawnWeaponClass;
+        spawnAmmoClass = dxp.spawnAmmoClass;
+
+        if (spawnWeaponClass!=None){
+            if (spawnWeaponClass.Default.bCollideWorld==True){
+                changed=True;
+                spawnWeaponClass.Default.bCollideWorld=False;
+            }
+        }else if (spawnAmmoClass!=None){
+            if (spawnAmmoClass.Default.bCollideWorld==True){
+                changed=True;
+                spawnAmmoClass.Default.bCollideWorld=False;
+            }
+        }
+    }
+
+    Super.DoFrob(Frobber,frobWith);
+
+    if (changed){
+        if (spawnWeaponClass!=None){
+            spawnWeaponClass.Default.bCollideWorld=True;
+        }else if (spawnAmmoClass!=None){
+            spawnAmmoClass.Default.bCollideWorld=True;
+        }
+    }
+}
+
+
 exec function ShowMainMenu()
 {
     local DeusExLevelInfo info;
@@ -1008,7 +1035,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         weap = #var(DeusExPrefix)Weapon(inHand);
 
         //We don't want to auto apply in when looting a body
-        if (mod!=None && weap!=None && DeusExCarcass(mod.Owner)==None){
+        if (mod!=None && weap!=None && weap.IsInState('DownWeapon')==False && DeusExCarcass(mod.Owner)==None){
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName,, true);
@@ -1394,6 +1421,150 @@ function DisableScopeInConversation()
     }
 }
 
+function SetupGMDXHardcoreByFlag(int diff_val, int overwhelming_val, int stamina_val)
+{
+    bHardcoreFilterOption = false; //Overwhelming odds
+    bHardCoreMode = false; //Hardcore, actual real setting
+    bExtraHardcore = false; //Hardcore+
+
+    if (overwhelming_val >= 1){
+        //Overwhelming odds or up
+        bHardcoreFilterOption=true;
+    }
+
+    if (diff_val >= 4){
+        //Hardcore and up
+        bHardCoreMode=true;
+    }
+    if (diff_val >= 5){
+        //Hardcore+
+        bExtraHardcore=true;
+    }
+
+    rando_stamina = stamina_val;
+
+    SaveConfig();
+}
+
+function float ConvertGMDXDifficultyOption(int val)
+{
+    switch(val){
+        case 0: //EASY
+            return 0.5;
+
+        case 1: //MEDIUM
+            return 1.5;
+
+        case 2: //HARD
+            return 2.0;
+
+        case 3: //REALISTIC
+        case 4: //HARDCORE
+        case 5: //HARDCORE+
+            return 3.0;
+    }
+
+    return 1.5; //idk, medium if things get fucked up, I guess?
+}
+
+function setupDifficultyMod()
+{
+    local DXRando dxr;
+    local float OldDifficulty;
+    local int diff, stam, over;
+    //This is the GMDX function that does stuff for hardcore mode and stuff
+
+    dxr = class'DXRando'.default.dxr;
+    if (dxr!=None && dxr.flags!=None){
+        //Apply Real-Time UI based on the flag
+        bRealUI = (dxr.flags.moresettings.menus_pause==0);
+    }
+
+    //Store the original difficulty so we can restore it later
+    OldDifficulty = CombatDifficulty;
+
+    if (flagbase!=None){
+        //Grab these settings directly out of the flags, as this will run early
+        //enough for dxr to not be set up yet
+        diff = flagbase.GetInt('Rando_gmdx_difficulty');
+        stam = flagbase.GetInt('Rando_gmdx_stamina');
+        over = flagbase.GetInt('Rando_gmdx_overwhelming');
+
+        //Set the difficulty to the GMDX difficulty (So you can choose what actually applies!)
+        CombatDifficulty=ConvertGMDXDifficultyOption(diff);
+        SetupGMDXHardcoreByFlag(diff, over, stam);
+    }
+
+    Super.setupDifficultyMod();
+
+    //Revert the difficulty back to where it was before
+    CombatDifficulty = OldDifficulty;
+}
+
+//I'm your cool uncle who lets you use cheats in hardcore mode
+exec function Say(string Msg )
+{
+    Super(PlayerPawnExt).Say(Msg);
+}
+
+exec function Type()
+{
+    Super(PlayerPawnExt).Type();
+}
+
+function Typing( bool bTyping )
+{
+    Super(PlayerPawnExt).Typing(bTyping);
+}
+
+exec function IHateStamina()
+{
+    ClientMessage("Stamina Disabled");
+    ChangeStamina(1); //Permanently disabled
+}
+
+exec function ILoveStamina()
+{
+    ClientMessage("Stamina Enabled");
+    ChangeStamina(2); //Why do you like stamina
+}
+
+function ChangeStamina(int val)
+{
+    rando_stamina = val;
+    if (FlagBase!=None){
+        FlagBase.SetInt('Rando_gmdx_stamina',val,,999);
+    }
+}
+
+//RANDO: A consistent function for deciding if we're using the stamina system or not
+function bool UseStaminaSystem()
+{
+
+    //Original GMDX functionality
+    //return bStaminaSystem || bHardCoreMode;
+
+    if (rando_stamina==1) return false; //Permanently disabled
+    else if (rando_stamina==2) return true; //Permanently enabled
+
+    //Otherwise fall back to the original stamina logic
+    if (bStaminaSystem) return true;
+    if (bHardcoreMode) return true;
+    return false;
+}
+
+function DoJump( optional float F )
+{
+    local float oldSwimTimer;
+
+    oldSwimTimer = swimTimer;
+    Super.DoJump(F);
+    if (!UseStaminaSystem())
+    {
+        //If we aren't using the stamina system, don't remove breath for jumping
+        swimTimer = oldSwimTimer;
+    }
+}
 
 //Borrowed from DeusExPlayer, Dying::PlayerCalcView
 //Massively cut down for DXRando so that the game doesn't fade out or go back to the main menu, just spin forever and ever
@@ -1515,15 +1686,9 @@ state Dying
 
     function ViewFlash(float DeltaTime)
     {
-        if (class'MenuChoice_DeathCam'.static.IsKillCam()){
-            //No red fog for kill cam
-            DesiredFlashScale=0.0;
-            DesiredFlashFog = vect(0,0,0);
-            FlashTimer=0.0;
-            FlashScale = vect(0,0,0);
-            FlashFog = vect(0,0,0);
-            SetViewFlash(false);
-        } else {
+        if (class'MenuChoice_DeathCam'.static.IsKillCam()==False){
+            //Only show the normal red death fog when not using the kill cam
+            //We want the kill cam to be crystal clear.
             Super.ViewFlash(DeltaTime);
         }
     }
@@ -1600,6 +1765,20 @@ state PlayerWalking
                     }
                 }
             }
+        } else if (!isMantling && !bOnLadder){
+            //Allow mid-air crouching without toggle crouch (Toggle crouch will handle this itself)
+            //Toggle crouch only allows *crouching* in mid-air, not *uncrouching*, do the same here
+            //Crouch logic yoinked from PlayerPawn::ProcessMove
+            if (!bToggleCrouch && Physics == PHYS_Falling){
+                if (!bIsCrouching)
+                {
+                    if (bDuck != 0)
+                    {
+                        bIsCrouching = true;
+                        PlayDuck();
+                    }
+                }
+            }
         }
     }
 
@@ -1619,6 +1798,7 @@ state PlayerWalking
         local int ResetSize;
         local float mult, mult2, mult3, rand;
         local name ventMat;
+        local bool useStamina;
 
         if (bStaticFreeze)
         {
@@ -1884,7 +2064,7 @@ state PlayerWalking
             newSpeed *= mult3;
         }
 
-        if (Physics == PHYS_Walking && !bCrouchOn && (bStaminaSystem || bHardCoreMode))   //CyberP: stamina system
+        if (Physics == PHYS_Walking && !bCrouchOn && UseStaminaSystem())   //CyberP: stamina system //RANDO: Use the consistent function for stamina
         {
             if (bIsWalking == false && !bIsCrouching && (Velocity.X != 0 || Velocity.Y != 0 ))
             {
@@ -1896,7 +2076,7 @@ state PlayerWalking
                 if (swimTimer < 0)
                 {
                     swimTimer = 0;
-                    if (bStaminaSystem || bHardCoreMode)
+                    if (UseStaminaSystem())
                     {
                         bStunted = true;
                         SetTimer(3,false);
@@ -2202,6 +2382,32 @@ function BumpWall( vector HitLocation, vector HitNormal )
         {
         icar.incremental = 2;
         }
+    }
+}
+
+exec function QuickSave()
+{
+    local int oldQuickSave;
+    local bool wasAutosave;
+    local SavePoint sp;
+
+    oldQuickSave = QuickSaveLast;
+
+    //Need to differentiate between autosave and savepoint still, both use bPendingHardCoreSave
+    wasAutosave = bPendingHardCoreSave;
+    foreach AllActors(class'SavePoint',sp){
+        //Check if any savepoints are actively trying to save
+        if (sp.GetStateName()=='QuickSaver'){
+            wasAutosave = false;
+        }
+    }
+
+    Super.QuickSave();
+
+    //If load from last actual quicksave and it was an autosave...
+    if (class'MenuChoice_LoadLatest'.default.enabled==false && wasAutosave){
+        QuickSaveLast = oldQuickSave;
+        ConsoleCommand("set DeusEx.JCDentonMale iQuickSaveLast "$QuickSaveLast);
     }
 }
 
