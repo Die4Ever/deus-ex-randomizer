@@ -343,7 +343,11 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
             if(class'MenuChoice_BalanceItems'.static.IsEnabled()) return 100 * mult; // PS40
             else return 25 * mult; // PS20
         }
-        return class'DXRWeapons'.static.GetDefaultProjDamage(ProjectileClass) * mult;
+        if (ProjectileClass!=None){
+            return class'DXRWeapons'.static.GetDefaultProjDamage(ProjectileClass) * mult;
+        } else {
+            return default.HitDamage * mult;
+        }
     }
 
     if( class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
