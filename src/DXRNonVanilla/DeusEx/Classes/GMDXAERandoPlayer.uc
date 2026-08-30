@@ -2402,8 +2402,7 @@ function HidePerk(class<Perk> aPerk)
 
     p = PerkManager.GetPerkWithClass(aPerk);
     if (p!=None){
-        //Hide it by changing it to belong to a skill that isn't possible to select
-        p.PerkSkill=class'SkillUnused';
+        p.bHidden=true;
     }
 }
 
