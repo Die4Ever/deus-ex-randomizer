@@ -2405,6 +2405,16 @@ function HidePerk(class<Perk> aPerk)
     }
 }
 
+function SetPlaceholder(int objectNum, Inventory item)
+{
+    if (item.bCanUseObjectBelt==false){
+        //Primarily for DXRFashionManager, but theoretically reusable for other inventory objects too
+        return;
+    }
+
+    Super.SetPlaceholder(objectNum,item);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // #region Exec Functions
 ///////////////////////////////////////////////////////////////////////////////
