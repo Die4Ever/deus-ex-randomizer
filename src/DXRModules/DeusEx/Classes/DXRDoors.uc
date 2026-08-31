@@ -1000,6 +1000,25 @@ static function StaticMakeDestructible(#var(DeusExPrefix)Mover d)
     }
 }
 
+function PostAnyEntry()
+{
+    Super.PostAnyEntry();
+
+    InitGMDXAEDoorPerks();
+}
+
+//Some GMDX:AE perks change stats on doors.  We'll init those
+//after all the door randomization is finished.
+function InitGMDXAEDoorPerks()
+{
+#ifdef gmdxae
+    local DXRPerkSystem perks;
+
+    perks = DXRPerkSystem(player().PerkManager);
+    if (perks!=None) perks.InitDoorPerks();
+#endif
+}
+
 defaultproperties
 {
     fragmentGuesses(0)=(sound=sound'Pneumatic1Open',fragmentClass=class'MetalFragment')

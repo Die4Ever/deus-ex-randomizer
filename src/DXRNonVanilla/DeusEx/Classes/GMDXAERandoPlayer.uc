@@ -2367,17 +2367,16 @@ exec function QuickSave()
     }
 }
 
+//Duped from the GMDX:AE DeusExPlayer, but using our new class instead
 function SetupPerkManager()
 {
-    Super.SetupPerkManager();
-
-    if (PerkManager!=None){
-        //It better not be none by this point!
-
-        //Currently, Rando always saves emails and stuff as notes.  Maybe in
-        //the future we can make things play together nicely.
-        HidePerk(class'PerkDataRecovery');
+    // install the Perk Manager if not found
+    if (PerkManager == None)
+    {
+        DebugMessage("Make new DXRando Perk System");
+        PerkManager = new(Self) class'DXRPerkSystem';
     }
+    PerkManager.InitializePerks(Self);
 }
 
 function SetupRandomizer()
