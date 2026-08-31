@@ -2415,6 +2415,16 @@ function SetPlaceholder(int objectNum, Inventory item)
     Super.SetPlaceholder(objectNum,item);
 }
 
+function UpdateHDTPSettings()
+{
+    //If augmentique is installed, we want to always use the base AE logic
+    //If not using augmentique, we still want to go ahead if HDTP is enabled
+    //Except FemJC doesn't have HDTP, so keep using DXRFashion in that case
+    if (UsingAugmentique(self) || !(FlagBase.GetBool('LDDPJCIsFemale') || !IsHDTP())){
+        Super.UpdateHDTPSettings();
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // #region Exec Functions
 ///////////////////////////////////////////////////////////////////////////////
