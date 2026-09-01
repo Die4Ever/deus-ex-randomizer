@@ -186,7 +186,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
             drugEffectTimer = 0;
     }
 
-    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && (damageType == 'PoisonEffect' || damageType == 'Poison')) {
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && damageType == 'PoisonEffect') {
         return damage;
     }
 
