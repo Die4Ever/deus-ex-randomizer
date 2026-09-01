@@ -2,7 +2,7 @@
 - Slightly reduced lock strength of doors that have randomized lock strength. Also slightly reduced randomized lockpick quantities to compensate.
 - Increased the New Game+ minimum value for lockpicks and multitools from 5% up to 10%.
 - Datacube with the Aquinas Router door code in Area 51 Sector 4 (Mission 15) now has a harder set of potential locations, so it won't be quite as easy to find.
-- Hazmat suit, Environmental Resistance, and Environmental Skill now protect against initial Poison damage, but not the recurring damage. In Zero Rando (or when balance changes are disabled) we're still using the vanilla behavior of giving resistance to both.
+- Hazmat suits now protect against initial Poison damage, but not the recurring damage. In Zero Rando (or when balance changes are disabled) we're still using the vanilla behavior of giving resistance to both. Environmental Resistance augmentation always protects against both.
 
 ## GMDX Major Changes
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.

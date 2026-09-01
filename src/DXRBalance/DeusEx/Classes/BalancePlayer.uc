@@ -158,27 +158,27 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
 function float ReduceEnviroDamage(float damage, name damageType)
 {
     local float skillLevel, augLevel;
-    local bool bVanillaType, bBalanceType;
+    local bool bVanillaType, bBalanceType, bBalanceEnabled;
 
+    bBalanceEnabled = class'MenuChoice_BalanceEtc'.static.IsEnabled();
     augLevel = -1;
+
     bVanillaType = damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
         || damageType == 'HalonGas' || damageType == 'PoisonEffect' || damageType == 'Poison';
     bBalanceType = damageType == 'Flamed' || damageType == 'Burned' || damageType == 'Shocked';
 
-    if (!bVanillaType && !(bBalanceType && class'MenuChoice_BalanceEtc'.static.IsEnabled())) {
+    if (!bVanillaType && !(bBalanceType && bBalanceEnabled)) {
             return damage;
     }
 
-    if(damage==0) return damage;// don't make AugEnviro use energy for 0 damage from fire extinguishers
-
-    if (AugmentationSystem != None)
+    if (AugmentationSystem != None && damage > 0) // don't make AugEnviro use energy for 0 damage from fire extinguishers
         augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
 
     if (augLevel >= 0.0)
         damage *= augLevel;
 
-    // get rid of poison if we're maxed out
-    if (damage ~= 0.0)
+    // get rid of poison if we're maxed out, vanilla checks this before hazmat
+    if (damage ~= 0.0 && !bBalanceEnabled)
     {
         StopPoison();
         drugEffectTimer -= 4;	// stop the drunk effect
@@ -186,23 +186,41 @@ function float ReduceEnviroDamage(float damage, name damageType)
             drugEffectTimer = 0;
     }
 
-    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && damageType == 'PoisonEffect') {
-        return damage;
-    }
-
     skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
     skillLevel = FClamp(skillLevel, 0, 1.1);
 
-    if (UsingChargedPickup(class'HazMatSuit'))
+    if (UsingChargedPickup(class'HazMatSuit') && (!bBalanceEnabled || damageType != 'PoisonEffect')) // hazmat only works at time of impact
     {
         damage *= 0.75 * skillLevel;
     }
-    else if(class'MenuChoice_BalanceSkills'.static.IsEnabled())// passive enviro skill still gives some damage reduction
+    else if(class'MenuChoice_BalanceSkills'.static.IsEnabled() && damageType != 'PoisonEffect' && damageType != 'Poison')// passive enviro skill still gives some damage reduction
     {
         damage *= 1.1 * skillLevel + 0.3;
     }
 
+    // get rid of poison if we're maxed out
+    if (damage ~= 0.0 && bBalanceEnabled && (damageType == 'Poison' || damageType == 'PoisonEffect'))
+    {
+        StopPoison();
+        drugEffectTimer -= 4;	// stop the drunk effect
+        if (drugEffectTimer < 0)
+            drugEffectTimer = 0;
+    }
+
     return damage;
+}
+
+function StartPoison( Pawn poisoner, int Damage )
+{
+    local float skillLevel;
+
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && UsingChargedPickup(class'HazMatSuit')) {
+        skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+        skillLevel = FClamp(skillLevel, 0, 1.1);
+        Damage = float(Damage) * 0.75 * skillLevel;
+    }
+
+    Super.StartPoison(poisoner, Damage);
 }
 
 function float ArmorReduceDamage(float damage)
