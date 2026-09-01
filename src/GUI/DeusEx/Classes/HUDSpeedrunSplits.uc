@@ -505,7 +505,7 @@ function DrawSplits(GC gc, int cur)
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
-    for(i=0; mapvariants.missions[i] != cur; i++) {
+    for(i=0; i<ArrayCount(mapvariants.missions) && mapvariants.missions[i] != cur; i++) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
         time += stats.missions_menu_times[m];

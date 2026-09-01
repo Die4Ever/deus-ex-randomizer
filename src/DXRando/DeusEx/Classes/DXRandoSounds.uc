@@ -115,6 +115,7 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\DeltaruneWorldRevolving.mp3"    NAME="DeltaruneWorldRevolving" GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\StarfoxMainTheme.mp3"           NAME="StarfoxMainTheme"     GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\FZeroMuteCity.mp3"              NAME="FZeroMuteCity"        GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\Halo3OneFinalEffort.mp3"        NAME="Halo3OneFinalEffort"  GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\MaxPayneBrokenPianoPlay.mp3"    NAME="MaxPayneBrokenPianoPlay" GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\MaxPaynePianoJustBroke.mp3"     NAME="MaxPaynePianoJustBroke"  GROUP="MemePiano"
 
