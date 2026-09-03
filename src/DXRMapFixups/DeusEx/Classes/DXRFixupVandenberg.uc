@@ -958,6 +958,7 @@ function FixCmdElevator()
     doorButton.ButtonType=BT_Blank;
     doorButton.Event='all_doors_button';
     doorButton.UpdateCurrentSkin();
+    AttachMoverTag(doorButton); //Attach the open door button to the elevator again
 
     //Doors are 'door1', 'door2', and 'door3'
     d = Spawn(class'Dispatcher',, 'all_doors_button' );
