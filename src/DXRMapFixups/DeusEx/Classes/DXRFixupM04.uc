@@ -316,6 +316,12 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //The trigger on the roof of NSF HQ will no longer randomly open or close the door as you move through the room
+        foreach AllActors(class'#var(prefix)Trigger', trig){
+            if (trig.Event!='RoofDoor') continue;
+            trig.Event='';
+        }
+
         if(dxr.flags.settings.goals > 0) {
             //This delay between setting the flag with the FlagTrigger and playing the
             //infolink seems to help for HX.
