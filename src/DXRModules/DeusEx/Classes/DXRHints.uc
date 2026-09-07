@@ -116,6 +116,9 @@ simulated function InitHints()
         AddHint("Using a scope will make the camera look where you're aiming!", "Maybe you can actually see something far away like this!");
         AddHint("Have you tried shooting the camera?", "Maybe you can get a better view!");
     }
+    if (dxr.flags.moresettings.camera_mode>0){ //Not first person
+        AddHint("Your aim laser will change color when holding a grenade", "and you're close enough to plant it on the wall!");
+    }
 
     if (dxr.flags.moresettings.spoilers>0) {
         AddHint("Spoiler buttons are available on the Goals screen!", "Give them a shot if you get really stuck!");
@@ -138,6 +141,8 @@ simulated function InitHints()
 
     if (class'MenuChoice_ShowHints'.static.IsEnabled(dxr.flags)){
         AddHint("Are the hints annoying when you enter a level?", "You can disable Level Start Hints in the Randomizer settings!");
+    } else {
+        AddHint("Wish you could see a hint every time you enter a level?", "You can enable Level Start Hints in the Randomizer settings!");
     }
 
     if (#defined(vanilla)){
@@ -159,9 +164,15 @@ simulated function InitHints()
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
     AddHint("Sabot rounds can damage tough objects no matter the damage threshold.","Check the highlight text!");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
-    AddHint("Thermoptic Camo allows you to pass", "through lasers without being detected!");
-    AddHint("Thermoptic Camo makes you invisible to people and bots", "but not to cameras or turrets!");
-    AddHint("Thermoptic Camo and Cloak do not work against cameras or turrets,", "but Radar Transparency does.");
+    if (!#defined(gmdx)){
+        AddHint("Thermoptic Camo allows you to pass", "through lasers without being detected!");
+        AddHint("Thermoptic Camo makes you invisible to people and bots", "but not to cameras or turrets!");
+        AddHint("Thermoptic Camo and Cloak do not work against cameras or turrets,", "but Radar Transparency does.");
+    } else { //GMDX
+        AddHint("Thermoptic Camo allows you to pass through lasers", "without being detected if you take the Tech Specialist Perk!");
+        AddHint("Cloak does not work against cameras or turrets,", "but Radar Transparency and Thermoptic Camo does.");
+    }
+
     AddHint("Look before you leap!", "Flaming barrels will set you on fire if you land on them!");
     AddHint("Reading is hard, but sometimes it's worth it!","Try reading the highlight text once in a while!");
     if(dxr.flags.settings.energy != 100) {
@@ -256,7 +267,14 @@ simulated function InitHints()
         AddHint("Have you looked at your Bingo Board?", "Find it in the middle bar of your Goals/Notes screen.");
 
         if(!dxr.flags.IsZeroRando()) AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
-        AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
+
+        if (!#defined(gmdx) || dxr.flags.moresettings.gmdx_difficulty<4){
+            AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
+        } else if (#defined(gmdx) && dxr.flags.moresettings.gmdx_difficulty>=4){
+            //GMDX Hardcore has a fullness mechanic
+            AddHint("A vending machine can provide you with 20 health worth of food.", "Remember that you can only eat so much though!");
+        }
+
         AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them.");
         if(dxr.flags.settings.keysrando>0 && dxr.flags.settings.infodevices>0) AddHint("Datacubes and nanokeys give off a glow.", "Keep your eyes open for it!");
         else if(dxr.flags.settings.keysrando>0) AddHint("Nanokeys give off a glow.", "Keep your eyes open for it!");
@@ -504,7 +522,7 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the computer with the ROM Encoding is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HongKong_WanChai_Street") {
-            if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) AddHint("All that time JC spent practicing the piano...", "All wasted because of your choices.",true);
+            if( class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) AddHint("All that time JC spent practicing the piano...", "All wasted because of your choices.",true); //You died, so the effort went to waste
             if(dxr.flags.settings.goals > 0)
                 AddHint("The Dragon Tooth Sword is randomized in Hong Kong.","Open the case in Maggie Chow's apartment for a hint.");
         } else if (map ~= "06_HongKong_VersaLife") {
@@ -518,6 +536,9 @@ simulated function InitHints()
 
     case 8:
         AddHint("Osgoode & Sons is the burned out", "building next to the hotel.");
+        if (!#defined(gmdx) || class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){ //In GMDX with map balance disabled, we leave the troops in the big pile near the BBall Court
+            AddHint("Taking down a riot cop will draw the attention of UNATCO!", "Watch out for small squads of troops if you do!");
+        }
         if(dxr.flags.settings.goals > 0){
             AddHint("The locations of Filben, Greene, and Vinny are randomized.", "Check the Goal Randomization page on our Wiki.");
             AddHint("The start location of the raid has been randomized.", "Look for the black vans!");
