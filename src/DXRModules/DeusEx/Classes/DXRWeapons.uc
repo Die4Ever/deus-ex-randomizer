@@ -364,7 +364,18 @@ static simulated function float GetDefaultProjDamage(class<Projectile> p)
 
     case class'DartTaser':
         return 15.0;
+#endif
 
+#ifdef gmdxnotae
+    case class'GMDX9RubberBullet':
+#endif
+#ifdef gmdx
+    case class'RubberBullet':
+        if (#defined(gmdxnotae)){
+            return 13.0;
+        } else if (#defined(gmdxae)){
+            return 18.0;
+        }
 #endif
 
     }
@@ -525,10 +536,23 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
     case class'DartTaser':
         p.default.Damage = ProjDamage(p, ratio);
         break;
+    #endif
 
+    #ifdef gmdxnotae
     case class'RubberBullet':
-        //Don't try to randomize these, they do hardcoded damage on Bump
-        return false;
+        //The original rubber bullet uses hardcoded damage, so randomization
+        //is pointless.  Just pass these on so that they get a new class.
+        //p.default.Damage = ProjDamage(p, ratio);
+        p = class'GMDX9RubberBullet';
+        d = p;
+    case class'GMDX9RubberBullet':
+        //This version of the rubber bullet doesn't use hardcoded damage
+        p.default.Damage = ProjDamage(p, ratio);
+        break;
+    #elseif gmdxae
+    case class'RubberBullet':
+        p.default.Damage = ProjDamage(p, ratio);
+        break;
     #endif
 
     case class'#var(prefix)GasGrenade':
