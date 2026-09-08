@@ -52,5 +52,4 @@ event Bump( Actor Other )
 {
     Damage=13.0
     dmgMult=1.0
-    dmgBonus=0.0
 }

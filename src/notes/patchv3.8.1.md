@@ -122,6 +122,7 @@
   - "Misfeature Exploit" perk actually interacts correctly with randomized heal and charge amounts on medical bots and repair bots, instead of always updating their values to fixed amounts.
   - MJ12 faction enemies have a low chance of spawning additional MJ12 Elites.
   - Rubber Bullets (alternate ammo for shotguns) now gets a randomized damage value.
+  - The mechanic under the 747 (Mission 3) no longer tries to sell you nothing if you speak to him again after buying everything that he has for sale.
 
 </details>
 
