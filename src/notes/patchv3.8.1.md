@@ -63,6 +63,7 @@
   - Walking Security Bots now have a higher maximum step height, allowing them to step up slightly higher ledges.
   - UNATCO Troops who enter the map when Riot Cops are taken down in Mission 8 will now more consistently appear further away from the location of the Riot Cop.
   - The door of the room on the roof of NSF HQ (Mission 4) will no longer randomly open or close as you move inside.
+  - New option under Rando > Visuals, "Animated Textures", which allows applying a rate limit to certain animated textures like water, to make it animate at a rate closer to the intended speed at release.  This option defaults to enabled, but can be disabled if the effect is undesired.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.

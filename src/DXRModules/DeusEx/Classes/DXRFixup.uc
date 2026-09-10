@@ -1,6 +1,8 @@
 class DXRFixup expands DXRActorsBase transient config(DXRando);
 
 var config float FovWeaponMult;
+var() config int maxFireFrameRate;
+var() config int maxWetFrameRate;
 
 struct DecorationsOverwrite {
     var string type;
@@ -725,6 +727,52 @@ function AdjustTextureSmoothing()
 
 }
 
+function AdjustTextureAnimRates()
+{
+    local Texture t;
+    local int minRate,maxRate,defMin,defMax;
+    local bool limit,update;
+
+    limit = class'MenuChoice_TextureAnims'.static.IsEnabled();
+
+    foreach AllObjects(class'Texture',t){
+        defMin=t.Default.MinFrameRate;
+        defMax=t.Default.MaxFrameRate;
+        update=False;
+
+        switch(t.class){
+            case class'FireTexture':
+                if (limit){
+                    minRate=0;
+                    maxRate=maxFireFrameRate;
+                } else {
+                    minRate=defMin;
+                    maxRate=defMax;
+                }
+
+                update=(defMax==0); //Only update if the default is uncapped
+                break;
+            case class'WetTexture':
+                if (limit){
+                    minRate=0;
+                    maxRate=maxWetFrameRate;
+                } else {
+                    minRate=defMin;
+                    maxRate=defMax;
+                }
+
+                update=(defMax==0); //Only update if the default is uncapped
+                break;
+        }
+
+        if (update){
+            t.MinFrameRate=minRate;
+            t.MaxFrameRate=maxRate;
+        }
+
+    }
+}
+
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
@@ -786,6 +834,7 @@ function PostAnyEntry()
 {
     CleanupPlaceholders(true);
     AdjustTextureSmoothing();
+    AdjustTextureAnimRates();
 }
 
 function CleanupPlaceholders(optional bool alert)
@@ -1672,4 +1721,6 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
 defaultproperties
 {
     FovWeaponMult=1
+    maxFireFrameRate=60
+    maxWetFrameRate=30
 }
