@@ -1549,25 +1549,45 @@ function Actor Spawnm(class<actor> SpawnClass, optional actor SpawnOwner, option
 }
 
 //Replace a random placeholder with a newly spawned actor
-function Actor ReplacePlaceholderWith(class<Actor> PlaceholderClass, class<Actor> SpawnClass, optional actor SpawnOwner, optional name SpawnTag)
+function Actor ReplacePlaceholderWith(class<Actor> PlaceholderClass, class<Actor> SpawnClass, optional actor SpawnOwner, optional name SpawnTag, optional bool dont_force)
 {
     local Actor placeholder,out;
     local vector SpawnLocation;
     local rotator SpawnRotation;
+    local bool bOldCollideActors, bOldBlockActors, bOldBlockPlayers;
 
     placeholder = FindRandomPlaceholder(PlaceholderClass);
     if (placeholder!=None){
         SpawnLocation=placeholder.Location;
         SpawnRotation=placeholder.Rotation;
         l("Replacing "$placeholder$" with new "$SpawnClass);
-        placeholder.Destroy();
+        bOldCollideActors=placeholder.bCollideActors;
+        bOldBlockActors=placeholder.bBlockActors;
+        bOldBlockPlayers=placeholder.bBlockPlayers;
+        placeholder.SetCollision(False,False,False);
     } else {
         SpawnLocation=GetRandomPositionFine();
         SpawnRotation=GetRandomYaw();
         l("Spawning new "$SpawnClass$" in random location "$SpawnLocation);
     }
 
-    return _AddActor(Self, SpawnClass, SpawnLocation, SpawnRotation, SpawnOwner, SpawnTag);
+    if (dont_force){
+        out = Spawn(SpawnClass, SpawnOwner, SpawnTag, SpawnLocation, SpawnRotation);
+    } else {
+        out = _AddActor(Self, SpawnClass, SpawnLocation, SpawnRotation, SpawnOwner, SpawnTag);
+    }
+
+    if (placeholder!=None && out!=None){
+        //Replacing a placeholder and the new item spawned successfully
+        l("Replaced "$placeholder$" with "$out);
+        placeholder.Destroy();
+    } else if (placeholder!=None && out==None){
+        //Replacing a placeholder but the new item didn't spawn
+        l("Failed to spawn "$SpawnClass$" in place of "$placeholder);
+        placeholder.SetCollision(bOldCollideActors,bOldBlockActors,bOldBlockPlayers);
+    }
+
+    return out;
 }
 
 function Actor FindRandomPlaceholder(class<Actor> PlaceholderClass)
@@ -1578,6 +1598,7 @@ function Actor FindRandomPlaceholder(class<Actor> PlaceholderClass)
 
     foreach AllActors(PlaceholderClass,a){
         if (num>=ArrayCount(places)) break; //Don't overfill the array
+        if (a.bDeleteMe) continue; //Skip over placeholders that are being deleted
         places[num++]=a;
     }
 
