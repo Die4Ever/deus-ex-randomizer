@@ -93,6 +93,7 @@ struct MoreFlagsSettings{
     var int gmdx_overwhelming; // Overwhelming Odds, 0 is disabled, 1 is enabled (Only used in GMDX, not AE)
     var int gmdx_stamina; // 0 is based on hardcore and menu options, 1 is off, 2 is on (Only used in GMDX)
     var int gmdx_difficulty; //0-5 is EASY/MEDIUM/HARD/REALISTIC/HARDCORE/HARDCORE+ (Only used in GMDX)
+    var int augcanlocs, augupgradelocs;
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -433,6 +434,8 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_swapitems', settings.swapitems, mode, str);
     FlagInt('Rando_swapcontainers', settings.swapcontainers, mode, str);
     FlagInt('Rando_augcans', settings.augcans, mode, str);
+    FlagInt('Rando_augcanlocs', moresettings.augcanlocs, mode, str);
+    FlagInt('Rando_augupgradelocs', moresettings.augupgradelocs, mode, str);
     FlagInt('Rando_aug_value_rando', settings.aug_value_rando, mode, str);
     FlagInt('Rando_skill_value_rando', settings.skill_value_rando, mode, str);
     FlagInt('Rando_min_weapon_dmg', settings.min_weapon_dmg, mode, str);
@@ -636,6 +639,10 @@ simulated function string flagNameToHumanName(name flagname){
             return "Swap Containers";
         case 'Rando_augcans':
             return "Aug Can Content Randomization";
+        case 'Rando_augcanlocs':
+            return "Aug Can Chance";
+        case 'Rando_augupgradelocs':
+            return "Aug Upgrade Chance";
         case 'Rando_aug_value_rando':
             return "Aug Strength Randomization";
         case 'Rando_skill_value_rando':
@@ -795,6 +802,14 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_enemies_weapons':
         case 'Rando_aug_loc_rando':
             return val$"%";
+
+        case 'Rando_augcanlocs':
+        case 'Rando_augupgradelocs':
+            if (val>=0){
+                return val$"%";
+            } else {
+                return "Original";
+            }
 
         case 'Rando_newgameplus_curve_scalar':
             if (val<0){

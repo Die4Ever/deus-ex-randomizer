@@ -1548,6 +1548,98 @@ function Actor Spawnm(class<actor> SpawnClass, optional actor SpawnOwner, option
     return Spawn(SpawnClass, SpawnOwner, SpawnTag, SpawnLocation, SpawnRotation);
 }
 
+//Replace a random placeholder with a newly spawned actor
+function Actor ReplacePlaceholderWith(class<Actor> PlaceholderClass, class<Actor> SpawnClass, optional actor SpawnOwner, optional name SpawnTag)
+{
+    local Actor placeholder,out;
+    local vector SpawnLocation;
+    local rotator SpawnRotation;
+
+    placeholder = FindRandomPlaceholder(PlaceholderClass);
+    if (placeholder!=None){
+        SpawnLocation=placeholder.Location;
+        SpawnRotation=placeholder.Rotation;
+        l("Replacing "$placeholder$" with new "$SpawnClass);
+        placeholder.Destroy();
+    } else {
+        SpawnLocation=GetRandomPositionFine();
+        SpawnRotation=GetRandomYaw();
+        l("Spawning new "$SpawnClass$" in random location "$SpawnLocation);
+    }
+
+    return _AddActor(Self, SpawnClass, SpawnLocation, SpawnRotation, SpawnOwner, SpawnTag);
+}
+
+function Actor FindRandomPlaceholder(class<Actor> PlaceholderClass)
+{
+    local Actor a;
+    local Actor places[50];
+    local int num;
+
+    foreach AllActors(PlaceholderClass,a){
+        if (num>=ArrayCount(places)) break; //Don't overfill the array
+        places[num++]=a;
+    }
+
+    return places[rng(num)];
+}
+
+//Destroy an actor and leave a placeholder where it was
+function Actor ReplaceWithPlaceholder(Actor a, class<Actor> PlaceholderClass)
+{
+    local vector SpawnLocation;
+    local rotator SpawnRotation;
+    local bool owned;
+
+    SpawnLocation = a.Location;
+    SpawnRotation = a.Rotation;
+    owned = a.Owner!=None;
+    a.Destroy();
+
+    if (owned) return None; //Don't spawn placeholders for owned objects (they're probably in an inventory, though this is a pretty vague check)
+
+    return _AddActor(Self, PlaceholderClass, SpawnLocation, SpawnRotation);
+}
+
+function CompressContainerContents(#var(prefix)Containers c)
+{
+    if (c.Content2==None){
+        c.Content2=c.Content3;
+        c.Content3=None;
+    }
+    if (c.Contents==None){
+        c.Contents=c.Content2;
+        c.Content2=c.Content3;
+        c.Content3=None;
+    }
+}
+
+function RemoveClassFromContainers(class<Actor> RemoveClass)
+{
+    local #var(prefix)Containers c;
+    local bool found;
+
+    foreach AllActors(class'#var(prefix)Containers',c){
+        found = false;
+        if (c.Contents==RemoveClass) {
+            c.Contents=None;
+            found=true;
+        }
+        if (c.Content2==RemoveClass) {
+            c.Content2=None;
+            found=true;
+        }
+        if (c.Content3==RemoveClass) {
+            c.Content3=None;
+            found=true;
+        }
+
+        if (found){
+            CompressContainerContents(c);
+        }
+    }
+}
+
 function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector loc, optional rotator rotate)
 {
     local #var(prefix)Containers box;

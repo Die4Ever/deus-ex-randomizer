@@ -455,6 +455,12 @@ function BindControls(optional string action)
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
     Slider(f.settings.augcans, 0, 100, GetGenericHelpText("augcanrando"));
 
+    NewMenuItem("Aug Can Chance %", "The chance for aug cans to randomly spawn in each map.");
+    Slider(f.moresettings.augcanlocs, -1, 100, GetAugLocationHelpText("augcanlocs"));
+
+    NewMenuItem("Aug Upgrade Chance %", "The chance for aug upgrades to randomly spawn in each map.");
+    Slider(f.moresettings.augupgradelocs, -1, 100, GetAugLocationHelpText("augupgradelocs"));
+
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
@@ -773,6 +779,54 @@ function String GetGenericHelpText(string opt)
         log("GetGenericHelpText: No help text available for "$opt);
         break;
     }
+
+    return msg;
+}
+
+function string GetAugLocationHelpText(string opt)
+{
+    local string msg;
+    local int odds;
+    local int numMaps, numCans;
+    local bool RevisionMaps;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(player);
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(p);
+    numMaps = class'DXRMapVariants'.static.GetNumMaps(p);
+
+    switch(opt){
+    case "augcanlocs":
+        msg =       "This setting sets the odds of an augmentation canister spawning in each map.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When set to -1, augmentation canisters will stay in their original maps.  Otherwise, all original augmentation canisters will be removed and new ones will be spawned according to the selected odds.|n";
+        if(#defined(gmdx)||RevisionMaps){
+            numCans=21;
+        } else {
+            numCans=20;
+        }
+        break;
+    case "augupgradelocs":
+        msg =       "This setting sets the odds of an augmentation upgrade canister spawning in each map.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When set to -1, augmentation upgrade canisters will stay in their original maps."$"  Otherwise, all original augmentation upgrade canisters (except for ones given from conversations) will be removed and new ones will be spawned according to the selected odds.|n";
+        if(RevisionMaps){
+            numCans=24; //Kind of in-between reality - 19 total loose (2 extra underground in graveyard, 1 extra in A51 Final, some extras at lower difficulty, less on higher), 9 in corpses and containers
+        } else if (#defined(gmdx)){
+            numCans=21; //17 loose (2 are "overdrive", but one is inaccessible), 5 in containers and corpses.
+        } else {
+            numCans=17; //13 loose, 4 in corpses
+        }
+        break;
+    default:
+        log("GetAugLocationHelpText: No help text available for "$opt);
+        break;
+    }
+
+    odds = int(((float(numCans)/numMaps) * 100.0)+0.5);
+    msg = msg $ "|n";
+    msg = msg $ "When unrandomized, the odds are roughly "$odds$"%";
 
     return msg;
 }

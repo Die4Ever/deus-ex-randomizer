@@ -216,6 +216,15 @@ static function bool IsVanillaMaps(#var(PlayerPawn) player)
     return false;
 }
 
+static function int GetNumMaps(#var(PlayerPawn) player)
+{
+    if(IsRevisionMaps(player)){
+        return 76;
+    } else {
+        return 72;
+    }
+}
+
 function int GetMirrorMapsSetting()
 {
 #ifndef injections

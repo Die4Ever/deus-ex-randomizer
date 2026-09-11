@@ -435,10 +435,7 @@ function ReduceSpawnInSingleContainer(#var(prefix)Containers d, class<Inventory>
     if( d.Contents != None && _ReduceSpawnInContainer(d, classname, percent, d.Contents) )
         d.Contents = None;
 
-    if(d.Content2 == None)
-        d.Content2 = d.Content3;
-    if(d.Contents == None)
-        d.Contents = d.Content2;
+    CompressContainerContents(d);
 
     if(d.Contents == None) {
         if (!deleteWhenEmpty) {

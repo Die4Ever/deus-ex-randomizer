@@ -206,6 +206,8 @@ function CheckConfig()
     more_difficulty_settings[i].gmdx_stamina = 0;
     more_difficulty_settings[i].gmdx_difficulty = 0;
     more_difficulty_settings[i].splits_overlay = 0;
+    more_difficulty_settings[i].augcanlocs = -1;
+    more_difficulty_settings[i].augupgradelocs = -1;
     i++;
 #endif
 
@@ -286,6 +288,8 @@ function CheckConfig()
     more_difficulty_settings[i].gmdx_stamina = 0;
     more_difficulty_settings[i].gmdx_difficulty = 0;
     more_difficulty_settings[i].splits_overlay = 0;
+    more_difficulty_settings[i].augcanlocs = -1;
+    more_difficulty_settings[i].augupgradelocs = -1;
     i++;
 
 #ifdef hx
@@ -365,6 +369,8 @@ function CheckConfig()
     more_difficulty_settings[i].gmdx_stamina = 0;
     more_difficulty_settings[i].gmdx_difficulty = 1;
     more_difficulty_settings[i].splits_overlay = 0;
+    more_difficulty_settings[i].augcanlocs = -1;
+    more_difficulty_settings[i].augupgradelocs = -1;
     i++;
 
 #ifdef hx
@@ -444,6 +450,8 @@ function CheckConfig()
     more_difficulty_settings[i].gmdx_stamina = 0;
     more_difficulty_settings[i].gmdx_difficulty = 2;
     more_difficulty_settings[i].splits_overlay = 0;
+    more_difficulty_settings[i].augcanlocs = -1;
+    more_difficulty_settings[i].augupgradelocs = -1;
     i++;
 
 #ifdef hx
@@ -523,6 +531,8 @@ function CheckConfig()
     more_difficulty_settings[i].gmdx_stamina = 0;
     more_difficulty_settings[i].gmdx_difficulty = 3;
     more_difficulty_settings[i].splits_overlay = 0;
+    more_difficulty_settings[i].augcanlocs = -1;
+    more_difficulty_settings[i].augupgradelocs = -1;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -928,6 +938,8 @@ simulated function string DescribeDifficulty()
     FlagInt('Rando_swapitems', settings.swapitems, mode, str);
     FlagInt('Rando_swapcontainers', settings.swapcontainers, mode, str);
     FlagInt('Rando_augcans', settings.augcans, mode, str);
+    FlagInt('Rando_augcanlocs', moresettings.augcanlocs, mode, str);
+    FlagInt('Rando_augupgradelocs', moresettings.augupgradelocs, mode, str);
     FlagInt('Rando_aug_value_rando', settings.aug_value_rando, mode, str);
     FlagInt('Rando_skill_value_rando', settings.skill_value_rando, mode, str);
     FlagInt('Rando_min_weapon_dmg', settings.min_weapon_dmg, mode, str);

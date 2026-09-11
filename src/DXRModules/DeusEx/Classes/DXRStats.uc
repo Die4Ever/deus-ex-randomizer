@@ -742,11 +742,7 @@ function AddDXRCredits(CreditsWindow cw)
     rightArmLost = GetDataStorageStat(dxr, "BodyPartLost_RightArm");
 
     //Calculate percentage of maps visited
-    if(class'DXRMapVariants'.static.IsRevisionMaps(player())){
-        nummaps=76;
-    } else {
-        nummaps=72;
-    }
+    nummaps=class'DXRMapVariants'.static.GetNumMaps(player());
     mappercent = (float(mapcoverage)/float(nummaps))*100.0;
 
     cw.PrintHeader("Statistics");

@@ -1,4 +1,4 @@
-class DXRAugmentations extends DXRBase transient;
+class DXRAugmentations extends DXRActorsBase transient;
 
 var float min_aug_weaken, max_aug_str;
 
@@ -6,6 +6,14 @@ replication
 {
     reliable if( Role==ROLE_Authority )
         min_aug_weaken, max_aug_str;
+}
+
+function PreFirstEntry()
+{
+    Super.PreFirstEntry();
+
+    RandomizeAugCannisterLocations();
+    RandomizeAugUpgradeLocations();
 }
 
 function FirstEntry()
@@ -284,6 +292,84 @@ static function RedrawAugMenu(DeusExPlayer player)
 #endif
 }
 
+function bool AugCanIsEmpty(#var(prefix)AugmentationCannister ac)
+{
+    local int i;
+
+    for(i=0;i<ArrayCount(ac.AddAugs);i++){
+        if (ac.AddAugs[i]!='') return false;
+    }
+    return true;
+}
+
+function RandomizeAugCannisterLocations()
+{
+    local #var(prefix)AugmentationCannister a;
+
+    if( dxr.flagbase == None ) return;
+
+    if( dxr.flags.moresettings.augcanlocs < 0 ) return; //Don't continue if locations are unrandomized
+
+    SetSeed( "RandomizeAugCannisterLocations" );
+
+    //Remove all aug cans (Replace with a placeholder instead).  This will get ones in inventories as well.
+    foreach AllActors(class'#var(prefix)AugmentationCannister', a) { ReplaceWithPlaceholder(a,class'PlaceholderItem'); }
+
+    //See if this map should get an aug can
+    if( ! chance_single(dxr.flags.moresettings.augcanlocs) ) return;
+
+    a = #var(prefix)AugmentationCannister(ReplacePlaceholderWith(class'PlaceholderItem',class'#var(prefix)AugmentationCannister'));
+    if (a!=None){
+        l("RandomizeAugCannisterLocations() spawned aug can "$a);
+    } else {
+        err("RandomizeAugCannisterLocations() failed to spawn aug can");
+    }
+
+    //Fill the aug can with something vanilla-like (It can still get randomized contents later)
+    PopulateAugCanWithDefaultOptions(a);
+}
+
+function RandomizeAugUpgradeLocations()
+{
+    local Actor a;
+    local DeusExPickup p;
+    local class<Actor> SpawnClass;
+
+    if( dxr.flagbase == None ) return;
+
+    if( dxr.flags.moresettings.augupgradelocs < 0 ) return; //Don't continue if locations are unrandomized
+
+    SetSeed( "RandomizeAugUpgradeLocations" );
+
+    //Remove all aug upgrade cans (Replace with a placeholder instead)
+    foreach AllActors(class'DeusExPickup', p) {
+        if (!p.IsA('#var(prefix)AugmentationUpgradeCannister') && !p.IsA('AugmentationUpgradeCannisterOverdrive')) continue;
+
+        ReplaceWithPlaceholder(p,class'PlaceholderItem');
+    }
+
+    //Remove aug upgrades from containers (There are some outside of vanilla)
+    RemoveClassFromContainers(class'#var(prefix)AugmentationUpgradeCannister');
+
+    //See if this map should get an aug upgrade
+    if( ! chance_single(dxr.flags.moresettings.augupgradelocs) ) return;
+
+    SpawnClass=class'#var(prefix)AugmentationUpgradeCannister';
+#ifdef gmdx
+    //GMDX also has AugmentationUpgradeCannisterOverdrive, which has 1 in M05, and 1 extra in M09 warehouse area (normally inaccessible)
+    if (chance_single(20)){ //there are 17 loose cans, 5 in containers and corpses.  2 are "overdrive", but one of them is inaccessible (M09 Warehouse)
+        SpawnClass=class'AugmentationUpgradeCannisterOverdrive'; //This isn't a subclass of AugmentationUpgradeCannister
+    }
+#endif
+
+    a = ReplacePlaceholderWith(class'PlaceholderItem',SpawnClass);
+    if (a!=None){
+        l("RandomizeAugUpgradeLocations() spawned upgrade can "$a);
+    } else {
+        err("RandomizeAugUpgradeLocations() failed to spawn upgrade can");
+    }
+}
+
 function RandomizeAugCannisters()
 {
     local #var(prefix)AugmentationCannister a;
@@ -295,7 +381,7 @@ function RandomizeAugCannisters()
     foreach AllActors(class'#var(prefix)AugmentationCannister', a)
     {
         if( DeusExPlayer(a.Owner) != None ) continue;
-        if( ! chance_single(dxr.flags.settings.augcans) ) continue;
+        if( !AugCanIsEmpty(a) && ! chance_single(dxr.flags.settings.augcans) ) continue; //always randomize empty aug cans
         RandomizeAugCannister(dxr, a);
     }
 }
@@ -1026,6 +1112,179 @@ static function GetTrueAugLevels(Augmentation anAug, out int trueLevel, out int 
             trueMax = trueMax - 1;
         }
         #endif
+    }
+}
+
+function PopulateAugCanWithDefaultOptions(#var(prefix)AugmentationCannister a)
+{
+    local int numOpts,roll;
+    local bool RevisionMaps;
+
+    RevisionMaps=class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (#defined(gmdx) || RevisionMaps){
+        numOpts=21;
+    } else {
+        numOpts=20;
+    }
+
+    roll = rng(numOpts);
+
+    if (#defined(gmdx)){
+        switch(roll){
+            case 0:
+            case 1:
+                a.AddAugs[0]='AugMuscle';
+                a.AddAugs[1]='AugCombat';
+                break;
+            case 2:
+            case 3:
+                a.AddAugs[0]='AugAqualung';
+                a.AddAugs[1]='AugEnviro';
+                break;
+            case 4:
+            case 5:
+                a.AddAugs[0]='AugSpeed';
+                a.AddAugs[1]='AugStealth';
+                break;
+            case 6:
+                a.AddAugs[0]='AugBallistic';
+                a.AddAugs[1]='AugBallisticPassive';
+                break;
+            case 7:
+            case 8:
+            case 9:
+                a.AddAugs[0]='AugTarget';
+                a.AddAugs[1]='AugVision';
+                break;
+            case 10:
+            case 11:
+                a.AddAugs[0]='AugCombatStrength';
+                a.AddAugs[1]='AugEnergyTransfer';
+                break;
+            case 12:
+            case 13:
+                a.AddAugs[0]='AugHealing';
+                a.AddAugs[1]='AugShield';
+                break;
+            case 14:
+            case 15:
+            case 16:
+                a.AddAugs[0]='AugDefense';
+                a.AddAugs[1]='AugDrone';
+                break;
+            case 17:
+            case 18:
+            case 19:
+                a.AddAugs[0]='AugCloak';
+                a.AddAugs[1]='AugRadarTrans';
+                break;
+            case 20:
+                a.AddAugs[0]='AugPower';
+                a.AddAugs[1]='AugHeartLung';
+                break;
+        }
+    } else if (RevisionMaps){
+        switch(roll){
+            case 0:
+            case 1: //One extra of these cans in Revision
+                a.AddAugs[0]='AugMuscle';
+                a.AddAugs[1]='AugCombat';
+                break;
+            case 2:
+            case 3:
+            case 4:
+                a.AddAugs[0]='AugAqualung';
+                a.AddAugs[1]='AugEnviro';
+                break;
+            case 5:
+            case 6:
+            case 7:
+                a.AddAugs[0]='AugSpeed';
+                a.AddAugs[1]='AugStealth';
+                break;
+            case 8:
+            case 9:
+                a.AddAugs[0]='AugEMP';
+                a.AddAugs[1]='AugBallistic';
+                break;
+            case 10:
+            case 11:
+                a.AddAugs[0]='AugHealing';
+                a.AddAugs[1]='AugShield';
+                break;
+            case 12:
+            case 13:
+            case 14:
+                a.AddAugs[0]='AugDefense';
+                a.AddAugs[1]='AugDrone';
+                break;
+            case 15:
+            case 16:
+                a.AddAugs[0]='AugTarget';
+                a.AddAugs[1]='AugVision';
+                break;
+            case 17:
+            case 18:
+            case 19:
+                a.AddAugs[0]='AugCloak';
+                a.AddAugs[1]='AugRadarTrans';
+                break;
+            case 20:
+                a.AddAugs[0]='AugPower';
+                a.AddAugs[1]='AugHeartLung';
+                break;
+        }
+    } else {
+        switch(roll){
+            case 0:
+                a.AddAugs[0]='AugMuscle';
+                a.AddAugs[1]='AugCombat';
+                break;
+            case 1:
+            case 2:
+            case 3:
+                a.AddAugs[0]='AugAqualung';
+                a.AddAugs[1]='AugEnviro';
+                break;
+            case 4:
+            case 5:
+            case 6:
+                a.AddAugs[0]='AugSpeed';
+                a.AddAugs[1]='AugStealth';
+                break;
+            case 7:
+            case 8:
+                a.AddAugs[0]='AugEMP';
+                a.AddAugs[1]='AugBallistic';
+                break;
+            case 9:
+            case 10:
+                a.AddAugs[0]='AugHealing';
+                a.AddAugs[1]='AugShield';
+                break;
+            case 11:
+            case 12:
+            case 13:
+                a.AddAugs[0]='AugDefense';
+                a.AddAugs[1]='AugDrone';
+                break;
+            case 14:
+            case 15:
+                a.AddAugs[0]='AugTarget';
+                a.AddAugs[1]='AugVision';
+                break;
+            case 16:
+            case 17:
+            case 18:
+                a.AddAugs[0]='AugCloak';
+                a.AddAugs[1]='AugRadarTrans';
+                break;
+            case 19:
+                a.AddAugs[0]='AugPower';
+                a.AddAugs[1]='AugHeartLung';
+                break;
+        }
     }
 }
 
