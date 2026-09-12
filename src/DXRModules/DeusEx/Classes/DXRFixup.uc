@@ -254,7 +254,7 @@ function PostFirstEntry()
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
 
-    RemoveStopWhenEncroach();
+    FixMoverEncroachTypes();
 
     FixStandingDancingBlockages();
 
@@ -1435,7 +1435,7 @@ function FixAlarmUnits()
 #endif
 }
 
-function RemoveStopWhenEncroach()
+function FixMoverEncroachTypes()
 {
     local #var(prefix)Mover m;
 
@@ -1446,13 +1446,19 @@ function RemoveStopWhenEncroach()
     }
 
     foreach AllActors(class'#var(prefix)Mover',m){
-        //Stop when encroach is annoying and can allow some NPCs to block doorways
-        //like the UNATCO HQ breakroom door
         if (m.MoverEncroachType==ME_StopWhenEncroach){
+            //Stop when encroach is annoying and can allow some NPCs to block doorways
+            //like the UNATCO HQ breakroom door
+            m.MoverEncroachType=ME_IgnoreWhenEncroach;
+        } else if (ElevatorMover(m)!=None && m.MoverEncroachType==ME_ReturnWhenEncroach) {
+            //ReturnWhenEncroach doesn't work with elevator movers and just stops instead
+            //Elevators are even more finicky than regular doors, since you typically
+            //are sending them to a specific KeyNum, and when it stops, it believes it's
+            //in that key, so trying to send it to that key again doesn't do anything.
+            //Just ignore when encroach instead.
             m.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
     }
-
 }
 
 function MakeRobotWeaponsNative()

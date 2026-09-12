@@ -68,7 +68,7 @@ function bool EncroachingOn( actor Other )
 function SetSeq(int seqnum)
 {
     local bool oldSeq;
-    local int prevKeyNum;
+    local int lastKeyNum;
     local float dist;
 
     Initialize();
@@ -87,12 +87,12 @@ function SetSeq(int seqnum)
     if (KeyNum != seqnum || oldSeq)
     {
         prevSeqNum = seqnum;
-        prevKeyNum = KeyNum;
+        lastKeyNum = KeyNum;
         KeyNum = seqnum;
 
         GotoState('ElevatorMover', 'Next');
 
-        if( prevKeyNum == seqnum || dist < 16.0 )
+        if( lastKeyNum == seqnum || dist < 16.0 )
             bIsMoving = false;
         else lastTime = Level.TimeSeconds;
     }
