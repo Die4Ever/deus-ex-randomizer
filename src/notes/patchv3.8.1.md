@@ -67,6 +67,7 @@
   - New option under Rando > Visuals, "Animated Textures", which allows applying a rate limit to certain animated textures like water, to make it animate at a rate closer to the intended speed at release.  This option defaults to enabled, but can be disabled if the effect is undesired.
   - In "Limited Saves" save modes, Memory Containment Units (MCUs) will now first attempt to spawn into preselected "placeholder" locations before falling back to a fully random location in the level.
   - The blast door in Silo (Mission 14) that leads to the actual silo will no longer get stuck if it bumps into the player while opening.
+  - Grouped doors will no longer get stuck if one of the doors is destroyed while opening or closing.  For example, this fixes the elevator doors in Versalife Level 1 Labs (Mission 6) that lead up to the overlook room.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.

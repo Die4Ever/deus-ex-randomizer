@@ -311,6 +311,8 @@ function SetDoorFixes()
         break;
     case "06_HONGKONG_MJ12LAB":
         // Elevator doors to overlook area
+        // Gets stuck if a door is destroyed while closing
+        // Fixed in DXRBalance/DeusExMover
         door_fixes[num_door_fixes].tag = 'eledoor02';
         door_fixes[num_door_fixes].breakable = SB_True;
         door_fixes[num_door_fixes].pickable = SB_False;
