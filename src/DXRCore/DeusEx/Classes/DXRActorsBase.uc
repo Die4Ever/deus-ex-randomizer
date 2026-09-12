@@ -1606,6 +1606,7 @@ function Actor FindRandomPlaceholder(class<Actor> PlaceholderClass)
 }
 
 //Destroy an actor and leave a placeholder where it was
+//If the actor is owned (meaning it's in an inventory), destroy it and don't create a placeholder
 function Actor ReplaceWithPlaceholder(Actor a, class<Actor> PlaceholderClass)
 {
     local vector SpawnLocation;

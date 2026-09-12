@@ -313,7 +313,10 @@ function RandomizeAugCannisterLocations()
     SetSeed( "RandomizeAugCannisterLocations" );
 
     //Remove all aug cans (Replace with a placeholder instead).  This will get ones in inventories as well.
-    foreach AllActors(class'#var(prefix)AugmentationCannister', a) { ReplaceWithPlaceholder(a,class'PlaceholderItem'); }
+    foreach AllActors(class'#var(prefix)AugmentationCannister', a) {
+        if (Pawn(a.Owner)!=None) continue; //Skip over items in pawn inventories
+        ReplaceWithPlaceholder(a,class'PlaceholderItem');
+    }
 
     //See if this map should get an aug can
     if( ! chance_single(dxr.flags.moresettings.augcanlocs) ) return;
@@ -344,7 +347,7 @@ function RandomizeAugUpgradeLocations()
     //Remove all aug upgrade cans (Replace with a placeholder instead)
     foreach AllActors(class'DeusExPickup', p) {
         if (!p.IsA('#var(prefix)AugmentationUpgradeCannister') && !p.IsA('AugmentationUpgradeCannisterOverdrive')) continue;
-
+        if (Pawn(a.Owner)!=None) continue; //Skip over items in pawn inventories
         ReplaceWithPlaceholder(p,class'PlaceholderItem');
     }
 
