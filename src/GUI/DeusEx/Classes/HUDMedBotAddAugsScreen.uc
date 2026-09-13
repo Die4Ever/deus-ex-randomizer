@@ -203,7 +203,7 @@ function InstallAugmentation()
             //make sure all passive augs that we have get marked as boosted
             other = player.AugmentationSystem.FirstAug;
             while (other!=None){
-                if (other.bHasIt && other.bAlwaysActive){
+                if (other.bHasIt && other.bAlwaysActive && other.bBoosted==false && other.CurrentLevel != other.MaxLevel){
                     //Mark the aug as boosted
                     //It will have it's level increased in Super.InstallAugmentation
                     other.bBoosted=true;
