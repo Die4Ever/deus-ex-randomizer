@@ -20,4 +20,7 @@ defaultproperties
     MultiSkins(0)=Texture'BlackCatTex1'
     ScaleGlow=1
     bUnlit=True
+    Mesh=LodMesh'DeusExCharacters.CatCarcass'
+    Mesh2=LodMesh'DeusExCharacters.CatCarcass'
+    Mesh3=LodMesh'DeusExCharacters.CatCarcass'
 }
