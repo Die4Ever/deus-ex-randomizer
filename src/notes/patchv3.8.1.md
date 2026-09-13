@@ -76,6 +76,7 @@
   - Revision: Some items in inaccessible parts of the New York streets (Mission 2, 4, and 8) will no longer be randomized (to prevent important items from being shuffled out of the play area).
   - Revision: Charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) can no longer be instantly used by left clicking on them.
   - Non-Vanilla: All enemies (including added ones) will be properly cleaned up after finishing the Liberty Island mission (Mission 1).
+  - Vanilla only: Elevator to overlook area in Versalife Level 1 Labs (Mission 6) no longer has guaranteed breakable doors
 
 </details>
 

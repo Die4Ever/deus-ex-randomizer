@@ -313,13 +313,15 @@ function SetDoorFixes()
         // Elevator doors to overlook area
         // Gets stuck if a door is destroyed while closing
         // Fixed in DXRBalance/DeusExMover
-        door_fixes[num_door_fixes].tag = 'eledoor02';
-        door_fixes[num_door_fixes].breakable = SB_True;
-        door_fixes[num_door_fixes].pickable = SB_False;
-        door_fixes[num_door_fixes].highlight = SB_True;
-        door_fixes[num_door_fixes].minDamageThreshold = 1;
-        door_fixes[num_door_fixes].doorStrength = 0.01;
-        num_door_fixes++;
+        if (!#defined(balance)){
+            door_fixes[num_door_fixes].tag = 'eledoor02';
+            door_fixes[num_door_fixes].breakable = SB_True;
+            door_fixes[num_door_fixes].pickable = SB_False;
+            door_fixes[num_door_fixes].highlight = SB_True;
+            door_fixes[num_door_fixes].minDamageThreshold = 1;
+            door_fixes[num_door_fixes].doorStrength = 0.01;
+            num_door_fixes++;
+        }
 
         // for each of these elevator door pairs, only one door has a helpful sound set
         door_fixes[num_door_fixes].tag = 'elevator_door';
