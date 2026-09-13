@@ -128,6 +128,8 @@
   - MJ12 faction enemies have a low chance of spawning additional MJ12 Elites.
   - Rubber Bullets (alternate ammo for shotguns) now gets a randomized damage value.
   - The mechanic under the 747 (Mission 3) no longer tries to sell you nothing if you speak to him again after buying everything that he has for sale.
+  - Passive augs installed after Synthetic Heart has been installed will gain a level as well.  Previously, Synthetic Heart would only boost passive augs that had been installed before Synthetic Heart.
+  - Uninstalling the Synthetic Heart aug will automatically remove the bonus level from any installed passive augs.
 
 </details>
 
