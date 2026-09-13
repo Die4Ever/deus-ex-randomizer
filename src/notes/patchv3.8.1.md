@@ -131,6 +131,7 @@
   - Passive augs installed after Synthetic Heart has been installed will gain a level as well.  Previously, Synthetic Heart would only boost passive augs that had been installed before Synthetic Heart.
   - Uninstalling the Synthetic Heart aug will automatically remove the bonus level from any installed passive augs.
   - Black cats will now use the correct mesh for their skin.
+  - "Combat Medic's Bag" perk now correctly increases the randomized limits for medkits and bioelectric cells by 5 when purchased.
 
 </details>
 
