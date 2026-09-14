@@ -1182,9 +1182,9 @@ simulated function FixAmmoShurikenName()
 {
     local AmmoShuriken a;
 
-    class'AmmoShuriken'.default.ItemName = "Throwing Knives";
-    class'AmmoShuriken'.default.ItemArticle = "some";
-    class'AmmoShuriken'.default.beltDescription="THW KNIFE";
+    class'AmmoShuriken'.default.ItemName = class'WeaponShuriken'.default.ItemName;
+    class'AmmoShuriken'.default.ItemArticle = class'WeaponShuriken'.default.ItemArticle;
+    class'AmmoShuriken'.default.beltDescription = class'WeaponShuriken'.default.beltDescription;
     foreach AllActors(class'AmmoShuriken', a) {
         a.ItemName = a.default.ItemName;
         a.ItemArticle = a.default.ItemArticle;
