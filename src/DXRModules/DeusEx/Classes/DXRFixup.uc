@@ -288,6 +288,7 @@ function AnyEntry()
     AllAnyEntry();
     FixFOV();
     ChangeConsoleFont();
+    ApplyGameVolumeLevels(); //Sometimes the volume levels don't get applied properly, I think?
 
     foreach AllActors(class'#var(prefix)Button1', b) {
         if(b.CollisionRadius <3 && b.CollisionHeight <3)
@@ -1719,9 +1720,20 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
             passwords.ReplacePassword(origpassword, finalpassword, noteReplacement);
         }
     }
+}
 
+//Takes the saved volume settings and immediately applies them to the player
+function ApplyGameVolumeLevels()
+{
+    local #var(PlayerPawn) p;
 
+    p = player();
 
+    if (p==None) return;
+
+    p.SetInstantSoundVolume(byte(float(p.ConsoleCommand("get ini:Engine.Engine.AudioDevice SoundVolume"))));
+    p.SetInstantMusicVolume(byte(float(p.ConsoleCommand("get ini:Engine.Engine.AudioDevice MusicVolume"))));
+    p.SetInstantSpeechVolume(byte(float(p.ConsoleCommand("get ini:Engine.Engine.AudioDevice SpeechVolume"))));
 }
 
 defaultproperties

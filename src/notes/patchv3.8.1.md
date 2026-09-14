@@ -68,6 +68,7 @@
   - In "Limited Saves" save modes, Memory Containment Units (MCUs) will now first attempt to spawn into preselected "placeholder" locations before falling back to a fully random location in the level.
   - The blast door in Silo (Mission 14) that leads to the actual silo will no longer get stuck if it bumps into the player while opening.
   - Grouped doors will no longer get stuck if one of the doors is destroyed while opening or closing.  For example, this fixes the elevator doors in Versalife Level 1 Labs (Mission 6) that lead up to the overlook room.
+  - Game volume settings get applied on any load of a map to correct scenarios where the actual game volume was not aligned with what appeared in the Sound settings menu.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
