@@ -1438,7 +1438,7 @@ function FixAlarmUnits()
 
 function FixMoverEncroachTypes()
 {
-    local #var(prefix)Mover m;
+    local Mover m;
 
     if(!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
     switch(dxr.localURL) {
@@ -1446,7 +1446,7 @@ function FixMoverEncroachTypes()
         return;
     }
 
-    foreach AllActors(class'#var(prefix)Mover',m){
+    foreach AllActors(class'Mover',m){
         if (m.MoverEncroachType==ME_StopWhenEncroach){
             //Stop when encroach is annoying and can allow some NPCs to block doorways
             //like the UNATCO HQ breakroom door
