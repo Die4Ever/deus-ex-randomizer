@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[114]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[115]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 var int Recents[20];
 var int recent_pointer;
@@ -778,6 +778,11 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'FZeroMuteCity';
             duration = 9.75;
             message="You played Mute City from F-Zero";
+            break;
+        case 114:
+            SelectedSound = sound'Halo3OneFinalEffort';
+            duration = 13;
+            message="You played One Final Effort from Halo 3";
             break;
         default:
             SelectedSound = None;

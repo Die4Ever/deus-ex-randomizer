@@ -2,6 +2,8 @@
 - Slightly reduced lock strength of doors that have randomized lock strength. Also slightly reduced randomized lockpick quantities to compensate.
 - Increased the New Game+ minimum value for lockpicks and multitools from 5% up to 10%.
 - Datacube with the Aquinas Router door code in Area 51 Sector 4 (Mission 15) now has a harder set of potential locations, so it won't be quite as easy to find.
+- Hazmat suits now protect against initial Poison damage, but not the recurring damage. In Zero Rando (or when balance changes are disabled) we're still using the vanilla behavior of giving resistance to both. Environmental Resistance augmentation always protects against both.
+- New options to allow randomly spawning augmentation canisters ("Aug Can Chance %") and augmentation upgrade canisters ("Aug Upgrade Chance %") in maps, instead of them always appearing in the same maps they would normally appear in.
 
 ## GMDX Major Changes
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.
@@ -61,6 +63,12 @@
   - Walking in the right spot outside of the Comms Building in Vandenberg (Mission 12) will no longer complete the goal to activate the power for the bots.
   - Walking Security Bots now have a higher maximum step height, allowing them to step up slightly higher ledges.
   - UNATCO Troops who enter the map when Riot Cops are taken down in Mission 8 will now more consistently appear further away from the location of the Riot Cop.
+  - The door of the room on the roof of NSF HQ (Mission 4) will no longer randomly open or close as you move inside.
+  - New option under Rando > Visuals, "Animated Textures", which allows applying a rate limit to certain animated textures like water, to make it animate at a rate closer to the intended speed at release.  This option defaults to enabled, but can be disabled if the effect is undesired.
+  - In "Limited Saves" save modes, Memory Containment Units (MCUs) will now first attempt to spawn into preselected "placeholder" locations before falling back to a fully random location in the level.
+  - The blast door in Silo (Mission 14) that leads to the actual silo will no longer get stuck if it bumps into the player while opening.
+  - Grouped doors will no longer get stuck if one of the doors is destroyed while opening or closing.  For example, this fixes the elevator doors in Versalife Level 1 Labs (Mission 6) that lead up to the overlook room.
+  - Game volume settings get applied on any load of a map to correct scenarios where the actual game volume was not aligned with what appeared in the Sound settings menu.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
@@ -69,6 +77,7 @@
   - Revision: Some items in inaccessible parts of the New York streets (Mission 2, 4, and 8) will no longer be randomized (to prevent important items from being shuffled out of the play area).
   - Revision: Charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) can no longer be instantly used by left clicking on them.
   - Non-Vanilla: All enemies (including added ones) will be properly cleaned up after finishing the Liberty Island mission (Mission 1).
+  - Vanilla only: Elevator to overlook area in Versalife Level 1 Labs (Mission 6) no longer has guaranteed breakable doors
 
 </details>
 
@@ -119,6 +128,12 @@
   - Players who hold the crouch key instead of using it as a toggle can now crouch mid-jump like players using toggle mode can.
   - "Misfeature Exploit" perk actually interacts correctly with randomized heal and charge amounts on medical bots and repair bots, instead of always updating their values to fixed amounts.
   - MJ12 faction enemies have a low chance of spawning additional MJ12 Elites.
+  - Rubber Bullets (alternate ammo for shotguns) now gets a randomized damage value.
+  - The mechanic under the 747 (Mission 3) no longer tries to sell you nothing if you speak to him again after buying everything that he has for sale.
+  - Passive augs installed after Synthetic Heart has been installed will gain a level as well.  Previously, Synthetic Heart would only boost passive augs that had been installed before Synthetic Heart.
+  - Uninstalling the Synthetic Heart aug will automatically remove the bonus level from any installed passive augs.
+  - Black cats will now use the correct mesh for their skin.
+  - "Combat Medic's Bag" perk now correctly increases the randomized limits for medkits and bioelectric cells by 5 when purchased.
 
 </details>
 

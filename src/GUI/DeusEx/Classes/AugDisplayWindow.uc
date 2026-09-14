@@ -644,6 +644,63 @@ function DrawTargetAugmentation(GC gc)
 
 }
 
+#ifdef gmdxae
+//Copied from GMDX:AE AugmentationDisplayWindow, but adjusted to be able to draw the crosshairs at the end of the aim laser instead
+function DrawAccuracyCrosshair(GC gc, DeusExWeapon weapon, Color crossColor, out float x, out float y, out float mult)
+{
+    local float w, h;
+    local int i;
+    local LaserEmitter laser;
+
+    //SARGE: Don't draw accuracy crosshairs at 100% accuracy
+    if (weapon.currentAccuracy <= 0.01 && !Player.bFullAccuracyCrosshair)
+        return;
+
+    w = width;
+    h = height;
+    if (Player.iCrosshairOffByOne > 0)
+        w += Player.iCrosshairOffByOne;
+
+
+    //RANDO CHANGE FOR AIM LASER
+    laser = #var(PlayerPawn)(Player).aimLaser; //GMDX:AE is always using the GMDXAERandoPlayer class
+    if(laser!=None && laser.spot[0]!=None){
+        //Put the crosshairs at the end of the aim laser, OBVIOUSLY
+        ConvertVectorToCoordinates(laser.spot[0].Location,x,y);
+    } else {
+        x = int(w * 0.5)-1;
+        y = int(h * 0.5)-1;
+    }
+    //END OF RANDO CHANGE FOR AIM LASER
+
+    mult = FClamp(weapon.currentAccuracy * (width/16.0), 0, width/4.0); //RSD: New formula based on trig (see new accuracy model in TraceFire() in DeusExWeapon.uc)
+
+    // draw the drop shadowed reticle
+    gc.SetTileColorRGB(0,0,0);
+    //RSD: Redone so that accuracy indicator mult occurs in the inner rather than outer radius of the reticle (pushed everything out by pixels = corner)
+    for (i = 1; i >= 0; i--)
+    {
+        //up
+        if(!Player.bAlternateCrosshairAcc)
+        {
+            gc.DrawBox(x+i, y-mult-corner+i, 1, corner, 0, 0, 1, Texture'Solid');
+            gc.DrawBox(x-(corner-1)/2+i, y-mult-corner+i, corner, 1, 0, 0, 1, Texture'Solid');
+        }
+        //bottom
+        gc.DrawBox(x+i, y+mult+i, 1, corner, 0, 0, 1, Texture'Solid'); //RSD Added +1 to make reticle lengths equal
+        gc.DrawBox(x-(corner-1)/2+i, y+mult+corner+i, corner, 1, 0, 0, 1, Texture'Solid');
+        //left
+        gc.DrawBox(x-mult-corner+i, y+i, corner, 1, 0, 0, 1, Texture'Solid');
+        gc.DrawBox(x-mult-corner+i, y-(corner-1)/2+i, 1, corner, 0, 0, 1, Texture'Solid');
+        //right
+        gc.DrawBox(x+mult+i, y+i, corner, 1, 0, 0, 1, Texture'Solid'); //RSD Added +1 to make reticle lengths equal
+        gc.DrawBox(x+mult+corner+i, y-(corner-1)/2+i, 1, corner, 0, 0, 1, Texture'Solid');
+
+        gc.SetTileColor(crossColor);
+    }
+}
+#endif
+
 // DXRando mostly copied from Super, but don't show the dumb "No Image" black rectangle on low levels of AugTarget
 function SuperDrawTargetAugmentation(GC gc)
 {

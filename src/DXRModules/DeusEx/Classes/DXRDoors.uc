@@ -311,13 +311,17 @@ function SetDoorFixes()
         break;
     case "06_HONGKONG_MJ12LAB":
         // Elevator doors to overlook area
-        door_fixes[num_door_fixes].tag = 'eledoor02';
-        door_fixes[num_door_fixes].breakable = SB_True;
-        door_fixes[num_door_fixes].pickable = SB_False;
-        door_fixes[num_door_fixes].highlight = SB_True;
-        door_fixes[num_door_fixes].minDamageThreshold = 1;
-        door_fixes[num_door_fixes].doorStrength = 0.01;
-        num_door_fixes++;
+        // Gets stuck if a door is destroyed while closing
+        // Fixed in DXRBalance/DeusExMover
+        if (!#defined(balance)){
+            door_fixes[num_door_fixes].tag = 'eledoor02';
+            door_fixes[num_door_fixes].breakable = SB_True;
+            door_fixes[num_door_fixes].pickable = SB_False;
+            door_fixes[num_door_fixes].highlight = SB_True;
+            door_fixes[num_door_fixes].minDamageThreshold = 1;
+            door_fixes[num_door_fixes].doorStrength = 0.01;
+            num_door_fixes++;
+        }
 
         // for each of these elevator door pairs, only one door has a helpful sound set
         door_fixes[num_door_fixes].tag = 'elevator_door';
@@ -998,6 +1002,25 @@ static function StaticMakeDestructible(#var(DeusExPrefix)Mover d)
         d.minDamageThreshold = 60;
         d.doorStrength = 1;
     }
+}
+
+function PostAnyEntry()
+{
+    Super.PostAnyEntry();
+
+    InitGMDXAEDoorPerks();
+}
+
+//Some GMDX:AE perks change stats on doors.  We'll init those
+//after all the door randomization is finished.
+function InitGMDXAEDoorPerks()
+{
+#ifdef gmdxae
+    local DXRPerkSystem perks;
+
+    perks = DXRPerkSystem(player().PerkManager);
+    if (perks!=None) perks.InitDoorPerks();
+#endif
 }
 
 defaultproperties

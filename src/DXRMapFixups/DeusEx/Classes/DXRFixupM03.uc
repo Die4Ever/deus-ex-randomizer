@@ -738,6 +738,7 @@ function AnyEntryMapFixes()
         break;
     case "03_NYC_HANGAR":
         CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
+        GMDXFixMechanicConvo();
         break;
     case "03_NYC_AIRFIELDHELIBASE":
         CleanUpNSFAfterLebedev(); //Remove clones after meeting Lebedev
@@ -1009,6 +1010,39 @@ function FixLennyLAMConvo()
         preFlag.nextEvent = cesf.nextEvent;
         cesf.nextEvent=cemc.nextEvent;
         cemc.nextEvent = cesf;
+    }
+}
+//#endregion
+
+//#region Fix GMDX Mechanic Convo
+//GMDXv9 has a massive hack in ConPlay::ProcessAction to terminate conversations if
+//doing a "jump to label" where the label is 'Done" and you're talking to a mechanic.
+//As a result, the HaroldDone flag never gets set for the mechanic under the 747, so
+//you never hear his barks.
+function GMDXFixMechanicConvo()
+{
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventCheckFlag cecf;
+
+    if (!#defined(gmdxnotae)) return;
+
+    c = GetConversation('HaroldConvos');
+
+    //We'll fix this by changing the name of the label from "Done" to "DoneBuying"
+    //Need to change both the "Jump To" and the actual Event with the Label "Done"
+    ce = c.eventList;
+    while (ce!=None){
+        cecf = ConEventCheckFlag(ce);
+        if (ce.Label~="Done"){
+            ce.Label="DoneBuying";
+        } else if (cecf!=None){
+            if (cecf.setLabel~="Done"){
+                cecf.setLabel="DoneBuying";
+            }
+        }
+
+        ce = ce.nextEvent;
     }
 }
 //#endregion

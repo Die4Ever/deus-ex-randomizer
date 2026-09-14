@@ -85,3 +85,27 @@ function RefreshWindow(float DeltaTime)
     Super.RefreshWindow(DeltaTime);
     UpdateSkillBanned(selectedSkillButton);
 }
+
+
+#ifdef gmdxnotae
+//this sucks
+function InvokePerksWindow()
+{
+    local #var(PlayerPawn) p;
+
+    Super.InvokePerksWindow();
+
+    //We handle some perks manually within the rando player instead of the standard way.
+    //Make sure those are unavailable to purchase
+    p = #var(PlayerPawn)(player);
+    if (p!=None){
+        if (SkillMedicine(selectedSkill)!=None){
+            if (p.perkCombatMedicBag){
+                //Already purchased, disable the button
+                winInfo.buttonUpgrade3.SetSensitivity(False);
+            }
+        }
+    }
+
+}
+#endif

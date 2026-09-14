@@ -7,7 +7,7 @@ var PersonaScrollAreaWindow winScroll;
 
 function CreateTextWindow()
 {
-    winScroll = PersonaScrollAreaWindow(winClient.NewChild(Class'PersonaScrollAreaWindow'));
+    winScroll = PersonaScrollAreaWindow(winClient.NewChild(Class'BingoHintScrollWindow'));
     winText = MenuUIHeaderWindow(winScroll.ClipWindow.NewChild(Class'MenuUIHeaderWindow'));
 
     winScroll.SetPos(12, 13);

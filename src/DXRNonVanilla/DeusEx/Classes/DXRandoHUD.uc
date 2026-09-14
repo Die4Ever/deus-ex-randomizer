@@ -25,3 +25,20 @@ event InitWindow()
 #endif
 
 }
+
+#ifdef gmdxae
+//Hide the central crosshair if the aim laser is active (third person or fixed cameras)
+function UpdateCrosshair(DeusExPlayer player)
+{
+    local LaserEmitter laser;
+
+    Super.UpdateCrosshair(player);
+
+    laser = #var(PlayerPawn)(Player).aimLaser; //GMDX:AE is always using the GMDXAERandoPlayer class
+    if (laser!=None){
+        //Disable the main crosshair if the aim laser is active
+        cross.SetCrosshair(False);
+    }
+
+}
+#endif

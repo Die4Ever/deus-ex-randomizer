@@ -277,16 +277,32 @@ simulated function Timer()
 
 simulated function SetAllMaxCopies(int scale)
 {
+    local int fireBonus,medBonus,bioBonus;
+    local #var(PlayerPawn) p;
+
     if( dxr == None ) return;
+
+    p = player(true);
+
     SetMaxAmmo( class'Ammo', dxr.flags.settings.ammo*scale/100 );
 
+#ifdef gmdxnotae
+    if (p!=None && p.perkCombatMedicBag){
+        medBonus = 5;
+        bioBonus = 5;
+    }
+#endif
+
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
-        SetMaxCopies(class'#var(prefix)FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
+        if( #defined(balance) && p != None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ){
+            fireBonus = p.SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
+        }
+        SetMaxCopies(class'#var(prefix)FireExtinguisher', 125, fireBonus);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
     }
     SetMaxCopies(class'#var(prefix)Multitool', dxr.flags.settings.multitools*scale/100 );
     SetMaxCopies(class'#var(prefix)Lockpick', dxr.flags.settings.lockpicks*scale/100 );
-    SetMaxCopies(class'#var(prefix)BioelectricCell', dxr.flags.settings.biocells*scale/100 );
-    SetMaxCopies(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100 );
+    SetMaxCopies(class'#var(prefix)BioelectricCell', dxr.flags.settings.biocells*scale/100, bioBonus );
+    SetMaxCopies(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100, medBonus );
 }
 
 function float _GetItemMult(_ItemReduction reductions[16], class<Actor> item)
@@ -435,10 +451,7 @@ function ReduceSpawnInSingleContainer(#var(prefix)Containers d, class<Inventory>
     if( d.Contents != None && _ReduceSpawnInContainer(d, classname, percent, d.Contents) )
         d.Contents = None;
 
-    if(d.Content2 == None)
-        d.Content2 = d.Content3;
-    if(d.Contents == None)
-        d.Contents = d.Content2;
+    CompressContainerContents(d);
 
     if(d.Contents == None) {
         if (!deleteWhenEmpty) {
@@ -464,10 +477,9 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent, opt
     }
 }
 
-simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
+simulated function SetMaxCopies(class<DeusExPickup> type, int percent, optional int bonus)
 {
     local #var(prefix)DeusExPickup p;
-    local #var(PlayerPawn) owner;
     local int maxCopies;
     local float f;
 
@@ -483,11 +495,8 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
             f *= rngrangeseeded(1, 0.8, 1.2, p.class.name) * 0.8;
         }
         p.maxCopies = Clamp(f, 1, p.default.maxCopies*10);
-        owner = #var(PlayerPawn)(p.Owner);
-        if(owner == None)
-            owner = player(true);
-        if( #defined(balance) && owner != None && #var(prefix)FireExtinguisher(p) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled() )
-            p.maxCopies += owner.SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
+
+        p.maxCopies += bonus; //Add any extra bonuses on top of the randomized amount
 
 #ifdef vmd
         maxCopies = p.VMDConfigureMaxCopies();

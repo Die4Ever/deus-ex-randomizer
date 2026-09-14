@@ -1,6 +1,8 @@
 class DXRFixup expands DXRActorsBase transient config(DXRando);
 
 var config float FovWeaponMult;
+var() config int maxFireFrameRate;
+var() config int maxWetFrameRate;
 
 struct DecorationsOverwrite {
     var string type;
@@ -252,7 +254,7 @@ function PostFirstEntry()
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
 
-    RemoveStopWhenEncroach();
+    FixMoverEncroachTypes();
 
     FixStandingDancingBlockages();
 
@@ -286,6 +288,7 @@ function AnyEntry()
     AllAnyEntry();
     FixFOV();
     ChangeConsoleFont();
+    ApplyGameVolumeLevels(); //Sometimes the volume levels don't get applied properly, I think?
 
     foreach AllActors(class'#var(prefix)Button1', b) {
         if(b.CollisionRadius <3 && b.CollisionHeight <3)
@@ -725,6 +728,52 @@ function AdjustTextureSmoothing()
 
 }
 
+function AdjustTextureAnimRates()
+{
+    local Texture t;
+    local int minRate,maxRate,defMin,defMax;
+    local bool limit,update;
+
+    limit = class'MenuChoice_TextureAnims'.static.IsEnabled();
+
+    foreach AllObjects(class'Texture',t){
+        defMin=t.Default.MinFrameRate;
+        defMax=t.Default.MaxFrameRate;
+        update=False;
+
+        switch(t.class){
+            case class'FireTexture':
+                if (limit){
+                    minRate=0;
+                    maxRate=maxFireFrameRate;
+                } else {
+                    minRate=defMin;
+                    maxRate=defMax;
+                }
+
+                update=(defMax==0); //Only update if the default is uncapped
+                break;
+            case class'WetTexture':
+                if (limit){
+                    minRate=0;
+                    maxRate=maxWetFrameRate;
+                } else {
+                    minRate=defMin;
+                    maxRate=defMax;
+                }
+
+                update=(defMax==0); //Only update if the default is uncapped
+                break;
+        }
+
+        if (update){
+            t.MinFrameRate=minRate;
+            t.MaxFrameRate=maxRate;
+        }
+
+    }
+}
+
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
@@ -786,6 +835,7 @@ function PostAnyEntry()
 {
     CleanupPlaceholders(true);
     AdjustTextureSmoothing();
+    AdjustTextureAnimRates();
 }
 
 function CleanupPlaceholders(optional bool alert)
@@ -1132,9 +1182,9 @@ simulated function FixAmmoShurikenName()
 {
     local AmmoShuriken a;
 
-    class'AmmoShuriken'.default.ItemName = "Throwing Knives";
-    class'AmmoShuriken'.default.ItemArticle = "some";
-    class'AmmoShuriken'.default.beltDescription="THW KNIFE";
+    class'AmmoShuriken'.default.ItemName = class'WeaponShuriken'.default.ItemName;
+    class'AmmoShuriken'.default.ItemArticle = class'WeaponShuriken'.default.ItemArticle;
+    class'AmmoShuriken'.default.beltDescription = class'WeaponShuriken'.default.beltDescription;
     foreach AllActors(class'AmmoShuriken', a) {
         a.ItemName = a.default.ItemName;
         a.ItemArticle = a.default.ItemArticle;
@@ -1386,9 +1436,9 @@ function FixAlarmUnits()
 #endif
 }
 
-function RemoveStopWhenEncroach()
+function FixMoverEncroachTypes()
 {
-    local #var(prefix)Mover m;
+    local Mover m;
 
     if(!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
     switch(dxr.localURL) {
@@ -1396,14 +1446,20 @@ function RemoveStopWhenEncroach()
         return;
     }
 
-    foreach AllActors(class'#var(prefix)Mover',m){
-        //Stop when encroach is annoying and can allow some NPCs to block doorways
-        //like the UNATCO HQ breakroom door
+    foreach AllActors(class'Mover',m){
         if (m.MoverEncroachType==ME_StopWhenEncroach){
+            //Stop when encroach is annoying and can allow some NPCs to block doorways
+            //like the UNATCO HQ breakroom door
+            m.MoverEncroachType=ME_IgnoreWhenEncroach;
+        } else if (ElevatorMover(m)!=None && m.MoverEncroachType==ME_ReturnWhenEncroach) {
+            //ReturnWhenEncroach doesn't work with elevator movers and just stops instead
+            //Elevators are even more finicky than regular doors, since you typically
+            //are sending them to a specific KeyNum, and when it stops, it believes it's
+            //in that key, so trying to send it to that key again doesn't do anything.
+            //Just ignore when encroach instead.
             m.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
     }
-
 }
 
 function MakeRobotWeaponsNative()
@@ -1664,12 +1720,25 @@ function UpdateDefaultSecurityComputerPassword(string newpass, optional string n
             passwords.ReplacePassword(origpassword, finalpassword, noteReplacement);
         }
     }
+}
 
+//Takes the saved volume settings and immediately applies them to the player
+function ApplyGameVolumeLevels()
+{
+    local #var(PlayerPawn) p;
 
+    p = player();
 
+    if (p==None) return;
+
+    p.SetInstantSoundVolume(byte(float(p.ConsoleCommand("get ini:Engine.Engine.AudioDevice SoundVolume"))));
+    p.SetInstantMusicVolume(byte(float(p.ConsoleCommand("get ini:Engine.Engine.AudioDevice MusicVolume"))));
+    p.SetInstantSpeechVolume(byte(float(p.ConsoleCommand("get ini:Engine.Engine.AudioDevice SpeechVolume"))));
 }
 
 defaultproperties
 {
     FovWeaponMult=1
+    maxFireFrameRate=60
+    maxWetFrameRate=30
 }

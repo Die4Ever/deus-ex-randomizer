@@ -2367,17 +2367,16 @@ exec function QuickSave()
     }
 }
 
+//Duped from the GMDX:AE DeusExPlayer, but using our new class instead
 function SetupPerkManager()
 {
-    Super.SetupPerkManager();
-
-    if (PerkManager!=None){
-        //It better not be none by this point!
-
-        //Currently, Rando always saves emails and stuff as notes.  Maybe in
-        //the future we can make things play together nicely.
-        HidePerk(class'PerkDataRecovery');
+    // install the Perk Manager if not found
+    if (PerkManager == None)
+    {
+        DebugMessage("Make new DXRando Perk System");
+        PerkManager = new(Self) class'DXRPerkSystem';
     }
+    PerkManager.InitializePerks(Self);
 }
 
 function SetupRandomizer()
@@ -2403,6 +2402,26 @@ function HidePerk(class<Perk> aPerk)
     p = PerkManager.GetPerkWithClass(aPerk);
     if (p!=None){
         p.bHidden=true;
+    }
+}
+
+function SetPlaceholder(int objectNum, Inventory item)
+{
+    if (item.bCanUseObjectBelt==false){
+        //Primarily for DXRFashionManager, but theoretically reusable for other inventory objects too
+        return;
+    }
+
+    Super.SetPlaceholder(objectNum,item);
+}
+
+function UpdateHDTPSettings()
+{
+    //If augmentique is installed, we want to always use the base AE logic
+    //If not using augmentique, we still want to go ahead if HDTP is enabled
+    //Except FemJC doesn't have HDTP, so keep using DXRFashion in that case
+    if (UsingAugmentique(self) || !(FlagBase.GetBool('LDDPJCIsFemale') || !IsHDTP())){
+        Super.UpdateHDTPSettings();
     }
 }
 

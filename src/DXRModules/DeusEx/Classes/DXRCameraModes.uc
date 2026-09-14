@@ -140,9 +140,6 @@ function SetFirstPersonCamera()
     if (player().conPlay==None){
         player().bBehindView=False;
         player().bCrosshairVisible=True;
-        #ifdef gmdxae
-        player().iCrosshairVisible=1; //This should probably respect your actual setting, but too bad for right now
-        #endif
     }
     if (player().GetStateName()=='Dying'){
         player().bBehindView=True; //BehindView is true while dying.  If False, your first person arm/weapon will appear
@@ -165,9 +162,6 @@ function SetThirdPersonCamera()
 {
     player().bBehindView=True;
     player().bCrosshairVisible=False;
-    #ifdef gmdxae
-    player().iCrosshairVisible=0;
-    #endif
     player().ViewTarget=None;
     if (reCam!=None){
         reCam.Destroy();
@@ -185,9 +179,6 @@ function SetFixedCamera()
     if(#defined(hascustomplayer)){
         player().bBehindView=True;
         player().bCrosshairVisible=False;
-        #ifdef gmdxae
-        player().iCrosshairVisible=0;
-        #endif
         player().Style= STY_Normal;
         if (reCam==None || reCam.bDeleteMe){
             SpawnRECam();

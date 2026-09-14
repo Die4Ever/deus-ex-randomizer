@@ -5,6 +5,12 @@ function bool Facelift(bool bOn)
     return false;
 }
 
+#ifdef gmdxae
+//GMDX:AE functions to do HDTP and Augmentique skin randomization
+exec function UpdateHDTPsettings(){}
+function SetupSkin(){}
+#endif
+
 static function ConvertNormalCat(#var(prefix)Cat cat)
 {
     if (cat.CarcassType==class'BlackCat'.Default.CarcassType) return; //This is already a black cat
@@ -24,4 +30,5 @@ defaultproperties
     MultiSkins(0)=Texture'BlackCatTex1'
     ScaleGlow=1
     bUnlit=True
+    Mesh=LodMesh'DeusExCharacters.Cat'
 }

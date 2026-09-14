@@ -10,6 +10,9 @@ var float autorunTime;
 var bool bWallSplat;
 var int rando_stamina;
 
+//Perks that are handled by Rando instead of the normal perk arrays
+var travel bool perkCombatMedicBag;
+
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
     local float augLevel;
@@ -1210,6 +1213,25 @@ function InstantlyUseItem(DeusExPickup item)
     }
 }
 
+function ResetPlayerToDefaults()
+{
+    Super.ResetPlayerToDefaults();
+
+    perkCombatMedicBag=false;
+}
+
+//We need to take over handling of some perks ourselves...
+function perksManager(string Perky, int perkLevel)
+{
+    switch(Perky){
+        case "COMBAT MEDIC'S BAG":
+            perkCombatMedicBag=true;
+            break;
+        default:
+            Super.perksManager(Perky,perkLevel);
+            break;
+    }
+}
 
 function float GetCurrentGroundSpeed()
 {

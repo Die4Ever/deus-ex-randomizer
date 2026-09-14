@@ -485,12 +485,20 @@ function MapAdjustments()
 
     if(IsLimitedSaves()) {
         SetSeed("spawn MCU");
-        for(i=0; i<20; i++) {
-            loc = GetRandomPositionFine();
-            mcu = Spawn(class'MemConUnit',,, loc);
-            if(mcu != None) {
-                l("MapAdjustments() spawned MCU " $ mcu $ " at " $ loc);
-                break;
+
+        //Try to replace a placeholder once (if available), but fallback to random locations if that fails
+        mcu = MemConUnit(ReplacePlaceholderWith(class'PlaceholderItem',class'MemConUnit',,,true));
+        if (mcu!=None){
+            l("MapAdjustments() spawned MCU " $ mcu $ " at " $ mcu.Location);
+        } else {
+            //Couldn't replace a placeholder, try to find a random location for it instead
+            for(i=1; i<20; i++) { //We've already made one attempt, so start at one
+                loc = GetRandomPositionFine();
+                mcu = Spawn(class'MemConUnit',,, loc);
+                if(mcu != None) {
+                    l("MapAdjustments() spawned MCU " $ mcu $ " at " $ loc);
+                    break;
+                }
             }
         }
     }

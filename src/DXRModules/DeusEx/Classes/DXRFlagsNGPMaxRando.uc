@@ -326,6 +326,8 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         moresettings.stalkers = oldmoresettings.stalkers;
         moresettings.camera_mode = oldmoresettings.camera_mode;
         settings.passwordsrandomized = oldsettings.passwordsrandomized; //Keep using the same password style
+        moresettings.augcanlocs = oldmoresettings.augcanlocs;
+        moresettings.augupgradelocs = oldmoresettings.augupgradelocs;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;

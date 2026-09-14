@@ -141,3 +141,47 @@ function Frob(Actor Frobber, Inventory frobWith)
     }
 
 }
+
+function RemoveFromDoorGroup()
+{
+    local Mover m,newLeader;
+
+    //If this door isn't the leader, no need to change the leader
+    if (Leader != self){
+        newLeader = Leader;
+    }
+
+    m = Leader;
+    while (m != None){
+        if (newLeader == None && m != self){
+            //We have found our new leader
+            newLeader = m;
+            newLeader.bSlave=false; //Just in case.  A frobbed slave will also frob the leader, which could cause a loop
+        }
+
+        if (m.Leader == self){
+            //This mover thinks the door being removed is the leader
+            //Give it a new leader
+            m.Leader=newLeader;
+        }
+
+        if (m.Follower == self){
+            m.Follower = self.Follower;
+        }
+
+        m = m.Follower;
+    }
+
+    Leader=self; //Become your own leader
+    Follower=None; //We stand alone
+}
+
+function BlowItUp(Pawn instigatedBy)
+{
+    //Remove the destroyed door from the group so that
+    //it doesn't stop any other attached doors when it
+    //is actually destroyed.
+    RemoveFromDoorGroup();
+
+    _BlowItUp(instigatedBy);
+}
