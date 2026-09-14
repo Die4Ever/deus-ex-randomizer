@@ -47,6 +47,7 @@ var #var(flagvarprefix) int remove_paris_mj12;
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
 // CheckConfig in subclass, maybe ExecMaxRando if it should be included in that, ScoreFlags, and SetDifficulty for different game modes
+// Make sure to update the defaultproperties in DXRSavedSetup if the default value is non-zero (For compatibility with old saved settings)
 struct FlagsSettings {
 #ifndef hx
     var float CombatDifficulty;
