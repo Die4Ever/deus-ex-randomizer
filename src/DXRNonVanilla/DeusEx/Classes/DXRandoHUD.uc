@@ -24,6 +24,11 @@ event InitWindow()
     augDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 #endif
 
+#ifdef hascustomplayer
+    hms.Destroy();
+    hms = HUDMultiSkills(NewChild(Class'DXRHUDMultiSkills'));
+    hms.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
+#endif
 }
 
 #ifdef gmdxae

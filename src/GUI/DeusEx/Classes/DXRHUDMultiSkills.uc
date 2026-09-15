@@ -10,6 +10,7 @@ const augCurValX = 0.16;
 const augNextValX = 0.21;
 
 var bool dashPressed;
+var bool equalsPressed;
 var bool bShowing;
 var Color	colMax;
 
@@ -52,10 +53,12 @@ function CheckDashPress()
     local Augmentation anAug;
     local bool showAugs,showSkills;
 
+    if(#defined(gmdxae)) return; //AE already handles button 11
+
     if(Player==None) return;
 
-#ifdef injections
-    showAugs = Human(Player).bUpgradeAugs;
+#ifdef hascustomplayer
+    showAugs = #var(PlayerPawn)(Player).bUpgradeAugs;
     showSkills = Player.bBuySkills;
 #else
     showSkills = Player.bBuySkills;
@@ -74,11 +77,53 @@ function CheckDashPress()
         if (aSkill!=None){
             if (AttemptBuySkill(Player,aSkill)){
                 //Player.bBuySkills=False; //Keep the menu open after buying
-                class'#var(injectsprefix)PersonaScreenSkills'.static.UpdateSwimSpeed(aSkill,#var(prefix)Human(Player));
+                class'#var(injectsprefix)PersonaScreenSkills'.static.UpdateSwimSpeed(aSkill,#var(PlayerPawn)(Player));
             }
         }
     } else if(showAugs) {
         anAug = GetAugFromIndex(Player, 11);
+        if(anAug!=None) {
+            AttemptUpgradeAug(Player, anAug);
+        }
+    }
+}
+
+function CheckEqualPress()
+{
+    local bool equalsDown;
+    local Skill aSkill;
+    local Augmentation anAug;
+    local bool showAugs,showSkills;
+
+    if(#defined(gmdxae)) return; //AE already handles button 12
+
+    if(Player==None) return;
+
+#ifdef hascustomplayer
+    showAugs = #var(PlayerPawn)(Player).bUpgradeAugs;
+    showSkills = Player.bBuySkills;
+#else
+    showSkills = Player.bBuySkills;
+    showAugs = False;
+#endif
+
+
+    equalsDown=IsKeyDown(IK_Equals);
+
+    if (equalsDown==equalsPressed) return;
+    equalsPressed=equalsDown;
+    if(!equalsDown) return;
+
+    if (showSkills){
+        aSkill = GetSkillFromIndex(Player, 12);
+        if (aSkill!=None){
+            if (AttemptBuySkill(Player,aSkill)){
+                //Player.bBuySkills=False; //Keep the menu open after buying
+                class'#var(injectsprefix)PersonaScreenSkills'.static.UpdateSwimSpeed(aSkill,#var(PlayerPawn)(Player));
+            }
+        }
+    } else if(showAugs) {
+        anAug = GetAugFromIndex(Player, 12);
         if(anAug!=None) {
             AttemptUpgradeAug(Player, anAug);
         }
@@ -97,9 +142,7 @@ function DrawSkillsScreen(GC gc)
 
     if ( Player.SkillSystem != None )
     {
-#ifdef vanilla
-        dxrs = DXRSkills(Human(Player).dxr.FindModule(class'DXRSkills'));
-#endif
+        dxrs = DXRSkills(class'DXRSkills'.static.Find());
         gc.SetFont(Font'DXRFontMenuSmall_DS');
         gc.SetTextColor( colWhite );
         index = 1;
@@ -141,7 +184,9 @@ function DrawSkillsScreen(GC gc)
 
         while ( askill != None )
         {
-            if ( index == 11 )
+            if ( index == 12 )
+                str = "=. " $ askill.SkillName; //GMDX has a 12th skill
+            else if ( index == 11 )
                 str = "-. " $ askill.SkillName;
             else if ( index == 10 )
                 str = "0. " $ askill.SkillName;
@@ -228,9 +273,7 @@ function DrawAugsScreen(GC gc)
 
     if ( Player.AugmentationSystem != None )
     {
-#ifdef vanilla
-        dxra = DXRAugmentations(Human(Player).dxr.FindModule(class'DXRAugmentations'));
-#endif
+        dxra = DXRAugmentations(class'DXRAugmentations'.static.Find());
         numUpgrades = GetNumAugUpgrades(Player);
 
         gc.SetFont(Font'DXRFontMenuSmall_DS');
@@ -355,11 +398,12 @@ event DrawWindow(GC gc)
     if ( Player.bBuySkills )
     {
         CheckDashPress(); //We don't get button presses for dash, so check it manually
+        CheckEqualPress(); //Same deal for equals
         DrawSkillsScreen(gc);
         bShowing=True;
     }
-#ifdef injections
-    else if ( Human(Player).bUpgradeAugs )
+#ifdef hascustomplayer
+    else if ( #var(PlayerPawn)(Player).bUpgradeAugs )
     {
         DrawAugsScreen(gc);
         bShowing=True;
@@ -473,6 +517,19 @@ function Augmentation GetAugFromIndex( DeusExPlayer thisPlayer, int index )
     return None;
 }
 
+function bool CheckIncLevel(Augmentation anAug)
+{
+    local int oldLevel;
+
+    if(#defined(injections)){
+        return anAug.IncLevel();
+    }
+
+    oldLevel = anAug.CurrentLevel;
+    anAug.IncLevel(); //This vanilla function doesn't actually ever return True
+    return anAug.CurrentLevel > oldLevel;
+}
+
 function bool AttemptUpgradeAug( DeusExPlayer thisPlayer, Augmentation anAug )
 {
     local #var(prefix)AugmentationUpgradeCannister augCan;
@@ -494,7 +551,7 @@ function bool AttemptUpgradeAug( DeusExPlayer thisPlayer, Augmentation anAug )
                 augCan = #var(prefix)AugmentationUpgradeCannister(player.FindInventoryType(Class'#var(prefix)AugmentationUpgradeCannister'));
             }
             if (augCan!=None){
-                if (anAug.IncLevel()){
+                if (CheckIncLevel(anAug)){
                     augCan.UseOnce();
                     thisPlayer.BuySkillSound( 0 );
                     return True;
@@ -514,8 +571,8 @@ function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum )
     local Augmentation anAug;
     local bool showAugs,showSkills;
 
-#ifdef injections
-    showAugs = Human(thisPlayer).bUpgradeAugs;
+#ifdef hascustomplayer
+    showAugs = #var(PlayerPawn)(thisPlayer).bUpgradeAugs;
     showSkills = thisPlayer.bBuySkills;
 #else
     showSkills = thisPlayer.bBuySkills;
@@ -529,6 +586,7 @@ function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum )
         askill = GetSkillFromIndex( thisPlayer, objectNum );
         if ( AttemptBuySkill( thisPlayer, askill ) ){
             //thisPlayer.bBuySkills = False;   //Keep the menu open after buying
+            class'#var(injectsprefix)PersonaScreenSkills'.static.UpdateSwimSpeed(aSkill,#var(PlayerPawn)(Player));
         }
     } else if (showAugs){
         //Map number to aug

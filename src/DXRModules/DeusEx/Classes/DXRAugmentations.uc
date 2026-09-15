@@ -934,6 +934,20 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay="+" $ string(int(f)) $ "%";
         return shortDisplay;
     }
+    else if ( a.Class.Name == 'AugIFF' ) {
+        word = "Function";
+        switch(i){
+            case 0:
+                shortDisplay="IFF";
+                break;
+            case 1:
+                shortDisplay="Visibility";
+                break;
+            case 2:
+                shortDisplay="Hazards";
+                break;
+        }
+    }
 #endif
 
 #ifdef revision

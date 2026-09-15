@@ -9,6 +9,7 @@ var bool bAutorun;
 var float autorunTime;
 var bool bWallSplat;
 var int rando_stamina;
+var transient bool bUpgradeAugs;
 
 //Perks that are handled by Rando instead of the normal perk arrays
 var travel bool perkCombatMedicBag;
@@ -944,6 +945,15 @@ exec function ShowMainMenu()
     local DeusExLevelInfo info;
     local MissionEndgame Script;
 
+    // DXRando: close multiplayer style skills and augs screens
+
+    if (bBuySkills || bUpgradeAugs) // close the DXMP style skills/augs screens
+    {
+        bBuySkills = false;
+        bUpgradeAugs = false;
+        return;
+    }
+
     // DXRando: we just don't want to do vanilla behavior during the intro (mission 98)
     // escape skips the conversation which still skips the intro anyways
     // the vanilla code would skip the intro here as well even before the conversation started, which could also mean before flags are cleared
@@ -962,6 +972,67 @@ exec function ShowMainMenu()
         return;
     }
     Super.ShowMainMenu();
+}
+
+simulated function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+
+    //Make sure the aug and skill quick menus are closed when you re-enter a map.
+    //bUpgradeAugs is added by Rando so is transient, but bBuySkills is vanilla
+    bUpgradeAugs=False;
+    bBuySkills=False;
+}
+
+exec function BuySkills()
+{
+    // First turn off scores if we're heading into skill menu
+    if ( !bBuySkills )
+        ClientTurnOffScores();
+
+    bBuySkills = !bBuySkills;
+    if (bBuySkills){
+        bUpgradeAugs=False;
+    }
+    BuySkillSound( 2 );
+}
+
+exec function UpgradeAugs()
+{
+    // First turn off scores if we're heading into aug menu
+    if ( !bUpgradeAugs )
+        ClientTurnOffScores();
+
+    bUpgradeAugs = !bUpgradeAugs;
+    if (bUpgradeAugs){
+        bBuySkills=False;
+    }
+    BuySkillSound( 2 );
+}
+
+exec function ActivateBelt(int objectNum)
+{
+    local DeusExRootWindow root;
+
+    if (RestrictInput())
+        return;
+
+    if (bBuySkills || bUpgradeAugs) //This used to have a check for multiplayer as well
+    {
+        root = DeusExRootWindow(rootWindow);
+        if ( root != None )
+        {
+            if ( root.hud.hms.OverrideBelt( Self, objectNum ))
+                return;
+        }
+    }
+
+    if (CarriedDecoration == None)
+    {
+        root = DeusExRootWindow(rootWindow);
+        if (root != None)
+            root.ActivateObjectInBelt(objectNum);
+    }
 }
 
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
