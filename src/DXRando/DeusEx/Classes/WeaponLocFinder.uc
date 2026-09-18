@@ -111,6 +111,14 @@ function ReloadAmmo()
     OwnerMsg("Now spawning "$spawnThing);
 }
 
+simulated function int AmmoLeftInClip()
+{
+    if (#defined(gmdx)){
+        return 1; //So you can always reload to switch spawn types
+    }
+    return super.AmmoLeftInClip();
+}
+
 //I wanted to do some adjustments to where the "weapon" shows up,
 //but want the shot to actually just go straight to the crosshair location
 //Just hack it

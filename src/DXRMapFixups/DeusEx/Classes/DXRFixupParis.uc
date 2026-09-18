@@ -20,7 +20,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
-    local bool VanillaMaps;
+    local bool VanillaMaps,GMDXMaps,RevisionMaps;
     local FlagTrigger ft;
     local #var(prefix)Teleporter tele;
     local Businesswoman1 bw;
@@ -37,6 +37,8 @@ function PreFirstEntryMapFixes()
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL)
     {
@@ -72,6 +74,20 @@ function PreFirstEntryMapFixes()
             //Prevent things from spawning outside the gates
             MassSetSecretGoalBox(class'NavigationPoint', vectm(1810,-3260,-60), vectm(885,3580,-275), true);
             MassSetSecretGoalBox(class'NavigationPoint', vectm(-1825,-3550,-60), vectm(-2550,3580,-275), true);
+        }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-2920,5317,1228)); //Outside Aimee's
+            Spawn(class'PlaceholderItem',,, vectm(-3210,4911,1228)); //Box in Aimee's
+            Spawn(class'PlaceholderItem',,, vectm(-2918,5205,1214)); //Counter thing in Aimee's
+            Spawn(class'PlaceholderItem',,, vectm(-1912,5329,4)); //Left hazmat holder
+            Spawn(class'PlaceholderItem',,, vectm(67,3231,-403)); //Sewer wall hole 1
+            Spawn(class'PlaceholderItem',,, vectm(62,158,-403)); //Sewer wall hole 2
+            Spawn(class'PlaceholderItem',,, vectm(324,-58,-179)); //Boxes outside sewer
+            Spawn(class'PlaceholderItem',,, vectm(1644,-1919,-753)); //Metro security room desk
+            Spawn(class'PlaceholderItem',,, vectm(-1030,2076,-195)); //Catacombs entrance building, back window box
+        } else if (RevisionMaps){
+            //TODO
         }
 
         break;
@@ -154,6 +170,17 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
 
         Spawn(class'PlaceholderItem',,, vectm(2138.9, -2342.1, -506.4)); // Side dead-end tunnel near the end
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-2070,-1454,60)); //Box near start
+            Spawn(class'PlaceholderItem',,, vectm(-1822,-386,12)); //Alcove near start
+            Spawn(class'PlaceholderItem',,, vectm(-1992,867,-19)); //Past blast door, alcove 1
+            Spawn(class'PlaceholderItem',,, vectm(-2186,1697,-19)); //Past blast door, alcove 2
+            Spawn(class'PlaceholderItem',,, vectm(-680,1659,-19)); //Alcove near Bunker II
+            Spawn(class'PlaceholderItem',,, vectm(-523,159,-133)); //Upper balcony in MJ12 bunker entrance
+            Spawn(class'PlaceholderItem',,, vectm(234,-1428,-259)); //Boxes inside MJ12 bunker
+        } else if (RevisionMaps){
+            //TODO
+        }
 
         break;
     //#endregion
@@ -220,6 +247,27 @@ function PreFirstEntryMapFixes()
             m.MoveTime = 1;
         }
 
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-535,1375,3)); //Fireplace Room Bench
+            Spawn(class'PlaceholderItem',,, vectm(-805,715,80)); //Computer room shelf 1
+            Spawn(class'PlaceholderItem',,, vectm(-892,167,40)); //Computer Room shelf 2
+            Spawn(class'PlaceholderItem',,, vectm(507,-511,34)); //Entry hall table
+            Spawn(class'PlaceholderItem',,, vectm(634,-11,33)); //Dining room side table
+            Spawn(class'PlaceholderItem',,, vectm(1070,901,65)); //Kitchen shelf
+            Spawn(class'PlaceholderItem',,, vectm(-805,390,425)); //Bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(969,937,405)); //Beth's bedroom windowsill
+            Spawn(class'PlaceholderItem',,, vectm(-960,1450,404)); //Nicolette's bedroom windowsill
+            Spawn(class'PlaceholderItem',,, vectm(-960,1447,52)); //Fireplace room windowsill
+            Spawn(class'PlaceholderItem',,, vectm(1087,-331,52)); //Dining Room windowsill
+            Spawn(class'PlaceholderItem',,, vectm(-819,-1083,44)); //Back hall side table
+            Spawn(class'PlaceholderItem',,, vectm(228,4357,-143)); //Basement computer desk
+            if (!GMDXMaps){
+                Spawn(class'PlaceholderItem',,, vectm(-890,-86,436)); //Bathroom shelf
+            }
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
@@ -270,6 +318,16 @@ function PreFirstEntryMapFixes()
         desTrig = Spawn(class'DestroyTrigger',, 'NicoLeaving');
         desTrig.Event = '#var(prefix)NicoletteDuClare';
         desTrig.SetCollision(false, false, false);
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(2801,-2927,221)); //Boxes outside MJ12 sewer exit
+            Spawn(class'PlaceholderItem',,, vectm(201,-386,189)); //Base of tree near club entrance
+            Spawn(class'PlaceholderItem',,, vectm(4079,1458,237)); //Boxes near hostel
+            Spawn(class'PlaceholderItem',,, vectm(2262,2614,172)); //Hostel bar table
+            Spawn(class'PlaceholderItem',,, vectm(3441,306,237)); //Boxes near Apartment 12
+        } else if (RevisionMaps){
+            //TODO
+        }
 
         break;
     //#endregion
@@ -433,6 +491,21 @@ function PreFirstEntryMapFixes()
             }
 
         }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-5643,1171,-630)); //First bollard
+            Spawn(class'PlaceholderItem',,, vectm(-6072,15,-90)); //Edge of bridge over start
+            Spawn(class'PlaceholderItem',,, vectm(-5305,-241,-106)); //Side room off of bridge
+            Spawn(class'PlaceholderItem',,, vectm(1700,-335,-373)); //Chapel pew
+            Spawn(class'PlaceholderItem',,, vectm(3532,-1255,102)); //Flower balcony
+            Spawn(class'PlaceholderItem',,, vectm(3564,560,-363)); //Boxes near trellis
+            Spawn(class'PlaceholderItem',,, vectm(4120,-1036,-310)); //Stair rail down to vanilla Gunther
+            Spawn(class'PlaceholderItem',,, vectm(1857,-2262,-662)); //Kitchen box
+            Spawn(class'PlaceholderItem',,, vectm(2307,-2856,-684)); //Kitchen Counter
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
@@ -488,6 +561,16 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)Mechanic', mech){
             mech.SetAlliance('OddMechanic');
         }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(2,2817,-4)); //Boxes under Everett's lab window
+            Spawn(class'PlaceholderItem',,, vectm(-968,4247,-67)); //Under stairs between aquariums
+            Spawn(class'PlaceholderItem',,, vectm(-536,3084,220)); //Table in Everett's lab
+            Spawn(class'PlaceholderItem',,, vectm(-933,3729,-67)); //In aquarium
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
     }

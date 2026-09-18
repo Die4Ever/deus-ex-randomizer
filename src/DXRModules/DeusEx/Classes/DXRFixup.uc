@@ -843,6 +843,9 @@ function CleanupPlaceholders(optional bool alert)
     local PlaceholderItem i;
     local PlaceholderContainer c;
     local PlaceholderEnemy e;
+
+    if (#bool(keepplaceholders)) return;
+
     foreach AllActors(class'PlaceholderItem', i) {
         if(alert) err("found leftover "$i);
         i.Destroy();

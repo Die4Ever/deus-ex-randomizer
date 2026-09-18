@@ -75,9 +75,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)SkillAwardTrigger sat;
     local #var(prefix)GoalCompleteTrigger gct;
 
-    local bool VanillaMaps, GMDXMaps;
+    local bool VanillaMaps, RevisionMaps, GMDXMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch(dxr.localURL)
@@ -202,6 +203,25 @@ function PreFirstEntryMapFixes()
 
         ReduceHelicopterDelay('map_exit',1);
 
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-2310,-18,-2100)); //Near outdoor generator
+            Spawn(class'PlaceholderItem',,, vectm(-513,300,-2192)); //Near water tower corpse
+            Spawn(class'PlaceholderItem',,, vectm(-842,1505,-1984)); //Reception Desk 1
+            Spawn(class'PlaceholderItem',,, vectm(-672,1405,-1984)); //Reception Desk 2
+            Spawn(class'PlaceholderItem',,, vectm(1740,1240,-2012)); //Indoor generator
+            Spawn(class'PlaceholderItem',,, vectm(-2005,5875,-2106)); //Comm Building front room
+            Spawn(class'PlaceholderItem',,, vectm(-1780,5140,-2126)); //Comm Building TV stand 1
+            Spawn(class'PlaceholderItem',,, vectm(-1854,5141,-2102)); //Comm Building TV Stand 2
+
+            Spawn(class'PlaceholderContainer',,, vectm(-1503,5382,-2140)); //Comm building front room
+            Spawn(class'PlaceholderContainer',,, vectm(2222,1620,-2045)); //Indoor main hall
+            Spawn(class'PlaceholderContainer',,, vectm(70,1083,-1245)); //Upper back balcony
+            Spawn(class'PlaceholderContainer',,, vectm(-2745,-130,-2110)); //Near outdoor generator
+        } else if (RevisionMaps){
+            //TODO
+        }
+
+
         break;
     //#endregion
 
@@ -259,6 +279,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1421,5119,-2534)); //on top of boxes near start
         Spawn(class'PlaceholderItem',,, vectm(-1205,5271,-2534)); //on top of boxes near start
         Spawn(class'PlaceholderItem',,, vectm(-2676,3649,-2599)); //stairwell down to flooded area
+        Spawn(class'PlaceholderItem',,, vectm(20,1996,-3238)); //Bottom of final stairwell
+        Spawn(class'PlaceholderItem',,, vectm(-786,2062,-2750)); //Next to bridge elevator control panel
+        Spawn(class'PlaceholderItem',,, vectm(-490,1810,-2884)); //Final bridge elevator shelf 1
+        Spawn(class'PlaceholderItem',,, vectm(-371,2174,-2884)); //Final bridge elevator shelf 2
 
         Spawn(class'PlaceholderContainer',,, vectm(-2250,4586,-2577)); //across from generator
         Spawn(class'PlaceholderContainer',,, vectm(-2414,4329,-2577)); //near generator
@@ -706,6 +730,20 @@ function PreFirstEntryMapFixes()
                 dlt.Destroy();
                 break;
             }
+        }
+
+        if (VanillaMaps){
+            if (!GMDXMaps){
+                //The placeholder doesn't fit under the drill on the GMDX map :(
+                Spawn(class'PlaceholderItem',,, vectm(620,-4449,1491)); //Drill Press
+            }
+            Spawn(class'PlaceholderItem',,, vectm(258,-4013,1473.5)); //Machine Shop bookshelf
+            Spawn(class'PlaceholderItem',,, vectm(288,-3622,1442)); //Trash shed
+            Spawn(class'PlaceholderItem',,, vectm(-2013,-6333,1796)); //Attic
+            Spawn(class'PlaceholderItem',,, vectm(-54,-6453,-490)); //Cherry Picker
+            Spawn(class'PlaceholderItem',,, vectm(260,-1262,870)); //Command Center Abort Terminal
+        } else if (RevisionMaps){
+            //TODO
         }
 
         break;

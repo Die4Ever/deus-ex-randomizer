@@ -22,6 +22,7 @@ simulated function PreBeginPlay()
 
 defaultproperties
 {
-    ItemName="Randomizer Placeholder: REPORT BUG!"
+    ItemName="Randomizer Placeholder Container: REPORT BUG!"
     Mesh=None
+    DrawScale=2.0
 }
