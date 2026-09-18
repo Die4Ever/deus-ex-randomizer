@@ -73,6 +73,7 @@
   - Grouped doors will no longer get stuck if one of the doors is destroyed while opening or closing.  For example, this fixes the elevator doors in Versalife Level 1 Labs (Mission 6) that lead up to the overlook room.
   - Game volume settings get applied on any load of a map to correct scenarios where the actual game volume was not aligned with what appeared in the Sound settings menu.
   - Many new possible locations for items to shuffle into across many maps.
+  - Enemies will no longer be able to walk in the air if they were swapped while sitting in a chair.  This likely was only possible when swapped by a Crowd Control effect.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
