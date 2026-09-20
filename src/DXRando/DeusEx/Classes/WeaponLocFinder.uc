@@ -1,6 +1,9 @@
 // A "Weapon" to mark locations in the world
 class WeaponLocFinder extends DeusExWeapon;
 
+var int spawnNum;
+const NUM_SPAWN_THINGS = 3;
+
 simulated event RenderOverlays( canvas Canvas )
 {
     if ( Owner == None )
@@ -12,24 +15,63 @@ simulated event RenderOverlays( canvas Canvas )
     Canvas.DrawActor(self, false);
 }
 
-function BringUp()
+function OwnerMsg(string msg)
 {
     local #var(PlayerPawn) p;
+    p = #var(PlayerPawn)(Owner);
+    if (p!=None){
+        p.ClientMessage(msg);
+    }
+}
 
+function BringUp()
+{
     Super.BringUp();
 
-    p = #var(PlayerPawn)(Owner);
+    OwnerMsg("Toggle Scope to show marked locations");
+    OwnerMsg("Change Ammo Type to remove marked locations");
+    OwnerMsg("Reload changes what item spawns at hit location");
+}
 
-    if (p!=None){
-        p.ClientMessage("Toggle Scope to show marked locations");
-        p.ClientMessage("Change Ammo Type to remove marked locations");
+simulated function GetSpawnInfo(out class<Actor> thing, out vector offset)
+{
+    switch(spawnNum)
+    {
+        case 0:
+            thing = None;
+            offset = vect(0,0,0);
+            break;
+        case 1:
+            thing = class'PlaceholderItem';
+            offset = class'DXRBase'.static.MakeVector(0,0,thing.Default.CollisionHeight);
+            break;
+        case 2:
+            thing = class'PlaceholderContainer';
+            offset = class'DXRBase'.static.MakeVector(0,0,thing.Default.CollisionHeight);
+            break;
     }
+}
+
+simulated function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
+{
+    local Projectile proj;
+    local LocFinderShot shot;
+
+    proj = Super.ProjectileFire(ProjClass,ProjSpeed,bWarn);
+    shot = LocFInderShot(proj);
+    if (shot!=None){
+        GetSpawnInfo(shot.SpawnThing,shot.SpawnOffset);
+    }
+
+    return proj;
 }
 
 simulated function ScopeToggle()
 {
     local ActorDisplayWindow actorDisplay;
     local bool active;
+    local class<Actor> trackThing;
+    local vector offset;
 
     actorDisplay = DeusExRootWindow(#var(PlayerPawn)(Owner).rootWindow).actorDisplay;
     active = (actorDisplay.GetViewClass()!=None);
@@ -37,7 +79,10 @@ simulated function ScopeToggle()
     active = !active;
 
     if (active){
-        actorDisplay.SetViewClass(class'LocFinderShot');
+        GetSpawnInfo(trackThing,offset);
+        if (trackThing==None) trackThing = class'LocFinderShot';
+
+        actorDisplay.SetViewClass(trackThing);
         actorDisplay.ShowLOS(false);
         actorDisplay.ShowPos(true);
     } else {
@@ -54,6 +99,24 @@ function CycleAmmo()
     {
         shots.Destroy();
     }
+}
+
+function ReloadAmmo()
+{
+    local class<Actor> spawnThing;
+    local vector offset;
+
+    spawnNum = (spawnNum + 1) % NUM_SPAWN_THINGS;
+    GetSpawnInfo(spawnThing,offset);
+    OwnerMsg("Now spawning "$spawnThing);
+}
+
+simulated function int AmmoLeftInClip()
+{
+    if (#defined(gmdx)){
+        return 1; //So you can always reload to switch spawn types
+    }
+    return super.AmmoLeftInClip();
 }
 
 //I wanted to do some adjustments to where the "weapon" shows up,

@@ -184,6 +184,11 @@ function SwapScriptedPawns(int percent, bool enemies)
             continue;
         }
 
+        //Make sure everybody is standing up before a swap
+        //They'll sit down again once their orders are applied
+        temp[i].StandUp(true);
+        temp[slot].StandUp(true);
+
         if( ! Swap(temp[i], temp[slot], true) ) {
             l("SwapScriptedPawns failed swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
             continue;

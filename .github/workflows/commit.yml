@@ -8,36 +8,36 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - uses: ./.github/run-tests
 
       - name: Upload Installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: DXRando
           path: src/installer/dist/DXRandoInstaller.exe
 
       - name: Upload installer warnings
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: installerwarnings.txt
           path: src/installer/build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BingoViewer
           path: src/installer/dist/BingoViewer.exe
 
   linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - run: sudo apt-get update -y
       - run: sudo apt-get install -y python3-tk idle3 binutils
@@ -45,19 +45,19 @@ jobs:
       - uses: ./.github/run-tests
 
       - name: Upload Installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: DXRando-linux
           path: src/installer/dist/DXRandoInstaller
 
       - name: Upload installer warnings
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: installerwarningslinux.txt
           path: src/installer/build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BingoViewer-linux
           path: src/installer/dist/BingoViewer

@@ -4,6 +4,9 @@
 - Datacube with the Aquinas Router door code in Area 51 Sector 4 (Mission 15) now has a harder set of potential locations, so it won't be quite as easy to find.
 - Hazmat suits now protect against initial Poison damage, but not the recurring damage. In Zero Rando (or when balance changes are disabled) we're still using the vanilla behavior of giving resistance to both. Environmental Resistance augmentation always protects against both.
 - New options to allow randomly spawning augmentation canisters ("Aug Can Chance %") and augmentation upgrade canisters ("Aug Upgrade Chance %") in maps, instead of them always appearing in the same maps they would normally appear in.
+- GMDX/Revision: Support for the "Quick Skills" and "Quick Augs" menu which allow upgrading skills and augs without entering the regular menu screens.
+  - The key to open the "Quick Skills" menu can be configured by binding the option for "Activate Multiplayer Skill Menu" in the Keyboard/Mouse menu.
+  - The key to open the "Quick Augs" menu must be bound manually.  In the GMDXUser.ini or RevisionUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the "Quick Augs" screen.  Change it so that it maps to UpgradeAugs, eg. to make G open the menu: `G=UpgradeAugs`
 
 ## GMDX Major Changes
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.
@@ -69,6 +72,8 @@
   - The blast door in Silo (Mission 14) that leads to the actual silo will no longer get stuck if it bumps into the player while opening.
   - Grouped doors will no longer get stuck if one of the doors is destroyed while opening or closing.  For example, this fixes the elevator doors in Versalife Level 1 Labs (Mission 6) that lead up to the overlook room.
   - Game volume settings get applied on any load of a map to correct scenarios where the actual game volume was not aligned with what appeared in the Sound settings menu.
+  - Many new possible locations for items to shuffle into across many maps.
+  - Enemies will no longer be able to walk in the air if they were swapped while sitting in a chair.  This likely was only possible when swapped by a Crowd Control effect.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
@@ -165,3 +170,4 @@
 - GMDX: Repairbots will actually limit the number of times they can be used (instead of decrementing the number of uses into negative numbers).
 - GMDX: Red screen overlay doesn't appear when you die with the "Show Killer" death cam option enabled.
 - GMDX: "Show Killer" Death Cam option no longer goes black and causes the game to lock up when using the Direct3D 9 renderer.
+- Restoring an old "Saved Settings" in the Advanced settings menu will now properly use the default -1 setting for "Aug Can Chance %" and "Aug Upgrade Chance %"

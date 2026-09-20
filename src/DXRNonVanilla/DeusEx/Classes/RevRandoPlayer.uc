@@ -7,6 +7,7 @@ var bool bOnLadder;
 var Rotator ShakeRotator;
 var bool bAutorun;
 var float autorunTime;
+var transient bool bUpgradeAugs;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
@@ -843,6 +844,15 @@ exec function ShowMainMenu()
     local MissionEndgame Script;
     local RevisionMissionEndgame RevScript;
 
+    // DXRando: close multiplayer style skills and augs screens
+
+    if (bBuySkills || bUpgradeAugs) // close the DXMP style skills/augs screens
+    {
+        bBuySkills = false;
+        bUpgradeAugs = false;
+        return;
+    }
+
     // DXRando: we just don't want to do vanilla behavior during the intro (mission 98)
     // escape skips the conversation which still skips the intro anyways
     // the vanilla code would skip the intro here as well even before the conversation started, which could also mean before flags are cleared
@@ -873,6 +883,63 @@ exec function ShowMainMenu()
     }
     Super.ShowMainMenu();
 }
+
+simulated function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+
+    //Make sure the aug and skill quick menus are closed when you re-enter a map.
+    //bUpgradeAugs is added by Rando so is transient, but bBuySkills is vanilla
+    bUpgradeAugs=False;
+    bBuySkills=False;
+}
+
+exec function BuySkills()
+{
+    // First turn off scores if we're heading into skill menu
+    if ( !bBuySkills )
+        ClientTurnOffScores();
+
+    bBuySkills = !bBuySkills;
+    if (bBuySkills){
+        bUpgradeAugs=False;
+    }
+    BuySkillSound( 2 );
+}
+
+exec function UpgradeAugs()
+{
+    // First turn off scores if we're heading into aug menu
+    if ( !bUpgradeAugs )
+        ClientTurnOffScores();
+
+    bUpgradeAugs = !bUpgradeAugs;
+    if (bUpgradeAugs){
+        bBuySkills=False;
+    }
+    BuySkillSound( 2 );
+}
+
+exec function ActivateBelt(int objectNum)
+{
+    local DeusExRootWindow root;
+
+    if (RestrictInput())
+        return;
+
+    if (bBuySkills || bUpgradeAugs) //This used to have a check for multiplayer as well
+    {
+        root = DeusExRootWindow(rootWindow);
+        if ( root != None )
+        {
+            if ( root.hud.hms.OverrideBelt( Self, objectNum ))
+                return;
+        }
+    }
+
+    Super.ActivateBelt(objectNum);
+}
+
 
 //Biomod and Shifter only - shows text when you can give a weapon to an NPC (Gunther, Gilbert, Miguel)
 //Duplicated from RevJCDentonMale::HighlightCenterObject

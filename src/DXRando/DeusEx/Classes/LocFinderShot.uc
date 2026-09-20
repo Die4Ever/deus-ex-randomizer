@@ -3,6 +3,38 @@
 //=============================================================================
 class LocFinderShot extends DeusExProjectile;
 
+var class<Actor> SpawnThing;
+var vector       SpawnOffset;
+var Actor        SpawnedThing;
+
+function SpawnTheThing(vector loc)
+{
+    local #var(DeusExPrefix)Decoration d;
+    local inventory i;
+
+    if (SpawnThing!=None){
+        loc = loc + SpawnOffset;
+        SpawnedThing = Spawn(SpawnThing,self,,loc);
+
+        d = #var(DeusExPrefix)Decoration(SpawnedThing);
+        if (d!=None){
+            d.ItemName = d.ItemName $ " (LocFinder)";
+        }
+        i = Inventory(SpawnedThing);
+        if (i!=None){
+            i.ItemName = i.ItemName $ " (LocFinder)";
+        }
+    }
+}
+
+function Destroyed()
+{
+    if (SpawnedThing!=None){
+        SpawnedThing.Destroy();
+    }
+    Super.Destroyed();
+}
+
 auto simulated state Flying
 {
     simulated function HitWall(vector HitNormal, actor Wall)
@@ -19,6 +51,8 @@ auto simulated state Flying
         hit = Trace(TraceHitLocation,TraceHitNormal,EndTrace,,False);
         SetLocation(TraceHitLocation);
         log("LocFinderShot: "$TraceHitLocation);  //Log the location, in case that's convenient
+
+        SpawnTheThing(TraceHitLocation);
     }
 
     simulated function ProcessTouch (Actor Other, Vector HitLocation)

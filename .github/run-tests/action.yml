@@ -2,7 +2,7 @@ runs:
   using: composite
   steps:
     # we don't really care what python version we have, but maybe in the future
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.8'
         cache: 'pip' # caching pip dependencies

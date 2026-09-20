@@ -843,7 +843,14 @@ function PreFirstEntryMapFixes()
                 class'PlaceholderEnemy'.static.Create(self,vectm(-600, 2400, -440),-12352);
                 class'PlaceholderEnemy'.static.Create(self,vectm(-1800, 325, -460),0);
                 class'PlaceholderEnemy'.static.Create(self,vectm(-450, -2000, -460),11160);
+
+                Spawn(class'PlaceholderItem',,, vectm(1002,-2260,-627)); //Lower apartment door near subway
+                Spawn(class'PlaceholderItem',,, vectm(-818,-2346,-547)); //Window well opposite bar front door
+                Spawn(class'PlaceholderItem',,, vectm(-998,1816,-467)); //Park table
+            } else if (RevisionMaps){
+                //TODO
             }
+
 
             break;
     //#endregion
@@ -935,6 +942,25 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            if (VanillaMaps && !GMDXMaps){
+                Spawn(class'PlaceholderItem',,, vectm(-452,-475,68)); //Bar near workers
+                Spawn(class'PlaceholderItem',,, vectm(-603,-457,68)); //Bar near middle
+                Spawn(class'PlaceholderItem',,, vectm(-375,235,80)); //Front table
+                Spawn(class'PlaceholderItem',,, vectm(-1520,-50,76)); //Back pillar
+                Spawn(class'PlaceholderItem',,, vectm(-2688,630,100)); //On broken payphone
+                Spawn(class'PlaceholderItem',,, vectm(-3570,-50,-20)); //Near bathroom sink
+            } else if (GMDXMaps){
+                Spawn(class'PlaceholderItem',,, vectm(-452,-475,68)); //Bar near workers
+                Spawn(class'PlaceholderItem',,, vectm(-603,-457,68)); //Bar near middle
+                Spawn(class'PlaceholderItem',,, vectm(-950,-750,82)); //Left Bar Shelf
+                Spawn(class'PlaceholderItem',,, vectm(-530,-700,76)); //Right bar shelf
+                Spawn(class'PlaceholderItem',,, vectm(-1475,345,96)); //Back table
+                Spawn(class'PlaceholderItem',,, vectm(-1513,-379,76)); //Back pillar
+                Spawn(class'PlaceholderItem',,, vectm(-3065,-235,-20)); //Near bathroom sink
+            } else if (RevisionMaps){
+                //TODO
+            }
+
             break;
     //#endregion
 
@@ -1002,6 +1028,19 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(DeusExPrefix)Mover', d,'mirrordoor'){break;}
             class'FakeMirrorInfo'.static.Create(self,vectm(-527,1660,348),vectm(-627,1655,220),d); //Mirror in front of Smuggler's Stash
 
+            if (VanillaMaps){
+                Spawn(class'PlaceholderItem',,, vectm(-813,1366,-68)); //Downstairs Shelf
+                Spawn(class'PlaceholderItem',,, vectm(-1254,841,-40)); //Downstairs table
+                Spawn(class'PlaceholderItem',,, vectm(-464,535,284)); //Upstairs box stack
+                Spawn(class'PlaceholderItem',,, vectm(-340,1184,284)); //Upstairs box group
+                Spawn(class'PlaceholderItem',,, vectm(-432,1528,300)); //Upstairs shelf
+                if (GMDXMaps){
+                    Spawn(class'PlaceholderItem',,, vectm(-1166,1394,-48)); //Fridge
+                }
+            } else if (RevisionMaps){
+                //TODO
+            }
+
             break;
     //#endregion
 
@@ -1019,6 +1058,16 @@ function PreFirstEntryMapFixes()
                     }
                 }
             }
+
+            if (VanillaMaps){
+                Spawn(class'PlaceholderItem',,, vectm(130,1535,-275)); //Entry Table
+                Spawn(class'PlaceholderItem',,, vectm(360,-565,-275)); //Courtyard tree
+                Spawn(class'PlaceholderItem',,, vectm(1225,-580,-307)); //Womens bathroom
+                Spawn(class'PlaceholderItem',,, vectm(1125,-2460,-260)); //Doctor's Desk
+            } else if (RevisionMaps){
+                //TODO
+            }
+
             break;
     //#endregion
 
@@ -1031,6 +1080,21 @@ function PreFirstEntryMapFixes()
                     }
                 }
             }
+
+            if (VanillaMaps && !GMDXMaps){
+                Spawn(class'PlaceholderItem',,, vectm(2626,-631,-402)); //Entry ledge in corner
+                Spawn(class'PlaceholderItem',,, vectm(2905,-353,-420)); //Entry ledge
+                Spawn(class'PlaceholderItem',,, vectm(-1027,-89,-820)); //Collapsed tunnel
+                Spawn(class'PlaceholderItem',,, vectm(-181,848,-320)); //Table in small room
+            } else if (GMDXMaps){
+                Spawn(class'PlaceholderItem',,, vectm(2643,-632,-627)); //Entry ledge in corner
+                Spawn(class'PlaceholderItem',,, vectm(2921,-353,-643)); //Entry ledge
+                Spawn(class'PlaceholderItem',,, vectm(-1027,-89,-820)); //Collapsed tunnel
+                Spawn(class'PlaceholderItem',,, vectm(-1016,-5,-308)); //On pump thing that turns bridge
+            } else if (RevisionMaps){
+                //TODO
+            }
+
             break;
     //#endregion
     }

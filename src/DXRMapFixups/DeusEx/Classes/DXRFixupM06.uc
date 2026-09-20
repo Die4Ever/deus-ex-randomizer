@@ -122,7 +122,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Switch2 sw;
     local int i;
 
-    local bool VanillaMaps, GMDXMaps;
+    local bool VanillaMaps, GMDXMaps, RevisionMaps;
 
 #ifdef injections
     local #var(prefix)DataCube dc;
@@ -132,6 +132,7 @@ function PreFirstEntryMapFixes()
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
     GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL)
     {
@@ -269,6 +270,14 @@ function PreFirstEntryMapFixes()
         //Don't clone guys who are vaguely near the hall
         MassSetSecretGoalBox(class'#var(prefix)ScriptedPawn', vectm(-500,100,190), vectm(1300,800,-238), true);
 
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(265,-90,54)); //Computer desk
+            Spawn(class'PlaceholderItem',,, vectm(-300,751,60)); //Shooting gallery
+            Spawn(class'PlaceholderItem',,, vectm(707,-96,-107)); //Medical room side table
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
@@ -288,6 +297,16 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-1177,727,44)); //Tree next to temple
+            Spawn(class'PlaceholderItem',,, vectm(750,-986,60)); //Pottery shop shelf
+            Spawn(class'PlaceholderItem',,, vectm(638,-1337,221)); //Tea House table
+            Spawn(class'PlaceholderItem',,, vectm(-221,-1343,62)); //Butcher side table
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         // fallthrough
     case "06_HONGKONG_WANCHAI_COMPOUND":
         foreach AllActors(class'Actor', a)
@@ -790,6 +809,16 @@ function PreFirstEntryMapFixes()
             //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
 
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-1630,-2011,-138)); //Table near bar
+            Spawn(class'PlaceholderItem',,, vectm(-833,-2194,21)); //Top floor table
+            Spawn(class'PlaceholderItem',,, vectm(-1829,-794,-323)); //Men's bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(-221,-613,-323)); //Women's bathroom counter
+        } else if (RevisionMaps){
+            //TODO
+        }
+
+
         break;
     //#endregion
 
@@ -803,6 +832,17 @@ function PreFirstEntryMapFixes()
                 at.event = 'RumbleCops';
             }
         }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-135,-397,-163)); //Big billboards near entrance
+            Spawn(class'PlaceholderItem',,, vectm(-784,-112,-163)); //Small billboards near entrance
+            Spawn(class'PlaceholderItem',,, vectm(3400,-892,-211)); //Lum Path corpse 1
+            Spawn(class'PlaceholderItem',,, vectm(3465,-700,-211)); //Lum Path corpse 2
+            Spawn(class'PlaceholderItem',,, vectm(3685,-694,-211)); //Military corpse
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
@@ -1094,6 +1134,18 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(2403,-777,-359)); //On top of cargo ship
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(3237,3217,-506));//Lower garage storage area
         rg.MaxCount=3;
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-1497,1627,-351)); //Old China Hand table
+            Spawn(class'PlaceholderItem',,, vectm(-1035,2932,-371)); //Old China Hand freezer boxes
+            Spawn(class'PlaceholderItem',,, vectm(-1490,1064,-387)); //Locked door opposite Old China Hand
+            Spawn(class'PlaceholderItem',,, vectm(1603,1715,-293)); //Boat Person
+            Spawn(class'PlaceholderItem',,, vectm(2344,2218,-437)); //Big boat stairs railing
+            Spawn(class'PlaceholderItem',,, vectm(2255,-205,-349)); //Flat boat corner
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
     default:

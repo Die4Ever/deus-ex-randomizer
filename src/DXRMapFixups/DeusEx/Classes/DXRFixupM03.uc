@@ -104,12 +104,13 @@ function PreFirstEntryMapFixes()
     local #var(DeusExPrefix)Mover dxm;
     local DXRSimpleTrigger st;
     local #var(prefix)LaserTrigger lt;
-    local bool VanillaMaps, GMDXMaps;
+    local bool VanillaMaps, RevisionMaps, GMDXMaps;
     local #var(PlayerPawn) p;
     local int height,rad;
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(p);
     GMDXMaps    = class'DXRMapVariants'.static.IsGMDXMaps(p);
 
     switch (dxr.localURL)
@@ -257,6 +258,21 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(1154,170,224),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1044,94,224),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-11272,3236,108)); //First Pipe
+            Spawn(class'PlaceholderItem',,, vectm(-10453,3367,108)); //Second Pipe
+            Spawn(class'PlaceholderItem',,, vectm(-8767,3836,108)); //Pipe near turret central
+            Spawn(class'PlaceholderItem',,, vectm(-6864,3485,92)); //Corner before falling platforms
+            Spawn(class'PlaceholderItem',,, vectm(1048,1013,68)); //Mens bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(1197,448,12)); //Womens bathroom stall
+            Spawn(class'PlaceholderItem',,, vectm(800,1196,252)); //Balcony looking over helibase entry
+            Spawn(class'PlaceholderItem',,, vectm(1419,559,224)); //Bookshelves 1
+            Spawn(class'PlaceholderItem',,, vectm(1415,465,194)); //Bookshelves 2
+            Spawn(class'PlaceholderItem',,, vectm(1418,607,256)); //Bookshelves 3
+        } else if (RevisionMaps){
+            //TODO
+        }
 
         break;
     //#endregion
@@ -454,6 +470,17 @@ function PreFirstEntryMapFixes()
         } else {
             //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(268,-891,100)); //Middle bench
+            Spawn(class'PlaceholderItem',,, vectm(-1093,-707,100)); //Side bench 1
+            Spawn(class'PlaceholderItem',,, vectm(-1093,310,100)); //Side bench 2
+            Spawn(class'PlaceholderItem',,, vectm(875,-3010,76)); //Pillars near Charlie
+            Spawn(class'PlaceholderItem',,, vectm(2270,-1217,380)); //Ticket booth near hidden compartment
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
@@ -536,6 +563,15 @@ function PreFirstEntryMapFixes()
             unatco.bHateCarcass = false;
             unatco.bHateDistress = false;
         }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(2180,-535,84)); //Trailer
+            Spawn(class'PlaceholderItem',,, vectm(4647,-889,12)); //Plane front wheels
+            Spawn(class'PlaceholderItem',,, vectm(3168,895,12)); //Under stairs
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
@@ -603,6 +639,14 @@ function PreFirstEntryMapFixes()
         }
 
         SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-4228,2392,-140)); //Trophy Shelf
+            Spawn(class'PlaceholderItem',,, vectm(-4797,1767,-191)); //Front door side table
+            Spawn(class'PlaceholderItem',,, vectm(-5812,1421,-116)); //Under SATCOM table
+        } else if (RevisionMaps){
+            //TODO
+        }
 
         break;
     //#endregion

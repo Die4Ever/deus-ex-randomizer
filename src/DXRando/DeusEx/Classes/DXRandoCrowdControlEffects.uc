@@ -1729,6 +1729,7 @@ function bool swapPlayer(string viewer) {
         return false;
     }
 
+    a.StandUp(true);
     if (ccLink.ccModule.Swap(player(),a)==false){
         return false;
     }

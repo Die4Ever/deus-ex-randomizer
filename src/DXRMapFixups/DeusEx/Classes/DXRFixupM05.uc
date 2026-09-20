@@ -58,8 +58,12 @@ function PreFirstEntryMapFixes()
     local DXREnemies dxre;
     local int i;
     local bool VanillaMaps;
+    local bool RevisionMaps;
+    local bool GMDXMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
     switch (dxr.localURL)
     {
@@ -180,6 +184,16 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-3417,1369,208),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(479,3502,-144),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-3316,1940,-370)); //Robot Maintenance entrance boxes
+            Spawn(class'PlaceholderItem',,, vectm(-3558,1304,216)); //Overlook office side table
+            Spawn(class'PlaceholderItem',,, vectm(-298,438,-118)); //Command Center desk
+            Spawn(class'PlaceholderItem',,, vectm(-44,3244,-136)); //Greasel Lab lab bench
+            Spawn(class'PlaceholderItem',,, vectm(1027,592,17)); //Karkian side room
+        } else if (RevisionMaps){
+            //TODO
+        }
 
         break;
     //#endregion
@@ -399,6 +413,15 @@ function PreFirstEntryMapFixes()
         hoverHint.SetBaseActor(jock);
 
         SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-4228,2392,-140)); //Trophy Shelf
+            Spawn(class'PlaceholderItem',,, vectm(-4797,1767,-191)); //Front door side table
+            Spawn(class'PlaceholderItem',,, vectm(-5812,1421,-116)); //Under SATCOM table
+            Spawn(class'PlaceholderItem',,, vectm(-5658,1197,-127)); //Behind SATCOM
+        } else if (RevisionMaps){
+            //TODO
+        }
 
         break;
     //#endregion

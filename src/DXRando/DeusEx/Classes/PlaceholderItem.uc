@@ -40,9 +40,10 @@ simulated function PreBeginPlay()
 
 defaultproperties
 {
-    ItemName="Randomizer Placeholder: REPORT BUG!"
+    ItemName="Randomizer Placeholder Item: REPORT BUG!"
     Mesh=None
     PickupViewMesh=None
     CollisionRadius=9.300000// copied from AmmoShell
     CollisionHeight=10.210000
+    PickupViewScale=0.6 //DrawScale doesn't work for inventory objects
 }

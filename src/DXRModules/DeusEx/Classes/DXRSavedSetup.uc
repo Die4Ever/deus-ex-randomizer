@@ -88,3 +88,8 @@ function RestoreSetup(DXRFlags other)
     if(startingMapStr == "Random") moresettings.starting_map = other.moresettings.starting_map; // reuse the roll from SetDifficulty
     other.moresettings = moresettings;
 }
+
+defaultproperties
+{
+    moresettings=(augcanlocs=-1,augupgradelocs=-1)
+}

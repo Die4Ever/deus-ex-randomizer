@@ -56,10 +56,12 @@ function PreFirstEntryMapFixes()
     local bool block;
 
     local #var(PlayerPawn) p;
-    local bool VanillaMaps;
+    local bool VanillaMaps,GMDXMaps,RevisionMaps;
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(p);
+    GMDXMaps = class'DXRMapVariants'.static.IsGMDXMaps(p);
 
     switch(dxr.localURL)
     {
@@ -254,6 +256,15 @@ function PreFirstEntryMapFixes()
 
         p.GoalCompleted('GetBelowDecks');
 
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-131,-727,13)); //Control Tower
+            Spawn(class'PlaceholderItem',,, vectm(-2286,1190,-243)); //Big Fan hallway, behind boxes
+            Spawn(class'PlaceholderItem',,, vectm(-2500,1257,-500)); //Near electrician, behind boxes
+            Spawn(class'PlaceholderItem',,, vectm(-4988,1186,-203)); //Helipad Ops Room
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
@@ -395,11 +406,43 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(2435,2271,48),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1038,3391,48),,'Sitting');
 
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(1005,1464,64)); //Guardhouse Table
+            Spawn(class'PlaceholderItem',,, vectm(1250,3180,64)); //Warehouse bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(235,4562,76)); //Warehouse crate 1
+            Spawn(class'PlaceholderItem',,, vectm(-242,4241,76)); //Warehouse crate 2
+            Spawn(class'PlaceholderItem',,, vectm(853,4092,76)); //Warehouse crate 3
+            Spawn(class'PlaceholderItem',,, vectm(3340,5074,22)); //Ammo storage warehouse 1
+            Spawn(class'PlaceholderItem',,, vectm(4424,2173,57)); //Jenny's Number Keypad building
+            Spawn(class'PlaceholderItem',,, vectm(2390,2147,62)); //Base Commander office desk
+            Spawn(class'PlaceholderItem',,, vectm(3447,3383,22)); //Ammo Storage Warehouse 2
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         break;
     //#endregion
 
     //#region Dockyards Ventilation
     case "09_NYC_SHIPFAN":
+        if (VanillaMaps){
+            foreach AllActors(class'ComputerSecurity',cs){
+                if (cs.Name == 'ComputerSecurity6'){
+                    cs.specialOptions[0].Text = "Disable Ventilation Fan";
+                    cs.specialOptions[0].TriggerEvent='FanToggle';
+                    cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
+                }
+            }
+        }
+
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(429,52,-460)); //Under fan, on pipe
+            Spawn(class'PlaceholderItem',,, vectm(113,2363,-500)); //Past spinning room, corner
+            Spawn(class'PlaceholderItem',,, vectm(-26,2130,-386)); //Past spinning room, on electrical box
+        } else if (RevisionMaps){
+            //TODO
+        }
+
         if (class'DXRMapVariants'.static.IsGMDXMaps(player())){
             #ifdef gmdxae
             block = player().bShippingAndReceiving==False;
@@ -411,15 +454,7 @@ function PreFirstEntryMapFixes()
                 MassSetSecretGoalBoxAll(vectm(-2883,335,200), vectm(-7172,-1500,-2630), true);
             }
         }
-        if (VanillaMaps){
-            foreach AllActors(class'ComputerSecurity',cs){
-                if (cs.Name == 'ComputerSecurity6'){
-                    cs.specialOptions[0].Text = "Disable Ventilation Fan";
-                    cs.specialOptions[0].TriggerEvent='FanToggle';
-                    cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
-                }
-            }
-        }
+
         break;
     //#endregion
 

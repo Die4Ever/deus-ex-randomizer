@@ -25,7 +25,7 @@ function CreateSkillsList()
     }
 }
 
-static function UpdateSwimSpeed(Skill s, #var(prefix)Human p)
+static function UpdateSwimSpeed(Skill s, #var(PlayerPawn) p)
 {
     local float mult,augLevel;
 
@@ -67,7 +67,7 @@ function UpgradeSkill()
     }
 
     Super.UpgradeSkill();
-    UpdateSwimSpeed(selectedSkill,#var(prefix)Human(player));
+    UpdateSwimSpeed(selectedSkill,#var(PlayerPawn)(player));
     UpdateSkillBanned(selectedSkillButton);
 
     if (selectedSkill!=None){
