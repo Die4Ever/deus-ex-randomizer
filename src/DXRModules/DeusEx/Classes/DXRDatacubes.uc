@@ -868,6 +868,32 @@ function vanilla_datacubes_rules()
         break;
 
     case "15_AREA51_PAGE":
+
+        if (#defined(gmdx)){
+            //Make sure the LAB 12 datacube doesn't end up in a locked container
+
+            //Northwest corner
+            datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
+            datacubes_rules[i].min_pos = vect(6295,-10470,-5160);
+            datacubes_rules[i].max_pos = vect(6222,-10400,-5050);
+            datacubes_rules[i].allow = false;
+            i++;
+
+            //Southeast corner
+            datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
+            datacubes_rules[i].min_pos = vect(4838,-9300,-5160);
+            datacubes_rules[i].max_pos = vect(4910,-9370,-5050);
+            datacubes_rules[i].allow = false;
+            i++;
+
+            //Southwest corner
+            datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
+            datacubes_rules[i].min_pos = vect(4840,-10470,-5160);
+            datacubes_rules[i].max_pos = vect(4913,-10396,-5050);
+            datacubes_rules[i].allow = false;
+            i++;
+        }
+
         datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
         datacubes_rules[i].min_pos = vect(4774.132813, -10507.679688, -5294.627441);
         datacubes_rules[i].max_pos = vect(6394.192383, -9250.182617, 99999);

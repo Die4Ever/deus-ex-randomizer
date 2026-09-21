@@ -140,6 +140,7 @@
   - Black cats will now use the correct mesh for their skin.
   - "Combat Medic's Bag" perk now correctly increases the randomized limits for medkits and bioelectric cells by 5 when purchased.
   - The falling platform in the GMDX-added section at the end of Vandenberg Tunnels (Mission 12) cannot be triggered more than once, causing it to fall back up into position.
+  - The datacube for the "Gray Lab" in Area 51 (Mission 15) can no longer be randomized into the locked containers in the cloning room.
 
 </details>
 
