@@ -171,3 +171,4 @@
 - GMDX: Red screen overlay doesn't appear when you die with the "Show Killer" death cam option enabled.
 - GMDX: "Show Killer" Death Cam option no longer goes black and causes the game to lock up when using the Direct3D 9 renderer.
 - Restoring an old "Saved Settings" in the Advanced settings menu will now properly use the default -1 setting for "Aug Can Chance %" and "Aug Upgrade Chance %"
+- Datacubes actually glow properly again

@@ -2129,11 +2129,12 @@ function RandoInfoDevs(int percent)
             }
 #endif
             if (totallyEmpty) continue; //Intentionally does not glow up blank things
-
-            if (doGlowUp){
-                GlowUp(id);
-            }
         }
+
+        if (doGlowUp){
+            GlowUp(id);
+        }
+
         _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
     }
 }
