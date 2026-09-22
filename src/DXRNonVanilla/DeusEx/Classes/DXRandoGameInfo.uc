@@ -135,7 +135,7 @@ event _PostLogin(playerpawn NewPlayer)
     if (DeusExPlayer(NewPlayer) != None)
         ApplyGamemode(DeusExPlayer(NewPlayer));
 }
-#elseif gmdx
+#elseif gmdxnotae
 event _PostLogin(playerpawn NewPlayer)
 {
     Super_PostLogin(NewPlayer);
