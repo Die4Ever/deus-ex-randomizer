@@ -182,6 +182,18 @@ class InstallerWindow(GUIBase):
             settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
         # End Vanilla stuff
 
+        #GMDX AE stuff
+        elif f=="GMDX AE":
+            # Always default to a separate EXE, but maybe someone wants to make it easier to launch by using the original GMDX_AE.exe?
+            v = BooleanVar(master=self.frame, value=True)
+            settings['GMDXAERandomizer.exe'] = v
+            c = Checkbutton(self.frame, text="Create separate GMDXAERandomizer.exe", variable=v)
+            Hovertip(c, "Overwriting the original GMDX_AE.exe makes it easier for Linux Steam players (maybe).\nOnly applicable if installing GMDXAERando.")
+            self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
+            self.FixColors(c)
+            self.row+=1
+
+
         self.flavors[f] = settings
 
 
@@ -402,6 +414,8 @@ class InstallerWindow(GUIBase):
             extra += '\nCreated DXRando.exe'
         if flavors.get('Vanilla? Madder.', {}).get('install') and IsWindows():
             extra += '\nCreated VMDRandomizer.exe'
+        if flavors.get('GMDX AE', {}).get('install') and flavors.get('GMDX AE', {}).get('GMDXAERandomizer.exe',True):
+            extra += '\nCreated GMDXAERandomizer.exe'
         if extra:
             extra = '\n' + extra
         self.root.title('DXRando Installation Complete!')

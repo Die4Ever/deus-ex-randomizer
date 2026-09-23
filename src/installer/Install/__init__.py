@@ -364,6 +364,9 @@ def _DetectFlavors(system:Path):
     if (game / 'GMDXv10').is_dir():
         flavors.append('GMDX v10')
 
+    if (game / 'Mods' / 'GMDX_AE').is_dir():
+        flavors.append('GMDX AE')
+
     if (system / 'HX.u').exists():
         if not is_vanilla:
             info('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')

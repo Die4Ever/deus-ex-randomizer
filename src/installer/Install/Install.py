@@ -98,6 +98,8 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
             ret = InstallGMDX(system, settings, 'GMDXvRSD')
         if 'GMDX v10'==f:
             ret = CreateModConfigs(system, settings, globalsettings, 'GMDX', 'GMDXv10')
+        if 'GMDX AE'==f:
+            ret = InstallGMDXAE(system, settings, 'GMDX_AE')
         if 'Revision'==f:
             ret = InstallRevision(system, settings, globalsettings)
         if 'HX'==f:
@@ -416,6 +418,33 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
         c.WriteFile(confpath)
 
     CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
+
+def InstallGMDXAE(system:Path, settings:dict, exename:str):
+    game = system.parent
+    AskKillGame(system/'GMDX_AE.exe')
+    AskKillGame(system/'GMDXAERandomizer.exe')
+    (changes, additions) = GetConfChanges('GMDXAE')
+    Mkdir(game/'SaveGMDXAERando', exist_ok=True)
+
+    # Determine whether we want to launch through the original GMDX_AE.exe or through a new GMDXAERandomizer.exe
+    newexe=False
+    if settings.get('install') and settings.get('GMDXAERandomizer.exe', True): #Always default to a separate exe, unless explicitly chosen to not
+        newexe=True
+        exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe" #always use Kentie's for GMDX AE (Ideally the new V9...)
+        exedest:Path = system / 'GMDXAERandomizer.exe'
+        CopyExeTo(exe_source, exedest)
+
+    origconfpath = GetDocumentsDir(system) / 'Deus Ex' / 'Mods' / exename / 'System' / 'DeusEx.ini'
+    newconfpath = origconfpath
+    if (newexe): #Make sure the config matches the new exe
+        newconfpath = GetDocumentsDir(system) / 'Deus Ex' / 'System' / 'GMDXAERandomizer.ini'
+    if origconfpath.exists():
+        b = origconfpath.read_bytes()
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
+        c.WriteFile(newconfpath)
+
+    CopyPackageFiles('GMDXAE', game, ['GMDXAERandomizer.u'])
 
 
 def InstallRevision(system:Path, settings:dict, globalsettings:dict):
