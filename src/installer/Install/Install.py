@@ -112,7 +112,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
     maxmaxfps = 1000 if globalsettings['speedupfix'] else 120
     dxvkmaxfps = max(10, min(maxmaxfps, globalsettings['dxvkmaxfps']))
     CopyDXVK(system, globalsettings['dxvk'], dxvkmaxfps)
-    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])
+    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'], globalsettings['d3drenderers'])
     InstallOGL2(system, globalsettings['ogl2'])
     InstallDLLs(list(flavors.values())[0])
 
@@ -130,9 +130,14 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
     exetype = settings.get('exetype')
     kentie = True
+    launch = False
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
         kentie = False
+        launch = True
+    elif exetype == 'NoChange':
+        kentie = False
+        launch = False
 
     exename = 'DXRando'
     # or should we not create a separate DXRando.exe file? Linux defaults to DeusEx.exe because of Steam
@@ -141,8 +146,9 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
     # also fix vanilla stuff
     if exename != 'DeusEx' and settings.get('FixVanilla'):
-        exedest:Path = system / 'DeusEx.exe'
-        CopyExeTo(exe_source, exedest)
+        if (kentie or launch):
+            exedest:Path = system / 'DeusEx.exe'
+            CopyExeTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
         try:
             VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
@@ -430,7 +436,7 @@ def InstallGMDXAE(system:Path, settings:dict, exename:str):
     newexe=False
     if settings.get('install') and settings.get('GMDXAERandomizer.exe', True): #Always default to a separate exe, unless explicitly chosen to not
         newexe=True
-        exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe" #always use Kentie's for GMDX AE (Ideally the new V9...)
+        exe_source = system / 'DeusEx.exe' #Use the launcher that already exists
         exedest:Path = system / 'GMDXAERandomizer.exe'
         CopyExeTo(exe_source, exedest)
 

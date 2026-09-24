@@ -440,9 +440,13 @@ def EngineDllFix(p:Path, speedupfix:bool) -> bool:
 
 
 
-def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str):
+def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, install:bool):
     source = GetSourcePath()
     thirdparty = source / '3rdParty'
+
+    if not install:
+        return
+
     info('CopyD3DRenderers from', thirdparty, ' to ', system)
 
     CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
