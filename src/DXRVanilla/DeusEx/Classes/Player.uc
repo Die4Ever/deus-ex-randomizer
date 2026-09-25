@@ -2848,7 +2848,12 @@ state Dying
         local DXRCameraModes camera;
         local CCResidentEvilCam reCam;
 
-        if (class'MenuChoice_DeathCam'.static.IsKillCam() && GetKiller()!=None){
+        if (class'MenuChoice_DeathCam'.static.IsKillCam() && GetKiller()!=None && bHidden){
+            //Show the killer of the player if...
+            // - Killcam is enabled
+            // - There is an actual known killer
+            // - The player is currently hidden (Happens after the carcass spawns)
+
             camera = DXRCameraModes(class'DXRCameraModes'.static.Find());
             camera.EnableTempFixedCamera(true);
 
