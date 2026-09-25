@@ -151,7 +151,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
             CopyExeTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
         try:
-            VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
+            VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie, launchchanged=(kentie or launch),
                           settings=settings, globalsettings=globalsettings, sourceINI=ini)
         except Exception as e:
             info('error in VanillaFixConfigs', e)
@@ -184,7 +184,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
     try:
-        VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
+        VanillaFixConfigs(system=system, exename=exename, kentie=kentie, launchchanged=(kentie or launch),
                       settings=settings, globalsettings=globalsettings, sourceINI=ini)
     except Exception as e:
         info('error in VanillaFixConfigs', e)
@@ -228,7 +228,7 @@ def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:b
     return (savepath, configs_dest)
 
 
-def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dict, sourceINI: Path):
+def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, globalsettings:dict, sourceINI: Path):
     c = Config.Config(sourceINI.read_bytes())
     SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
@@ -236,7 +236,7 @@ def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dic
     (savepath, configs_dest) = GetSaveAndConfigPaths(system, dxdocs, kentie, SaveDXRando)
     (othersavepath, other_configs_dest) = GetSaveAndConfigPaths(system, dxdocs, not kentie, SaveDXRando)
     Mkdir(savepath, exist_ok=True, parents=True)
-    if othersavepath.exists():
+    if launchchanged and othersavepath.exists():
         SaveMigration(othersavepath, savepath)
 
     changes = {}
