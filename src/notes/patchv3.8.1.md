@@ -84,6 +84,7 @@
   - Revision: Charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) can no longer be instantly used by left clicking on them.
   - Non-Vanilla: All enemies (including added ones) will be properly cleaned up after finishing the Liberty Island mission (Mission 1).
   - Vanilla only: Elevator to overlook area in Versalife Level 1 Labs (Mission 6) no longer has guaranteed breakable doors
+  - Chateau key hunt timed race now has a target time of 4 minutes, so you will now get an in-game message if you're fast enough and you have memes enabled.
 
 </details>
 
