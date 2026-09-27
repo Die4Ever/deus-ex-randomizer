@@ -334,7 +334,10 @@ class InstallerWindow(GUIBase):
         self.row+=1
 
         # Direct3D Renderers
-        self.globalsettings['d3drenderers'] = self.Radios('Install Direct3D Renderers?:', 'Updated', pad, pad, advanced=True,
+        defd3drenderer='Updated' #Normally default to the new renderers
+        if IsVanillaFixer() or IsZeroRando():
+            defd3drenderer='Legacy' #Stick with the legacy ones for vanilla fixer/Zero Rando players, as they're less likely to report issues
+        self.globalsettings['d3drenderers'] = self.Radios('Install Direct3D Renderers?:', defd3drenderer, pad, pad, advanced=True,
             options=OrderedDict(
                 Updated={ 'text': "Updated Direct3D Renderers", 'hover': "Modernized versions of the D3D9 and D3D10 renderers.\nFix various rendering issues and add new features." },
                 Legacy={ 'text': "Legacy Direct3D Renderers", 'hover': "The legacy D3D9 and D3D10 renderers by CWDohnal and Kentie." },
