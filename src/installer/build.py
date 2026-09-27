@@ -40,6 +40,15 @@ downloads = {
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/unrealpool.fxh": "d3d10drv/unrealpool.fxh",
 }
 
+# Downloads that aren't in the Community Update repo
+external_downloads = {
+    #region Updated D3D9/D3D10/OpenGL Renderers
+    "http://github.com/theastropath/UnrealEngine1Renderers/releases/latest/download/DeusEx.zip": "UpdatedUE1Renderers.zip",
+
+    #region Updated DeusExe
+    "http://github.com/theastropath/DeusExeModern/releases/latest/download/DeusExe.zip": "DeusExeModern.zip",
+}
+
 base = Path()
 
 if Path('src/installer/add_lib_path.py').exists():
@@ -62,11 +71,28 @@ for (url, dest) in downloads.items():
     if not p.exists():
         DownloadFile(Community_Update_url + url, basedest/dest)
 
+for (url, dest) in external_downloads.items():
+    p = basedest/dest
+    if not p.exists():
+        DownloadFile(url, basedest/dest)
+
 #region extract OpenGL 2
 zip = ZipFile(basedest/'dxglr21.zip', 'r')
 zip.extractall(basedest)
 zip.close()
 (basedest/'dxglr21.zip').unlink()
+
+#region extract DeusExeModern
+zip = ZipFile(basedest/'DeusExeModern.zip', 'r')
+zip.extractall(basedest/'DeusExeModern')
+zip.close()
+(basedest/'DeusExeModern.zip').unlink()
+
+#region extract Updated D3D9/D3D10/OpenGL renderers
+zip = ZipFile(basedest/'UpdatedUE1Renderers.zip', 'r')
+zip.extractall(basedest/'UpdatedUE1Renderers')
+zip.close()
+(basedest/'UpdatedUE1Renderers.zip').unlink()
 
 #region Deus_nsf tweaked D3D10 shaders
 if not (basedest/'d3d10drv_deus_nsf.zip').exists():

@@ -440,31 +440,49 @@ def EngineDllFix(p:Path, speedupfix:bool) -> bool:
 
 
 
-def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, install:bool):
+def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, install:str):
     source = GetSourcePath()
     thirdparty = source / '3rdParty'
+    d3d10drv_loc = ""
 
-    if not install:
+    if install=="NoInstall":
         return
 
-    info('CopyD3DRenderers from', thirdparty, ' to ', system)
+    elif install=="Legacy":
+        info('CopyD3DRenderers from', thirdparty, ' to ', system)
 
-    CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
-    #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
-    (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
-    CopyTo(source/'Configs'/'D3D9Drv.int', system/'D3D9Drv.int', True)
+        CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
+        #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+        (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
+        CopyTo(source/'Configs'/'D3D9Drv.int', system/'D3D9Drv.int', True)
 
-    CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
-    CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
+        CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
+        CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
+
+        d3d10drv_loc = thirdparty / 'd3d10drv'
+
+    elif install=="Updated":
+        info('CopyUpdatedD3DRenderers from', thirdparty, ' to ', system)
+
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
+        #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+        (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D9Drv.int', system/'D3D9Drv.int', True)
+
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'d3d10drv.dll', system/'d3d10drv.dll', True)
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D10Drv.int', system/'D3D10Drv.int', True)
+
+        d3d10drv_loc = thirdparty / 'UpdatedUE1Renderers' / 'd3d10drv'
+
 
     if deus_nsf_lighting or d3d10_textures != 'Smooth':
         deus_nsf = system / 'd3d10drv'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv')
-        Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv_kentie')
+        Copyd3d10drv(d3d10drv_loc, system / 'd3d10drv_kentie')
     else:
         deus_nsf = system / 'd3d10drv_deus_nsf'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv_deus_nsf')
-        Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv')
+        Copyd3d10drv(d3d10drv_loc, system / 'd3d10drv')
 
     if d3d10_textures=='Retro':
         CopyTo(deus_nsf/'unrealpool_retro_textures.fxh', deus_nsf/'unrealpool.fxh')
@@ -521,6 +539,11 @@ def InstallOGL2(system:Path, install:bool):
         info('reverting', Ogl, currMd5, 'to', backupOgl, backupMd5)
         CopyTo(backupOgl, Ogl)
 
+#OpenGL 1.3 doesn't need to do a backup, since it doesn't overwrite anything vanilla
+def InstallOGL13(system:Path, install:bool):
+    if install:
+        CopyTo(GetSourcePath() / '3rdParty' / 'UpdatedUE1Renderers' /'OpenGL1xDrv.dll', system / 'OpenGL1xDrv.dll')
+        CopyTo(GetSourcePath() / '3rdParty' / 'UpdatedUE1Renderers' /'OpenGL1xDrv.int', system / 'OpenGL1xDrv.int')
 
 def Mkdir(dir:Path, parents=False, exist_ok=False):
     if GetDryrun():

@@ -114,6 +114,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
     CopyDXVK(system, globalsettings['dxvk'], dxvkmaxfps)
     CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'], globalsettings['d3drenderers'])
     InstallOGL2(system, globalsettings['ogl2'])
+    InstallOGL13(system, globalsettings['ogl13updated'])
     InstallDLLs(list(flavors.values())[0])
 
     debug("Install returning", flavors)
@@ -122,12 +123,17 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
 
 
 def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
+    legacy_deus_exe = False
     gameroot = system.parent
 
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
         return
 
-    exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
+    if (legacy_deus_exe):
+        exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe" # Legacy DeusExe
+    else:
+        exe_source = GetSourcePath() / '3rdParty' / 'DeusExeModern' / "DeusEx.exe" # DeusExeModern
+
     exetype = settings.get('exetype')
     kentie = True
     launch = False
@@ -164,8 +170,14 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
         MakeShortcut(exedest, exedest.stem, globalsettings)
 
     if kentie: # kentie needs this, copy it into the regular System folder, doesn't hurt if you don't need it
-        deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
-        CopyTo(deusexeu, system / 'DeusExe.u')
+        if (legacy_deus_exe):
+            # Legacy DeusExe
+            deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
+            CopyTo(deusexeu, system / 'DeusExe.u')
+        else:
+            # DeusExeModern
+            deusexeu = GetSourcePath() / '3rdParty' / 'DeusExeModern' / "SubtitleFix.u"
+            CopyTo(deusexeu, system / 'SubtitleFix.u')
 
     if settings.get('LDDP'):
         InstallLDDP(system, settings)

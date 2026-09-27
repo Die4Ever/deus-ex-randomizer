@@ -283,7 +283,7 @@ class InstallerWindow(GUIBase):
     def ExeTypeRadios(self, padx, pad):
         return self.Radios('Which EXE to use:', 'Kentie', padx, pad, advanced=True,
             options=OrderedDict(
-                Kentie={ 'text': "Kentie's Launcher", 'hover': "Kentie's Launcher stores configs and saves in your Documents folder." },
+                Kentie={ 'text': "DeusExe Launcher (Kentie's)", 'hover': "DeusExe (Kentie's Launcher) stores configs and saves in your Documents folder." },
                 Launch={ 'text': "Hanfling's Launch", 'hover': "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play." },
                 NoChange={ 'text': "Do Not Change", 'hover': "Do not replace the launcher at all." },
         ))
@@ -334,12 +334,12 @@ class InstallerWindow(GUIBase):
         self.row+=1
 
         # Direct3D Renderers
-        self.globalsettings['d3drenderers'] = BooleanVar(master=self.frame, value=True)
-        self.d3drenderers = Checkbutton(self.frame, text="Direct3D Renderers", variable=self.globalsettings['d3drenderers'])
-        Hovertip(self.d3drenderers, "Install D3D10 and D3D9 renderers.")
-        self.setgrid(self.d3drenderers, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
-        self.FixColors(self.d3drenderers)
-        self.row+=1
+        self.globalsettings['d3drenderers'] = self.Radios('Install Direct3D Renderers?:', 'Updated', pad, pad, advanced=True,
+            options=OrderedDict(
+                Updated={ 'text': "Updated Direct3D Renderers", 'hover': "Modernized versions of the D3D9 and D3D10 renderers.\nFix various rendering issues and add new features." },
+                Legacy={ 'text': "Legacy Direct3D Renderers", 'hover': "The legacy D3D9 and D3D10 renderers by CWDohnal and Kentie." },
+                NoInstall={ 'text': "Do Not Install", 'hover': "Do not install any Direct3D renderers." },
+        ))
 
         # Deus_nsf shaders
         self.globalsettings['deus_nsf_d3d10_lighting'] = BooleanVar(master=self.frame, value=False)
@@ -364,6 +364,14 @@ class InstallerWindow(GUIBase):
         self.FixColors(self.ogl2)
         self.row+=1
 
+        # Updated OpenGL 1.3
+        self.globalsettings['ogl13updated'] = BooleanVar(master=self.frame, value=True)
+        self.ogl13updated = Checkbutton(self.frame, text="Modern OpenGL 1.3 Renderer (2026 Edition)", variable=self.globalsettings['ogl13updated'])
+        Hovertip(self.ogl13updated, "A modernized OpenGL Renderer updated to behave in-line with the updated D3D9 and D3D10 renderers.\nShould play better with streaming software than the OpenGL 2.0 Renderer.")
+        self.setgrid(self.ogl13updated, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.ogl13updated)
+        self.row+=1
+
         # Shortcuts
         self.globalsettings['shortcuts'] = BooleanVar(master=self.frame, value=True)
         self.shortcuts = Checkbutton(self.frame, text="Create shortcuts for new exe files", variable=self.globalsettings['shortcuts'])
@@ -371,23 +379,6 @@ class InstallerWindow(GUIBase):
         self.setgrid(self.shortcuts, advanced=True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.shortcuts)
         self.row+=1
-
-        self.FlavorSpecificGlobalDefaults()
-
-
-    def FlavorSpecificGlobalDefaults(self):
-        if "GMDX AE" in self.flavors:
-            #GMDX AE shouldn't replace the EXE if it doesn't have to (Unnecessary once we start shipping DeusExe V9)
-            if 'Vanilla' in self.flavors:
-                vsettings = self.flavors['Vanilla']
-                if ('exetype' in vsettings):
-                    vsettings['exetype'].set('NoChange')
-
-            #Don't install "new" renderers by default (Unnecessary once we start shipping the updated renderer versions)
-            if "ogl2" in self.globalsettings:
-                self.globalsettings["ogl2"].set(False)
-            if "d3drenderers" in self.globalsettings:
-                self.globalsettings["d3drenderers"].set(False)
 
 
     def Install(self):

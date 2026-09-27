@@ -1,4 +1,12 @@
 ## Major Changes
+- The installer will now install DeusExe V9.0.1 when installing Kentie's Launcher, a newly updated version with various bug fixes and improvements.
+  - For more information, see the [DeusExeModern Repository](https://github.com/theastropath/DeusExeModern).
+- The installer will now default to installing an updated set of renderers for Direct3D 9, Direct3D 10, and OpenGL.
+  - The Direct3D 9 and 10 renderers are still listed as "Direct3D10 Renderer" and "Direct3D9 Renderer", while the new OpenGL renderer is listed as "OpenGL 1.x Renderer"
+  - All three of these renderers now behave similarly, including properly adjustable brightness which can be captured by streaming software.
+  - If these renderers present issues, the "Legacy" renderers are still available under the "Advanced" settings of the installer.
+  - Please report any renderer issues that you might see!
+  - For more information, see the [UnrealEngine1Renderers Repository](https://github.com/theastropath/UnrealEngine1Renderers).
 - Slightly reduced lock strength of doors that have randomized lock strength. Also slightly reduced randomized lockpick quantities to compensate.
 - Increased the New Game+ minimum value for lockpicks and multitools from 5% up to 10%.
 - Datacube with the Aquinas Router door code in Area 51 Sector 4 (Mission 15) now has a harder set of potential locations, so it won't be quite as easy to find.
