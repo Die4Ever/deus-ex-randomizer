@@ -226,9 +226,6 @@ def GetSteamPlayDocuments(system:Path):
         idx = system.parts.index('Steam')
         idx = len(system.parents) - idx - 1 # parents array is backwards
         p = system.parents[idx]
-        info('GetSteamPlayDocuments() == ', p)
-        if not (p/'steamapps'/'compatdata').exists():
-            return None
         p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
         info('GetSteamPlayDocuments() == ', p)
         return p
@@ -254,9 +251,10 @@ def _GetAltSteamPlayDocuments(p):
         return None
     if not (p/'steam.sh').exists():
         return None
-    compatdata = p/'steamapps'/'compatdata'
-    if not compatdata.exists():
+    steamapps = p/'steamapps'
+    if not steamapps.exists():
         return None
+    compatdata = steamapps/'compatdata'
     docs = compatdata/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
     info('_GetAltSteamPlayDocuments == ', docs)
     return docs
@@ -267,11 +265,11 @@ def GetDocumentsDir(system:Path) -> Path:
         p = None
         if 'Steam' in system.parts:
             p = GetSteamPlayDocuments(system)
-            Mkdir(p, True, True)
         if (not p) and 'steamapps' in system.parts:
             p = GetAltSteamPlayDocuments()
+        if p:
             Mkdir(p, True, True)
-        if not p:
+        else:
             p = Path.home()
         assert p.exists(), str(p)
         return p
