@@ -226,9 +226,6 @@ def GetSteamPlayDocuments(system:Path):
         idx = system.parts.index('Steam')
         idx = len(system.parents) - idx - 1 # parents array is backwards
         p = system.parents[idx]
-        info('GetSteamPlayDocuments() == ', p)
-        if not (p/'steamapps'/'compatdata').exists():
-            return None
         p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
         info('GetSteamPlayDocuments() == ', p)
         return p
@@ -254,9 +251,10 @@ def _GetAltSteamPlayDocuments(p):
         return None
     if not (p/'steam.sh').exists():
         return None
-    compatdata = p/'steamapps'/'compatdata'
-    if not compatdata.exists():
+    steamapps = p/'steamapps'
+    if not steamapps.exists():
         return None
+    compatdata = steamapps/'compatdata'
     docs = compatdata/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
     info('_GetAltSteamPlayDocuments == ', docs)
     return docs
@@ -267,11 +265,11 @@ def GetDocumentsDir(system:Path) -> Path:
         p = None
         if 'Steam' in system.parts:
             p = GetSteamPlayDocuments(system)
-            Mkdir(p, True, True)
         if (not p) and 'steamapps' in system.parts:
             p = GetAltSteamPlayDocuments()
+        if p:
             Mkdir(p, True, True)
-        if not p:
+        else:
             p = Path.home()
         assert p.exists(), str(p)
         return p
@@ -364,6 +362,9 @@ def _DetectFlavors(system:Path):
     if (game / 'GMDXv10').is_dir():
         flavors.append('GMDX v10')
 
+    if (game / 'Mods' / 'GMDX_AE').is_dir():
+        flavors.append('GMDX AE')
+
     if (system / 'HX.u').exists():
         if not is_vanilla:
             info('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')
@@ -437,27 +438,51 @@ def EngineDllFix(p:Path, speedupfix:bool) -> bool:
 
 
 
-def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str):
+def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, install:str):
     source = GetSourcePath()
     thirdparty = source / '3rdParty'
-    info('CopyD3DRenderers from', thirdparty, ' to ', system)
+    d3d10drv_loc = ""
 
-    CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
-    #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
-    (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
-    CopyTo(source/'Configs'/'D3D9Drv.int', system/'D3D9Drv.int', True)
+    if install=="NoInstall":
+        return
 
-    CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
-    CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
+    elif install=="Legacy":
+        info('CopyD3DRenderers from', thirdparty, ' to ', system)
+
+        CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
+        #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+        (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
+        CopyTo(source/'Configs'/'D3D9Drv.int', system/'D3D9Drv.int', True)
+
+        (system/'D3D10Drv.dll').unlink(True) # avoid having colliding filenames for WINE
+        CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
+        CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
+
+        d3d10drv_loc = thirdparty / 'd3d10drv'
+
+    elif install=="Updated":
+        info('CopyUpdatedD3DRenderers from', thirdparty, ' to ', system)
+
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
+        #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+        (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D9Drv.int', system/'D3D9Drv.int', True)
+
+        (system/'d3d10drv.dll').unlink(True) # avoid having colliding filenames for WINE
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D10Drv.dll', system/'D3D10Drv.dll', True)
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D10Drv.int', system/'D3D10Drv.int', True)
+
+        d3d10drv_loc = thirdparty / 'UpdatedUE1Renderers' / 'd3d10drv'
+
 
     if deus_nsf_lighting or d3d10_textures != 'Smooth':
         deus_nsf = system / 'd3d10drv'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv')
-        Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv_kentie')
+        Copyd3d10drv(d3d10drv_loc, system / 'd3d10drv_kentie')
     else:
         deus_nsf = system / 'd3d10drv_deus_nsf'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv_deus_nsf')
-        Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv')
+        Copyd3d10drv(d3d10drv_loc, system / 'd3d10drv')
 
     if d3d10_textures=='Retro':
         CopyTo(deus_nsf/'unrealpool_retro_textures.fxh', deus_nsf/'unrealpool.fxh')
@@ -514,6 +539,11 @@ def InstallOGL2(system:Path, install:bool):
         info('reverting', Ogl, currMd5, 'to', backupOgl, backupMd5)
         CopyTo(backupOgl, Ogl)
 
+#OpenGL 1.3 doesn't need to do a backup, since it doesn't overwrite anything vanilla
+def InstallOGL13(system:Path, install:bool):
+    if install:
+        CopyTo(GetSourcePath() / '3rdParty' / 'UpdatedUE1Renderers' /'OpenGL1xDrv.dll', system / 'OpenGL1xDrv.dll')
+        CopyTo(GetSourcePath() / '3rdParty' / 'UpdatedUE1Renderers' /'OpenGL1xDrv.int', system / 'OpenGL1xDrv.int')
 
 def Mkdir(dir:Path, parents=False, exist_ok=False):
     if GetDryrun():

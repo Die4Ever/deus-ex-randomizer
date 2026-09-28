@@ -14,7 +14,7 @@ except Exception as e:
 class InstallerWindow(GUIBase):
     def CheckVulkan(self):
         self.dxvk_default = CheckVulkan()
-        self.ogl2_default = self.dxvk_default or not IsWindows()
+        self.ogl2_default = self.dxvk_default
 
 
     def setgrid(self, control, advanced:bool, **gridargs):
@@ -62,7 +62,7 @@ class InstallerWindow(GUIBase):
             self.root.title("DXRando " + GetVersion() + " Installer")
 
         self.dxvk_default = False
-        self.ogl2_default = not IsWindows()
+        self.ogl2_default = False
         vulkanthread = Thread(target=self.CheckVulkan) # this takes a second or so
         vulkanthread.start()
 
@@ -182,6 +182,18 @@ class InstallerWindow(GUIBase):
             settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
         # End Vanilla stuff
 
+        #GMDX AE stuff
+        elif f=="GMDX AE":
+            # Always default to a separate EXE, but maybe someone wants to make it easier to launch by using the original GMDX_AE.exe?
+            v = BooleanVar(master=self.frame, value=True)
+            settings['GMDXAERandomizer.exe'] = v
+            c = Checkbutton(self.frame, text="Create separate GMDXAERandomizer.exe", variable=v)
+            Hovertip(c, "Overwriting the original GMDX_AE.exe makes it easier for Linux Steam players (maybe).\nOnly applicable if installing GMDXAERando.")
+            self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
+            self.FixColors(c)
+            self.row+=1
+
+
         self.flavors[f] = settings
 
 
@@ -271,8 +283,9 @@ class InstallerWindow(GUIBase):
     def ExeTypeRadios(self, padx, pad):
         return self.Radios('Which EXE to use:', 'Kentie', padx, pad, advanced=True,
             options=OrderedDict(
-                Kentie={ 'text': "Kentie's Launcher", 'hover': "Kentie's Launcher stores configs and saves in your Documents folder." },
+                Kentie={ 'text': "DeusExe Launcher (Kentie's)", 'hover': "DeusExe (Kentie's Launcher) stores configs and saves in your Documents folder." },
                 Launch={ 'text': "Hanfling's Launch", 'hover': "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play." },
+                NoChange={ 'text': "Do Not Change", 'hover': "Do not replace the launcher at all." },
         ))
 
     def ZeroChangesCheckbox(self, padx, pady):
@@ -320,6 +333,17 @@ class InstallerWindow(GUIBase):
         self.setgrid(self.dxvkmaxfpsframe, True, column=1, row=self.row, sticky='SW', padx=pad*6, pady=pad)
         self.row+=1
 
+        # Direct3D Renderers
+        defd3drenderer='Updated' #Normally default to the new renderers
+        if IsVanillaFixer() or IsZeroRando():
+            defd3drenderer='Legacy' #Stick with the legacy ones for vanilla fixer/Zero Rando players, as they're less likely to report issues
+        self.globalsettings['d3drenderers'] = self.Radios('Install Direct3D Renderers?:', defd3drenderer, pad, pad, advanced=True,
+            options=OrderedDict(
+                Updated={ 'text': "Updated Direct3D Renderers", 'hover': "Modernized versions of the D3D9 and D3D10 renderers.\nFix various rendering issues and add new features." },
+                Legacy={ 'text': "Legacy Direct3D Renderers", 'hover': "The legacy D3D9 and D3D10 renderers by CWDohnal and Kentie." },
+                NoInstall={ 'text': "Do Not Install", 'hover': "Do not install any Direct3D renderers." },
+        ))
+
         # Deus_nsf shaders
         self.globalsettings['deus_nsf_d3d10_lighting'] = BooleanVar(master=self.frame, value=False)
         self.deus_nsf_d3d10_lighting = Checkbutton(self.frame, text="Deus_nsf D3D10 vivid lighting", variable=self.globalsettings['deus_nsf_d3d10_lighting'])
@@ -341,6 +365,14 @@ class InstallerWindow(GUIBase):
         Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
         self.setgrid(self.ogl2, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.ogl2)
+        self.row+=1
+
+        # Updated OpenGL 1.3
+        self.globalsettings['ogl13updated'] = BooleanVar(master=self.frame, value=True)
+        self.ogl13updated = Checkbutton(self.frame, text="Modern OpenGL 1.3 Renderer (2026 Edition)", variable=self.globalsettings['ogl13updated'])
+        Hovertip(self.ogl13updated, "A modernized OpenGL Renderer updated to behave in-line with the updated D3D9 and D3D10 renderers.\nShould play better with streaming software than the OpenGL 2.0 Renderer.")
+        self.setgrid(self.ogl13updated, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.ogl13updated)
         self.row+=1
 
         # Shortcuts
@@ -402,6 +434,8 @@ class InstallerWindow(GUIBase):
             extra += '\nCreated DXRando.exe'
         if flavors.get('Vanilla? Madder.', {}).get('install') and IsWindows():
             extra += '\nCreated VMDRandomizer.exe'
+        if flavors.get('GMDX AE', {}).get('install') and flavors.get('GMDX AE', {}).get('GMDXAERandomizer.exe',True):
+            extra += '\nCreated GMDXAERandomizer.exe'
         if extra:
             extra = '\n' + extra
         self.root.title('DXRando Installation Complete!')

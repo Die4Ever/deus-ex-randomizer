@@ -313,6 +313,16 @@ function PreFirstEntryMapFixes()
             dynt.SetCollisionSize(30,15);
             dynt.SetDestination("12_vandenberg_cmd",,"storage");
         }
+
+        if (#defined(gmdxnotae||gmdxae)) { //I assume AE will be fixed soon enough, but for right now...
+            foreach AllActors(class'#var(DeusExPrefix)Mover',door,'fallTrap'){
+                door.Tag = 'FallTrapReal';
+                oot=Spawn(class'OnceOnlyTrigger');
+                oot.Event='FallTrapReal';
+                oot.Tag='fallTrap';
+                break;
+            }
+        }
         break;
     //#endregion
 

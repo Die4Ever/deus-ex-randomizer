@@ -98,6 +98,8 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
             ret = InstallGMDX(system, settings, 'GMDXvRSD')
         if 'GMDX v10'==f:
             ret = CreateModConfigs(system, settings, globalsettings, 'GMDX', 'GMDXv10')
+        if 'GMDX AE'==f:
+            ret = InstallGMDXAE(system, settings, 'GMDX_AE')
         if 'Revision'==f:
             ret = InstallRevision(system, settings, globalsettings)
         if 'HX'==f:
@@ -109,9 +111,11 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
 
     maxmaxfps = 1000 if globalsettings['speedupfix'] else 120
     dxvkmaxfps = max(10, min(maxmaxfps, globalsettings['dxvkmaxfps']))
+    globalsettings['dxvkmaxfps'] = dxvkmaxfps
     CopyDXVK(system, globalsettings['dxvk'], dxvkmaxfps)
-    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])
+    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'], globalsettings['d3drenderers'])
     InstallOGL2(system, globalsettings['ogl2'])
+    InstallOGL13(system, globalsettings['ogl13updated'])
     InstallDLLs(list(flavors.values())[0])
 
     debug("Install returning", flavors)
@@ -120,17 +124,32 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
 
 
 def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
+    legacy_deus_exe = False # placeholder in case we ever want a GUI choice for this
     gameroot = system.parent
+
+    if not IsWindows():
+        # bash script to play without Steam
+        CopyTo(GetSourcePath()/'Configs'/'play.sh', gameroot/'play.sh')
+        (gameroot/'play.sh').chmod(0o755)
 
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
         return
 
-    exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
+    if (legacy_deus_exe):
+        exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe" # Legacy DeusExe
+    else:
+        exe_source = GetSourcePath() / '3rdParty' / 'DeusExeModern' / "DeusEx.exe" # DeusExeModern
+
     exetype = settings.get('exetype')
     kentie = True
+    launch = False
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
         kentie = False
+        launch = True
+    elif exetype == 'NoChange':
+        kentie = False
+        launch = False
 
     exename = 'DXRando'
     # or should we not create a separate DXRando.exe file? Linux defaults to DeusEx.exe because of Steam
@@ -139,11 +158,12 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
     # also fix vanilla stuff
     if exename != 'DeusEx' and settings.get('FixVanilla'):
-        exedest:Path = system / 'DeusEx.exe'
-        CopyExeTo(exe_source, exedest)
+        if (kentie or launch):
+            exedest:Path = system / 'DeusEx.exe'
+            CopyExeTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
         try:
-            VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
+            VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie, launchchanged=(kentie or launch),
                           settings=settings, globalsettings=globalsettings, sourceINI=ini)
         except Exception as e:
             info('error in VanillaFixConfigs', e)
@@ -156,8 +176,14 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
         MakeShortcut(exedest, exedest.stem, globalsettings)
 
     if kentie: # kentie needs this, copy it into the regular System folder, doesn't hurt if you don't need it
-        deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
-        CopyTo(deusexeu, system / 'DeusExe.u')
+        if (legacy_deus_exe):
+            # Legacy DeusExe
+            deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
+            CopyTo(deusexeu, system / 'DeusExe.u')
+        else:
+            # DeusExeModern
+            deusexeu = GetSourcePath() / '3rdParty' / 'DeusExeModern' / "SubtitleFix.u"
+            CopyTo(deusexeu, system / 'SubtitleFix.u')
 
     if settings.get('LDDP'):
         InstallLDDP(system, settings)
@@ -176,7 +202,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
     try:
-        VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
+        VanillaFixConfigs(system=system, exename=exename, kentie=kentie, launchchanged=(kentie or launch),
                       settings=settings, globalsettings=globalsettings, sourceINI=ini)
     except Exception as e:
         info('error in VanillaFixConfigs', e)
@@ -220,7 +246,7 @@ def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:b
     return (savepath, configs_dest)
 
 
-def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dict, sourceINI: Path):
+def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, globalsettings:dict, sourceINI: Path):
     c = Config.Config(sourceINI.read_bytes())
     SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
@@ -228,13 +254,23 @@ def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dic
     (savepath, configs_dest) = GetSaveAndConfigPaths(system, dxdocs, kentie, SaveDXRando)
     (othersavepath, other_configs_dest) = GetSaveAndConfigPaths(system, dxdocs, not kentie, SaveDXRando)
     Mkdir(savepath, exist_ok=True, parents=True)
-    if othersavepath.exists():
+    if launchchanged and othersavepath.exists():
         SaveMigration(othersavepath, savepath)
 
+    _FixConfigs(system, exename, kentie, launchchanged, settings, globalsettings, sourceINI, configs_dest)
+    Config.BackupSplits(configs_dest/'DXRSplits.ini')
+    if other_configs_dest != configs_dest:
+        _FixConfigs(system, exename, kentie, launchchanged, settings, globalsettings, sourceINI, other_configs_dest)
+        Config.BackupSplits(other_configs_dest/'DXRSplits.ini')
+
+
+def _FixConfigs(system, exename, kentie, launchchanged, settings:dict, globalsettings:dict, sourceINI: Path, configs_dest):
     changes = {}
 
     if not globalsettings['dxvk'] and IsWindows():
         changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
+    else:
+        changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '60'}
     if 'DeusExe' not in changes:
         changes['DeusExe'] = {}
 
@@ -242,13 +278,24 @@ def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dic
         changes['D3D10Drv.D3D10RenderDevice'] = {}
 
     # FPS stuff
-    deusexeFPSLimit = 0
+    deusexeFPSLimit = globalsettings['dxvkmaxfps'] if globalsettings['d3drenderers'] == 'Updated' else 0
     if not globalsettings['speedupfix'] and not globalsettings['dxvk']:
         changes['DeusExe'].update({'FPSLimit': '0'}) # Kentie's DeusExe is bad at FPS limits, just let the renderer do it
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'False'})
-    else: # if we're using the speedup fix then we don't need to limit fps, if we're using DXVK then that handles the fps limit
-        changes['DeusExe'].update({'FPSLimit': '0'})
-        changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
+    elif settings.get('exetype') == 'Kentie': # if we're using the speedup fix then we don't need to limit fps, if we're using DXVK then that handles the fps limit
+        changes['DeusExe'].update({'FPSLimit': str(deusexeFPSLimit)})
+        changes['D3D10Drv.D3D10RenderDevice'].update({
+            'FPSLimit': '0',
+            'FrameRateLimit': '0',
+            'VSync': 'False'
+        })
+    else: # Launch or some other exe may not have the GUI for changing FPS limit
+        changes['DeusExe'].update({'FPSLimit': str(deusexeFPSLimit)})
+        changes['D3D10Drv.D3D10RenderDevice'].update({
+            'FPSLimit': str(deusexeFPSLimit),
+            'FrameRateLimit': str(deusexeFPSLimit),
+            'VSync': 'False'
+        })
 
     # D3D10 lighting
     if globalsettings['deus_nsf_d3d10_lighting']:
@@ -289,7 +336,7 @@ def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dic
         if globalsettings['ogl2']:
             changes['Engine.Engine'] = {'GameRenderDevice': 'OpenGLDrv.OpenGLRenderDevice'}
         else:
-            changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
+            changes['Engine.Engine'] = {'GameRenderDevice': 'OpenGL1xDrv.OpenGLRenderDevice'}
         if 'WinDrv.WindowsClient' not in changes:
             changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
@@ -309,8 +356,11 @@ def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dic
         oldconfig = DXRandoini.read_bytes()
         c = Config.Config(oldconfig)
         changes = c.RetainConfigSections(
-            set(('WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
-                 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
+            set((
+                'WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
+                'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame',
+                'DeusEx.DXRMenuScreenNewGame'
+            )),
             changes
         )
         changes['DeusExe']['FPSLimit'] = str(deusexeFPSLimit) # always overwrite this value
@@ -319,8 +369,6 @@ def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dic
         c = Config.Config(b)
         c.ModifyConfig(changes, additions={})
         c.WriteFile(DXRandoini)
-
-    Config.BackupSplits(configs_dest/'DXRSplits.ini')
 
 
 def DownloadTempFile(url, name, callback):
@@ -416,6 +464,33 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
         c.WriteFile(confpath)
 
     CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
+
+def InstallGMDXAE(system:Path, settings:dict, exename:str):
+    game = system.parent
+    AskKillGame(system/'GMDX_AE.exe')
+    AskKillGame(system/'GMDXAERandomizer.exe')
+    (changes, additions) = GetConfChanges('GMDXAE')
+    Mkdir(game/'SaveGMDXAERando', exist_ok=True)
+
+    # Determine whether we want to launch through the original GMDX_AE.exe or through a new GMDXAERandomizer.exe
+    newexe=False
+    if settings.get('install') and settings.get('GMDXAERandomizer.exe', True): #Always default to a separate exe, unless explicitly chosen to not
+        newexe=True
+        exe_source = system / 'DeusEx.exe' #Use the launcher that already exists
+        exedest:Path = system / 'GMDXAERandomizer.exe'
+        CopyExeTo(exe_source, exedest)
+
+    origconfpath = GetDocumentsDir(system) / 'Deus Ex' / 'Mods' / exename / 'System' / 'DeusEx.ini'
+    newconfpath = origconfpath
+    if (newexe): #Make sure the config matches the new exe
+        newconfpath = GetDocumentsDir(system) / 'Deus Ex' / 'System' / 'GMDXAERandomizer.ini'
+    if origconfpath.exists():
+        b = origconfpath.read_bytes()
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
+        c.WriteFile(newconfpath)
+
+    CopyPackageFiles('GMDXAE', game, ['GMDXAERandomizer.u'])
 
 
 def InstallRevision(system:Path, settings:dict, globalsettings:dict):

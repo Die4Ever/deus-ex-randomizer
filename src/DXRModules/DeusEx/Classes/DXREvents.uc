@@ -1689,6 +1689,7 @@ function SetWatchFlags() {
         raceStart = Spawn(class'DXRRaceTimerStart',,'ChateauKeyRaceStart');
         raceStart.raceName="the Chateau DuClare key hunt";
         raceStart.presentEnergy=true; //Lets see how much energy you used running around
+        raceStart.targetTime=240; // we have many under 2 minutes, under 1 minute is probably possible with good rng
 
         oot = Spawn(class'OnceOnlyTrigger',, 'ChateauKeyRaceStartOnce');
         oot.Event = 'ChateauKeyRaceStart';
@@ -1702,7 +1703,9 @@ function SetWatchFlags() {
         trig = Spawn(class'#var(prefix)Trigger',,,vectm(-560,-1280,120)); //Back Door
         trig.Event='ChateauKeyRaceStartOnce';
 
-        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(1375,1200,-200));
+        // TODO: maybe a checkpoint based on the key? or just disable collision on the checkpoint and have the key trigger its event (do items trigger their event when picked up?)
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(1375,1200,-200)); // end
         checkPoint.SetCollisionSize(80,80);
         raceStart.RegisterCheckpoint(checkPoint);
 

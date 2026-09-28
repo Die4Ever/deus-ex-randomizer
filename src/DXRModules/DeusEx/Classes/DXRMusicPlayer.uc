@@ -74,6 +74,8 @@ function RememberMusic()
 {
     local bool usingOgg;
 
+    if(#defined(gmdxae)) return; //Not supported yet
+
     usingOgg = class'DXRActorsBase'.static.IsUsingOggMusic(player());
 
     if(p==None || (!usingOgg && p.Song == None)) return;
@@ -129,6 +131,8 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
         use_random_music = False;
         play_music=False;
     }
+#elseif gmdxae
+    use_random_music=False; //Not supported yet
 #endif
 
     // ignore complicated logic if everything is disabled
@@ -156,6 +160,8 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
 function AnyEntry()
 {
     local DXRMusic music;
+
+    if(#defined(gmdxae)) return; //Not supported yet
 
     if(p == None) {
         p = player();
@@ -313,6 +319,7 @@ function PlayRandomSong(bool setseed)
 
     l("PlayRandomSong " $ setseed @ p);
     if(p == None) return;
+    if(#defined(gmdxae)) return; //Not supported yet
 
     //Don't play UMX music via the DXRMusicPlayer if Revision soundtrack is enabled
     //Randomize the OGG music in the DXOggMusicInfo instead
@@ -424,6 +431,11 @@ function SkipSong()
 
 simulated event Tick(float deltaTime)
 {
+    if (#defined(gmdxae)){
+        //Need to figure out better interaction with the music changes in AE
+        return;
+    }
+
     if (LevelSong == None)
         return;
 

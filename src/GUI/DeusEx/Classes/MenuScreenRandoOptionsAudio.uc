@@ -8,6 +8,12 @@ function CreateChoices()
 {
     local bool useTracker;
 
+    if(#defined(gmdxae)){
+        //Randomized music is currently disabled in AE, due to interaction
+        //conflicts with the changes to music handling in AE
+        return;
+    }
+
     useTracker = !class'DXRActorsBase'.static.IsUsingOggMusic(#var(PlayerPawn)(player));
 
     if (useTracker){

@@ -1,23 +1,35 @@
 runs:
   using: composite
   steps:
-    # we don't really care what python version we have, but maybe in the future
+    # Python 3.9 dropped support for Windows 7
     - uses: actions/setup-python@v7
       with:
         python-version: '3.8'
         cache: 'pip' # caching pip dependencies
 
-    - run: pip3 install --break-system-packages -r src/installer/requirements.txt 2>&1
+    - run: python -m venv .venv
+      shell: bash
+
+    # I hate Windows, create a symlink called bin that points to Scripts
+    - name: Create Virtual Environment
+      run: |
+        if [ -d ".venv/Scripts" ] && [ ! -d ".venv/bin" ]; then
+          ln -s Scripts .venv/bin
+        fi
+      if: runner.os == 'Windows'
+      shell: bash
+
+    - run: .venv/bin/pip install -r src/installer/requirements.txt 2>&1
       shell: bash
 
     # check syntax and run tests
-    - run: python3 -m compileall -q . 2>&1
+    - run: .venv/bin/python -m compileall -q . 2>&1
       shell: bash
-    - run: python3 src/installer/tests.py 2>&1
+    - run: .venv/bin/python src/installer/tests.py 2>&1
       shell: bash
 
     - name: Build
-      run: python3 src/installer/build.py
+      run: .venv/bin/python src/installer/build.py
       shell: bash
     - run: du -ha src/installer/dist
       shell: bash

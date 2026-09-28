@@ -1,4 +1,12 @@
 ## Major Changes
+- The installer will now install DeusExe V9.0.1 when installing Kentie's Launcher, a newly updated version with various bug fixes and improvements.
+  - For more information, see the [DeusExeModern Repository](https://github.com/theastropath/DeusExeModern).
+- The installer will now default to installing an updated set of renderers for Direct3D 9, Direct3D 10, and OpenGL.
+  - The Direct3D 9 and 10 renderers are still listed as "Direct3D10 Renderer" and "Direct3D9 Renderer", while the new OpenGL renderer is listed as "OpenGL 1.x Renderer"
+  - All three of these renderers now behave similarly, including properly adjustable brightness which can be captured by streaming software.
+  - If these renderers present issues, the "Legacy" renderers are still available under the "Advanced" settings of the installer.
+  - Please report any renderer issues that you might see!
+  - For more information, see the [UnrealEngine1Renderers Repository](https://github.com/theastropath/UnrealEngine1Renderers).
 - Slightly reduced lock strength of doors that have randomized lock strength. Also slightly reduced randomized lockpick quantities to compensate.
 - Increased the New Game+ minimum value for lockpicks and multitools from 5% up to 10%.
 - Datacube with the Aquinas Router door code in Area 51 Sector 4 (Mission 15) now has a harder set of potential locations, so it won't be quite as easy to find.
@@ -74,6 +82,7 @@
   - Game volume settings get applied on any load of a map to correct scenarios where the actual game volume was not aligned with what appeared in the Sound settings menu.
   - Many new possible locations for items to shuffle into across many maps.
   - Enemies will no longer be able to walk in the air if they were swapped while sitting in a chair.  This likely was only possible when swapped by a Crowd Control effect.
+  - "Show Killer" Death Cam option will now remain behind the player for a moment after death, instead of immediately showing the killer.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
@@ -83,6 +92,8 @@
   - Revision: Charged pickups (Ballistic armor, hazmat suits, thermoptic camo, and tech goggles) can no longer be instantly used by left clicking on them.
   - Non-Vanilla: All enemies (including added ones) will be properly cleaned up after finishing the Liberty Island mission (Mission 1).
   - Vanilla only: Elevator to overlook area in Versalife Level 1 Labs (Mission 6) no longer has guaranteed breakable doors
+  - Chateau key hunt timed race now has a target time of 4 minutes, so you will now get an in-game message if you're fast enough and you have memes enabled.
+  - Fixed installer issue on Linux failing to create the game's Documents folder.
 
 </details>
 
@@ -139,6 +150,8 @@
   - Uninstalling the Synthetic Heart aug will automatically remove the bonus level from any installed passive augs.
   - Black cats will now use the correct mesh for their skin.
   - "Combat Medic's Bag" perk now correctly increases the randomized limits for medkits and bioelectric cells by 5 when purchased.
+  - The falling platform in the GMDX-added section at the end of Vandenberg Tunnels (Mission 12) cannot be triggered more than once, causing it to fall back up into position.
+  - The datacube for the "Gray Lab" in Area 51 (Mission 15) can no longer be randomized into the locked containers in the cloning room.
 
 </details>
 
@@ -171,3 +184,4 @@
 - GMDX: Red screen overlay doesn't appear when you die with the "Show Killer" death cam option enabled.
 - GMDX: "Show Killer" Death Cam option no longer goes black and causes the game to lock up when using the Direct3D 9 renderer.
 - Restoring an old "Saved Settings" in the Advanced settings menu will now properly use the default -1 setting for "Aug Can Chance %" and "Aug Upgrade Chance %"
+- Datacubes actually glow properly again

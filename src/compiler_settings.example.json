@@ -24,5 +24,10 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/",
         "preproc_definitions": { }
+    },
+    "vmd2": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD 2 Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD 2/",
+        "preproc_definitions": { }
     }
 }
