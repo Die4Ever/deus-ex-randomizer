@@ -127,6 +127,11 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     legacy_deus_exe = False # placeholder in case we ever want a GUI choice for this
     gameroot = system.parent
 
+    if not IsWindows():
+        # bash script to play without Steam
+        CopyTo(GetSourcePath()/'Configs'/'play.sh', gameroot/'play.sh')
+        (gameroot/'play.sh').chmod(0o755)
+
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
         return
 
@@ -252,10 +257,20 @@ def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, glo
     if launchchanged and othersavepath.exists():
         SaveMigration(othersavepath, savepath)
 
+    _FixConfigs(system, exename, kentie, launchchanged, settings, globalsettings, sourceINI, configs_dest)
+    Config.BackupSplits(configs_dest/'DXRSplits.ini')
+    if other_configs_dest != configs_dest:
+        _FixConfigs(system, exename, kentie, launchchanged, settings, globalsettings, sourceINI, other_configs_dest)
+        Config.BackupSplits(other_configs_dest/'DXRSplits.ini')
+
+
+def _FixConfigs(system, exename, kentie, launchchanged, settings:dict, globalsettings:dict, sourceINI: Path, configs_dest):
     changes = {}
 
     if not globalsettings['dxvk'] and IsWindows():
         changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
+    else:
+        changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '60'}
     if 'DeusExe' not in changes:
         changes['DeusExe'] = {}
 
@@ -341,8 +356,11 @@ def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, glo
         oldconfig = DXRandoini.read_bytes()
         c = Config.Config(oldconfig)
         changes = c.RetainConfigSections(
-            set(('WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
-                 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
+            set((
+                'WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
+                'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame',
+                'DeusEx.DXRMenuScreenNewGame'
+            )),
             changes
         )
         changes['DeusExe']['FPSLimit'] = str(deusexeFPSLimit) # always overwrite this value
@@ -351,8 +369,6 @@ def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, glo
         c = Config.Config(b)
         c.ModifyConfig(changes, additions={})
         c.WriteFile(DXRandoini)
-
-    Config.BackupSplits(configs_dest/'DXRSplits.ini')
 
 
 def DownloadTempFile(url, name, callback):
