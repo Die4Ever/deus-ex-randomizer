@@ -14,7 +14,7 @@ except Exception as e:
 class InstallerWindow(GUIBase):
     def CheckVulkan(self):
         self.dxvk_default = CheckVulkan()
-        self.ogl2_default = self.dxvk_default or not IsWindows()
+        self.ogl2_default = self.dxvk_default
 
 
     def setgrid(self, control, advanced:bool, **gridargs):
@@ -62,7 +62,7 @@ class InstallerWindow(GUIBase):
             self.root.title("DXRando " + GetVersion() + " Installer")
 
         self.dxvk_default = False
-        self.ogl2_default = not IsWindows()
+        self.ogl2_default = False
         vulkanthread = Thread(target=self.CheckVulkan) # this takes a second or so
         vulkanthread.start()
 

@@ -111,6 +111,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
 
     maxmaxfps = 1000 if globalsettings['speedupfix'] else 120
     dxvkmaxfps = max(10, min(maxmaxfps, globalsettings['dxvkmaxfps']))
+    globalsettings['dxvkmaxfps'] = dxvkmaxfps
     CopyDXVK(system, globalsettings['dxvk'], dxvkmaxfps)
     CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'], globalsettings['d3drenderers'])
     InstallOGL2(system, globalsettings['ogl2'])
@@ -262,13 +263,18 @@ def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, glo
         changes['D3D10Drv.D3D10RenderDevice'] = {}
 
     # FPS stuff
-    deusexeFPSLimit = 0
+    deusexeFPSLimit = globalsettings['dxvkmaxfps'] if globalsettings['d3drenderers'] == 'Updated' else 0
     if not globalsettings['speedupfix'] and not globalsettings['dxvk']:
         changes['DeusExe'].update({'FPSLimit': '0'}) # Kentie's DeusExe is bad at FPS limits, just let the renderer do it
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'False'})
     else: # if we're using the speedup fix then we don't need to limit fps, if we're using DXVK then that handles the fps limit
-        changes['DeusExe'].update({'FPSLimit': '0'})
-        changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
+        # globalsettings['d3drenderers']
+        changes['DeusExe'].update({'FPSLimit': str(deusexeFPSLimit)})
+        changes['D3D10Drv.D3D10RenderDevice'].update({
+            'FPSLimit': str(deusexeFPSLimit),
+            'FrameRateLimit': str(deusexeFPSLimit),
+            'VSync': 'False'
+        })
 
     # D3D10 lighting
     if globalsettings['deus_nsf_d3d10_lighting']:
@@ -309,7 +315,7 @@ def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, glo
         if globalsettings['ogl2']:
             changes['Engine.Engine'] = {'GameRenderDevice': 'OpenGLDrv.OpenGLRenderDevice'}
         else:
-            changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
+            changes['Engine.Engine'] = {'GameRenderDevice': 'OpenGL1xDrv.OpenGLRenderDevice'}
         if 'WinDrv.WindowsClient' not in changes:
             changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
