@@ -501,6 +501,12 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "Is chili just American curry?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
     ShuffleStupidQuestions(); //Randomize the order of the questions based on the seed
 }
 
