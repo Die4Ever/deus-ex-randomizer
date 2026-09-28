@@ -1,29 +1,26 @@
 #!/bin/bash
+
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "$SCRIPT_DIR"
+exec > >(tee playoutput.log) 2>&1
 
 APP_REG_KEY="HKEY_CURRENT_USER\Software\Wine\AppDefaults\DeusEx.exe\Drivers"
+
+echo "existing $APP_REG_KEY value:"
+wine reg query "$APP_REG_KEY" /v Graphics
 
 # check for Wayland
 if [ -n "$WAYLAND_DISPLAY" ]; then
     echo "using Wayland"
-    unset DISPLAY
-    wine reg add "$APP_REG_KEY" /v Graphics /d 'wayland' /f
+    wine reg add "$APP_REG_KEY" /v Graphics /d 'wayland,x11' /f
 else
     echo "using X11"
-    wine reg add "$APP_REG_KEY" /v Graphics /d 'x11' /f
+    wine reg add "$APP_REG_KEY" /v Graphics /d 'x11,wayland' /f
 fi
 
-# try to find wineserver
-WINESERVER_CMD=$(which wineserver 2>/dev/null || which "${WINE:-wine}server" 2>/dev/null || echo "$(dirname "$(which wine)")/wineserver")
+wine reg add "HKEY_CURRENT_USER\Software\Wine\AppDefaults\DeusEx.exe\X11 Driver" /v UseTakeFocus /d "y" /f
 
-if [ -x "$WINESERVER_CMD" ]; then
-    # wait for registry updates
-    "$WINESERVER_CMD" -w
-else
-    # else just sleep to make sure registry writing is completed
-    echo "fallback sleeping"
-    sleep 0.3
-fi
+echo "saved $APP_REG_KEY value:"
+wine reg query "$APP_REG_KEY" /v Graphics
 
 wine System/DeusEx.exe -localdata
