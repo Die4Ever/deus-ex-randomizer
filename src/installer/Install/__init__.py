@@ -456,6 +456,7 @@ def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, in
         (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
         CopyTo(source/'Configs'/'D3D9Drv.int', system/'D3D9Drv.int', True)
 
+        (system/'D3D10Drv.dll').unlink(True) # avoid having colliding filenames for WINE
         CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
         CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
 
@@ -469,7 +470,8 @@ def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, in
         (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
         CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D9Drv.int', system/'D3D9Drv.int', True)
 
-        CopyTo(thirdparty/'UpdatedUE1Renderers'/'d3d10drv.dll', system/'d3d10drv.dll', True)
+        (system/'d3d10drv.dll').unlink(True) # avoid having colliding filenames for WINE
+        CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D10Drv.dll', system/'D3D10Drv.dll', True)
         CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D10Drv.int', system/'D3D10Drv.int', True)
 
         d3d10drv_loc = thirdparty / 'UpdatedUE1Renderers' / 'd3d10drv'
