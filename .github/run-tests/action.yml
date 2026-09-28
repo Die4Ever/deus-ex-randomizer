@@ -10,6 +10,15 @@ runs:
     - run: python -m venv .venv
       shell: bash
 
+    # I hate Windows, create a symlink called bin that points to Scripts
+    - name: Create Virtual Environment
+      run: |
+        if [ -d ".venv/Scripts" ] && [ ! -d ".venv/bin" ]; then
+          ln -s Scripts .venv/bin
+        fi
+      if: runner.os == 'Windows'
+      shell: bash
+
     - run: .venv/bin/pip install -r src/installer/requirements.txt 2>&1
       shell: bash
 
