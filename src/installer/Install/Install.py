@@ -124,7 +124,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
 
 
 def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
-    legacy_deus_exe = False
+    legacy_deus_exe = False # placeholder in case we ever want a GUI choice for this
     gameroot = system.parent
 
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
@@ -267,8 +267,14 @@ def VanillaFixConfigs(system, exename, kentie, launchchanged, settings:dict, glo
     if not globalsettings['speedupfix'] and not globalsettings['dxvk']:
         changes['DeusExe'].update({'FPSLimit': '0'}) # Kentie's DeusExe is bad at FPS limits, just let the renderer do it
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'False'})
-    else: # if we're using the speedup fix then we don't need to limit fps, if we're using DXVK then that handles the fps limit
-        # globalsettings['d3drenderers']
+    elif settings.get('exetype') == 'Kentie': # if we're using the speedup fix then we don't need to limit fps, if we're using DXVK then that handles the fps limit
+        changes['DeusExe'].update({'FPSLimit': str(deusexeFPSLimit)})
+        changes['D3D10Drv.D3D10RenderDevice'].update({
+            'FPSLimit': '0',
+            'FrameRateLimit': '0',
+            'VSync': 'False'
+        })
+    else: # Launch or some other exe may not have the GUI for changing FPS limit
         changes['DeusExe'].update({'FPSLimit': str(deusexeFPSLimit)})
         changes['D3D10Drv.D3D10RenderDevice'].update({
             'FPSLimit': str(deusexeFPSLimit),
