@@ -23,6 +23,7 @@ const GroundhogDay = 19;
 const OneGoal = 20;
 const SpeedShuffle = 21; // speedrun mode with shuffled missions
 const NiceBingoMachine = 22;
+const EdgeOfTomorrow = 23;
 
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
@@ -30,6 +31,7 @@ const HalloweenEntranceRando = 1030;
 const HalloweenMode = 1031;
 const WaltonWareHalloween = 1032;// why didn't they put leap day at the end of October?
 const HalloweenMBM = 1033;
+const EdgeOfHalloween = 1034;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -835,8 +837,9 @@ function SetDifficulty(int new_difficulty)
     if(class'MenuChoice_NewGamePlus'.default.value == 0 && !IsWaltonWare())
         moresettings.newgameplus_curve_scalar = -1;
 
-    if(gamemode == GroundhogDay) {
+    if(IsGroundhogDay()) {
         moresettings.newgameplus_curve_scalar = 0;
+        // DXRMenuSelectDifficulty sets autosave mode to Ironman when selecting an Edge of ____ game mode
     }
 
     class'DXRLoadouts'.static.AdjustFlags(self, loadout); // new game menu doesn't initialize its own DXRLoadouts
@@ -1011,6 +1014,8 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return OneItemMode;
     if(slot--==0) return StrongAugsMode;
     if(slot--==0) return GroundhogDay;
+    if(slot--==0) return EdgeOfTomorrow;
+    if(slot--==0) return EdgeOfHalloween;
     if(!VersionIsStable()) {
         if(slot--==0) return OneGoal;
     }
@@ -1091,6 +1096,10 @@ function string GameModeName(int gamemode)
         return "Strong Augs Mode";
     case GroundhogDay:
         return "Groundhog Day";
+    case EdgeOfTomorrow:
+        return "Edge of Tomorrow (Beta)";
+    case EdgeOfHalloween:
+        return "Edge of Halloween (Beta)";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -1278,6 +1287,10 @@ function string GameModeHelpText(int gamemode)
         return "The FULL Randomizer experience but augmentations are generally randomized to be stronger than normal.";
     case GroundhogDay:
         return "The FULL Randomizer experience, but New Game+ will not change your seed or your flags, giving you a chance to play the same game over and over again to keep improving.";
+    case EdgeOfTomorrow:
+        return "Live. Die. Repeat.";
+    case EdgeOfHalloween:
+        return "Live. Die. Repeat.";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -1345,7 +1358,7 @@ function bool IsBingoMode()
 
 function bool IsHalloweenMode()
 {
-    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando || gamemode == HalloweenMBM;
+    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando || gamemode == HalloweenMBM || gamemode == EdgeOfHalloween;
 }
 
 function bool IsOneItemMode()
@@ -1361,6 +1374,16 @@ function bool IsStrongAugsMode()
 function bool IsSpeedShuffleMode()
 {
     return gamemode == SpeedShuffle;
+}
+
+function bool IsGroundhogDay()
+{
+    return gamemode == GroundhogDay || gamemode == EdgeOfTomorrow || gamemode == EdgeOfHalloween;
+}
+
+function bool IsEdgeOfTomorrow()
+{
+    return gamemode == EdgeOfTomorrow || gamemode == EdgeOfHalloween;
 }
 //#endregion
 

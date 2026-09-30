@@ -570,11 +570,11 @@ function string SetEnumValue(int e, string text)
         {
             Super.SetEnumValue(autosave_enum, "Limited Fixed Saves");
         }
-        else if(InStr(text, "Hardcore")==-1 && InStr(text, "Horde")==-1)
+        else if(InStr(text, "Hardcore")==-1 && InStr(text, "Horde")==-1 && IsStr(text, "Edge of "))
         {
             Super.SetEnumValue(autosave_enum, "Autosaves Enabled");
         }
-        else if(InStr(text, "Hardcore")!=-1)
+        else if(InStr(text, "Hardcore")!=-1 || InStr(text, "Edge of ")!=-1)
         {
             Super.SetEnumValue(autosave_enum, "Ironman (All Saves Disallowed)");
         }

@@ -1036,7 +1036,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
     crate.AddContent(class'#var(prefix)BioelectricCell', 1);
     starting_map = dxr.flags.GetStartingMap();
     crate.NumSkillPoints = GetStartMapSkillBonus(starting_map);
-    if(dxr.flags.newgameplus_loops > 0) {
+    if(dxr.flags.newgameplus_loops > 0 && !dxr.flags.IsGroundhogDay()) {
         crate.NumSkillPoints = crate.NumSkillPoints * 0.66;
     }
     crate.NumSkillPoints -= player.SkillPointsAvail * 0.2;
@@ -1105,7 +1105,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         crate = SpawnWaltonWareCrate(player);
     } else if (dxr.flags.GetStartingMap() > 10) {
         crate = SpawnLateStartCrate(player);
-    } else if (dxr.flags.newgameplus_loops > 0) {
+    } else if (dxr.flags.newgameplus_loops > 0 && !dxr.flags.IsGroundhogDay()) {
         crate = SpawnNGPlusCrate(player);
     } else {
         AddStartingCredits(dxr, player);
@@ -1755,7 +1755,7 @@ static function int GetStartMapCreditsBonus(DXRando dxr)
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
-    if(dxr.flags.moresettings.shuffle_missions > 0 && dxr.flags.moresettings.shuffle_missions < 1000 && dxr.flags.newgameplus_loops == 0) {
+    if(dxr.flags.moresettings.shuffle_missions > 0 && dxr.flags.moresettings.shuffle_missions < 1000 && (dxr.flags.newgameplus_loops == 0 || dxr.flags.IsGroundhogDay())) {
         p.Credits = 1500 + dxr.rng(1000);
         return;
     }
@@ -1795,7 +1795,7 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
 {
     local int startBonus;
     startBonus = GetStartMapSkillBonus(dxr.flags.GetStartingMap());
-    if ((startBonus > 0) || (dxr.flags.GetStartingMap() > 10) || (dxr.flags.newgameplus_loops > 0)){
+    if ((startBonus > 0) || (dxr.flags.GetStartingMap() > 10) || (dxr.flags.newgameplus_loops > 0 && !dxr.flags.IsGroundhogDay())){
         log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
         p.SkillPointsAvail *= 0.8; //This reduction should only happen on NG+ or late starts
         p.SkillPointsAvail += startBonus;

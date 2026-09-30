@@ -15,6 +15,7 @@
 - GMDX/Revision: Support for the "Quick Skills" and "Quick Augs" menu which allow upgrading skills and augs without entering the regular menu screens.
   - The key to open the "Quick Skills" menu can be configured by binding the option for "Activate Multiplayer Skill Menu" in the Keyboard/Mouse menu.
   - The key to open the "Quick Augs" menu must be bound manually.  In the GMDXUser.ini or RevisionUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the "Quick Augs" screen.  Change it so that it maps to UpgradeAugs, eg. to make G open the menu: `G=UpgradeAugs`
+- Two new game modes: Edge of Tomorrow and Edge of Halloween. No saving allowed, when you die you go back to the start of the seed but you get to keep your skills and skill points.
 
 ## GMDX Major Changes
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.

@@ -178,6 +178,7 @@ function NewGamePlus()
     local DXRAugmentations augs;
     local DXRLoadouts loadouts;
     local DXRStats stats;
+    local Inventory item;
     local int i;
     local int randomStart;
     local int oldseed;
@@ -190,7 +191,7 @@ function NewGamePlus()
     p = player();
 
     info("NewGamePlus()");
-    if(gamemode != DXRFlags(self).GroundhogDay) {
+    if(!DXRFlags(self).IsGroundhogDay()) {
         seed++;
         dxr.seed = seed;
     }
@@ -202,11 +203,11 @@ function NewGamePlus()
     p.saveCount=0;
     randomStart = moresettings.starting_map;
 
-    if(gamemode != DXRFlags(self).GroundhogDay) {
+    if(!DXRFlags(self).IsGroundhogDay()) {
         NGPlusFlags(p);
     }
     SetGlobalSeed("NewGamePlus " $ dxr.seed);
-    if (randomStart!=0 && gamemode != DXRFlags(self).GroundhogDay){
+    if (randomStart!=0 && !DXRFlags(self).IsGroundhogDay()){
         moresettings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
 
@@ -225,14 +226,16 @@ function NewGamePlus()
 
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     SetGlobalSeed("NewGamePlus skills " $ dxr.seed);
-    skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
-    if( skills != None ) {
-        for(i = 0; i < newgameplus_num_skill_downgrades; i++)
-            skills.DowngradeRandomSkill(p);
+    if(!DXRFlags(self).IsEdgeOfTomorrow()) {
+        skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
+        if( skills != None ) {
+            for(i = 0; i < newgameplus_num_skill_downgrades; i++)
+                skills.DowngradeRandomSkill(p);
+        }
+        else p.SkillPointsAvail = 0;
+        p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
+        l("NewGamePlus skill points is now "$p.SkillPointsAvail);
     }
-    else p.SkillPointsAvail = 0;
-    p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
-    l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
 #ifdef vmd2
     //VMD2: Reset all talents and crafting stuff for the player
@@ -258,8 +261,12 @@ function NewGamePlus()
     }
 
     SetGlobalSeed("NewGamePlus augs " $ dxr.seed);
-    for (i = 0; i < augsToRemove; i++)
-        if( augs != None )
+    p.AugmentationSystem.DeactivateAll();
+    if(DXRFlags(self).IsEdgeOfTomorrow()) {
+        augsToRemove = 20;
+    }
+    if( augs != None )
+        for (i = 0; i < augsToRemove; i++)
             augs.RemoveRandomAug(p);
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
     if(loadouts != None) {// maybe the player uninstalled Running Enhancement in favor of Speed Enhancement, but it just got taken away
@@ -273,7 +280,11 @@ function NewGamePlus()
     for (i = 0; i < newgameplus_num_removed_weapons; i++)
         RemoveRandomWeapon(p);
 
-    p.AugmentationSystem.DeactivateAll();
+    if(DXRFlags(self).IsEdgeOfTomorrow()) {
+        class'DXRLoadouts'.static._ClearInventory(p);
+        if(loadouts != None) loadouts.RandoStartingEquipment(p, false);
+        //else default vanilla equipment?
+    }
 
     stats = DXRStats(dxr.FindModule(class'DXRStats'));
     i = stats.GetTotalAllTime();
@@ -535,6 +546,16 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
     val = val * curve ** exp;
 
     return FClamp(val, min, max);
+}
+
+function PlayerDied(PlayerPawn player)
+{
+    if(DXRFlags(self).IsEdgeOfTomorrow() /*&& dxr.dxInfo.MissionNumber != 4 || f.GetBool('MS_PlayerCaptured') || !f.GetBool('TalkedToPaulAfterMessage_Played')*/) {
+        // TODO: timer
+        #var(PlayerPawn)(player).RestoreAllHealth();
+        player.GotoState('PlayerWalking');
+        NewGamePlus();
+    }
 }
 
 function ExtendedTests()
