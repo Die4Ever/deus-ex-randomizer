@@ -157,6 +157,7 @@
   - "Combat Medic's Bag" perk now correctly increases the randomized limits for medkits and bioelectric cells by 5 when purchased.
   - The falling platform in the GMDX-added section at the end of Vandenberg Tunnels (Mission 12) cannot be triggered more than once, causing it to fall back up into position.
   - The datacube for the "Gray Lab" in Area 51 (Mission 15) can no longer be randomized into the locked containers in the cloning room.
+  - The player should no longer be able to get into a state where mantling is disabled.
 
 </details>
 
