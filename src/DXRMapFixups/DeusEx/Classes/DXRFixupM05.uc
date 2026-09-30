@@ -435,6 +435,7 @@ function PostFirstEntryMapFixes()
     local RetinalScanner r;
     local bool VanillaMaps;
     local UNATCOTroop troop;
+    local #var(prefix)TerroristCarcass tcarc;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -478,6 +479,12 @@ function PostFirstEntryMapFixes()
 
     case "05_NYC_UNATCOMJ12LAB":
         BalanceJailbreak();
+        if(dxr.flags.moresettings.reanimation > 0) {
+            foreach AllActors(class'#var(prefix)TerroristCarcass', tcarc) {
+                tcarc.bNotDead = true;
+                tcarc.itemName = ReplaceText(tcarc.itemName, " (Dead)", " (Unconscious)");
+            }
+        }
         break;
     }
 }

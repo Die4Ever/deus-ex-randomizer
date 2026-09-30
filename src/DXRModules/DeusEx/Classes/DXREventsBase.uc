@@ -821,6 +821,7 @@ static function AddPlayerDeath(DXRando dxr, PlayerPawn p, optional Actor Killer,
 
     player = #var(PlayerPawn)(p);
     class'DXRStats'.static.AddDeath(player);
+    if(dxr != None && dxr.flags != None) dxr.flags.PlayerDied(p);
 
 #ifdef injections
     class'DXRHints'.static.AddDeath(dxr, player);

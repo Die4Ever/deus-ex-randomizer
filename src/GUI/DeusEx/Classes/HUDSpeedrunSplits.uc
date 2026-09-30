@@ -158,6 +158,8 @@ function bool CheckDesiredVisiblity()
 
     curMission = stats.dxr.dxInfo.MissionNumber;
     if(curMission < 1 || curMission > 15) return false;
+
+    return true;
 }
 
 function UpdateVisibility()
@@ -498,6 +500,8 @@ function DrawSplits(GC gc, int cur)
     local string msg, msg2;
     local Color cmpColor;
     local bool bShuffle;
+
+    if (cur >= ArrayCount(stats.missions_times) || cur < 0) return; //Don't draw, we aren't in a valid range
 
     GetMapVariants();
 

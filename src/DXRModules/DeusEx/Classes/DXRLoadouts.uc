@@ -1251,15 +1251,32 @@ function AddStartingAugs(DeusExPlayer p)
     }
 }
 
-function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
+static function _ClearInventory(#var(PlayerPawn) player, optional bool keepWeapons)
 {
     local Inventory item, nextItem;
+
+    for(item = player.Inventory; item != None; item=nextItem) {
+        nextItem = item.Inventory;
+        //l("RandoStartingEquipment("$player$") checking item "$item$", bDisplayableInv: "$item.bDisplayableInv);
+        if( Ammo(item) == None && ! item.bDisplayableInv ) continue;
+        if( #var(prefix)NanoKeyRing(item) != None ) continue;
+        if( keepWeapons && Weapon(item) != None ) continue;
+        if( keepWeapons && Ammo(item) != None ) continue;
+        if( MemConUnit(item) != None ) continue;
+        //l("RandoStartingEquipment("$player$") removing item: "$item);
+        player.DeleteInventory(item);
+        item.Destroy();
+    }
+}
+
+function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
+{
     local DXREnemies dxre;
     local HUDObjectBelt belt;
     local int i, start_amount, pos;
 
     if( dxr.flags.settings.equipment == 0 ) return;
-    if( dxr.dxInfo.missionNumber == 0 ) return;
+    //if( dxr.dxInfo.missionNumber == 0 ) return; // HACK: did we need this?
 
     l("RandoStartingEquipment");
     SetGlobalSeed("RandoStartingEquipment");//independent of map/mission
@@ -1272,18 +1289,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
 
-    for(item = player.Inventory; item != None; item=nextItem) {
-        nextItem = item.Inventory;
-        l("RandoStartingEquipment("$player$") checking item "$item$", bDisplayableInv: "$item.bDisplayableInv);
-        if( Ammo(item) == None && ! item.bDisplayableInv ) continue;
-        if( #var(prefix)NanoKeyRing(item) != None ) continue;
-        if( dxre == None && Weapon(item) != None ) continue;
-        if( dxre == None && Ammo(item) != None ) continue;
-        if( MemConUnit(item) != None ) continue;
-        l("RandoStartingEquipment("$player$") removing item: "$item);
-        player.DeleteInventory(item);
-        item.Destroy();
-    }
+    _ClearInventory(player, dxre == None);
 
 #ifdef gmdx
     player.RepairInventory();

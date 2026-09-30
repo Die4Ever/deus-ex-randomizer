@@ -119,7 +119,12 @@ function CreateMenuButtons()
     news = DXRNews(winClient.NewChild(class'DXRNews'));
     news.CreateNews(player, ClientWidth, 0, newsWidth, ClientHeight - 16);
     if(news.HasNews()) {
-        ClientWidth += newsWidth;
+        news.Show();
+        ClientWidth = default.ClientWidth + newsWidth;
+        winClient.SetWidth(ClientWidth);
+    } else {
+        news.Hide();
+        ClientWidth += 100; // big version numbers need bigger titlebar
         winClient.SetWidth(ClientWidth);
     }
 }
@@ -199,6 +204,16 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     #endif
 
     return Super.BoxOptionSelected(button,buttonNumber);
+}
+
+function ShowVersionInfo()
+{
+	local TextWindow version;
+
+    Super.ShowVersionInfo();
+    version = TextWindow(lastChild);
+	version.SetTextMargins(60, 0);
+	version.SetWindowAlignments(HALIGN_Left, VALIGN_Bottom);
 }
 
 defaultproperties

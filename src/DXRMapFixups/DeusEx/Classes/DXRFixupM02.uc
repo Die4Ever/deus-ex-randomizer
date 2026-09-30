@@ -48,6 +48,7 @@ function PreFirstEntryMapFixes()
     local BlockAll ba;
     local int i;
     local Robot jockheli;
+    local #var(injectsprefix)Button1 doorbutton;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -283,6 +284,34 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            //The elevator under Osgoode & Sons (that leads to the rooftops) has an annoying trigger inside that
+            //is sometimes kind of janky.  The same trigger seems to work ok on the actual rooftops, but just
+            //make it behave the same as the underground one.  The location is the same between vanilla and
+            //Revision.
+            //Remove the trigger that opens the elevator door from the inside
+            foreach AllActors(class'Trigger',t){
+                if (t.Event!='LiftDoor') continue;
+                t.Destroy();
+            }
+
+            //Replace it with an explicit button (inside)
+            doorbutton = #var(injectsprefix)Button1(Spawnm(class'#var(injectsprefix)Button1',,,vect(-820.6,3191,1601.5),rot(0,0,0)));
+            doorbutton.Event='LiftDoor';
+            doorbutton.RandoButtonType=RBT_OpenDoors;
+            doorbutton.UpdateCurrentSkin();
+
+            //Outside button
+            doorbutton = #var(injectsprefix)Button1(Spawnm(class'#var(injectsprefix)Button1',,,vect(-832.4,3191,1601.5),rot(0,0,0)));
+            doorbutton.Event='LiftDoor';
+
+            //Make the door close itself again after it's opened
+            foreach AllActors(class'#var(DeusExPrefix)Mover',d, 'LiftDoor'){
+                d.TimeToReset = 10.0;
+                d.GoToState('TriggerOpenTimed');
+            }
+        }
+
         foreach RadiusActors(class'#var(DeusExPrefix)Mover', d,10,vectm(1552,-1136,384)){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(1553,-1130,380),vectm(1645,-1135,260),d); //Mirror door in computer room.  This doesn't actually rotate with the door yet...
 
@@ -442,8 +471,8 @@ function PreFirstEntryMapFixes()
                 d.bFrobbable = true;
             }
         }
-        foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'AugStore') {
-            d.bFrobbable = true;
+            foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'AugStore') {
+                d.bFrobbable = true;
         }
 
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2404,-1318,-487));//Near Smuggler
@@ -481,6 +510,28 @@ function PreFirstEntryMapFixes()
             //Revision Maps
             MassSetSecretGoalBox(class'Inventory',vectm(3211,2015,-600),vectm(3795,2646,-400),true); //Alley behind fence
             MassSetSecretGoalBox(class'Inventory',vectm(-1662,257,443),vectm(-1406,-3,-147),true); //Balconies near free clinic
+        }
+
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            //The elevator under Osgoode & Sons (that leads to the rooftops) has an annoying trigger inside that
+            //is sometimes kind of janky.  The location is the same between vanilla and Revision.
+            //Remove the trigger that opens the elevator door from the inside
+            foreach AllActors(class'Trigger',t){
+                if (t.Event!='ElevatorDoor') continue;
+                t.Destroy();
+            }
+
+            //Replace it with an explicit button
+            doorbutton = #var(injectsprefix)Button1(Spawnm(class'#var(injectsprefix)Button1',,,vect(354,4491.2,-780.5),rot(0,16384,0)));
+            doorbutton.Event='ElevatorDoor';
+            doorbutton.RandoButtonType=RBT_OpenDoors;
+            doorbutton.UpdateCurrentSkin();
+
+            //Make the door close itself again after it's opened
+            foreach AllActors(class'#var(DeusExPrefix)Mover',d, 'ElevatorDoor'){
+                d.TimeToReset = 10.0;
+                d.GoToState('TriggerOpenTimed');
+            }
         }
 
         if (VanillaMaps){
