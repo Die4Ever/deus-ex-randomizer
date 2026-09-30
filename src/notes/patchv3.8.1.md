@@ -18,6 +18,7 @@
 - Two new game modes: Edge of Tomorrow and Edge of Halloween. No saving allowed, when you die you go back to the start of the seed but you get to keep your skills and skill points.
 
 ## GMDX Major Changes
+  - First beta of GMDX Augmented Edition Randomizer!
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.
 
 <details>
