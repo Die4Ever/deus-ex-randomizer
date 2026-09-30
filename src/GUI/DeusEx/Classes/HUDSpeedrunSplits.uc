@@ -193,31 +193,39 @@ function InitStats(DXRStats newstats)
         notes = ReplaceVariables(notes);
     }
 
-    for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
-        m = mapvariants.missions[i];
-        if(isShuffle) {
+    if(isShuffle) {
+        for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
+            m = mapvariants.missions[i];
             PB[m] = mapvariants.GetMissionParTimeMinutes(m, i) * 600; // tenths of seconds
+            Golds[m] = int((PB[m] * 0.75 + 15) / 600) * 600; // round down to a minute (45 seconds rounds up)
             Avgs[m] = PB[m];
-            Golds[m] = PB[m] * 0.75;
             balanced_splits[m] = PB[m];
-        } else {
-            balanced_splits[m] = BalancedSplit(m);
-        }
-        for(t=i; mapvariants.missions[t] != 99 && t<ArrayCount(mapvariants.missions); t++) {
-            balanced_splits_totals[mapvariants.missions[t]] += balanced_splits[m];
+
+            for(t=i; t<ArrayCount(mapvariants.missions) && mapvariants.missions[t] != 99; t++) {
+                balanced_splits_totals[mapvariants.missions[t]] += balanced_splits[m];
+            }
         }
     }
 
     for(i=1; i<=15; i++) {
+        average_total += Avgs[i]; // BalancedSplit() depends on this
         PB_total += PB[i];
         sum_of_bests += Golds[i];
-    }
-    for(i=1; i<=15; i++) {
         if(Avgs[i] < Golds[i]) {
             if(PB[i] > Golds[i]) Avgs[i] = PB[i];
             else Avgs[i] = Golds[i];
         }
-        average_total += Avgs[i];
+    }
+
+    if(!isShuffle) {
+        for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
+            m = mapvariants.missions[i];
+            balanced_splits[m] = BalancedSplit(m);
+
+            for(t=i; t<ArrayCount(mapvariants.missions) && mapvariants.missions[t] != 99; t++) {
+                balanced_splits_totals[mapvariants.missions[t]] += balanced_splits[m];
+            }
+        }
     }
 
     total = TotalTime();
@@ -542,7 +550,7 @@ function DrawSplits(GC gc, int cur)
 
     bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
     tempTotal = 0;
-    for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
+    for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
         m = mapvariants.missions[i];
         tempTotal += stats.missions_times[m];
         tempTotal += stats.missions_menu_times[m];
