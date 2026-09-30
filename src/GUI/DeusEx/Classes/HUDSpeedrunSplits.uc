@@ -512,6 +512,7 @@ function DrawSplits(GC gc, int cur)
     if (cur >= ArrayCount(stats.missions_times) || cur < 0) return; //Don't draw, we aren't in a valid range
 
     GetMapVariants();
+    bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
 
     total = TotalTime();
     curTime = stats.missions_times[cur];
@@ -537,9 +538,9 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    for(i=cur+1; i<ArrayCount(mapvariants.missions); i++) {
+    for(i=prev+2; i<ArrayCount(mapvariants.missions); i++) {
         m = mapvariants.missions[i];
-        if(balanced_splits[m] > 0) {
+        if(balanced_splits[m] > 0 && m != cur) {
             next = i;
             break;
         }
@@ -548,7 +549,6 @@ function DrawSplits(GC gc, int cur)
     //#region drawing text
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
-    bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
     tempTotal = 0;
     for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
         m = mapvariants.missions[i];
@@ -556,7 +556,7 @@ function DrawSplits(GC gc, int cur)
         tempTotal += stats.missions_menu_times[m];
 
         if(showAllSplits
-        || (alwaysShowSplit[i] != 0)
+        || (alwaysShowSplit[m] != 0)
         || (i == prevprev && showPrevprev)
         || (i == prev && showPrev)
         || (m == cur && showCurrentMission)
