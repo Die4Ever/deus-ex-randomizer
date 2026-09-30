@@ -96,6 +96,7 @@
   - Vanilla only: Elevator to overlook area in Versalife Level 1 Labs (Mission 6) no longer has guaranteed breakable doors
   - Chateau key hunt timed race now has a target time of 4 minutes, so you will now get an in-game message if you're fast enough and you have memes enabled.
   - Fixed installer issue on Linux failing to create the game's Documents folder.
+  - When zombies are enabled, the terrorist carcass in M05 is now unconscious so it doesn't become a zombie.
 
 </details>
 
