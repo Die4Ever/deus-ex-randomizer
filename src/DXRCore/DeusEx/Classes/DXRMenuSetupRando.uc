@@ -513,7 +513,10 @@ function CreateBasicOptions(DXRFlags f)
 
     NewGroup("Basic");
 
-    if (showMode) gamemode_enum = class'DXRMenuSelectDifficulty'.static.CreateGameModeEnum(self, f);
+    if (showMode) {
+        gamemode_enum = class'DXRMenuSelectDifficulty'.static.CreateGameModeEnum(self, f);
+        enums[gamemode_enum].btn.SetSensitivity(false);
+    }
     if (showLoadout) class'DXRMenuSelectDifficulty'.static.CreateLoadoutEnum(self, f);
     if (showAutosave) class'DXRMenuSelectDifficulty'.static.CreateAutosaveEnum(self, f);
     if (showCrowdControl) class'DXRMenuSelectDifficulty'.static.CreateCrowdControlEnum(self, f);
