@@ -86,6 +86,7 @@
   - Enemies will no longer be able to walk in the air if they were swapped while sitting in a chair.  This likely was only possible when swapped by a Crowd Control effect.
   - "Show Killer" Death Cam option will now remain behind the player for a moment after death, instead of immediately showing the killer.
   - The elevator from the basement of Osgoode & Sons to the rooftops in the warehouse district (Mission 2) no longer opens automatically and instead has an "open doors" button, since the automatic opening did not behave consistently in the basement.
+  - Vanilla: Changing ammo types in the inventory screen immediately updates the weapon information.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.

@@ -26,6 +26,35 @@ function UpdateSelectedItem()
     UpdateWinInfo(anItem);
 }
 
+function WeaponChangeAmmo()
+{
+    local DeusExWeapon aWeapon;
+
+    Super.WeaponChangeAmmo();
+
+    aWeapon = DeusExWeapon(selectedItem.GetClientObject());
+
+    if ( aWeapon != None ){
+        UpdateWinInfo(aWeapon);
+    }
+}
+
+function Class<DeusExAmmo> LoadAmmo()
+{
+    local DeusExWeapon aWeapon;
+    local Class<DeusExAmmo> ammo;
+
+    ammo = Super.LoadAmmo();
+
+    aWeapon = DeusExWeapon(selectedItem.GetClientObject());
+
+    if ( ammo != None && aWeapon != None ){
+        UpdateWinInfo(aWeapon);
+    }
+
+    return ammo;
+}
+
 function UpdateWinInfo(Inventory inv)
 {
     local DeusExPickup anItem;
