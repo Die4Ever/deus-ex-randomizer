@@ -101,6 +101,7 @@
   - Fixed issues with Speedrun mode splits display.
   - Tweak par times for Speedrun Shuffle.
   - Small fixes and optimization for Bobby's possession effect.
+  - More consistent stalker placements when reentering maps, for Edge of Halloween mode.
 
 </details>
 

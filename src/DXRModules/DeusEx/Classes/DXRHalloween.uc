@@ -1,6 +1,7 @@
 class DXRHalloween extends DXRActorsBase transient;
 
 var int num_nav_points;
+var int mapEntryCounter; // count map re-entries for consistent seeding on replacement, saved inside DXRMapReentryInfo
 
 function PostFirstEntry()
 {
@@ -35,6 +36,7 @@ function ReEntry(bool IsTravel)
 function SpawnStalkers(bool reentry)
 {
     local DXRStalker stalker;
+    local DXRMapReentryInfo reentryInfo;
     local int num, chunk;
 
     // destroy old stalkers before recreating
@@ -42,6 +44,8 @@ function SpawnStalkers(bool reentry)
         stalker.Destroy();
     }
 
+    reentryInfo = class'DXRMapReentryInfo'.static.Get(self);
+    if(reentryInfo != None) mapEntryCounter = reentryInfo.mapEntryCounter;
     num = NumStalkers();
     chunk = 4;
     if((dxr.flags.moresettings.stalkers >>> 16) > 2) chunk = 3; // if more than 2x multiplier, fewer Bobbys per chunk
@@ -65,12 +69,12 @@ function SpawnStalker(bool reentry, int iterseed, int num)
 
     if(numEnabled==0) return; // no stalkers enabled, would be an infinite loop
 
-    SetSeed("stalkers " $ iterseed);
+    SetSeed("stalkers " $ iterseed); // seed for consistent selection of stalker type
     do {
         stalkerType = rng(3);
     } until(enabled[stalkerType] == 1);
 
-    if(reentry) SetSeed("ReEntry stalkers " $ Level.TimeSeconds $ iterseed);
+    if(reentry) SetSeed("ReEntry stalkers " $ mapEntryCounter $ iterseed); // seed for positioning stalkers
     else SetSeed("PostFirstEntry stalkers" $ iterseed);
 
     if(stalkerType==0) {

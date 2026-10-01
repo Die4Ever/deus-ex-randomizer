@@ -205,6 +205,8 @@ function PreFirstEntry()
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
+    class'DXRMapReentryInfo'.static.TickEntry(self);
+
     SetSeed( "DXRFixup PreFirstEntry" );
 
     TriggerDebug();
@@ -239,6 +241,7 @@ function PreFirstEntry()
 function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
+    if(IsTravel) class'DXRMapReentryInfo'.static.TickEntry(self);
     OverwriteDecorations(false);
 }
 
