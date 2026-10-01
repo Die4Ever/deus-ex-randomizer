@@ -178,6 +178,7 @@ function NewGamePlus()
     local DXRAugmentations augs;
     local DXRLoadouts loadouts;
     local DXRStats stats;
+    local DXRPlayerStats pstats;
     local Inventory item;
     local int i;
     local int randomStart;
@@ -219,7 +220,9 @@ function NewGamePlus()
             p.KeyRing.ClientRemoveAllKeys();
         }
     }
-    p.DeleteAllNotes();
+    if(!DXRFlags(self).IsGroundhogDay()) {
+        p.DeleteAllNotes();
+    }
     p.DeleteAllGoals();
     p.ResetConversationHistory();
     class'DXRActorsBase'.static.ClearDataVaultImages(p);
@@ -263,7 +266,7 @@ function NewGamePlus()
     SetGlobalSeed("NewGamePlus augs " $ dxr.seed);
     p.AugmentationSystem.DeactivateAll();
     if(DXRFlags(self).IsEdgeOfTomorrow()) {
-        augsToRemove = 20;
+        augs.RemoveAllAugs(p);
     }
     if( augs != None )
         for (i = 0; i < augsToRemove; i++)
@@ -284,6 +287,10 @@ function NewGamePlus()
         class'DXRLoadouts'.static._ClearInventory(p);
         if(loadouts != None) loadouts.RandoStartingEquipment(p, false);
         //else default vanilla equipment?
+        pstats = DXRPlayerStats(dxr.FindModule(class'DXRPlayerStats'));
+        if(pstats != None) {
+            pstats.PlayerLogin(p);
+        }
     }
 
     stats = DXRStats(dxr.FindModule(class'DXRStats'));
@@ -291,10 +298,7 @@ function NewGamePlus()
     newgameplus_retries_time += (i - newgameplus_total_time) - stats.GetTotalTime(dxr);
     newgameplus_total_time = i;
 
-    info("NewGamePlus() deleting all flags");
-    f.DeleteAllFlags();
     DeusExRootWindow(p.rootWindow).ResetFlags();
-    info("NewGamePlus() deleted all flags");
     SaveFlags();
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);

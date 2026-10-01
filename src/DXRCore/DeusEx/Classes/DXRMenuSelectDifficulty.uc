@@ -566,17 +566,17 @@ function string SetEnumValue(int e, string text)
     if(text == old) return old;
 
     if(e == gamemode_enum && autosave_enum != 0) {
-        if(InStr(text, "Halloween")!=-1)
+        if(InStr(text, "Hardcore")!=-1 || InStr(text, "Edge of ")!=-1 || InStr(text, "Horde")!=-1)
+        {
+            Super.SetEnumValue(autosave_enum, "Ironman (All Saves Disallowed)");
+        }
+        else if(InStr(text, "Halloween")!=-1)
         {
             Super.SetEnumValue(autosave_enum, "Limited Fixed Saves");
         }
-        else if(InStr(text, "Hardcore")==-1 && InStr(text, "Horde")==-1 && InStr(text, "Edge of ")==-1)
+        else
         {
             Super.SetEnumValue(autosave_enum, "Autosaves Enabled");
-        }
-        else if(InStr(text, "Hardcore")!=-1 || InStr(text, "Edge of ")!=-1)
-        {
-            Super.SetEnumValue(autosave_enum, "Ironman (All Saves Disallowed)");
         }
     }
     if(e == gamemode_enum) {

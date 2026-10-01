@@ -1112,6 +1112,24 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot,
     RemoveAug(p,a);
 }
 
+simulated function RemoveAllAugs(#var(PlayerPawn) p)
+{
+    local Augmentation a;
+    local AugmentationManager am;
+
+    am = p.AugmentationSystem;
+
+    for( a = am.FirstAug; a != None; a = a.next ) {
+        if( !a.bHasIt ) continue;
+        if( a.AugmentationLocation == LOC_Default ) continue;
+
+        if( #var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
+            continue;
+
+        RemoveAug(p, a);
+    }
+}
+
 static function GetTrueAugLevels(Augmentation anAug, out int trueLevel, out int trueMax)
 {
     trueLevel = anAug.CurrentLevel;

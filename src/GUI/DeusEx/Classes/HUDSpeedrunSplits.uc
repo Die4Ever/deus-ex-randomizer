@@ -378,7 +378,7 @@ function DrawWindow(GC gc)
 {
     local int cur;
 
-    if(stats == None) return;
+    if(stats == None || stats.dxr == None || stats.dxr.flags == None) return;
 
 #ifdef injections
     if(DeusExRootWindow(player.rootWindow).hud.hms.bShowing) return;
@@ -512,7 +512,7 @@ function DrawSplits(GC gc, int cur)
     if (cur >= ArrayCount(stats.missions_times) || cur < 0) return; //Don't draw, we aren't in a valid range
 
     GetMapVariants();
-    bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
+    bShuffle = (stats.dxr.flags.moresettings.shuffle_missions > 0);
 
     total = TotalTime();
     curTime = stats.missions_times[cur];
@@ -577,6 +577,15 @@ function DrawSplits(GC gc, int cur)
         cmpColor = GetCmpColor(curTime, balanced_splits[cur], prevTotal, balanced_splits_totals[prev], Golds[cur]);
         DrawTextLine(gc, "SEG:", msg, cmpColor, x, y, msg2, true);
         y += text_height;
+    }
+
+    if(stats.dxr.flags.IsEdgeOfTomorrow()) {
+        tempTotal = stats.dxr.flags.newgameplus_total_time;
+        if(tempTotal > 0) {
+            msg = stats.fmtTimeToString(tempTotal, false, false, true); // show tenths
+            DrawTextLine(gc, "Loop " $ stats.dxr.flags.newgameplus_loops, "", colorText, x, y, msg, true);
+            y += text_height;
+        }
     }
 
     //#region current overall time
