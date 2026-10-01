@@ -99,7 +99,8 @@
   - Fixed installer issue on Linux failing to create the game's Documents folder.
   - When zombies are enabled, the terrorist carcass in M05 is now unconscious so it doesn't become a zombie.
   - Fixed issues with Speedrun mode splits display.
-  - Tweak par times for Speedrun Shuffle
+  - Tweak par times for Speedrun Shuffle.
+  - Small fixes and optimization for Bobby's possession effect.
 
 </details>
 
