@@ -1303,14 +1303,20 @@ static function InventoryData(DXRando dxr, bool drawInv, out string j)
     local string invId,invClass,invInfo,invName,invRot;
     local int invNum,invPosX,invPosY,count;
     local #var(DeusExPrefix)Weapon dxw;
-    local bool rot;
+    local bool rot,include;
 
     item = dxr.player.Inventory;
     invNum=0;
 
     while(item!=None)
     {
-        if (Item.bDisplayableInv){
+        include = true;
+#ifdef revision
+        //Revision makes ammo bDisplayableInv because of a (currently) unused modifier
+        //Only include ammo if that modifier is explicitly enabled...
+        if (item.bIsAmmo && dxr.player.bHeavyAmmoMode==false) include = false;
+#endif
+        if (Item.bDisplayableInv && include){
             invId="Inv-"$invNum++;
             invClass=string(Item.Class.Name);
             invName=Item.ItemName;
