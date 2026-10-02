@@ -394,7 +394,9 @@ function DrawWindow(GC gc)
         bWaltonWare = stats.dxr.flags.IsWaltonWare();
     } else if(rememberedMission > 0 && rememberedMission <= 15) {
         cur = rememberedMission;
-    } else {
+    }
+
+    if(cur < 1 || cur > 15) {
         return;
     }
 
@@ -518,6 +520,7 @@ function DrawSplits(GC gc, int cur)
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
+    prev = -1;
     for(i=0; i<ArrayCount(mapvariants.missions) && mapvariants.missions[i] != cur; i++) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
@@ -528,6 +531,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
+    prevprev = -1;
     for(i=prev-1; i>=0; i--) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
@@ -538,10 +542,18 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    for(i=prev+2; i<ArrayCount(mapvariants.missions); i++) {
+    next = -1;
+    for(i=0; i<ArrayCount(mapvariants.missions); i++) {
         m = mapvariants.missions[i];
-        if(balanced_splits[m] > 0 && m != cur) {
-            next = i;
+        if(m == 99) break;
+        if(m == cur) {
+            for(i=i+1; i<ArrayCount(mapvariants.missions); i++) {
+                m = mapvariants.missions[i];
+                if(m != 99 && balanced_splits[m] > 0) {
+                    next = i;
+                    break;
+                }
+            }
             break;
         }
     }
@@ -568,7 +580,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    prev = mapvariants.missions[prev]; // used for colors
+    prev = mapvariants.missions[Max(prev, 0)]; // used for colors
 
     //#region current segment time with comparison
     if(showSeg) {
