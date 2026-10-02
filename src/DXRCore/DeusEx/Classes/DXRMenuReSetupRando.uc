@@ -89,5 +89,4 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back",Key="BACK")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Done",Key="DONE")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_None,Text="",Key="")
-    showMode=False
 }
