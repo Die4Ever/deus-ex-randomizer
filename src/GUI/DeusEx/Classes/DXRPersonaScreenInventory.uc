@@ -80,10 +80,18 @@ function WeaponUpdateInfo(DeusExWeapon weaponFrom)                              
 function UpdateRandoInvInfo()
 {
     local Inventory inv;
+    local DeusExWeapon dxw;
+    local DXRWeapons dxrw;
     inv = Inventory(selectedItem.GetClientObject());
+    dxrw = DXRWeapons(class'DXRWeapons'.static.Find());
 
-    if (DeusExWeapon(inv)!=None){
-        UpdateRandoWeaponInfo(DeusExWeapon(inv));
+    dxw = DeusExWeapon(inv);
+    if (dxw!=None){
+        if (dxrw!=None){
+            //Immediately reapply weapon randomization, particularly for ShotTime which gets set to default
+            dxrw.RandoWeapon(dxw);
+        }
+        UpdateRandoWeaponInfo(dxw);
     }
 }
 
@@ -273,7 +281,7 @@ function bool GenerateNewWeaponROFStr(DeusExWeapon w, out String rofStr)
 #ifdef injections
     defRof += w.Default.AfterShotTime;
 #endif
-    if (TotalShotTime!=defRof){
+    if (!(TotalShotTime~=defRof)){
         defRofStr = "(Default: " $ w.FormatFloatString(1.0/defRof, 0.1) @ rdsPerSec $ ")";
 
         rofStr = rofStr $"|n"$ defRofStr;
