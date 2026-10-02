@@ -1273,6 +1273,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 {
     local DXREnemies dxre;
     local HUDObjectBelt belt;
+    local Inventory inv;
     local int i, start_amount, pos;
 
     if( dxr.flags.settings.equipment == 0 ) return;
@@ -1309,7 +1310,8 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     if (IsAssignableBeltPos(pos)) {
         // move the first melee weapon to the starting melee slot
         for (i = 1; i < ArrayCount(belt.objects); i++) {
-            if (IsMeleeWeapon(belt.GetObjectFromBelt(i))) {
+            inv = belt.GetObjectFromBelt(i);
+            if (inv != None && IsMeleeWeapon(inv)) {
                 PercolateBeltItem(i, pos);
                 break;
             }
