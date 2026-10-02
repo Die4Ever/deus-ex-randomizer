@@ -2431,6 +2431,7 @@ function FindActorExtents(out vector min_ext, out vector max_ext, optional bool 
 
     foreach AllActors(class'Actor',a){
         if (a.Region.iLeaf==-1) continue; //Skip actors that aren't inside the BSP
+        if (a.Region.Zone==None) continue; //Skip actors that aren't in a zone at all (doesn't the above cover that?  Apparently not.)
         if (a.Region.Zone.IsA('SkyZoneInfo')) continue; //Skip actors in sky boxes
         //if (Info(a)!=None) continue;
 
