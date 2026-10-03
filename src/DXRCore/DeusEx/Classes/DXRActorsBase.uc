@@ -1252,6 +1252,59 @@ static function ConEventTrigger NewConEventTrigger(Conversation c, ConEvent prev
     return e;
 }
 
+//AddFlagRef sucks, use this instead
+//AddFlagRef will leak a ConFlag if flag already is in the refs
+static function ConAddFlagRef(Conversation c, Name flagName, Bool value)
+{
+    local ConFlagRef newFlagRef;
+    local ConFlagRef refChain;
+    local ConFlagRef refMatch;
+
+    //newFlagRef = CreateFlagRef( flagName, value ); //Don't do this unless we need to
+
+    // Now search through our flag refs to see if we already have a
+    // flag ref by this name
+
+    refChain = c.flagRefList;
+    refMatch = None;
+
+    while( refChain != None )
+    {
+        if ( refChain.flagName == flagName )
+        {
+            refMatch = refChain;
+            break;
+        }
+        refChain = refChain.nextFlagRef;
+    }
+
+    // If we found a match, then update the value.  Otherwise
+    // insert this flag ref at the top of the food chain
+
+    if ( refMatch != None )
+    {
+        refMatch.value = value;
+    }
+    else
+    {
+        newFlagRef = c.CreateFlagRef( flagName, value ); //Rando: OK, we need to
+        newFlagRef.nextFlagRef = c.flagRefList;
+        c.flagRefList = newFlagRef;
+    }
+}
+
+function ConAddFlagRefByConName(name conName, Name flagName, Bool value)
+{
+    local Conversation c;
+
+    c = GetConversation(conName);
+
+    if (c==None) return;
+
+    ConAddFlagRef(c,flagName,value);
+}
+
+
 function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
 {
     local ConEventTrigger e;
