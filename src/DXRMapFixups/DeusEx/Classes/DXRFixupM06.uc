@@ -1244,9 +1244,9 @@ function AnyEntryMapFixes()
     //#region Tong Base
     case "06_HONGKONG_TONGBASE":
         c = GetConversation('M08Briefing');
-        c.AddFlagRef('TriadCeremony_Played', true);
-        c.AddFlagRef('VL_UC_Destroyed', true);
-        c.AddFlagRef('VL_Got_Schematic', true);
+        ConAddFlagRef(c,'TriadCeremony_Played', true);
+        ConAddFlagRef(c,'VL_UC_Destroyed', true);
+        ConAddFlagRef(c,'VL_Got_Schematic', true);
         // some infolinks could require MeetTracerTong_Played or MeetTracerTong2_Played? DL_Tong_05 and DL_Tong_06?
 
         boolFlag = dxr.flagbase.GetBool('QuickLetPlayerIn');
@@ -1345,7 +1345,7 @@ function AnyEntryMapFixes()
     case "06_HONGKONG_VERSALIFE":
         // allow you to get the code from him even if you've been to the labs, to fix backtracking
         DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
-        GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
+        ConAddFlagRefByConName('Disgruntled_Guy_Return','Disgruntled_Guy_Done', true);
         break;
     //#endregion
 
@@ -1417,8 +1417,9 @@ function AnyEntryMapFixes()
 
             DeleteConversationFlag(GetConversation('MarketBum1Barks'), 'PaulDenton_Dead', true); //FemJCMarketBum1Barks also expects Paul to be dead
 
-            c = GetConversation('MeetMarketBum1'); //This is the conversation where you get the maps for free
-            c.AddFlagRef('ThisFlagShouldNeverExist', true); //Make it require a flag that will never be set, so it never runs
+            //This is the conversation where you get the maps for free
+            //Make it require a flag that will never be set, so it never runs
+            ConAddFlagRefByConName('MeetMarketBum1','ThisFlagShouldNeverExist', true);
         }
         break;
     //#endregion

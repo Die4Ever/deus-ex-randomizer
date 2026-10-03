@@ -173,45 +173,45 @@ function AnyEntry()
 
     switch (dxr.localURL) {
         case "01_NYC_UNATCOISLAND":
-            GetConversation('GotoM02').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('GotoM02',blockerFlag1, true);
             break;
         case "02_NYC_BATTERYPARK":
-            GetConversation('BoatLeaving').AddFlagRef(blockerFlag2, true);
+            ConAddFlagRefByConName('BoatLeaving',blockerFlag2, true);
             break;
         case "02_NYC_WAREHOUSE":
-            GetConversation('JockExit').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('JockExit',blockerFlag1, true);
             break;
         case "03_NYC_AIRFIELD":
-            GetConversation('M03JockLeave').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('M03JockLeave',blockerFlag1, true);
             break;
         case "04_NYC_BATTERYPARK":
-            GetConversation('GuntherShowdown').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('GuntherShowdown',blockerFlag1, true);
             break;
         case "05_NYC_UNATCOISLAND":
-            GetConversation('M05MeetJock').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('M05MeetJock',blockerFlag1, true);
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
-            GetConversation('M06JockExit').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('M06JockExit',blockerFlag1, true);
             break;
         case "08_NYC_STREET":
-            GetConversation('M08JockExit').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('M08JockExit',blockerFlag1, true);
             break;
         case "09_NYC_GRAVEYARD":
-            GetConversation('M09JockLeave').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('M09JockLeave',blockerFlag1, true);
             break;
         case "10_PARIS_CHATEAU":
-            GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
+            ConAddFlagRefByConName('DL_graveyard_ambush','DXRando_CommandosUnhidden', true);
             UpdateCryptDoors();
             break;
         case "11_PARIS_EVERETT":
-            GetConversation('TakeOff').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('TakeOff',blockerFlag1, true);
             break;
         case "12_Vandenberg_GAS":
-            GetConversation('M12JockFinal').AddFlagRef(blockerFlag1, true);
-            GetConversation('M12JockFinal2').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('M12JockFinal',blockerFlag1, true);
+            ConAddFlagRefByConName('M12JockFinal2',blockerFlag1, true);
             break;
         case "14_OCEANLAB_SILO":
-            GetConversation('JockArea51').AddFlagRef(blockerFlag1, true);
+            ConAddFlagRefByConName('JockArea51',blockerFlag1, true);
             break;
     }
 }

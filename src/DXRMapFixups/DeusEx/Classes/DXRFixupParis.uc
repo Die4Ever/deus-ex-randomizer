@@ -677,8 +677,8 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CLUB":
         FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
-        GetConversation('AnnetteInterrupted').AddFlagRef('Chad_Dead', false);
-        GetConversation('CharlotteInterrupted').AddFlagRef('Chad_Dead', false);
+        ConAddFlagRefByConName('AnnetteInterrupted','Chad_Dead', false);
+        ConAddFlagRefByConName('CharlotteInterrupted','Chad_Dead', false);
 
         //CamilleConvos has a line at the very end that talks to Antoine instead of Camille.  Fix that so you can talk to her if he's dead
         c = GetConversation('CamilleConvos');

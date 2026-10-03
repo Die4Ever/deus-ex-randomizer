@@ -1293,13 +1293,16 @@ static function ConAddFlagRef(Conversation c, Name flagName, Bool value)
     }
 }
 
-function ConAddFlagRefByConName(name conName, Name flagName, Bool value)
+function ConAddFlagRefByConName(name conName, Name flagName, Bool value, optional bool silent)
 {
     local Conversation c;
 
     c = GetConversation(conName);
 
-    if (c==None) return;
+    if (c==None) {
+        if (!silent) l("ConAddFlagRefByConName: Couldn't find con "$conName$" to add "$flagName$": "$value);
+        return;
+    }
 
     ConAddFlagRef(c,flagName,value);
 }

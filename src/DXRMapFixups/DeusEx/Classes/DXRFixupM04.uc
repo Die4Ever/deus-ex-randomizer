@@ -923,7 +923,7 @@ function AnyEntryMapFixes()
             c = GetConversation('TalkedToPaulAfterMessage');
             if (c!=None){
                 c.bInvokeFrob=true;
-                c.AddFlagRef('ApartmentEntered',True);
+                ConAddFlagRef(c,'ApartmentEntered',True);
             }
         }
 
@@ -975,7 +975,7 @@ function AnyEntryMapFixes()
         if (ces != None)
             ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
 
-        GetConversation('DL_JockParkStart').AddFlagRef('PaulInjured_Played', false); // disable "Your brother's hurt pretty bad" infolink if you've already talked to him
+        ConAddFlagRefByConName('DL_JockParkStart','PaulInjured_Played', false); // disable "Your brother's hurt pretty bad" infolink if you've already talked to him
 
         break;
     }
