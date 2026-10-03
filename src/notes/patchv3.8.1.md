@@ -104,6 +104,7 @@
   - Small fixes and optimization for Bobby's possession effect.
   - More consistent stalker placements when reentering maps, for Edge of Halloween mode.
   - GMDX/Revision: Randomized weapon damage and rate of fire values will now be shown properly in the inventory screen.
+  - Stanton Dowd will be able to talk to you about the Superfreighter in Mission 8 after defeating the ambush if you are successfully tailed by the thug to Dowd before speaking to him.  Previously, if the thug initiated the ambush early, Dowd would no longer talk to you for the main storyline afterwards.
 
 </details>
 

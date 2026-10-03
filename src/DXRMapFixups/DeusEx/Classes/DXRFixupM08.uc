@@ -21,6 +21,7 @@ function AnyEntryMapFixes()
 
         RearrangeMJ12ConvergingInfolink();
         RearrangeJockExitDialog();
+        UnsoftlockDowdAfterAmbush();
 
         ceag = GetGoalConEvent('ScuttleShip', 'StantonDowd');
         if (ceag != None) {
@@ -259,6 +260,22 @@ function AddNoRoomToJordanSheaConvo(){
 
 }
 
+//If the ambush starts early due to the thug getting close to Dowd, you won't actually be able to have the main mission
+//conversation with him to progress the game.  The Post-Ambush barks (StantonAmbushDone) have top priority, followed by
+//the mid-ambush barks (StantonAmbushHappening), finally followed by the actual conversation (StantonDowd).  If the raid
+//starts early, you should have to clear it first, before being able to have the real conversation with him.
+function UnsoftlockDowdAfterAmbush()
+{
+    local Conversation c;
+
+    c = GetConversation('StantonAmbushDone');
+    if (c==None) return; //I don't know, this conversation needs to exist...
+
+    //Only allow playing the "post raid barks" (StantonAmbushDone) after you had the main mission conversation with him
+    //AddFlagRef will update an existing reference if it's there, so this is safe to apply to an already fixed conversation
+    c.AddFlagRef('StantonDowd_Played',true);
+}
+
 //#region Adjust Infolinks
 function RearrangeJockExitDialog()
 {
@@ -292,8 +309,6 @@ function RearrangeJockExitDialog()
         goalComplete.nextEvent = ceasp.nextEvent;
         ceasp.nextEvent = goalComplete;
     }
-
-
 }
 
 function RearrangeMJ12ConvergingInfolink()
