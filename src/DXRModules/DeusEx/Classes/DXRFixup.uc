@@ -1413,6 +1413,8 @@ function FixAutoTurrets()
     foreach AllActors(class'#var(prefix)AutoTurret',at){
         at.gunDamage=at.Default.gunDamage; //One turret in Cathedral has non-standard damage
         at.fireRate=at.Default.fireRate; //Make sure large and small turrets use their appropriate firerates
+        at.bInvincible = at.Default.bInvincible; //Make them consistently destroyable...
+        at.HitPoints = at.Default.HitPoints; //Make them all have consistent health
     }
 #endif
 }
