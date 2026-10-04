@@ -347,7 +347,7 @@ function RandomizeAugUpgradeLocations()
     //Remove all aug upgrade cans (Replace with a placeholder instead)
     foreach AllActors(class'DeusExPickup', p) {
         if (!p.IsA('#var(prefix)AugmentationUpgradeCannister') && !p.IsA('AugmentationUpgradeCannisterOverdrive')) continue;
-        if (Pawn(a.Owner)!=None) continue; //Skip over items in pawn inventories
+        if (Pawn(p.Owner)!=None) continue; //Skip over items in pawn inventories
         ReplaceWithPlaceholder(p,class'PlaceholderItem');
     }
 

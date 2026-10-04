@@ -197,3 +197,4 @@
 - GMDX: "Show Killer" Death Cam option no longer goes black and causes the game to lock up when using the Direct3D 9 renderer.
 - Restoring an old "Saved Settings" in the Advanced settings menu will now properly use the default -1 setting for "Aug Can Chance %" and "Aug Upgrade Chance %"
 - Datacubes actually glow properly again
+- Aug upgrade cans won't be destroyed when entering a new level with the "Aug Upgrade Chance % setting set to something above -1.
