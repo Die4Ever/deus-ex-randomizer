@@ -791,12 +791,10 @@ function string GetAugLocationHelpText(string opt)
     local string msg;
     local int odds;
     local int numMaps, numCans;
-    local bool RevisionMaps;
     local #var(PlayerPawn) p;
 
     p = #var(PlayerPawn)(player);
 
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(p);
     numMaps = class'DXRMapVariants'.static.GetNumMaps(p);
 
     switch(opt){
@@ -804,23 +802,13 @@ function string GetAugLocationHelpText(string opt)
         msg =       "This setting sets the odds of an augmentation canister spawning in each map.|n";
         msg = msg $ "|n";
         msg = msg $ "When set to -1, augmentation canisters will stay in their original maps.  Otherwise, all original augmentation canisters will be removed and new ones will be spawned according to the selected odds.|n";
-        if(#defined(gmdx)||RevisionMaps){
-            numCans=21;
-        } else {
-            numCans=20;
-        }
+        numCans = class'DXRMapVariants'.static.GetNumAugCans(p);
         break;
     case "augupgradelocs":
         msg =       "This setting sets the odds of an augmentation upgrade canister spawning in each map.|n";
         msg = msg $ "|n";
         msg = msg $ "When set to -1, augmentation upgrade canisters will stay in their original maps."$"  Otherwise, all original augmentation upgrade canisters (except for ones given from conversations) will be removed and new ones will be spawned according to the selected odds.|n";
-        if(RevisionMaps){
-            numCans=24; //Kind of in-between reality - 19 total loose (2 extra underground in graveyard, 1 extra in A51 Final, some extras at lower difficulty, less on higher), 9 in corpses and containers
-        } else if (#defined(gmdx)){
-            numCans=21; //17 loose (2 are "overdrive", but one is inaccessible), 5 in containers and corpses.
-        } else {
-            numCans=17; //13 loose, 4 in corpses
-        }
+        numCans = class'DXRMapVariants'.static.GetNumAugUpgrades(p);
         break;
     default:
         log("GetAugLocationHelpText: No help text available for "$opt);
