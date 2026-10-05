@@ -205,6 +205,8 @@ function PreFirstEntry()
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
+    class'DXRMapReentryInfo'.static.TickEntry(self);
+
     SetSeed( "DXRFixup PreFirstEntry" );
 
     TriggerDebug();
@@ -239,6 +241,7 @@ function PreFirstEntry()
 function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
+    if(IsTravel) class'DXRMapReentryInfo'.static.TickEntry(self);
     OverwriteDecorations(false);
 }
 
@@ -1410,6 +1413,8 @@ function FixAutoTurrets()
     foreach AllActors(class'#var(prefix)AutoTurret',at){
         at.gunDamage=at.Default.gunDamage; //One turret in Cathedral has non-standard damage
         at.fireRate=at.Default.fireRate; //Make sure large and small turrets use their appropriate firerates
+        at.bInvincible = at.Default.bInvincible; //Make them consistently destroyable...
+        at.HitPoints = at.Default.HitPoints; //Make them all have consistent health
     }
 #endif
 }

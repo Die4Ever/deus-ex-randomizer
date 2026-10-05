@@ -495,13 +495,13 @@ function AnyEntryMapFixes()
     DeleteConversationFlag(GetConversation('GuntherRescued'), 'GuntherFreed', true);
 
     // you can't take a corpse alive and conscious
-    GetConversation('DL_Top').AddFlagRef('TerroristCommander_Dead', false);
+    ConAddFlagRefByConName('DL_Top','TerroristCommander_Dead', false);
     // "the NSF have set up patchwork security systems here"
-    GetConversation('DL_FrontEntrance').AddFlagRef('StatueMissionComplete', false);
+    ConAddFlagRefByConName('DL_FrontEntrance','StatueMissionComplete', false);
     // "you might be able to avoid some of the security by entering this way"
-    GetConversation('DL_BackEntrance').AddFlagRef('StatueMissionComplete', false);
+    ConAddFlagRefByConName('DL_BackEntrance','StatueMissionComplete', false);
     // NSF everywhere, JC.  Your orders are to shoot on sight.
-    GetConversation('DL_LeaveDockNoGun').AddFlagRef('StatueMissionComplete', false);
+    ConAddFlagRefByConName('DL_LeaveDockNoGun','StatueMissionComplete', false);
 
     //Confix adds a requirement to have talked to Paul (to get the password) before you can talk to Harley Filben
     //Remove that requirement, because it can be annoying for Rando.  This should do nothing if Confix isn't present.
@@ -511,10 +511,7 @@ function AnyEntryMapFixes()
     //In addition to the above, Confix now adds a new conversation, FilbenStranger, that plays some barks if you get
     //to Filben without having talked to Paul.  Since we're removing the Paul requirement for the above conversation,
     //we need to disable this one so it doesn't take priority.
-    c = GetConversation('FilbenStranger');
-    if (c!=None){
-        c.AddFlagRef('ThisFlagShouldNeverExist', true);
-    }
+    ConAddFlagRefByConName('FilbenStranger','ThisFlagShouldNeverExist', true, true); //final true means no log when the conversation isn't found
 
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando

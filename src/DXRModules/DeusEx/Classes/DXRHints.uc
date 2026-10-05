@@ -164,6 +164,7 @@ simulated function InitHints()
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
     AddHint("Sabot rounds can damage tough objects no matter the damage threshold.","Check the highlight text!");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
+    AddHint("You can reduce the combat difficulty", "in the Rando->In-Game Settings menu.", true);
     if (!#defined(gmdx)){
         AddHint("Thermoptic Camo allows you to pass", "through lasers without being detected!");
         AddHint("Thermoptic Camo makes you invisible to people and bots", "but not to cameras or turrets!");

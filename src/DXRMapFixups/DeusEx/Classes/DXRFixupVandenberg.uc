@@ -1224,7 +1224,7 @@ function AnyEntryMapFixes()
     case "14_VANDENBERG_SUB":
         FixSavageSkillPointsDupe();
 
-        GetConversation('JockArea51').AddFlagRef('dummy', True); // 'JockArea51' can never play
+        ConAddFlagRefByConName('JockArea51','dummy', True); // 'JockArea51' can never play
         DeleteConversationFlag(GetConversation('JockBarks'), 'DL_Dead_Played', false); // 'JockBarks' can always play
 
         break;
@@ -1285,8 +1285,8 @@ function AnyEntryMapFixes()
         break;
 
     case "14_OCEANLAB_LAB":
-        GetConversation('DL_Simons1').AddFlagRef('WaltonSimons_Dead', false);
-        GetConversation('DL_Simons2').AddFlagRef('WaltonSimons_Dead', false);
+        ConAddFlagRefByConName('DL_Simons1','WaltonSimons_Dead', false);
+        ConAddFlagRefByConName('DL_Simons2','WaltonSimons_Dead', false);
 
         l("14_OceanLab_Lab Door Debug:"); // TODO: remove this
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm){

@@ -347,7 +347,7 @@ function RandomizeAugUpgradeLocations()
     //Remove all aug upgrade cans (Replace with a placeholder instead)
     foreach AllActors(class'DeusExPickup', p) {
         if (!p.IsA('#var(prefix)AugmentationUpgradeCannister') && !p.IsA('AugmentationUpgradeCannisterOverdrive')) continue;
-        if (Pawn(a.Owner)!=None) continue; //Skip over items in pawn inventories
+        if (Pawn(p.Owner)!=None) continue; //Skip over items in pawn inventories
         ReplaceWithPlaceholder(p,class'PlaceholderItem');
     }
 
@@ -1110,6 +1110,24 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot,
     a = augs[slot];
     info("RemoveRandomAug("$p$") Removing aug "$a$" from "$am$", numAugs was "$numAugs);
     RemoveAug(p,a);
+}
+
+simulated function RemoveAllAugs(#var(PlayerPawn) p)
+{
+    local Augmentation a;
+    local AugmentationManager am;
+
+    am = p.AugmentationSystem;
+
+    for( a = am.FirstAug; a != None; a = a.next ) {
+        if( !a.bHasIt ) continue;
+        if( a.AugmentationLocation == LOC_Default ) continue;
+
+        if( #var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
+            continue;
+
+        RemoveAug(p, a);
+    }
 }
 
 static function GetTrueAugLevels(Augmentation anAug, out int trueLevel, out int trueMax)

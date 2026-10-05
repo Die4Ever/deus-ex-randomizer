@@ -304,17 +304,20 @@ function CheckConfig()
     }
 }
 
-function int GetMissionParTimeMinutes(int mission, int index) {
+function int GetMissionParTimeMinutes(int mission, int index, optional bool display) {
     local float mult;
-    if(index == 0) mult = 1.1;
+    if(index == 0) mult = 1.2;
+    else if(index > 3) mult = 0.9;
     else mult = 1;
 
     switch(mission) {
-        case 1: return 8 * mult;
-        case 3: return 12 * mult;
-        case 6: return 15 * mult;
-        case 8: return 4 * mult;
-        case 9: return 12 * mult;
+        case 1:  return 8 * mult;
+        case 3:  return 12 * mult;
+        case 6:  // Hong Kong is weird, it takes a long time but loads you up for future missions
+            if(display) return 17 * mult;
+            return 16 * mult;
+        case 8:  return 3 * mult;
+        case 9:  return 13 * mult;
         case 10: return 7 * mult;
         case 14: return 18 * mult;
         case 15: return 15 * mult;

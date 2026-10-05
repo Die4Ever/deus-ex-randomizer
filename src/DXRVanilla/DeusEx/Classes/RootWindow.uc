@@ -348,6 +348,39 @@ function UnkillCharacters()
     }
 }
 
+function ResetFlags()
+{
+    local FlagBase f;
+    local DXRFlags df;
+    local bool IsEdgeOfTomorrow, KnowsSmugglerPassword, PlayerKnowsUnderworldPassword, KnowsAnnasKillphrase1, KnowsAnnasKillphrase2, KnowsAboutNanoSword, KnowsAboutKillphrase, KnowsGuntherKillphrase;
+
+    f = DeusExPlayer(parentPawn).FlagBase;
+    df = DXRFlags(class'DXRFlags'.static.Find());
+    if(df != None) IsEdgeOfTomorrow = df.IsEdgeOfTomorrow();
+
+    if(IsEdgeOfTomorrow) {
+        KnowsSmugglerPassword = f.GetBool('KnowsSmugglerPassword');
+        PlayerKnowsUnderworldPassword = f.GetBool('PlayerKnowsUnderworldPassword');
+        KnowsAnnasKillphrase1 = f.GetBool('KnowsAnnasKillphrase1');
+        KnowsAnnasKillphrase2 = f.GetBool('KnowsAnnasKillphrase2');
+        KnowsAboutNanoSword = f.GetBool('KnowsAboutNanoSword');
+        KnowsAboutKillphrase = f.GetBool('KnowsAboutKillphrase');
+        KnowsGuntherKillphrase = f.GetBool('KnowsGuntherKillphrase');
+    }
+
+    _ResetFlags();
+
+    if(IsEdgeOfTomorrow) {
+        if(KnowsSmugglerPassword) f.SetBool('KnowsSmugglerPassword', KnowsSmugglerPassword,, 999);
+        if(PlayerKnowsUnderworldPassword) f.SetBool('PlayerKnowsUnderworldPassword', PlayerKnowsUnderworldPassword,, 999);
+        if(KnowsAnnasKillphrase1) f.SetBool('KnowsAnnasKillphrase1', KnowsAnnasKillphrase1,, 999);
+        if(KnowsAnnasKillphrase2) f.SetBool('KnowsAnnasKillphrase2', KnowsAnnasKillphrase2,, 999);
+        if(KnowsAboutNanoSword) f.SetBool('KnowsAboutNanoSword', KnowsAboutNanoSword,, 999);
+        if(KnowsAboutKillphrase) f.SetBool('KnowsAboutKillphrase', KnowsAboutKillphrase,, 999);
+        if(KnowsGuntherKillphrase) f.SetBool('KnowsGuntherKillphrase', KnowsGuntherKillphrase,, 999);
+    }
+}
+
 defaultproperties
 {
     LoadLatestTitle="Load Latest Save?"

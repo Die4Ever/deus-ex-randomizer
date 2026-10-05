@@ -202,6 +202,9 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
         case class'PersonaScreenImages':
             newScreen = class'DXRPersonaScreenImages';
             break;
+        case class'PersonaScreenInventory':
+            newScreen = class'DXRPersonaScreenInventory';
+            break;
         //IF ADDING MORE PERSONA SCREENS, ALSO UPDATE THE DataVaultFunctions BELOW IN DEFAULT PROPERTIES
         //THIS ALLOWS HITTING THE BOUND KEY AGAIN TO CLOSE THE WINDOW.
         default:
@@ -372,7 +375,7 @@ event MutateNewChild(Window NewParent, out class<Window> DesignatedClass)
 
 defaultproperties
 {
-     //DataVaultFunctions(0)=(Function="ShowInventoryWindow",winClass=Class'DeusEx.PersonaScreenInventory')
+     DataVaultFunctions(0)=(Function="ShowInventoryWindow",winClass=Class'DXRPersonaScreenInventory')
      //DataVaultFunctions(1)=(Function="ShowHealthWindow",winClass=Class'DeusEx.PersonaScreenHealth')
      //DataVaultFunctions(2)=(Function="ShowAugmentationsWindow",winClass=Class'DeusEx.PersonaScreenAugmentations')
      DataVaultFunctions(3)=(Function="ShowSkillsWindow",winClass=Class'DXRPersonaScreenSkills')

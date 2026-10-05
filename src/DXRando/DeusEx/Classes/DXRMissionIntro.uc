@@ -76,7 +76,17 @@ function PostPostBeginPlay()
 
 function InitStateMachine()
 {
-    Super.InitStateMachine();
+	Super(MissionScript).InitStateMachine();
+
+	// Destroy all flags!
+	if (flags != None) {
+		//flags.DeleteAllFlags();
+        DeusExRootWindow(player.rootWindow).ResetFlags();
+    }
+
+	// Set the PlayerTraveling flag (always want it set for
+	// the intro and endgames)
+	flags.SetBool('PlayerTraveling', True, True, 0);
     dxr.flags.Timer();
 }
 

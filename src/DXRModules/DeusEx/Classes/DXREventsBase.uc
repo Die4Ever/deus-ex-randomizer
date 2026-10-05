@@ -1300,23 +1300,30 @@ static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
 static function InventoryData(DXRando dxr, bool drawInv, out string j)
 {
     local Inventory item;
-    local string invId,invClass,invInfo,invName,invRot;
+    local string invId,invClass,invInfo,invName,invRot,small;
     local int invNum,invPosX,invPosY,count;
     local #var(DeusExPrefix)Weapon dxw;
-    local bool rot;
+    local bool rot,include;
 
     item = dxr.player.Inventory;
     invNum=0;
 
     while(item!=None)
     {
-        if (Item.bDisplayableInv){
+        include = true;
+#ifdef revision
+        //Revision makes ammo bDisplayableInv because of a (currently) unused modifier
+        //Only include ammo if that modifier is explicitly enabled...
+        if (item.bIsAmmo && dxr.player.bHeavyAmmoMode==false) include = false;
+#endif
+        if (Item.bDisplayableInv && include){
             invId="Inv-"$invNum++;
             invClass=string(Item.Class.Name);
             invName=Item.ItemName;
             invPosX=Item.invPosX;
             invPosY=Item.invPosY;
             invRot="false";
+            small="false";
             count=0;
             if(Pickup(Item)!=None){ //Pickups can have a count
                 count = Pickup(Item).NumCopies;
@@ -1333,7 +1340,7 @@ static function InventoryData(DXRando dxr, bool drawInv, out string j)
                 if (dxw!=None && dxw.bRotated){
                     invRot="true";
                 }
-                #else if gmdx
+                #elseif gmdx
                 //RSD also supports rotation, but not the other supported GMDX variants
                 if (dxw!=None){
                     rot = bool(dxw.GetPropertyText("bRotated"));
@@ -1341,10 +1348,14 @@ static function InventoryData(DXRando dxr, bool drawInv, out string j)
                         invRot="true";
                     }
                 }
+                #elseif revision
+                if(dxw!=None && (dxr.player.bSmallItems==true)){
+                    small="true";
+                }
                 #endif
             }
 
-            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\",\"rot\":"$invRot$"}";
+            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\",\"rot\":"$invRot$",\"small\":"$small$"}";
             j = j $",\"" $ invId $ "\":" $ invInfo;
         }
 

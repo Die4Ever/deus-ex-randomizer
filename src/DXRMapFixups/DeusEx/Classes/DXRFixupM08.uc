@@ -22,6 +22,12 @@ function AnyEntryMapFixes()
         RearrangeMJ12ConvergingInfolink();
         RearrangeJockExitDialog();
 
+        //If the ambush starts early due to the thug getting close to Dowd, you won't actually be able to have the main mission
+        //conversation with him to progress the game.  The Post-Ambush barks (StantonAmbushDone) have top priority, followed by
+        //the mid-ambush barks (StantonAmbushHappening), finally followed by the actual conversation (StantonDowd).  If the raid
+        //starts early, you should have to clear it first, before being able to have the real conversation with him.
+        ConAddFlagRefByConName('StantonAmbushDone','StantonDowd_Played',true);
+
         ceag = GetGoalConEvent('ScuttleShip', 'StantonDowd');
         if (ceag != None) {
             ceag.goalText = ReplaceText(ceag.goalText, "PCS", "PRCS");
@@ -292,8 +298,6 @@ function RearrangeJockExitDialog()
         goalComplete.nextEvent = ceasp.nextEvent;
         ceasp.nextEvent = goalComplete;
     }
-
-
 }
 
 function RearrangeMJ12ConvergingInfolink()

@@ -86,6 +86,7 @@
   - Enemies will no longer be able to walk in the air if they were swapped while sitting in a chair.  This likely was only possible when swapped by a Crowd Control effect.
   - "Show Killer" Death Cam option will now remain behind the player for a moment after death, instead of immediately showing the killer.
   - The elevator from the basement of Osgoode & Sons to the rooftops in the warehouse district (Mission 2) no longer opens automatically and instead has an "open doors" button, since the automatic opening did not behave consistently in the basement.
+  - Vanilla: Changing ammo types in the inventory screen immediately updates the weapon information.
   - GMDX/VMD: Enemies who get helmets randomly added or removed will properly take damage as though they do or do not have helmets.
   - Revision: Reloading a small scoped weapon just before starting a conversation will no longer cause the scope to appear again mid-conversation.
   - Vanilla/Revision/GMDX: Conversations can now start while using the scope on a weapon.
@@ -98,6 +99,14 @@
   - Chateau key hunt timed race now has a target time of 4 minutes, so you will now get an in-game message if you're fast enough and you have memes enabled.
   - Fixed installer issue on Linux failing to create the game's Documents folder.
   - When zombies are enabled, the terrorist carcass in M05 is now unconscious so it doesn't become a zombie.
+  - Fixed issues with Speedrun mode splits display.
+  - Tweak par times for Speedrun Shuffle.
+  - Small fixes and optimization for Bobby's possession effect.
+  - More consistent stalker placements when reentering maps, for Edge of Halloween mode.
+  - GMDX/Revision: Randomized weapon damage and rate of fire values will now be shown properly in the inventory screen.
+  - Stanton Dowd will be able to talk to you about the Superfreighter in Mission 8 after defeating the ambush if you are successfully tailed by the thug to Dowd before speaking to him.  Previously, if the thug initiated the ambush early, Dowd would no longer talk to you for the main storyline afterwards.
+  - MJ12 Troops who receive a randomized visor will no longer have visible "glass" leftover from their original goggles.
+  - The base of autoturrets will now be consistently destroyable when minor Map Balance Changes are enabled.
 
 </details>
 
@@ -156,6 +165,7 @@
   - "Combat Medic's Bag" perk now correctly increases the randomized limits for medkits and bioelectric cells by 5 when purchased.
   - The falling platform in the GMDX-added section at the end of Vandenberg Tunnels (Mission 12) cannot be triggered more than once, causing it to fall back up into position.
   - The datacube for the "Gray Lab" in Area 51 (Mission 15) can no longer be randomized into the locked containers in the cloning room.
+  - The player should no longer be able to get into a state where mantling is disabled.
 
 </details>
 
@@ -189,3 +199,5 @@
 - GMDX: "Show Killer" Death Cam option no longer goes black and causes the game to lock up when using the Direct3D 9 renderer.
 - Restoring an old "Saved Settings" in the Advanced settings menu will now properly use the default -1 setting for "Aug Can Chance %" and "Aug Upgrade Chance %"
 - Datacubes actually glow properly again
+- Aug upgrade cans won't be destroyed when entering a new level with the "Aug Upgrade Chance % setting set to something above -1.
+- Edge of Tomorrow modes fix removing augs, keep notes, keep killphrases and other flags

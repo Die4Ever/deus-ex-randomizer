@@ -193,31 +193,39 @@ function InitStats(DXRStats newstats)
         notes = ReplaceVariables(notes);
     }
 
-    for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
-        m = mapvariants.missions[i];
-        if(isShuffle) {
-            PB[m] = mapvariants.GetMissionParTimeMinutes(m, i) * 600; // tenths of seconds
+    if(isShuffle) {
+        for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
+            m = mapvariants.missions[i];
+            PB[m] = mapvariants.GetMissionParTimeMinutes(m, i, true) * 600; // tenths of seconds
+            Golds[m] = int((PB[m] * 0.75 + 15) / 600) * 600; // round down to a minute (45 seconds rounds up)
             Avgs[m] = PB[m];
-            Golds[m] = PB[m] * 0.75;
             balanced_splits[m] = PB[m];
-        } else {
-            balanced_splits[m] = BalancedSplit(m);
-        }
-        for(t=i; mapvariants.missions[t] != 99 && t<ArrayCount(mapvariants.missions); t++) {
-            balanced_splits_totals[mapvariants.missions[t]] += balanced_splits[m];
+
+            for(t=i; t<ArrayCount(mapvariants.missions) && mapvariants.missions[t] != 99; t++) {
+                balanced_splits_totals[mapvariants.missions[t]] += balanced_splits[m];
+            }
         }
     }
 
     for(i=1; i<=15; i++) {
+        average_total += Avgs[i]; // BalancedSplit() depends on this
         PB_total += PB[i];
         sum_of_bests += Golds[i];
-    }
-    for(i=1; i<=15; i++) {
         if(Avgs[i] < Golds[i]) {
             if(PB[i] > Golds[i]) Avgs[i] = PB[i];
             else Avgs[i] = Golds[i];
         }
-        average_total += Avgs[i];
+    }
+
+    if(!isShuffle) {
+        for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
+            m = mapvariants.missions[i];
+            balanced_splits[m] = BalancedSplit(m);
+
+            for(t=i; t<ArrayCount(mapvariants.missions) && mapvariants.missions[t] != 99; t++) {
+                balanced_splits_totals[mapvariants.missions[t]] += balanced_splits[m];
+            }
+        }
     }
 
     total = TotalTime();
@@ -370,7 +378,7 @@ function DrawWindow(GC gc)
 {
     local int cur;
 
-    if(stats == None) return;
+    if(stats == None || stats.dxr == None || stats.dxr.flags == None) return;
 
 #ifdef injections
     if(DeusExRootWindow(player.rootWindow).hud.hms.bShowing) return;
@@ -386,7 +394,9 @@ function DrawWindow(GC gc)
         bWaltonWare = stats.dxr.flags.IsWaltonWare();
     } else if(rememberedMission > 0 && rememberedMission <= 15) {
         cur = rememberedMission;
-    } else {
+    }
+
+    if(cur < 1 || cur > 15) {
         return;
     }
 
@@ -504,11 +514,13 @@ function DrawSplits(GC gc, int cur)
     if (cur >= ArrayCount(stats.missions_times) || cur < 0) return; //Don't draw, we aren't in a valid range
 
     GetMapVariants();
+    bShuffle = (stats.dxr.flags.moresettings.shuffle_missions > 0);
 
     total = TotalTime();
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
+    prev = -1;
     for(i=0; i<ArrayCount(mapvariants.missions) && mapvariants.missions[i] != cur; i++) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
@@ -519,6 +531,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
+    prevprev = -1;
     for(i=prev-1; i>=0; i--) {
         m = mapvariants.missions[i];
         time = stats.missions_times[m];
@@ -529,10 +542,18 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    for(i=cur+1; i<ArrayCount(mapvariants.missions); i++) {
+    next = -1;
+    for(i=0; i<ArrayCount(mapvariants.missions); i++) {
         m = mapvariants.missions[i];
-        if(balanced_splits[m] > 0) {
-            next = i;
+        if(m == 99) break;
+        if(m == cur) {
+            for(i=i+1; i<ArrayCount(mapvariants.missions); i++) {
+                m = mapvariants.missions[i];
+                if(m != 99 && balanced_splits[m] > 0) {
+                    next = i;
+                    break;
+                }
+            }
             break;
         }
     }
@@ -540,15 +561,14 @@ function DrawSplits(GC gc, int cur)
     //#region drawing text
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
-    bShuffle = (stats.dxr != None && stats.dxr.flags != None && stats.dxr.flags.moresettings.shuffle_missions > 0);
     tempTotal = 0;
-    for(i = 0; mapvariants.missions[i] != 99 && i < ArrayCount(mapvariants.missions); i++) {
+    for(i = 0; i < ArrayCount(mapvariants.missions) && mapvariants.missions[i] != 99; i++) {
         m = mapvariants.missions[i];
         tempTotal += stats.missions_times[m];
         tempTotal += stats.missions_menu_times[m];
 
         if(showAllSplits
-        || (alwaysShowSplit[i] != 0)
+        || (alwaysShowSplit[m] != 0)
         || (i == prevprev && showPrevprev)
         || (i == prev && showPrev)
         || (m == cur && showCurrentMission)
@@ -560,7 +580,7 @@ function DrawSplits(GC gc, int cur)
         }
     }
 
-    prev = mapvariants.missions[prev]; // used for colors
+    prev = mapvariants.missions[Max(prev, 0)]; // used for colors
 
     //#region current segment time with comparison
     if(showSeg) {
@@ -569,6 +589,15 @@ function DrawSplits(GC gc, int cur)
         cmpColor = GetCmpColor(curTime, balanced_splits[cur], prevTotal, balanced_splits_totals[prev], Golds[cur]);
         DrawTextLine(gc, "SEG:", msg, cmpColor, x, y, msg2, true);
         y += text_height;
+    }
+
+    if(stats.dxr.flags.IsEdgeOfTomorrow()) {
+        tempTotal = stats.dxr.flags.newgameplus_total_time;
+        if(tempTotal > 0) {
+            msg = stats.fmtTimeToString(tempTotal, false, false, true); // show tenths
+            DrawTextLine(gc, "Loop " $ stats.dxr.flags.newgameplus_loops, "", colorText, x, y, msg, true);
+            y += text_height;
+        }
     }
 
     //#region current overall time

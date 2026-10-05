@@ -14,14 +14,14 @@ struct ZoneData {
 
 var LitData lits[1024];
 var ZoneData zones[128];
-var int num_lits, num_zones;
+var int num_lits, num_zones, cycleCounter;
 var float last_scale;
 
 var Bobby oldBob;
 var BobbyFake faker;
 var DXRHalloween halloween;
 
-const range=1200; // if another effect wants to be spawned within this range, need to copy original values
+const range=1000; // if another effect wants to be spawned within this range, need to copy original values
 
 function PreTravel()
 {// stalkers get recreated on travel
@@ -87,11 +87,13 @@ function BeginPlay()
         lits[num_lits].bUnlit = a.bUnlit;
         lits[num_lits].ScaleGlow = a.ScaleGlow;
         num_lits++;
+        if(num_lits >= ArrayCount(lits)) break;
     }
     foreach AllActors(class'ZoneInfo', z) {
         zones[num_zones].z = z;
         zones[num_zones].brightness = z.AmbientBrightness;
         num_zones++;
+        if(num_zones >= ArrayCount(zones)) break;
     }
 
     /* TODO: fix this properly?
@@ -168,7 +170,8 @@ function Tick(float delta)
         scale = FMin(scale, effect.last_scale); // sync
     }
 
-    for(i=0; i<num_lits; i++) {
+    // cycle between 4 different "sets" of lights
+    for(i=cycleCounter; i<num_lits; i+=4) {
         if(lits[i].a == None) continue;
         lits[i].brightness = Max(lits[i].a.LightBrightness, lits[i].brightness); // just in case it was changed by something else
         if(lits[i].a.bUnlit) lits[i].bUnlit = true;
@@ -182,9 +185,11 @@ function Tick(float delta)
         zones[i].z.AmbientBrightness = zones[i].brightness * scale;
     }
 
-    if(!(scale ~= last_scale)) GetPlayerPawn().ConsoleCommand("FLUSH");
-
-    last_scale = actualScale;
+    if(cycleCounter == 0 && !(scale ~= last_scale)) {
+        GetPlayerPawn().ConsoleCommand("FLUSH");
+        last_scale = actualScale;
+    }
+    cycleCounter = (cycleCounter + 1) % 4;
 }
 
 //#region destroyed

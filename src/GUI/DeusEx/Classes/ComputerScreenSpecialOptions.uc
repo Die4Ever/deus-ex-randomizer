@@ -45,7 +45,7 @@ function SpecialOptionTriggerAdjustPassword(int specialIndex)
     local DeusExNote note;
     local DXRPasswords passwords;
     local string new_passwords[16];
-    local string text;
+    local string text, oldText;
     local int i;
     local #var(prefix)PlayerPawn pp;
 #ifdef hx
@@ -67,15 +67,18 @@ function SpecialOptionTriggerAdjustPassword(int specialIndex)
 
     if(Len(text)==0) return;
 
+    oldText = text;
     passwords.ProcessString(text, new_passwords);
 
+    if(text != oldText) {
 #ifdef hx
-    compOwner.specialOptions[specialIndex].TriggerText = text;
-    note = pp.AddNote(text,, True);
+        compOwner.specialOptions[specialIndex].TriggerText = text;
+        note = pp.AddNote(text,, True);
 #else
-    Computers(compOwner).specialOptions[specialIndex].TriggerText = text;
-    note = DeusExPlayer(pp).AddNote(text,, True);
+        Computers(compOwner).specialOptions[specialIndex].TriggerText = text;
+        note = DeusExPlayer(pp).AddNote(text,, True);
 #endif
+    }
 
 
 #ifdef injections
