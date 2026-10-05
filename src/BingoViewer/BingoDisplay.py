@@ -1088,7 +1088,7 @@ class BingoDisplay:
             if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
                 #finished
                 img = self.UpdateButtonImageFinished(x,y,boardEntry)
-            if (isActive==1 or isActive==2 or multiplayer):
+            elif (isActive==1 or isActive==2 or multiplayer):
                 #possible
                 img = self.UpdateButtonImagePossible(x,y,boardEntry)
             elif (isActive == -1):
