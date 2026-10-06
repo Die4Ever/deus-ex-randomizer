@@ -108,6 +108,7 @@
   - MJ12 Troops who receive a randomized visor will no longer have visible "glass" leftover from their original goggles.
   - The base of autoturrets will now be consistently destroyable when minor Map Balance Changes are enabled.
   - Fixed Bingo Viewer display for a solved goal from a previous mission.
+  - Fixed upgrading of Light aug from quick augs menu for Halloween modes.
 
 </details>
 
