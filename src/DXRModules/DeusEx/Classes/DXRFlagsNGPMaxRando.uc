@@ -556,6 +556,7 @@ function PlayerDied(PlayerPawn player)
 {
     if(DXRFlags(self).IsEdgeOfTomorrow() /*&& dxr.dxInfo.MissionNumber != 4 || f.GetBool('MS_PlayerCaptured') || !f.GetBool('TalkedToPaulAfterMessage_Played')*/) {
         // TODO: timer
+        #var(PlayerPawn)(player).bIgnoreNextShowMenu = true; // TODO: maybe with Tick we can check this to see if the player attempted to open the menu and instantly go to new game? or in the RootWindow we can intercept the creation of the menu
         #var(PlayerPawn)(player).RestoreAllHealth();
         player.GotoState('PlayerWalking');
         NewGamePlus();

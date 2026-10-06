@@ -1030,15 +1030,18 @@ class BingoDisplay:
         if boardEntry is None or tkTile is None:
             return
 
+        multiplayer = (self.mpVal.get()!=0)
+
         desc = boardEntry["desc"]
-        if boardEntry["max"]>1:
+        if boardEntry["max"]>1 and not multiplayer:
             desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
-        tkText.set(desc)
+        if self.mpVal.get() <= 1:
+            tkText.set(desc)
+        else:
+            tkText.set(' ')
 
         self.UpdateButtonImage(x,y,boardEntry)
-
-        multiplayer = (self.mpVal.get()!=0)
 
         isActive = boardEntry.get('active', 1)
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
@@ -1088,7 +1091,7 @@ class BingoDisplay:
             if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
                 #finished
                 img = self.UpdateButtonImageFinished(x,y,boardEntry)
-            if (isActive==1 or isActive==2 or multiplayer):
+            elif (isActive==1 or isActive==2 or multiplayer):
                 #possible
                 img = self.UpdateButtonImagePossible(x,y,boardEntry)
             elif (isActive == -1):

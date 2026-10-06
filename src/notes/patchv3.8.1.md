@@ -107,6 +107,8 @@
   - Stanton Dowd will be able to talk to you about the Superfreighter in Mission 8 after defeating the ambush if you are successfully tailed by the thug to Dowd before speaking to him.  Previously, if the thug initiated the ambush early, Dowd would no longer talk to you for the main storyline afterwards.
   - MJ12 Troops who receive a randomized visor will no longer have visible "glass" leftover from their original goggles.
   - The base of autoturrets will now be consistently destroyable when minor Map Balance Changes are enabled.
+  - Fixed Bingo Viewer display for a solved goal from a previous mission.
+  - Fixed upgrading of Light aug from quick augs menu for Halloween modes.
 
 </details>
 
@@ -201,3 +203,5 @@
 - Datacubes actually glow properly again
 - Aug upgrade cans won't be destroyed when entering a new level with the "Aug Upgrade Chance % setting set to something above -1.
 - Edge of Tomorrow modes fix removing augs, keep notes, keep killphrases and other flags
+- Edge of Tomorrow modes enable random aug can locations and aug upgrade can locations.
+- Edge of Tommorow modes reduce medkit/biocell rates.

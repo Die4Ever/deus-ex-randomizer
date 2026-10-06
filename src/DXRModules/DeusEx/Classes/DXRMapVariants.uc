@@ -225,6 +225,26 @@ static function int GetNumMaps(#var(PlayerPawn) player)
     }
 }
 
+static function int GetNumAugCans(#var(PlayerPawn) player)
+{
+    if(#defined(gmdx) || IsRevisionMaps(player)){
+        return 21;
+    } else {
+        return 20;
+    }
+}
+
+static function int GetNumAugUpgrades(#var(PlayerPawn) player)
+{
+    if(IsRevisionMaps(player)){
+        return 24; //Kind of in-between reality - 19 total loose (2 extra underground in graveyard, 1 extra in A51 Final, some extras at lower difficulty, less on higher), 9 in corpses and containers
+    } else if (#defined(gmdx)){
+        return 21; //17 loose (2 are "overdrive", but one is inaccessible), 5 in containers and corpses.
+    } else {
+        return 17; //13 loose, 4 in corpses
+    }
+}
+
 function int GetMirrorMapsSetting()
 {
 #ifndef injections

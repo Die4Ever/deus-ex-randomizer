@@ -561,6 +561,8 @@ function MoreFlagsSettings GetMoreDifficulty(int diff)
 //#region SetDifficulty
 function SetDifficulty(int new_difficulty)
 {
+    local float f;
+
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
     moresettings = more_difficulty_settings[difficulty];
@@ -840,6 +842,14 @@ function SetDifficulty(int new_difficulty)
     if(IsGroundhogDay()) {
         moresettings.newgameplus_curve_scalar = 0;
         // DXRMenuSelectDifficulty sets autosave mode to Ironman when selecting an Edge of ____ game mode
+    }
+    if(IsEdgeOfTomorrow()) {
+        settings.medkits *= 0.8;
+        settings.biocells *= 0.8;
+        f = float(class'DXRMapVariants'.static.GetNumAugCans(player())) / class'DXRMapVariants'.static.GetNumMaps(player());
+        moresettings.augcanlocs = f * 100.0 + 0.5;
+        f = float(class'DXRMapVariants'.static.GetNumAugUpgrades(player())) / class'DXRMapVariants'.static.GetNumMaps(player());
+        moresettings.augupgradelocs = f * 100.0 + 0.5;
     }
 
     class'DXRLoadouts'.static.AdjustFlags(self, loadout); // new game menu doesn't initialize its own DXRLoadouts
