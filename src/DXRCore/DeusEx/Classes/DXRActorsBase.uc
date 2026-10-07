@@ -2150,6 +2150,9 @@ function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector ma
     }
 
     foreach AllActors(classToFind,a){
+        //Skip over items that belong to someone
+        if (a.Owner!=None) continue;
+
         outside=False;
         if (a.Location.X < minLoc.X) outside=True;
         if (a.Location.Y < minLoc.Y) outside=True;
