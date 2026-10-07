@@ -1031,7 +1031,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
     if (credits > 0) {
         crate.AddContent(class'#var(prefix)Credits', credits);
     } else {
-        player.Credits += credits; // add the negative number
+        player.Credits += credits; // add the negative number cause we can't put debt in a box
     }
     crate.AddContent(class'#var(prefix)BioelectricCell', 1);
     starting_map = dxr.flags.GetStartingMap();
@@ -1107,7 +1107,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         crate = SpawnLateStartCrate(player);
     } else if (dxr.flags.newgameplus_loops > 0 && !dxr.flags.IsGroundhogDay()) {
         crate = SpawnNGPlusCrate(player);
-    } else {
+    } else if(!dxr.flags.IsZeroRando()) {
         AddStartingCredits(dxr, player);
         AddStartingSkillPoints(dxr, player);
     }

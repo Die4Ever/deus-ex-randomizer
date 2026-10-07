@@ -110,6 +110,7 @@
   - Fixed Bingo Viewer display for a solved goal from a previous mission.
   - Fixed upgrading of Light aug from quick augs menu for Halloween modes.
   - Items outside of the locked gates of Liberty Island (after Mission 1) will no longer be included in the shuffle pool.
+  - Fixed Zero Rando starting with incorrect number of credits.
 
 </details>
 
