@@ -514,14 +514,12 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
     local Ammo a;
     local int maxAmmo;
     local float f;
+    local bool capAmmo;
 
     percent = Clamp(percent, 10, 1000);
 
     foreach AllActors(class'Ammo', a) {
         if( AmmoNone(a)!=None ) continue; //Don't do anything to AmmoNone
-#ifdef gmdxae
-        if( AmmoLAW(a)!=None ) continue; //Don't do anything to AmmoLAW so the Lawfare perk works
-#endif
         if( ! a.IsA(type.name) ) continue;
 
         f = float(percent) / 100.0;
@@ -541,16 +539,26 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
             a.MaxAmmo += owner.SkillSystem.GetSkillLevel(class'#var(prefix)SkillDemolition');
         }
 
+        capAmmo = true;
+        if (ScriptedPawn(a.Owner)!=None) capAmmo = false; // don't reduce ammo of pawns
+
 #ifdef vmd
         maxAmmo = DeusExAmmo(a).VMDConfigureMaxAmmo();
 #elseif gmdxae
         maxAmmo = owner.GetAdjustedMaxAmmoByClass(a.class);
+        if (owner==None ||
+            owner.SkillSystem==None || owner.SkillSystem.player==None ||
+            owner.AugmentationSystem==None || owner.AugmentationSystem.player==None ||
+            owner.FlagBase==None || owner.FlagBase.GetBool('PlayerTraveling')){
+            //Don't cap the ammo until the skill system and aug systems are initialized
+            capAmmo=false;
+        }
 #else
         maxAmmo = a.MaxAmmo;
 #endif
 
         // don't reduce ammo of pawns
-        if( ScriptedPawn(a.Owner)==None && a.AmmoAmount > maxAmmo ) a.AmmoAmount = maxAmmo;
+        if( capAmmo && a.AmmoAmount > maxAmmo ) a.AmmoAmount = maxAmmo;
     }
 }
 
