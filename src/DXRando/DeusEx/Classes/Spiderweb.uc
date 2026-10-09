@@ -12,6 +12,7 @@ defaultproperties
 {
     Mesh=LodMesh'DeusExItems.FlatFX'
     Skin=Texture'Spiderweb'
+    Texture=None
     Physics=PHYS_None
     bCollideWorld=False
     bCollideActors=False
