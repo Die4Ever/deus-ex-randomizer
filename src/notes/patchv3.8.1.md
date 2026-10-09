@@ -207,3 +207,4 @@
 - Edge of Tomorrow modes fix removing augs, keep notes, keep killphrases and other flags
 - Edge of Tomorrow modes enable random aug can locations and aug upgrade can locations.
 - Edge of Tommorow modes reduce medkit/biocell rates.
+- GMDXAE: When weapon skills are upgraded (increasing ammo limits), ammo above the "untrained" limit will no longer be looted and destroyed.  Ammo caps will increase based on the randomized skill levels.

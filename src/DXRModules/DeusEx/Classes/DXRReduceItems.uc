@@ -543,6 +543,8 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
 
 #ifdef vmd
         maxAmmo = DeusExAmmo(a).VMDConfigureMaxAmmo();
+#elseif gmdxae
+        maxAmmo = owner.GetAdjustedMaxAmmoByClass(a.class);
 #else
         maxAmmo = a.MaxAmmo;
 #endif
