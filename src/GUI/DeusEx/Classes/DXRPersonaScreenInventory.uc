@@ -249,7 +249,8 @@ function bool GenerateNewWeaponROFStr(DeusExWeapon w, out String rofStr)
 #elseif revision
     if ((w.AmmoType != class'AmmoNone') && (!w.bHandToHand) && (w.ReloadCount != 0))
         rdsPerSec = Caps(DeusExAmmo(w.AmmoType).AmmoRoundNameShort)$w.msgInfoPerSec;
-
+#elseif gmdx
+    TotalShotTime -= (w.Default.ShotTime * w.ModShotTime); //Reverse the actions of ROF mods (Note that they're negative)
 #endif
 
     // RANDO: Always show rate of fire
@@ -270,8 +271,9 @@ function bool GenerateNewWeaponROFStr(DeusExWeapon w, out String rofStr)
 #ifdef gmdx
         if(w.HasROFMod())
         {
-            rofStr = rofStr @ w.BuildPercentString(w.ModShotTime);
-            rofStr = rofStr @ "=" @ w.FormatFloatString(1.0/TotalShotTime, 0.1) @ rdsPerSec;
+            rofStr = rofStr @ w.BuildPercentString(-w.ModShotTime);
+            //Make sure to "reapply" the ROF mods for this final display
+            rofStr = rofStr @ "=" @ w.FormatFloatString(1.0/(TotalShotTime + (w.Default.ShotTime * w.ModShotTime)), 0.1) @ rdsPerSec;
             highlight = true;
         }
 #endif

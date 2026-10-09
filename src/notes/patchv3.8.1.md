@@ -208,3 +208,4 @@
 - Edge of Tomorrow modes enable random aug can locations and aug upgrade can locations.
 - Edge of Tommorow modes reduce medkit/biocell rates.
 - GMDXAE: When weapon skills are upgraded (increasing ammo limits), ammo above the "untrained" limit will no longer be looted and destroyed.  Ammo caps will increase based on the randomized skill levels.
+- GMDX: Rate of Fire display correctly shows pre-RoF mod firing rate and post-RoF mod firing rate on the inventory screen.  The Fire Rate shown when highlighting a weapon will compare the unmodified fire rate against the default.
