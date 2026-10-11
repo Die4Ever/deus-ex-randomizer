@@ -111,6 +111,7 @@
   - Fixed upgrading of Light aug from quick augs menu for Halloween modes.
   - Items outside of the locked gates of Liberty Island (after Mission 1) will no longer be included in the shuffle pool.
   - Fixed Zero Rando starting with incorrect number of credits.
+  - Cloned enemies will now keep their weapons drawn if their original enemy kept their weapon drawn.
 
 </details>
 
@@ -210,3 +211,4 @@
 - Edge of Tommorow modes reduce medkit/biocell rates.
 - GMDXAE: When weapon skills are upgraded (increasing ammo limits), ammo above the "untrained" limit will no longer be looted and destroyed.  Ammo caps will increase based on the randomized skill levels.
 - GMDX: Rate of Fire display correctly shows pre-RoF mod firing rate and post-RoF mod firing rate on the inventory screen.  The Fire Rate shown when highlighting a weapon will compare the unmodified fire rate against the default.
+- GMDXAE (Augmentique): Cloned enemies will get weapon skins based on the enemy they were cloned off of (MJ12 faction enemies will get MJ12 weapon skins, UNATCO faction enemies will get UNATCO weapon skins, etc)

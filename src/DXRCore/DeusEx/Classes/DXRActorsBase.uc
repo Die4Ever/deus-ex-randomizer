@@ -421,6 +421,22 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
     return item;
 }
 
+static function ApplyDefaultAugmentiqueSkin(Inventory w, Pawn p)
+{
+#ifdef gmdxae
+    local WeaponSkinManagerBase skinman;
+    local DeusExWeapon dxw;
+
+    dxw = DeusExWeapon(w); //See if it's a weapon
+    if (dxw==None) return;
+
+    skinman = class'WeaponSkinManagerBase'.static.GetManager(dxw);
+    if (skinman==None) return;
+
+    skinman.SetDefaultSkin(dxw,p);
+#endif
+}
+
 static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int amount)
 {
     local inventory item;
@@ -437,6 +453,9 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
 
     item = p.Spawn(iclass, p,,spawnLoc);
     if( item == None ) return None;
+
+    ApplyDefaultAugmentiqueSkin(item,p);
+
     if(DeusExPickup(item)!=None && amount > 0) {
         DeusExPickup(item).NumCopies = amount;
         amount = 0;
