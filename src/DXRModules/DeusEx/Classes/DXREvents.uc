@@ -3480,6 +3480,11 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
                 return false;
             }
 
+            if(dxr.flags.IsBingoCampaignMode()) {
+                if (start_map >= 20 && start_map < 40) return false;
+                // TODO: make UnblockEarly actually work so we can unban this for M04, also see DXRBingoCampaign.uc
+            }
+
             //1 mission durations...
             //Progressing through M02 Warehouse is always considered annoying in single mission
             //We consider M03 Helibase too far, but M03 Airfield close enough for progressing back to UNATCO (finishing the mission)
@@ -3488,6 +3493,11 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             }
 
             return true;
+
+//////////////////////////////////////////////////////
+    // TODO: make UnblockEarly actually work so we can unban this, also see DXRBingoCampaign.uc
+        case "nsfwander":
+            return dxr.flags.IsBingoCampaignMode();
 
 
 /////////////////////////////////////////////////////////////////////
@@ -3522,8 +3532,15 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
 
 /////////////////////////////////////////////////////////////////////
     //Ban goals that require progress when you *don't* need to progress
+    // TODO: make UnblockEarly actually work so we can unban this for Bingo Machine, also see DXRBingoCampaign.uc
         case "DXREvents_LeftOnBoat":
-            return (real_duration==1);
+            return (real_duration==1 || dxr.flags.IsBingoCampaignMode());
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require backtracking where it doesn't make sense
+        case "ChugWater":
+        case "Dehydrated_DestroyDeco":
+            return start_map >= 140 && start_map < 150 && dxr.flags.IsBingoCampaignMode();
 
 /////////////////////////////////////////////////////////////////////
     //Ban goals that require hacking (By the Book stuff)

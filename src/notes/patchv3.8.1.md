@@ -114,6 +114,7 @@
   - Cloned enemies will now keep their weapons drawn if their original enemy kept their weapon drawn.
   - Fixed the "Delete Autosaves" button deleting EXIT saves.
   - Fixed Weeping Anna sometimes leaving behind invisible collision in random places.
+  - Ban a few impossible, awkward, or not working bingo goals from Bingo Machine modes.
 
 </details>
 

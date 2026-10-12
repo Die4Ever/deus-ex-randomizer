@@ -460,13 +460,18 @@ function HandleBingoGoal()
     local name blockerFlag;
     local int expiration;
 
+    // TODO: make UnblockEarly actually work so we can unban them, also see DXREvents.uc
     if (dxr.dxInfo.missionNumber == 2) {
         GetBingoMissionBlockerFlags(2,, blockerFlag, expiration);
         UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
     }
     else if (dxr.dxInfo.missionNumber == 4) {
         GetBingoMissionBlockerFlags(4,, blockerFlag, expiration);
-        UnblockEarly('GuntherShowdown_Played', blockerFlag, expiration);
+        UnblockEarly('GuntherShowdown_Played', blockerFlag, expiration); // TODO: pretty sure this should be bingo goal "PeacekeepingOccupation_Convo"
+    }
+    else if (dxr.dxInfo.missionNumber == 5) {
+        GetBingoMissionBlockerFlags(5,, blockerFlag, expiration);
+        UnblockEarly('nsfwander', blockerFlag, expiration); // save Miguel
     }
 }
 
