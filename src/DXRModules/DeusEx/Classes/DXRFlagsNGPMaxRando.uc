@@ -298,7 +298,7 @@ function NewGamePlus()
     newgameplus_retries_time += (i - newgameplus_total_time) - stats.GetTotalTime(dxr);
     newgameplus_total_time = i;
 
-    DeusExRootWindow(p.rootWindow).ResetFlags();
+    DeleteResetFlags(p, true, true);
     SaveFlags();
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);
@@ -560,6 +560,41 @@ function PlayerDied(PlayerPawn player)
         #var(PlayerPawn)(player).RestoreAllHealth();
         player.GotoState('PlayerWalking');
         NewGamePlus();
+    }
+}
+
+static function DeleteResetFlags(#var(PlayerPawn) p, bool DeleteAllFlags, bool ResetFlags)
+{
+    local FlagBase f;
+    local DXRFlags df;
+    local bool IsEdgeOfTomorrow, KnowsSmugglerPassword, PlayerKnowsUnderworldPassword, KnowsAnnasKillphrase1, KnowsAnnasKillphrase2, KnowsAboutNanoSword, KnowsAboutKillphrase, KnowsGuntherKillphrase;
+
+    f = p.FlagBase;
+    df = DXRFlags(class'DXRFlags'.static.Find());
+    if(df != None) IsEdgeOfTomorrow = df.IsEdgeOfTomorrow();
+
+    if(IsEdgeOfTomorrow) {
+        KnowsSmugglerPassword = f.GetBool('KnowsSmugglerPassword');
+        PlayerKnowsUnderworldPassword = f.GetBool('PlayerKnowsUnderworldPassword');
+        KnowsAnnasKillphrase1 = f.GetBool('KnowsAnnasKillphrase1');
+        KnowsAnnasKillphrase2 = f.GetBool('KnowsAnnasKillphrase2');
+        KnowsAboutNanoSword = f.GetBool('KnowsAboutNanoSword');
+        KnowsAboutKillphrase = f.GetBool('KnowsAboutKillphrase');
+        KnowsGuntherKillphrase = f.GetBool('KnowsGuntherKillphrase');
+    }
+
+    // I don't yet know the difference between these lol
+    if(DeleteAllFlags) f.DeleteAllFlags();
+    if(ResetFlags) DeusExRootWindow(p.rootWindow).ResetFlags();
+
+    if(IsEdgeOfTomorrow) {
+        if(KnowsSmugglerPassword) f.SetBool('KnowsSmugglerPassword', KnowsSmugglerPassword,, 999);
+        if(PlayerKnowsUnderworldPassword) f.SetBool('PlayerKnowsUnderworldPassword', PlayerKnowsUnderworldPassword,, 999);
+        if(KnowsAnnasKillphrase1) f.SetBool('KnowsAnnasKillphrase1', KnowsAnnasKillphrase1,, 999);
+        if(KnowsAnnasKillphrase2) f.SetBool('KnowsAnnasKillphrase2', KnowsAnnasKillphrase2,, 999);
+        if(KnowsAboutNanoSword) f.SetBool('KnowsAboutNanoSword', KnowsAboutNanoSword,, 999);
+        if(KnowsAboutKillphrase) f.SetBool('KnowsAboutKillphrase', KnowsAboutKillphrase,, 999);
+        if(KnowsGuntherKillphrase) f.SetBool('KnowsGuntherKillphrase', KnowsGuntherKillphrase,, 999);
     }
 }
 
