@@ -50,10 +50,6 @@ function PlayerLogin(#var(PlayerPawn) p)
     if(dxr.flags.IsSpeedrunMode()) {
         p.Energy = p.EnergyMax;
     }
-
-    p.Credits=0;
-
-    class'DXRStartMap'.static.AddStartingCredits(dxr,p);
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
