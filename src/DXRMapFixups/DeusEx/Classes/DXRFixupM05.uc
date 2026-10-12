@@ -636,7 +636,7 @@ function BalanceJailbreak()
 
         num=0;
         l("BalanceJailbreak EquipLocation == " $ EquipLocation);
-        if(EquipLocation == "Armory")
+        if(EquipLocation == "Armory"){
             foreach AllActors(class'SpawnPoint', SP, 'player_inv')
                 //Adjust item spawnpoints in armoury - specifically, move things off the top shelf
                 switch(sp.Name){
@@ -663,9 +663,27 @@ function BalanceJailbreak()
                         break;
                 }
 
+            //More item locations for VMD (or anything with a bigger inventory)
+            itemLocations[num++] = vectm(-8655,1055,-200); //Bottom shelf empty spot
+            itemLocations[num++] = vectm(-8537,1410,-200); //Bottom shelf empty spot
+            itemLocations[num++] = vectm(-8860,1480,-228); //Along wall under wall mount gun rack
+            itemLocations[num++] = vectm(-8860,1440,-228);
+            itemLocations[num++] = vectm(-8860,1400,-228);
+            itemLocations[num++] = vectm(-8860,1360,-228);
+            itemLocations[num++] = vectm(-8860,1320,-228);
+            itemLocations[num++] = vectm(-8860,1280,-228);
+            itemLocations[num++] = vectm(-8120,1100,-228);//Wall behind desk
+            itemLocations[num++] = vectm(-8120,1150,-228);
+            itemLocations[num++] = vectm(-8120,1200,-228);
+            itemLocations[num++] = vectm(-8120,1250,-228);
+            itemLocations[num++] = vectm(-8120,1300,-228);
+            itemLocations[num++] = vectm(-8120,1350,-228);
+            itemLocations[num++] = vectm(-8120,1400,-228);
+            itemLocations[num++] = vectm(-8120,1450,-228);
+
             //No need to move the GMDX ammocrate for the armory, the default location is fine
 
-        else { //EquipLocation == "Surgery Ward"
+        } else { //EquipLocation == "Surgery Ward"
             // put the items in the surgery ward
             itemLocations[num++] = vectm(2160,-585,-203);// paul's bed
             itemLocations[num++] = vectm(2160,-505,-203);// paul's bed
@@ -706,6 +724,24 @@ function BalanceJailbreak()
             itemLocations[num++] = vectm(1725,-900,-251);
             itemLocations[num++] = vectm(1425,-900,-251);
             itemLocations[num++] = vectm(1350,-900,-251);
+
+            //We're getting into VMD level of item excess now (or any mod with a bigger inventory)
+            itemLocations[num++] = vectm(1900,-800,-260);
+            itemLocations[num++] = vectm(1950,-800,-260);
+            itemLocations[num++] = vectm(2000,-800,-260);
+            itemLocations[num++] = vectm(2050,-800,-260);
+            itemLocations[num++] = vectm(2100,-800,-260);
+            itemLocations[num++] = vectm(2150,-800,-260);
+            itemLocations[num++] = vectm(2200,-800,-260);
+            itemLocations[num++] = vectm(2250,-800,-260);
+            itemLocations[num++] = vectm(1900,-750,-260);
+            itemLocations[num++] = vectm(1950,-750,-260);
+            itemLocations[num++] = vectm(2000,-750,-260);
+            itemLocations[num++] = vectm(2050,-750,-260);
+            itemLocations[num++] = vectm(2100,-750,-260);
+            itemLocations[num++] = vectm(2150,-750,-260);
+            itemLocations[num++] = vectm(2200,-750,-260);
+            itemLocations[num++] = vectm(2250,-750,-260);
 
             foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
                 if(dlt.datalinkTag != 'dl_equipment') continue;

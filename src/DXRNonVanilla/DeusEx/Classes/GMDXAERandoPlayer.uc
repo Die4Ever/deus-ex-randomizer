@@ -2503,6 +2503,30 @@ function UpdateHDTPSettings()
     }
 }
 
+function int GetAdjustedMaxAmmoByClass(class<Ammo> ammotype)
+{
+    local int prevMax,newMax;
+    local Ammo a;
+
+    prevMax = ammoType.Default.MaxAmmo;
+
+    //Set the default to the randomized maxammo
+    //Find a real instance and use the maxammo from that
+    foreach AllActors(class'Ammo',a){
+        if (a.class!=ammotype) continue;
+        if (a.MaxAmmo==a.Default.MaxAmmo) continue; //Only find ammos that have already been modified
+        ammoType.Default.MaxAmmo = a.MaxAmmo;
+        break;
+    }
+
+    //Now do the normal logic with the maxAmmo we found
+    newMax = Super.GetAdjustedMaxAmmoByClass(ammoType);
+
+    ammoType.Default.MaxAmmo = prevMax;
+
+    return newMax;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // #region Exec Functions
 ///////////////////////////////////////////////////////////////////////////////

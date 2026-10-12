@@ -606,6 +606,9 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
 #ifdef injections
     fireRate = 1.0/(w.ShotTime + DXRWeapon(w).AfterShotTime);
     compFireRate = 1.0/(w.Default.ShotTime + DXRWeapon(w).default.AfterShotTime);
+#elseif gmdx
+    fireRate = 1.0/(w.ShotTime - (w.Default.ShotTime * w.ModShotTime)); //Remove the RoF mod speed
+    compFireRate = 1.0/w.Default.ShotTime;
 #else
     fireRate = 1.0/w.ShotTime;
     compFireRate = 1.0/w.Default.ShotTime;

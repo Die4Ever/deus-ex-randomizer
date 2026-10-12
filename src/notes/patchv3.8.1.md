@@ -109,6 +109,12 @@
   - The base of autoturrets will now be consistently destroyable when minor Map Balance Changes are enabled.
   - Fixed Bingo Viewer display for a solved goal from a previous mission.
   - Fixed upgrading of Light aug from quick augs menu for Halloween modes.
+  - Items outside of the locked gates of Liberty Island (after Mission 1) will no longer be included in the shuffle pool.
+  - Fixed Zero Rando starting with incorrect number of credits.
+  - Cloned enemies will now keep their weapons drawn if their original enemy kept their weapon drawn.
+  - Fixed the "Delete Autosaves" button deleting EXIT saves.
+  - Fixed Weeping Anna sometimes leaving behind invisible collision in random places.
+  - Ban a few impossible, awkward, or not working bingo goals from Bingo Machine modes.
 
 </details>
 
@@ -187,6 +193,7 @@
   - Many elevator buttons in Revision maps will no longer be missing.
   - Bingo goals for using vending machines will now work as expected.
   - When using Revision maps, the ending cutscenes will show a randomized quote at the end instead of the original quotes.  The dance party ending will now show a quote after a moment and eventually continue to the credits.
+  - Additional item locations for your removed inventory in Mission 5 to accomodate a larger inventory.
 
 </details>
 
@@ -205,3 +212,7 @@
 - Edge of Tomorrow modes fix removing augs, keep notes, keep killphrases and other flags
 - Edge of Tomorrow modes enable random aug can locations and aug upgrade can locations.
 - Edge of Tommorow modes reduce medkit/biocell rates.
+- GMDXAE: When weapon skills are upgraded (increasing ammo limits), ammo above the "untrained" limit will no longer be looted and destroyed.  Ammo caps will increase based on the randomized skill levels.
+- GMDX: Rate of Fire display correctly shows pre-RoF mod firing rate and post-RoF mod firing rate on the inventory screen.  The Fire Rate shown when highlighting a weapon will compare the unmodified fire rate against the default.
+- GMDXAE (Augmentique): Cloned enemies will get weapon skins based on the enemy they were cloned off of (MJ12 faction enemies will get MJ12 weapon skins, UNATCO faction enemies will get UNATCO weapon skins, etc)
+- Probably fixed issue where flags would sometimes spill over into new games.

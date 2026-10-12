@@ -126,7 +126,8 @@ function bool RecentlySeen()
 function InitializePawn()
 {
     Super.InitializePawn();
-    blocker = spawn(class'DynamicBlockAll',,, Location);
+    if(blocker == None) blocker = spawn(class'DynamicBlockAll',,, Location);
+    blocker.SetCollision(false,false,false); // init with no collision because default orders probably override our GotoState Sleeping
     blocker.SetCollisionSize(CollisionRadius+4, CollisionHeight+4);
     GotoState('Sleeping', 'Idle'); // skip the light and sound effect of being spotted
 }
@@ -246,8 +247,8 @@ function ShatterBody()
     local bool spawnit;
 
     //Break into rock fragments
-    for(i=0;i<24;i++){
-        if(i<20){
+    for(i=0;i<16;i++){
+        if(i<12){
             spawnit=true;
         } else {
             spawnit=(FRand()<0.5);

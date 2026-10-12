@@ -80,8 +80,7 @@ function InitStateMachine()
 
 	// Destroy all flags!
 	if (flags != None) {
-		//flags.DeleteAllFlags();
-        DeusExRootWindow(player.rootWindow).ResetFlags();
+        class'DXRFlags'.static.DeleteResetFlags(#var(PlayerPawn)(player), true, false);
     }
 
 	// Set the PlayerTraveling flag (always want it set for

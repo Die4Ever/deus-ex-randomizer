@@ -414,6 +414,8 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         inv = inv.Inventory;
     }
 
+    n.bKeepWeaponDrawn = p.bKeepWeaponDrawn;
+
     n.bHateCarcass = p.bHateCarcass;
     n.bHateDistress = p.bHateDistress;
     n.bHateHacking = p.bHateHacking;

@@ -88,6 +88,8 @@ function DeleteAutosaves()
         slot = int(lstGames.GetField(rowID, 4));
         if(slot < 0) continue;
         name = lstGames.GetField(rowID, 0);
+        if(class'DXRAutosave'.static.isCrashSaveName(name)) continue;
+        if(class'DXRAutosave'.static.isExitSaveName(name)) continue;
         if(Right(name, 9) == " AUTOSAVE") {
             player.ConsoleCommand("DeleteGame " $ slot);
         }

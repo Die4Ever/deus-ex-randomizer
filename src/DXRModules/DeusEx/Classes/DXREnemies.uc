@@ -319,6 +319,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
             GiveRandomSidearm(p, false, 2);
         GiveRandomMeleeWeapon(p);
         p.SetupWeapon(false);
+        ApplyAugmentiqueWeaponSkins(p);
     } else if (IsRobot(p.Class) && chance_single(dxr.flags.settings.bot_weapons)) {
         numWeapons = GetWeaponCount(p);
         if (numWeapons>0){ //Only randomize weapons on bots that start with weapons
@@ -335,6 +336,59 @@ function RandomizeSP(ScriptedPawn p, int percent)
             p.SetupWeapon(false);
         }
     }
+}
+
+function ApplyAugmentiqueWeaponSkins(ScriptedPawn p)
+{
+#ifdef gmdxae
+    local int faction;
+
+    faction = GetFactionId(p);
+    if (faction==FactionOther) return; // Not a specific faction
+    if (faction==NSF) return; //NSF doesn't have specific skins, afaik
+
+    switch(faction){
+        case Police:
+            if(dxr.dxInfo.missionNumber == 6){
+                ApplyAugmentiqueWeaponSkinToAll(p,"hongkong");
+            } else if (dxr.dxInfo.missionNumber == 8) {
+                ApplyAugmentiqueWeaponSkinToAll(p,"riot");
+            }
+            break;
+        case UNATCO:
+            ApplyAugmentiqueWeaponSkinToAll(p,"unatco");
+            break;
+        case MJ12:
+            ApplyAugmentiqueWeaponSkinToAll(p,"mj12");
+            break;
+        case NSF: //No specific skins currently
+        case FactionOther: //"Anything else", nothing specific
+            break;
+    }
+#endif
+}
+
+function ApplyAugmentiqueWeaponSkinToAll(ScriptedPawn p, string SkinName)
+{
+#ifdef gmdxae
+    local Inventory inv;
+    local DeusExWeapon dxw;
+    local WeaponSkinManagerBase skinman;
+
+    skinman = class'WeaponSkinManagerBase'.static.GetManager(self);
+    if (skinman==None) return;
+
+    for (inv=p.Inventory;inv!=None;inv=inv.Inventory){
+        dxw = DeusExWeapon(inv);
+        if (dxw!=None){
+            if (dxw.currentWeaponSkin!="default") continue; //If something is already set, skip it
+            dxw.currentWeaponSkin = SkinName;
+            skinman.UpdateWeaponSkinTextures(dxw);
+            skinman.ApplyWeaponSkin(dxw,false);
+        }
+    }
+
+#endif
 }
 
 function CheckHelmet(ScriptedPawn p)

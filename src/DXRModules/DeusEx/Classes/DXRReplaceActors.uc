@@ -801,6 +801,20 @@ function ReplaceTrigger(#var(prefix)Trigger a, #var(prefix)Trigger n)
     UpdateActorReferences(a,n);
 }
 
+function CopyAugmentiqueSkin(DeusExWeapon a, DeusExWeapon n)
+{
+#ifdef gmdxae
+    local WeaponSkinManagerBase skinman;
+
+    skinman = class'WeaponSkinManagerBase'.static.GetManager(self);
+    if (skinman==None) return;
+
+    n.currentWeaponSkin = a.currentWeaponSkin;
+    skinman.UpdateWeaponSkinTextures(n);
+    skinman.ApplyWeaponSkin(n,false);
+#endif
+}
+
 function #var(DeusExPrefix)Weapon ReplaceWeapon(#var(DeusExPrefix)Weapon a, #var(DeusExPrefix)Weapon n)
 {
     local ScriptedPawn owner;
@@ -818,6 +832,7 @@ function #var(DeusExPrefix)Weapon ReplaceWeapon(#var(DeusExPrefix)Weapon a, #var
             owner.SetWeapon(n);
         }
     }
+    CopyAugmentiqueSkin(a,n);
 }
 
 function #var(DeusExPrefix)Pickup ReplacePickup(#var(DeusExPrefix)Pickup a, #var(DeusExPrefix)Pickup n)

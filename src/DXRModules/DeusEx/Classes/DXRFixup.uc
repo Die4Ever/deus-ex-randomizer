@@ -1177,11 +1177,12 @@ function MarkLibertyIslandOutOfBounds()
     local bool RevisionMaps;
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
-    //Unblock navigation points inside the UNATCO walls, block outside
+    //Unblock locations inside the UNATCO walls, block outside
     //In reality, it seems like in M03/M04, there are no navigation points outside the walls
     //M05 has two HidePoints up on the statue, but those are the only ones outside.
     //Maybe Revision or GMDX have some? (Revision has some InventorySpots as well)
-    MassSetSecretGoalBox(class'NavigationPoint', vectm(-6800,3165,-99999), vectm(-3430,1000,99999), false, true);
+    //There's an inventory item outside of the gates in vanilla M04 (near the statue front door)
+    MassSetSecretGoalBoxAll(vectm(-6800,3165,-99999), vectm(-3430,1000,99999), false, true);
 }
 
 simulated function FixAmmoShurikenName()

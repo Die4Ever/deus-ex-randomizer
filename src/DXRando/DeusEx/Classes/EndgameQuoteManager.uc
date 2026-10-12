@@ -6,7 +6,7 @@ struct EndQuote
     var string attribution;
 };
 
-var EndQuote quotes[213];
+var EndQuote quotes[215];
 var int numQuotes;
 
 //A string has (seemingly) infinite length, but string literals are capped at 256 characters.
@@ -276,6 +276,10 @@ function LoadQuotes()
     AddQuote("WHAT ARE YOU WAITING FOR?  YOU'RE FASTER THAN THIS.  DON'T THINK YOU ARE, KNOW YOU ARE.  COME ON.  STOP TRYING TO HIT ME AND HIT ME.", "MORPHEUS");
     AddQuote("TO DENY OUR OWN IMPULSES IS TO DENY THE VERY THING THAT MAKES US HUMAN.", "MOUSE");
     AddQuote("WHAT IS REAL?  HOW DO YOU DEFINE 'REAL'?  IF YOU'RE TALKING ABOUT WHAT YOU CAN FEEL, WHAT YOU CAN SMELL, WHAT YOU CAN TASTE AND SEE, THEN 'REAL' IS SIMPLY ELECTRICAL SIGNALS INTERPRETED BY YOUR BRAIN.", "MORPHEUS");
+
+    //Anime
+    AddQuote("We must master the art of peace in addition to the art of war! The Turtle Hermit School will be with you, always.", "Master Roshi");
+    AddQuote("It's what Himmel the Hero would have done.", "Frieren");
 
     log("EndgameQuoteManager loaded "$numQuotes$" endgame quotes");
 }
