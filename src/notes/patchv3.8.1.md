@@ -112,6 +112,7 @@
   - Items outside of the locked gates of Liberty Island (after Mission 1) will no longer be included in the shuffle pool.
   - Fixed Zero Rando starting with incorrect number of credits.
   - Cloned enemies will now keep their weapons drawn if their original enemy kept their weapon drawn.
+  - Fixed the "Delete Autosaves" button deleting EXIT saves.
 
 </details>
 
