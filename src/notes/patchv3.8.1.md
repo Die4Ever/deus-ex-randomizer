@@ -216,3 +216,4 @@
 - GMDX: Rate of Fire display correctly shows pre-RoF mod firing rate and post-RoF mod firing rate on the inventory screen.  The Fire Rate shown when highlighting a weapon will compare the unmodified fire rate against the default.
 - GMDXAE (Augmentique): Cloned enemies will get weapon skins based on the enemy they were cloned off of (MJ12 faction enemies will get MJ12 weapon skins, UNATCO faction enemies will get UNATCO weapon skins, etc)
 - Probably fixed issue where flags would sometimes spill over into new games.
+- Edge of Tomorrow modes now wait 1 second after you die before restarting. This should allow the Mastodon toot to get out.

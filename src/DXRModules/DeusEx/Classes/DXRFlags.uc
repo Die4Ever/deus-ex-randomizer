@@ -1298,9 +1298,23 @@ function string GameModeHelpText(int gamemode)
     case GroundhogDay:
         return "The FULL Randomizer experience, but New Game+ will not change your seed or your flags, giving you a chance to play the same game over and over again to keep improving.";
     case EdgeOfTomorrow:
-        return "Live. Die. Repeat.";
+        s = "Similar to Full Randomizer.";
+        s = s$ "|n|nWhen you die you go back to the beginning again with the same seed, starting equipment, and starting augmentations.";
+        s = s$ "|nBut you get to keep your skills, skill points, notes, and passwords.";
+        s = s$ "|nThis also enables randomizing the locations of augmentation canisters and augmentation upgrade canisters.";
+        if(#bool(injections)) s = s$ "|n|nBest paired with the Ironman save behavior. Can you beat this without saving?";
+        else s = s$ "|n|nCan you beat this without dying?";
+        s = s$ "|n|nLive. Die. Repeat.";
+        return s;
     case EdgeOfHalloween:
-        return "Live. Die. Repeat.";
+        s = "Similar to Halloween Mode including full randomization, zombies, and stalkers.";
+        s = s$ "|n|nWhen you die you go back to the beginning again with the same seed, starting equipment, and starting augmentations.";
+        s = s$ "|nBut you get to keep your skills, skill points, notes, and passwords.";
+        s = s$ "|nThis also enables randomizing the locations of augmentation canisters and augmentation upgrade canisters.";
+        if(#bool(injections)) s = s$ "|n|nBest paired with the Ironman save behavior. Can you beat this without saving?";
+        else s = s$ "|n|nCan you beat this without dying?";
+        s = s$ "|n|nLive. Die. Repeat.";
+        return s;
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);

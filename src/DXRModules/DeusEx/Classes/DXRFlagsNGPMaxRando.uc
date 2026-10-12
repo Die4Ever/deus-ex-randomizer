@@ -1,5 +1,7 @@
 class DXRFlagsNGPMaxRando extends DXRFlagsBase transient;
 
+var float EdgeOfTomorrowTimer;
+
 simulated function ExecMaxRando()
 {
     // set local seed
@@ -555,11 +557,27 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 function PlayerDied(PlayerPawn player)
 {
     if(DXRFlags(self).IsEdgeOfTomorrow() /*&& dxr.dxInfo.MissionNumber != 4 || f.GetBool('MS_PlayerCaptured') || !f.GetBool('TalkedToPaulAfterMessage_Played')*/) {
-        // TODO: timer
-        #var(PlayerPawn)(player).bIgnoreNextShowMenu = true; // TODO: maybe with Tick we can check this to see if the player attempted to open the menu and instantly go to new game? or in the RootWindow we can intercept the creation of the menu
-        #var(PlayerPawn)(player).RestoreAllHealth();
-        player.GotoState('PlayerWalking');
-        NewGamePlus();
+        #var(PlayerPawn)(player).bIgnoreNextShowMenu = true;
+        EdgeOfTomorrowTimer = 1;
+        if(dxr.dxInfo.MissionNumber == 4) {
+            #var(PlayerPawn)(player).FlagBase.SetBool('MS_PlayerCaptured', True); // pretend the player got captured so the mission script doesn't advance us to mission 5
+        }
+    }
+}
+
+function Tick(float delta)
+{
+    Super.Tick(delta);
+
+    if(EdgeOfTomorrowTimer > 0) {
+        EdgeOfTomorrowTimer -= delta;
+        if(!player().bIgnoreNextShowMenu) EdgeOfTomorrowTimer = 0; // skip the timer if the player had tried to open the menu
+        if(EdgeOfTomorrowTimer <= 0.01) {
+            player().bIgnoreNextShowMenu = false;
+            player().RestoreAllHealth();
+            player().GotoState('PlayerWalking');
+            NewGamePlus();
+        }
     }
 }
 
