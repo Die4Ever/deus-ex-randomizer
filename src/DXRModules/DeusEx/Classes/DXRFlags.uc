@@ -1003,9 +1003,8 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareHalloween;
     if(slot--==0) return WaltonWareHardcore;
-    if(!VersionIsStable()) {
-        if(slot--==0) return WaltonWarex3;
-    }
+    if(slot--==0) return WaltonWarex3;
+
     if(slot--==0) return BingoCampaign;
     if(slot--==0) return NiceBingoMachine;
     if(slot--==0) return HalloweenMBM;
