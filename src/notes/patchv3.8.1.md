@@ -1,5 +1,6 @@
 ## Major Changes
 - The installer will now install DeusExe V9.0.1 when installing Kentie's Launcher, a newly updated version with various bug fixes and improvements.
+  - If they do not work for you, you can change renderers in the launcher, or install the old renderers by looking in the Advanced Settings of our installer. And please let us know about any and all issues!
   - For more information, see the [DeusExeModern Repository](https://github.com/theastropath/DeusExeModern).
 - The installer will now default to installing an updated set of renderers for Direct3D 9, Direct3D 10, and OpenGL.
   - The Direct3D 9 and 10 renderers are still listed as "Direct3D10 Renderer" and "Direct3D9 Renderer", while the new OpenGL renderer is listed as "OpenGL 1.x Renderer"
@@ -17,6 +18,7 @@
   - The key to open the "Quick Augs" menu must be bound manually.  In the GMDXUser.ini or RevisionUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the "Quick Augs" screen.  Change it so that it maps to UpgradeAugs, eg. to make G open the menu: `G=UpgradeAugs`
 - Two new beta game modes: Edge of Tomorrow and Edge of Halloween. No saving allowed, when you die you go back to the start of the seed but you get to keep your skills and skill points.
 - New beta game mode: WaltonWare x3
+- Support for Revision v1.7.5 (we hotfixed this in today, so if you downloaded v3.8.1 earlier today and it isn't working, try downloading again)
 
 ## GMDX Major Changes
   - First beta of GMDX Augmented Edition Randomizer! [Join our Discord for more info.](https://mods4ever.com/discord)
