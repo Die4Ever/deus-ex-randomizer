@@ -358,8 +358,8 @@ def _FixConfigs(system, exename, kentie, launchchanged, settings:dict, globalset
         changes = c.RetainConfigSections(
             set((
                 'WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
-                'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame',
-                'DeusEx.DXRMenuScreenNewGame'
+                'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry',
+                'DeusEx.DXRMenuScreenNewGame', 'DeusEx.DXRMenuScreenNewGameExtended', 'DeusEx.MenuSelectDifficulty'
             )),
             changes
         )

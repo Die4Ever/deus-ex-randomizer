@@ -15,7 +15,8 @@
 - GMDX/Revision: Support for the "Quick Skills" and "Quick Augs" menu which allow upgrading skills and augs without entering the regular menu screens.
   - The key to open the "Quick Skills" menu can be configured by binding the option for "Activate Multiplayer Skill Menu" in the Keyboard/Mouse menu.
   - The key to open the "Quick Augs" menu must be bound manually.  In the GMDXUser.ini or RevisionUser.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the "Quick Augs" screen.  Change it so that it maps to UpgradeAugs, eg. to make G open the menu: `G=UpgradeAugs`
-- Two new game modes: Edge of Tomorrow and Edge of Halloween. No saving allowed, when you die you go back to the start of the seed but you get to keep your skills and skill points.
+- Two new beta game modes: Edge of Tomorrow and Edge of Halloween. No saving allowed, when you die you go back to the start of the seed but you get to keep your skills and skill points.
+- New beta game mode: WaltonWare x3
 
 ## GMDX Major Changes
   - First beta of GMDX Augmented Edition Randomizer!
@@ -216,3 +217,4 @@
 - GMDX: Rate of Fire display correctly shows pre-RoF mod firing rate and post-RoF mod firing rate on the inventory screen.  The Fire Rate shown when highlighting a weapon will compare the unmodified fire rate against the default.
 - GMDXAE (Augmentique): Cloned enemies will get weapon skins based on the enemy they were cloned off of (MJ12 faction enemies will get MJ12 weapon skins, UNATCO faction enemies will get UNATCO weapon skins, etc)
 - Probably fixed issue where flags would sometimes spill over into new games.
+- Edge of Tomorrow modes now wait 1 second after you die before restarting. This should allow the Mastodon toot to get out.
