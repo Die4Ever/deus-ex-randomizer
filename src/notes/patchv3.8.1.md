@@ -19,7 +19,7 @@
 - New beta game mode: WaltonWare x3
 
 ## GMDX Major Changes
-  - First beta of GMDX Augmented Edition Randomizer!
+  - First beta of GMDX Augmented Edition Randomizer! [Join our Discord for more info.](https://mods4ever.com/discord)
   - When loading an old save, you may experience some oddities until you progress to a new map.  We would recommend progressing until the end of a mission before updating, or start a new game.
 
 <details>
