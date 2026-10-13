@@ -1,6 +1,5 @@
 ## Major Changes
 - The installer will now install DeusExe V9.0.1 when installing Kentie's Launcher, a newly updated version with various bug fixes and improvements.
-  - If they do not work for you, you can change renderers in the launcher, or install the old renderers by looking in the Advanced Settings of our installer. And please let us know about any and all issues!
   - For more information, see the [DeusExeModern Repository](https://github.com/theastropath/DeusExeModern).
 - The installer will now default to installing an updated set of renderers for Direct3D 9, Direct3D 10, and OpenGL.
   - The Direct3D 9 and 10 renderers are still listed as "Direct3D10 Renderer" and "Direct3D9 Renderer", while the new OpenGL renderer is listed as "OpenGL 1.x Renderer"
