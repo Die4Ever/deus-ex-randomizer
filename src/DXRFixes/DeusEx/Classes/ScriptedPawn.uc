@@ -26,11 +26,11 @@ event Destroyed()
 {
     // throw whatever remains of their inventory so it isn't lost, most applicable to MIBs and other self destructing enemies
     if(Health <=0)
-        ThrowInventory(true);
+        ThrowInventory();
     Super.Destroyed();
 }
 
-function ThrowInventory(bool gibbed)
+function ThrowInventory()
 {
     local Inventory item, nextItem;
     local bool drop;
@@ -38,19 +38,32 @@ function ThrowInventory(bool gibbed)
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        drop = item.IsA('NanoKey') && gibbed; // drop nanokeys when gibbed
-        drop = drop || gibbed && item.bDisplayableInv && class'MenuChoice_BalanceEtc'.static.IsEnabled(); // drop all other visible items when gibbed
-        if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )
+
+        if( NanoKey(item) != None ) {
+            // always drop nanokeys
+            drop = true;
+        } else if( Ammo(item) != None ) {
+            // drop ammo iff dropsAmmo==true (and it has a mesh)
+#ifdef injections
+            drop = class<DeusExCarcass>(CarcassType).default.dropsAmmo && item.PickupViewMesh != Mesh'TestBox';
+#else
             drop = false;
-        if( Ammo(item) != None )
+#endif
+        } else if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack ) {
+            // never drop native attack weapons
             drop = false;
+        } else if( item.bDisplayableInv && class'MenuChoice_BalanceEtc'.static.IsEnabled() ) {
+            // drop everything else that can normally appear in the world if Misc. Balance Changes are enabled
+            drop = true;
+        } else {
+            // don't drop anything else
+            drop = false;
+        }
+
         if( drop ) {
             item.SetLocation(Location);
             class'DXRActorsBase'.static.ThrowItem(item, 0.3);
-            if(gibbed)
-                item.Velocity *= vect(-4, -4, 4);
-            else
-                item.Velocity *= vect(-1.5, -1.5, 1.5);
+            item.Velocity *= vect(-4, -4, 4);
         }
         item = nextItem;
     }
@@ -59,18 +72,14 @@ function ThrowInventory(bool gibbed)
 function PlayDying(name damageType, vector hitLoc)
 {
     local DeusExPlayer p;
-    local bool gibbed;
     local Vector X, Y, Z;
     local float dotp;
 
-    gibbed = (Health < -100) && Robot(self) == None;
-
-    if( gibbed ) {
+    if( (Health < -100) && Robot(self) == None ) {
         p = DeusExPlayer(GetPlayerPawn());
         class'DXRStats'.static.AddGibbedKill(p);
+        ThrowInventory();
     }
-
-    ThrowInventory(gibbed);
 
     // DXRando: modified vanilla code below to support animals being knocked unconscious
 
