@@ -220,6 +220,7 @@ function PreFirstEntry()
     FixHolograms();
     FixShowers();
     MakeRobotWeaponsNative();
+    FixWeaponEnviroEffective();
 #ifdef gmdx
     FixGMDXObjects();
 #endif
@@ -1490,6 +1491,46 @@ function MakeRobotWeaponsNative()
 
     }
     //TODO
+}
+
+//There are some weapons that don't have appropriate EnviroEffective settings
+//defined, mostly because they were never intended to even end up in those
+//particular environments (Robot weapons can still be used underwater, but
+//obviously they never expected robots to *be* underwater)
+//Rando still shouldn't really be putting them there, but things like Crowd
+//Control can cause it, along with more extreme enemy spawning settings.
+function FixWeaponEnviroEffective()
+{
+    local DeusExWeapon dxw;
+
+    class'WeaponRobotMachinegun'.Default.EnviroEffective=ENVEFF_Air; //WeaponRobotMachinegun - This is basically a WeaponAssaultGun
+    class'WeaponRobotRocket'.Default.EnviroEffective=ENVEFF_Air; //WeaponRobotRocket - This is basically a WeaponGEPGun
+    class'WeaponMJ12Commando'.Default.EnviroEffective=ENVEFF_Air; //WeaponMJ12Commando - This is basically a WeaponAssaultGun
+    class'WeaponMJ12Rocket'.Default.EnviroEffective=ENVEFF_Air; //WeaponMJ12Rocket - This is basically a budget WeaponGEPGun
+    class'WeaponSpiderBot'.Default.EnviroEffective=ENVEFF_AirVacuum; //WeaponSpiderBot - IDK, but you probably shouldn't zap underwater
+    class'WeaponSpiderBot2'.Default.EnviroEffective=ENVEFF_AirVacuum; //WeaponSpiderBot2 - IDK, but you probably shouldn't zap underwater
+#ifdef gmdx
+    class'WeaponRobotPlasmaGun'.Default.EnviroEffective=ENVEFF_AirVacuum; //WeaponRobotPlasmaGun - Kind of plasma rifle-esque, so same enviro
+    class'WeaponRobotSpiderLauncher'.Default.EnviroEffective=ENVEFF_Air; //WeaponRobotSpiderLauncher - Spawns mini spiderbots, probably should only happen on land
+#endif
+
+    //Just to be sure
+    foreach AllActors(class'DeusExWeapon',dxw){
+        switch(dxw.Class){
+            case class'WeaponRobotMachinegun':
+            case class'WeaponRobotRocket':
+            case class'WeaponMJ12Commando':
+            case class'WeaponMJ12Rocket':
+            case class'WeaponSpiderBot':
+            case class'WeaponSpiderBot2':
+#ifdef gmdx
+            case class'WeaponRobotPlasmaGun':
+            case class'WeaponRobotSpiderLauncher':
+#endif
+                dxw.EnviroEffective = dxw.Default.EnviroEffective;
+                break;
+        }
+    }
 }
 
 function SpawnDatacubes()

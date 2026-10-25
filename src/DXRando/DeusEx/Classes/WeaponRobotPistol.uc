@@ -19,4 +19,5 @@ defaultproperties
      CockingSound=Sound'DeusExSounds.Weapons.PistolReload'
      SelectSound=Sound'DeusExSounds.Weapons.PistolSelect'
      ItemName="Robot Pistol"
+     EnviroEffective=ENVEFF_Air
 }

@@ -21,4 +21,5 @@ defaultproperties
      ProjectileClass=Class'RobotGraySpit'
      PlayerViewOffset=(Y=-24.000000,Z=-12.000000)
      ItemName="Radiation Weapon"
+     EnviroEffective=ENVEFF_Air
 }
