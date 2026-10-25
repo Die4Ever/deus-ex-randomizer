@@ -21,6 +21,19 @@ function Timer()
     }
 }
 
+function Destroyed()
+{
+    local DXRCameraModes camera;
+
+    camera = DXRCameraModes(class'DXRCameraModes'.static.Find());
+    if (camera!=None){
+        camera.DisableTempCamera();
+    }
+
+    Super.Destroyed();
+}
+
+
 function Frob(actor Frobber, Inventory frobWith)
 {
 #ifndef vmd
