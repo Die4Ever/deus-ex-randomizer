@@ -2305,7 +2305,7 @@ function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewe
     {
         if( a.bHidden || a.bStatic ) continue;
         if( #var(prefix)Animal(a)!=None ) continue;
-        if (DXRStalker!=None){
+        if (DXRStalker(a)!=None){
             if( StalkerCanGetWeapon(a,w)==False ) continue;
         } else {
             if( #var(prefix)Robot(a) != None ) continue;
