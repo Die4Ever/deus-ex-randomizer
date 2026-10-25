@@ -146,6 +146,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( a.bImportant || a.bIsSecretGoal ) continue;
         if( !IsRelevantPawn(a.class) ) continue;
         if( IsInitialEnemy(a) != enemies ) continue;
+        if (DXRStalker(a)!=None) continue; //Do not swap stalkers at all
         if( !chance_single(percent) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         if( exceptTag != '' && a.Tag == exceptTag ) continue;
