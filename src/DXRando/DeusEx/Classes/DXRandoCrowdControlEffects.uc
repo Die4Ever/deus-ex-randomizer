@@ -2274,6 +2274,25 @@ function bool ToggleFlashlight(string viewer)
 
 }
 
+function bool StalkerCanGetWeapon(ScriptedPawn p, class<#var(DeusExPrefix)Weapon> w)
+{
+    if (DXRStalker(p)==None) return True; //Shouldn't have gotten here, but whatever
+
+    //Add weapon exceptions here
+    switch(p.Class){
+        case class'MrH':
+            //LAW, makes him like a Nemesis (Legally distinct Assailant)
+            if (w==class'#var(prefix)WeaponLAW') return true;
+            break;
+        case class'Bobby':
+            //PS40 - little guy, little gun
+            if (w==class'#var(prefix)WeaponHideAGun') return true;
+            break;
+    }
+
+    return false; //Stalkers can *not* receive weapons by default
+}
+
 function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewer, optional bool AllowLooting)
 {
     local int numEnemies;
@@ -2286,8 +2305,12 @@ function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewe
     {
         if( a.bHidden || a.bStatic ) continue;
         if( #var(prefix)Animal(a)!=None ) continue;
-        if( #var(prefix)Robot(a) != None ) continue;
-        if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        if (DXRStalker!=None){
+            if( StalkerCanGetWeapon(a,w)==False ) continue;
+        } else {
+            if( #var(prefix)Robot(a) != None ) continue;
+            if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        }
         if (a.FindInventoryType(w)!=None) continue;
         numEnemies++;
         inv = ccLink.ccModule.GiveItem(a,w,1);
