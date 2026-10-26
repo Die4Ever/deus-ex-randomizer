@@ -432,3 +432,8 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
 
     return True;
 }
+
+static function bool IsZombie(ScriptedPawn p)
+{
+    return p.Alliance=='Resurrected'; //I think this is the best way to know for now
+}

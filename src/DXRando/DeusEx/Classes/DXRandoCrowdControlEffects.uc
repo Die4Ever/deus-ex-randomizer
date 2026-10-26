@@ -2305,6 +2305,7 @@ function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewe
     {
         if( a.bHidden || a.bStatic ) continue;
         if( #var(prefix)Animal(a)!=None ) continue;
+        if ( class'DXRZombies'.static.IsZombie(a) ) continue; //Zombies don't get weapons
         if (DXRStalker(a)!=None){
             if( StalkerCanGetWeapon(a,w)==False ) continue;
         } else {
