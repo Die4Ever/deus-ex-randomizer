@@ -348,8 +348,9 @@ function SetWatchFlags() {
     local DXRRaceCheckPoint checkPoint;
     local OnceOnlyTrigger oot;
 
-    local bool RevisionMaps, GMDXMaps;
+    local bool VanillaMaps, RevisionMaps, GMDXMaps;
 
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     GMDXMaps     = class'DXRMapVariants'.static.IsGMDXMaps(player());
 
@@ -1108,6 +1109,13 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
         bt.bTriggerOnceOnly=False;
+
+        //The TV in Jock's apartment has bad brush ordering, so the peep hits the wall texture before the TV texture
+        //The Revision maps are fine
+        if(VanillaMaps){
+            class'BingoTrigger'.static.PeepCreate(self,'CatchTheNews_singlepeepedtex',vectm(585,-1665,1760),20,30);
+            class'BingoTrigger'.static.PeepCreate(self,'CatchTheNews_singlepeepedtex',vectm(585,-1695,1760),20,30);
+        }
 
         break;
 
