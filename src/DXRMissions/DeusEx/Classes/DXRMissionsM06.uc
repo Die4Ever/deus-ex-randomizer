@@ -558,4 +558,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         // spawn the MAHOGANY desk (CreateGoal only gets called for different maps)
         g.actors[1].a = Spawnm(class'MahoganyDesk',,,Loc.positions[1].pos, Loc.positions[1].rot);
     }
+
+    if (Loc.name=="Radioactive Chamber") {
+        a = Spawn(class'FillCollisionHole',,, vectm(-1323.5,800,-727));
+        a.SetCollisionSize(10.0, 60.0);
+    }
 }
