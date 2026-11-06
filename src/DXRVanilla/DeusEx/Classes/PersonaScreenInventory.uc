@@ -346,12 +346,9 @@ function bool ButtonActivated(Window buttonPressed)
     }
 
     ret = Super.ButtonActivated(buttonPressed);
-    if (PersonaAmmoDetailButton(buttonPressed) != None) {
-        btnDrop.DisableWindow();
-        btnRefusal.DisableWindow();
-        btnEquip.DisableWindow();
-        btnUse.DisableWindow();
-    }
+
+    //The buttonPressed may be partly deleted at this point, so be careful!
+
     return ret;
 }
 
