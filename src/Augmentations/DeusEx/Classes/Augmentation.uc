@@ -7,6 +7,8 @@ var float AutoEnergyMult;
 var float Level5Value;
 var float activationCost;
 
+//For whatever reason, we often see player==None on the DXONLY map (Like after finishing a game without NG+)
+
 function PostBeginPlay()
 {
     local DXRAugmentations a;
@@ -45,6 +47,7 @@ simulated function SetAutomatic()
 simulated function float GetAugLevelValue()
 {
     if (bHasIt && bIsActive) {
+        if (Player==None) return -1.0;
         TickUse();
         if(Player.Energy <= 0 && bAutomatic) {
             return -1.0;
@@ -60,6 +63,7 @@ simulated function float GetAugLevelValue()
 simulated function float PreviewAugLevelValue()
 {
     if (bHasIt && bIsActive) {
+        if (Player==None) return -1.0;
         // TickUse(); // no tick
         if(Player.Energy <= 0 && bAutomatic) {
             return -1.0;
@@ -121,6 +125,7 @@ simulated function bool CanBeUpgraded()
     // the maximum level
     if ( trueLevel < trueMax )
     {
+        if (player==None) return false;
         // Now check to see if the player has a cannister that can
         // be used to upgrade this Augmentation
         augCan = AugmentationUpgradeCannister(player.FindInventoryType(Class'AugmentationUpgradeCannister'));
@@ -136,7 +141,7 @@ simulated function bool CanBeUpgraded()
 simulated function bool IsTicked()
 {
     return (bAutomatic==false && bIsActive)
-        || (bAutomatic && bIsActive && LastUsed+AutoLength > Level.TimeSeconds && Player.Energy > 0);
+        || (bAutomatic && bIsActive && LastUsed+AutoLength > Level.TimeSeconds && Player!=None && Player.Energy > 0);
 }
 
 simulated function TickUse()
@@ -148,7 +153,7 @@ simulated function TickUse()
         if(LastUsed < Level.TimeSeconds-1 && Level.LevelAction == LEVACT_None) {
             useEnergy = energyRate/60.0 * GetEnergyMult();
         }
-        if(Player.Energy <= 0) {
+        if(Player==None || Player.Energy <= 0) {
             return;// don't update the LastUsed
         } else {
             Player.Energy -= useEnergy;
@@ -164,6 +169,7 @@ simulated function float GetEnergyMult()
     local float mult;
     local Augmentation a;
     mult = 1;
+    if (Player==None) return mult;
     for(a=Player.AugmentationSystem.FirstAug; a!=None; a=a.next) {
         if (AugPower(a) != None && a.bHasIt && a.bIsActive)
             mult *= a.GetAugLevelValue();
@@ -177,7 +183,8 @@ simulated function float GetEnergyMult()
 simulated function float GetEnergyRate()
 {
     if(bAutomatic && !IsTicked()) {
-        if (Player.AmbientSound == LoopSound && Player.AugmentationSystem.NumAugsActive() == 0) {
+        if (Player!=None && Player.AugmentationSystem!=None &&
+            Player.AmbientSound == LoopSound && Player.AugmentationSystem.NumAugsActive() == 0) {
             Player.PlaySound(DeactivateSound, SLOT_None, 0.75);
             Player.AmbientSound = None;
         }
@@ -190,6 +197,11 @@ simulated function float GetEnergyRate()
 function Activate()
 {
     local Sound oldAmbient;
+
+    if (Player==None){
+        log(self $ " has no bound player to Activate()!");
+        return;
+    }
 
     oldAmbient = Player.AmbientSound;
 
