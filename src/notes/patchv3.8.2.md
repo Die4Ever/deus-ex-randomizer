@@ -14,5 +14,6 @@
   - The TV in Jock's Hong Kong apartment (Mission 6) will now work for the "Catch the News" bingo goal.
   - Switching ammo types in the inventory will no longer prevent you from equipping or dropping the selected weapon.
   - Switching ammo types in the inventory will no longer sometimes crash the game.
+  - (Non-Vanilla) The minimum damage thresholds on doors and other movers will now be calculated independently instead of being based directly on the door strength.  This had previously been done because the damage thresholds were not visible in the door highlights.  The simplified damage threshold logic will continue to be used in HX, since the highlight window cannot be modified there.
 
 </details>

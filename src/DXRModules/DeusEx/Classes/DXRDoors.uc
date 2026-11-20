@@ -794,11 +794,11 @@ function RandomizeDoors()
             d.doorStrength = rngrange(d.doorStrength, min_door_adjust, max_door_adjust);
             d.doorStrength = Clamp(d.doorStrength*100, 1, 100)/100.0;
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
-#ifndef injections
-            // without injections we can't augment the highlight window to show mindamagethreshold, so keep it simple for the player
-            if(d.minDamageThreshold > 1)
-                d.minDamageThreshold = d.doorStrength * 60;
-#endif
+            if (#defined(hx)){
+                // In HX we can't augment the highlight window to show mindamagethreshold, so keep it simple for the player
+                if(d.minDamageThreshold > 1)
+                    d.minDamageThreshold = d.doorStrength * 60;
+            }
             d.minDamageThreshold = Max(d.minDamageThreshold, 1); // don't use 0 because people thought it was weird
         }
     }
@@ -983,9 +983,10 @@ function MakeDestructible(#var(DeusExPrefix)Mover d)
         d.minDamageThreshold = rngrange(55, min_mindmg_adjust, max_mindmg_adjust);
         d.doorStrength = FClamp(rngrange(0.8, min_door_adjust, max_door_adjust), 0, 1);
         d.doorStrength = int(d.doorStrength*100)/100.0;
-#ifndef injections
-        d.minDamageThreshold = d.doorStrength * 70;
-#endif
+        if (#defined(hx)){
+            //The door highlight window in HX can't be overridden, so keep it simple
+            d.minDamageThreshold = d.doorStrength * 70;
+        }
     }
 }
 
