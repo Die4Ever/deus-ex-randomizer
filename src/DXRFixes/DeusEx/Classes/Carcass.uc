@@ -95,12 +95,7 @@ function SetMesh3(mesh m)
 
 function bool _ShouldDropItem(Inventory item, Name classname)
 {
-    if( Ammo(item) != None )
-        return false;
-    else if( item.IsA(classname) && item.bDisplayableInv )
-        return true;
-    else
-        return false;
+    return item.IsA(classname) && (item.bDisplayableInv || (Ammo(item) != None && dropsAmmo));
 }
 
 function _DropItems(Name classname, vector offset, vector velocity)
