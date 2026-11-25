@@ -210,6 +210,7 @@ function CheckConfig()
     more_difficulty_settings[i].splits_overlay = 0;
     more_difficulty_settings[i].augcanlocs = -1;
     more_difficulty_settings[i].augupgradelocs = -1;
+    more_difficulty_settings[i].gmdx_grenadiers = 20;
     i++;
 #endif
 
@@ -292,6 +293,7 @@ function CheckConfig()
     more_difficulty_settings[i].splits_overlay = 0;
     more_difficulty_settings[i].augcanlocs = -1;
     more_difficulty_settings[i].augupgradelocs = -1;
+    more_difficulty_settings[i].gmdx_grenadiers = 20;
     i++;
 
 #ifdef hx
@@ -373,6 +375,7 @@ function CheckConfig()
     more_difficulty_settings[i].splits_overlay = 0;
     more_difficulty_settings[i].augcanlocs = -1;
     more_difficulty_settings[i].augupgradelocs = -1;
+    more_difficulty_settings[i].gmdx_grenadiers = 20;
     i++;
 
 #ifdef hx
@@ -454,6 +457,7 @@ function CheckConfig()
     more_difficulty_settings[i].splits_overlay = 0;
     more_difficulty_settings[i].augcanlocs = -1;
     more_difficulty_settings[i].augupgradelocs = -1;
+    more_difficulty_settings[i].gmdx_grenadiers = 20;
     i++;
 
 #ifdef hx
@@ -535,6 +539,7 @@ function CheckConfig()
     more_difficulty_settings[i].splits_overlay = 0;
     more_difficulty_settings[i].augcanlocs = -1;
     more_difficulty_settings[i].augupgradelocs = -1;
+    more_difficulty_settings[i].gmdx_grenadiers = 20;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {

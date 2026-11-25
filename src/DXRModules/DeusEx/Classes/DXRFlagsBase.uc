@@ -95,6 +95,7 @@ struct MoreFlagsSettings{
     var int gmdx_stamina; // 0 is based on hardcore and menu options, 1 is off, 2 is on (Only used in GMDX)
     var int gmdx_difficulty; //0-5 is EASY/MEDIUM/HARD/REALISTIC/HARDCORE/HARDCORE+ (Only used in GMDX)
     var int augcanlocs, augupgradelocs;
+    var int gmdx_grenadiers; //-1 is disabled.  0-100 is percent chance of eligible enemies to receive grenades
 
     var int splits_overlay;// keep this at the end for automated tests
 };

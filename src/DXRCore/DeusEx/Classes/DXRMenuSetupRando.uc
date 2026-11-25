@@ -357,6 +357,10 @@ function BindControls(optional string action)
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats, GetGenericHelpText("nonhumanstatsunchanged"));
     EnumOption("Random Non-human Stats", 100, f.settings.bot_stats, GetGenericHelpText("nonhumanstatsrandom"));
 
+#ifdef gmdxnotae
+    NewMenuItem("GMDX Grenadiers", "Percentage of eligible enemies that get non-lootable grenades?  -1 will use the original GMDX behaviour (causes crashes).");
+    Slider(f.moresettings.gmdx_grenadiers, -1, 100, GetGenericHelpText("gmdxgrenadiers"));
+#endif
 
     NewGroup("Skills");
 
@@ -777,6 +781,11 @@ function String GetGenericHelpText(string opt)
         break;
     case "nonhumanstatsrandom":
         msg =       "Non-human enemies (Animals and robots) will have randomized stats, such as how long they are surprised, weapon accuracy, and ground speed.";
+        break;
+    case "gmdxgrenadiers":
+        msg =       "When disabled with -1, GMDX allows certain enemies with flamethrowers, shotguns, or mini-crossbows to quickly throw grenades that can't be looted from their bodies.  "$"Unfortunately, this feature causes frequent crashes while in combat.|n";
+        msg = msg $ "|n";
+        msg = msg $ "When set to a value between 0 and 100, this setting determines how many of those eligible enemies will receive a large number of unlootable grenades "$"that can be thrown like normal weapons.  This is a middle-ground attempt to maintain some of the functionality, while avoiding crashes.|n";
         break;
     default:
         log("GetGenericHelpText: No help text available for "$opt);

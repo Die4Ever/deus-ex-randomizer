@@ -265,6 +265,8 @@ function PostFirstEntry()
     FixAttachedParticleGenerators();
 
     NudgeItemsUnderOthers();
+
+    FixGMDXGrenadiers();
 }
 
 function AnyEntry()
@@ -1288,6 +1290,85 @@ function FixStandingDancingBlockages()
         //Make them always try to return to their starting position
         sp.SetHomeBase(sp.Location,sp.Rotation,sp.CollisionRadius);
     }
+}
+
+function FixGMDXGrenadiers()
+{
+//Enemies with bGrenadier==True in GMDX before AE have shitty code in checkNadeThrow
+//that causes a crash.  bGrenadier basically allows pawns to throw grenades they don't
+//actually have in their inventory.  To avoid that crash, we can disable the bool but
+//give the enemies actual grenades to use, but marked as native attacks so you can't
+//loot them.
+#ifdef gmdxnotae
+    local ScriptedPawn sp;
+    local class<DeusExWeapon> grenType;
+    local DeusExWeapon gren;
+    local float r;
+    local bool hasValidWeapon;
+
+    if (dxr.flags.moresettings.gmdx_grenadiers<0) return; //Check to see if the option to fix this is turned on or not
+
+    //From function nadeThrow():
+    //Terrorist, UNATCOTroop, RiotCop, HKMilitary use GasGrenade
+    //MJ12Troop, Soldier, MJ12Elite use GasGrenade (30%), EMPGrenade (30%), or LAM (40%)
+    //Those grenade types are picked each time they want to throw a grenade, but we can give
+    //each individual guy one of those types of grenades.
+
+    SetSeed( "DXRFixup GMDXGrenadiers" );
+
+    foreach AllActors(class'ScriptedPawn',sp){
+        if (sp.bGrenadier==false) continue;
+
+        sp.bGrenadier=false; //Grenadier no more
+
+        //Only guys with a flamethrower, mini-crossbow, sawed-off shotgun, or assault shotgun will throw grenades
+        //The original logic only actually runs while that's in their hands, but we're only really checking at the start
+        //so just check if it's one of those.  Also if they have cloak, I guess they get a small chance to throw as well (wtf, lol)
+
+        //With those weapons, 0.035 chance to throw a grenade each tick while strafing or firing (wow)
+        //An additional 0.01 chance if they have cloak
+        r = 0.0;
+        hasValidWeapon=false;
+        if (sp.FindInventoryType(class'WeaponFlamethrower')!=None) hasValidWeapon=true;
+        if (sp.FindInventoryType(class'WeaponMiniCrossbow')!=None) hasValidWeapon=true;
+        if (sp.FindInventoryType(class'WeaponSawedOffShotgun')!=None) hasValidWeapon=true;
+        if (sp.FindInventoryType(class'WeaponAssaultShotgun')!=None) hasValidWeapon=true;
+
+        if (!hasValidWeapon && !sp.bHasCloak) continue; //This guy isn't eligible, keep going
+
+        l("FixGrenadiers: "$sp$" is eligible for grenades ("$dxr.flags.moresettings.gmdx_grenadiers$"%)");
+        if (chance_single(dxr.flags.moresettings.gmdx_grenadiers)==false) continue; //This guy doesn't get nades
+
+        if (sp.IsA('Terrorist') || sp.IsA('UNATCOTroop') || sp.IsA('RiotCop') || sp.IsA('HKMilitary')){
+            grenType = class'WeaponGasGrenade';
+        } else if (sp.IsA('MJ12Troop') || sp.IsA('Soldier') || sp.IsA('MJ12Elite')){
+            r = initchance();
+            if( chance(0.3,r)) grenType = class'WeaponGasGrenade';
+            if( chance(0.3,r)) grenType = class'WeaponEMPGrenade';
+            if( chance(0.4,r)) grenType = class'WeaponLAM';
+            chance_remaining(r);
+        }
+        l("FixGrenadiers: "$sp$" needs "$grenType);
+
+        if (grenType==None) continue; //What the hell were you?
+
+        //Does the guy already have that type of grenade?
+        gren = DeusExWeapon(sp.FindInventoryType(grenType));
+        if (gren==None){
+            //Give them the grenade weapon
+            gren = DeusExWeapon(class'DXRActorsBase'.static.GiveItem(sp,grenType));
+        }
+        if (gren==None) continue; //idk, but just to be safe
+
+        gren.bNativeAttack=True; //So you can't loot the grenades
+
+        //Give a bunch of ammo, since originally they would have been able to throw forever
+        //20 is probably plenty???
+        class'DXRActorsBase'.static.GiveAmmoForWeapon(sp,gren,20);
+        l("FixGrenaders: "$sp$" now has lots of "$grenType$" ("$gren$")");
+    }
+
+#endif
 }
 
 function FixAttachedParticleGenerators()
