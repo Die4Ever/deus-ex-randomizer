@@ -46,7 +46,7 @@ external_downloads = {
     "http://github.com/theastropath/UnrealEngine1Renderers/releases/latest/download/DeusEx.zip": "UpdatedUE1Renderers.zip",
 
     #region Updated DeusExe
-    "http://github.com/theastropath/DeusExeModern/releases/latest/download/DeusExe.zip": "DeusExeModern.zip",
+    "http://github.com/theastropath/DeusExeModern/releases/latest/download/DeusExeModern.zip": "DeusExeModern.zip",
 }
 
 base = Path()

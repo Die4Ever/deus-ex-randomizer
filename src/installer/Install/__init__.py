@@ -446,7 +446,7 @@ def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, in
     if install=="NoInstall":
         return
 
-    elif install=="Legacy":
+    elif install=="Legacy": #The original Kentie's (D3D10) and Dohnal's (D3D9) renderers
         info('CopyD3DRenderers from', thirdparty, ' to ', system)
 
         CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
@@ -460,7 +460,7 @@ def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, in
 
         d3d10drv_loc = thirdparty / 'd3d10drv'
 
-    elif install=="Updated":
+    elif install=="Updated": #The updated/fixed versions
         info('CopyUpdatedD3DRenderers from', thirdparty, ' to ', system)
 
         CopyTo(thirdparty/'UpdatedUE1Renderers'/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
@@ -475,21 +475,23 @@ def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str, in
         d3d10drv_loc = thirdparty / 'UpdatedUE1Renderers' / 'd3d10drv'
 
 
-    if deus_nsf_lighting or d3d10_textures != 'Smooth':
+    if install=="Legacy" and (deus_nsf_lighting or d3d10_textures != 'Smooth'): #Deus NSF shaders only work on the legacy driver
         deus_nsf = system / 'd3d10drv'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv')
         Copyd3d10drv(d3d10drv_loc, system / 'd3d10drv_kentie')
     else:
         deus_nsf = system / 'd3d10drv_deus_nsf'
-        Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv_deus_nsf')
+        if install=="Legacy":
+            Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv_deus_nsf')
         Copyd3d10drv(d3d10drv_loc, system / 'd3d10drv')
 
-    if d3d10_textures=='Retro':
-        CopyTo(deus_nsf/'unrealpool_retro_textures.fxh', deus_nsf/'unrealpool.fxh')
-    elif d3d10_textures=='Balanced':
-        CopyTo(deus_nsf/'unrealpool_balanced_textures.fxh', deus_nsf/'unrealpool.fxh')
-    elif d3d10_textures=='Smooth':
-        CopyTo(deus_nsf/'unrealpool_smooth_textures.fxh', deus_nsf/'unrealpool.fxh')
+    if install=="Legacy": #Only do Deus NSF things for the legacy driver
+        if d3d10_textures=='Retro':
+            CopyTo(deus_nsf/'unrealpool_retro_textures.fxh', deus_nsf/'unrealpool.fxh')
+        elif d3d10_textures=='Balanced':
+            CopyTo(deus_nsf/'unrealpool_balanced_textures.fxh', deus_nsf/'unrealpool.fxh')
+        elif d3d10_textures=='Smooth':
+            CopyTo(deus_nsf/'unrealpool_smooth_textures.fxh', deus_nsf/'unrealpool.fxh')
 
 
 def Copyd3d10drv(source, dest):
