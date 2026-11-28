@@ -12,7 +12,7 @@ runs:
       if: runner.os == 'Linux'
       with:
         #Just use the latest version of Python on Linux
-        python-version: '3.15'
+        python-version: '3.x'
         cache: 'pip' # caching pip dependencies
 
     - run: python -m venv .venv
