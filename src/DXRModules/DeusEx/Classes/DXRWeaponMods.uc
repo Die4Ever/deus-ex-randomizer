@@ -3,7 +3,7 @@ class DXRWeaponMods extends DXRActorsBase transient;
 struct RandomModStruct { var class<#var(prefix)WeaponMod> type; var float chance; };
 var RandomModStruct randommods[11];
 
-var config float min_rate_adjust, max_rate_adjust;
+var config float min_adjust, max_adjust, lower_limit, upper_limit;
 
 function class<#var(prefix)WeaponMod> PickRandomMod()
 {
@@ -34,7 +34,12 @@ function AddRandomMod(class<#var(prefix)WeaponMod> mod, float c)
     for(i=0;i < ArrayCount(randommods);i++){
         if (randommods[i].type==None){
             randommods[i].type=mod;
-            randommods[i].chance=rngrangeseeded(c,min_rate_adjust,max_rate_adjust,mod.name) ** 2;
+
+            //Odds are increased or decreased by constant values instead of using a multiplier
+            //This means the adjustment has a greater proportional effect on the uncommon mods
+            //than the super common ones.
+            randommods[i].chance = c + rngrangeseeded(1,min_adjust,max_adjust,mod.name);
+            randommods[i].chance = FClamp(randommods[i].chance, lower_limit, upper_limit);
             return;
         }
     }
@@ -91,6 +96,27 @@ function CheckConfig()
     local int i;
 
     Super.CheckConfig();
+
+    lower_limit=1.0;
+    if(dxr.flags.IsZeroRando()){
+        min_adjust=0.0;
+        max_adjust=0.0;
+        upper_limit=50.0;
+    } else {
+        if (#defined(gmdx)){
+            min_adjust=-7.0;
+            max_adjust=7.0;
+            upper_limit=24.0;
+        } else if(class'DXRMapVariants'.static.IsRevisionMaps(player())){
+            min_adjust=-6.0;
+            max_adjust=6.0;
+            upper_limit=26.0;
+        } else {
+            min_adjust=-5.0;
+            max_adjust=5.0;
+            upper_limit=18.0;
+        }
+    }
 
     InitWeaponModChances();
 
@@ -198,6 +224,8 @@ simulated function AddDXRCredits(CreditsWindow cw)
 
 defaultproperties
 {
-    min_rate_adjust=0.3
-    max_rate_adjust=1.75
+    min_adjust=-2.0
+    max_adjust=5.0
+    lower_limit=1.0
+    upper_limit=18.0
 }
