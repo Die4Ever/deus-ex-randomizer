@@ -828,6 +828,15 @@ function MoveAwayFrom(Actor other)
     }
 }
 
+function LookAtActor(Actor targ, bool bRotate,
+                     bool bLookHorizontal, bool bLookVertical,
+                     optional float DelayTime, optional float rate,
+                     optional float LockAngle, optional float AngleOffset)
+{
+    if (targ==Self) return; //Where does one turn to look at themselves?  Yaw 0, apparently, which is dumb
+    Super.LookAtActor(targ,bRotate,bLookHorizontal,bLookVertical,DelayTime,rate,LockAngle,AngleOffset);
+}
+
 // ----------------------------------------------------------------------
 // state Standing
 //
