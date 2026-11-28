@@ -36,7 +36,7 @@ a_installer = Analysis(
         ('3rdParty/d3d10drv/*', '3rdParty/d3d10drv'),
         ('3rdParty/d3d10drv_deus_nsf/*', '3rdParty/d3d10drv_deus_nsf'),
         ('3rdParty/dxvk/*', '3rdParty/dxvk'),
-        ('3rdParty/DeusExeModern/System/*', '3rdParty/DeusExeModern'),
+        ('3rdParty/DeusExeModern/*', '3rdParty/DeusExeModern'),
         ('3rdParty/UpdatedUE1Renderers/*', '3rdParty/UpdatedUE1Renderers'),
         ('3rdParty/UpdatedUE1Renderers/d3d10drv/*', '3rdParty/UpdatedUE1Renderers/d3d10drv')
     ],

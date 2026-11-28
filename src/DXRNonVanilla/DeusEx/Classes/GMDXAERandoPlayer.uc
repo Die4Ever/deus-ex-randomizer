@@ -1861,7 +1861,7 @@ state PlayerWalking
                 */
 
                 // make the drone's rotation match the player's view
-                if (!bRadialAugMenuVisible)
+                if (!IsAnyRadialMenuVisible())
                     aDrone.SetRotation(ViewRotation);
 
                 // move the drone
@@ -1927,7 +1927,7 @@ state PlayerWalking
             traceSize.Y = CollisionRadius;
             traceSize.Z = 1;
             HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, traceSize);
-            if (HitActor == None && !bForceDuck && !IsCrippled())
+            if (HitActor == None && !bForceDuck && !IsCrippled(false))
                 bCanTiptoes = True;
             else
                 bCanTiptoes = False;
@@ -1980,7 +1980,7 @@ state PlayerWalking
 
         // let the player pull themselves along with their hands even if both of
         // their legs are blown off
-        if (IsCrippled())
+        if (IsCrippled(false))
         {
             newSpeed = defSpeed * 0.8;
             bIsWalking = True;
@@ -2101,7 +2101,7 @@ state PlayerWalking
         }
 
         // if we are moving really slow, force us to walking
-        if ((newSpeed <= defSpeed / 3) && !bForceDuck && !IsCrippled())
+        if ((newSpeed <= defSpeed / 3) && !bForceDuck && !IsCrippled(false))
         {
             bIsWalking = True;
             newSpeed = defSpeed;
