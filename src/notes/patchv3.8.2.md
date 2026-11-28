@@ -16,5 +16,6 @@
   - Switching ammo types in the inventory will no longer sometimes crash the game.
   - (Non-Vanilla) The minimum damage thresholds on doors and other movers will now be calculated independently instead of being based directly on the door strength.  This had previously been done because the damage thresholds were not visible in the door highlights.  The simplified damage threshold logic will continue to be used in HX, since the highlight window cannot be modified there.
   - (GMDXv9) New option to adjust odds of certain enemies receiving unlootable grenades ("GMDX Grenadiers").  This is a replacement for an existing GMDX feature (Grenadiers) which allowed some enemies to throw unlimited grenades that could not be looted from their bodies.  Unfortunately, that feature caused fairly frequent crashes, so this new option should prevent those crashes from occurring.  If the original (crashing) behaviour is still desired, the new setting can be set to -1.
+  - (GMDX:AE) Now compatible with beta 27
 
 </details>

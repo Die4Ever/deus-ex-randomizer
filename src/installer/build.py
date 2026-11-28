@@ -5,6 +5,7 @@ import os
 from Install import DownloadFile, WriteBytes, MD5
 from zipfile import ZipFile
 import tarfile
+import sys
 import PyInstaller.__main__
 
 Community_Update_url = "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/a662f6ed177dba52ad3a0d8141fa2ac72f8af034/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/"
@@ -49,6 +50,26 @@ external_downloads = {
     "http://github.com/theastropath/DeusExeModern/releases/latest/download/DeusExeModern.zip": "DeusExeModern.zip",
 }
 
+#region Arguments
+skipdownload = False #If skipdownload is used, don't download anything new and just try to build with what we have already
+if (len(sys.argv)>1):
+    for arg in sys.argv[1:]:
+        lowarg = arg.lower()
+        if lowarg in ("-s", "--skipdownload"):
+            skipdownload=True
+        elif lowarg in ("-h", "--help"):
+            print("")
+            print("build.py: Builds the installer for DXRando")
+            print("")
+            print("Arguments:")
+            print("---------------")
+            print("-h, --help")
+            print("    Shows this help screen")
+            print("-s, --skipdownload")
+            print("    Attempts to build the installer without downloading any files")
+            print("")
+            sys.exit()
+
 base = Path()
 
 if Path('src/installer/add_lib_path.py').exists():
@@ -66,62 +87,61 @@ basedest.mkdir(exist_ok=True)
 (basedest/'d3d10drv').mkdir(exist_ok=True)
 (basedest/'dxvk').mkdir(exist_ok=True)
 
-for (url, dest) in downloads.items():
-    p = basedest/dest
-    if not p.exists():
+if not skipdownload:
+    for (url, dest) in downloads.items():
+        p = basedest/dest
         DownloadFile(Community_Update_url + url, basedest/dest)
 
-for (url, dest) in external_downloads.items():
-    p = basedest/dest
-    if not p.exists():
+    for (url, dest) in external_downloads.items():
+        p = basedest/dest
         DownloadFile(url, basedest/dest)
 
-#region extract OpenGL 2
-zip = ZipFile(basedest/'dxglr21.zip', 'r')
-zip.extractall(basedest)
-zip.close()
-(basedest/'dxglr21.zip').unlink()
+    #region extract OpenGL 2
+    zip = ZipFile(basedest/'dxglr21.zip', 'r')
+    zip.extractall(basedest)
+    zip.close()
+    (basedest/'dxglr21.zip').unlink()
 
-#region extract DeusExeModern
-zip = ZipFile(basedest/'DeusExeModern.zip', 'r')
-zip.extractall(basedest/'DeusExeModern')
-zip.close()
-(basedest/'DeusExeModern.zip').unlink()
+    #region extract DeusExeModern
+    zip = ZipFile(basedest/'DeusExeModern.zip', 'r')
+    zip.extractall(basedest/'DeusExeModern')
+    zip.close()
+    (basedest/'DeusExeModern.zip').unlink()
 
-#region extract Updated D3D9/D3D10/OpenGL renderers
-zip = ZipFile(basedest/'UpdatedUE1Renderers.zip', 'r')
-zip.extractall(basedest/'UpdatedUE1Renderers')
-zip.close()
-(basedest/'UpdatedUE1Renderers.zip').unlink()
+    #region extract Updated D3D9/D3D10/OpenGL renderers
+    zip = ZipFile(basedest/'UpdatedUE1Renderers.zip', 'r')
+    zip.extractall(basedest/'UpdatedUE1Renderers')
+    zip.close()
+    (basedest/'UpdatedUE1Renderers.zip').unlink()
 
-#region Deus_nsf tweaked D3D10 shaders
-if not (basedest/'d3d10drv_deus_nsf.zip').exists():
-    DownloadFile('https://mods4ever.com/public/d3d10drv_deus_nsf.zip', basedest/'d3d10drv_deus_nsf.zip')
-assert MD5((basedest/'d3d10drv_deus_nsf.zip').read_bytes()) == '3bef7d2e4f4c0091f39ebf8027e680e0'
-zip = ZipFile(basedest/'d3d10drv_deus_nsf.zip', 'r')
-(basedest/'d3d10drv_deus_nsf').mkdir(exist_ok=True)
-for name in zip.namelist():
-    data = zip.read(name)
-    (basedest/'d3d10drv_deus_nsf'/Path(name).name).write_bytes(data)
-zip.close()
-(basedest/'d3d10drv_deus_nsf.zip').unlink()
+    #region Deus_nsf tweaked D3D10 shaders
+    if not (basedest/'d3d10drv_deus_nsf.zip').exists():
+        DownloadFile('https://mods4ever.com/public/d3d10drv_deus_nsf.zip', basedest/'d3d10drv_deus_nsf.zip')
+    assert MD5((basedest/'d3d10drv_deus_nsf.zip').read_bytes()) == '3bef7d2e4f4c0091f39ebf8027e680e0'
+    zip = ZipFile(basedest/'d3d10drv_deus_nsf.zip', 'r')
+    (basedest/'d3d10drv_deus_nsf').mkdir(exist_ok=True)
+    for name in zip.namelist():
+        data = zip.read(name)
+        (basedest/'d3d10drv_deus_nsf'/Path(name).name).write_bytes(data)
+    zip.close()
+    (basedest/'d3d10drv_deus_nsf.zip').unlink()
 
-#region LDDP minimal install
-if not (basedest/'FemJC.u').exists():
-    DownloadFile('https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/FemJC.u', basedest/'FemJC.u')
+    #region LDDP minimal install
+    if not (basedest/'FemJC.u').exists():
+        DownloadFile('https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/FemJC.u', basedest/'FemJC.u')
 
-#region DXVK 32bit
-if not (basedest/'dxvk.tar.gz').exists():
-    DownloadFile('https://github.com/doitsujin/dxvk/releases/download/v2.7.1/dxvk-2.7.1.tar.gz', basedest/'dxvk.tar.gz')
-tar = tarfile.open(basedest/'dxvk.tar.gz')
-for f in tar.getmembers():
-    if '/x32/' in f.path and f.isfile():
-        p = Path(f.name).name
-        p = basedest/'dxvk'/p
-        data = tar.extractfile(f).read()
-        WriteBytes(p, data)
-tar.close()
-(basedest/'dxvk.tar.gz').unlink()
+    #region DXVK 32bit
+    if not (basedest/'dxvk.tar.gz').exists():
+        DownloadFile('https://github.com/doitsujin/dxvk/releases/download/v2.7.1/dxvk-2.7.1.tar.gz', basedest/'dxvk.tar.gz')
+    tar = tarfile.open(basedest/'dxvk.tar.gz')
+    for f in tar.getmembers():
+        if '/x32/' in f.path and f.isfile():
+            p = Path(f.name).name
+            p = basedest/'dxvk'/p
+            data = tar.extractfile(f).read()
+            WriteBytes(p, data)
+    tar.close()
+    (basedest/'dxvk.tar.gz').unlink()
 
 #region build
 spec = base/'installer.spec'
